@@ -5,10 +5,12 @@
 <title>Login - Star Tools</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 
+<link rel="icon" type="image/png" href="/demo-star-tools/logo.jpg">
+<link rel="apple-touch-icon" href="/demo-star-tools/logo.jpg">
+
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
 
 <style>
   * {
@@ -553,7 +555,7 @@
 
   <div class="login-header">
     <div class="app-icon">
-      <img src="logo.jpg" alt="Star Tools" id="logoImage">
+      <img src="/demo-star-tools/logo.jpg" alt="Star Tools" id="logoImage">
     </div>
     <h1 id="title">Selamat Datang Kembali</h1>
     <p class="tagline">Jelajahi kreativitas tanpa batas. Kembangkan potensimu bersama ekosistem alat digital terbaik.</p>
@@ -637,9 +639,8 @@
   </div>
 </div>
 
-
 <script>
-  const firebaseConfig = {
+  var firebaseConfig = {
     apiKey: "AIzaSyDgr_nHqvpMsiG4lBkYckzxRErkskXj_6E",
     authDomain: "laporanstartools-c18b2.firebaseapp.com",
     databaseURL: "https://laporanstartools-c18b2-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -652,20 +653,20 @@
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
-  const auth = firebase.auth();
-  const db = firebase.database();
+  var auth = firebase.auth();
+  var db = firebase.database();
 
-  let isLogin = true;
+  var isLogin = true;
 
-  auth.onAuthStateChanged(user => {
+  auth.onAuthStateChanged(function(user) {
     if (user && !window.location.pathname.includes('login.html')) {
-      window.location.href = "index.html";
+      window.location.href = '/demo-star-tools/index.html';
     }
   });
 
   function togglePasswordVisibility(inputId) {
-    const input = document.getElementById(inputId);
-    const button = input.parentElement.querySelector('.toggle-password');
+    var input = document.getElementById(inputId);
+    var button = input.parentElement.querySelector('.toggle-password');
     
     if (input.type === 'password') {
       input.type = 'text';
@@ -692,7 +693,7 @@
     document.getElementById("title").innerText = isLogin ? "Selamat Datang Kembali" : "Daftarkan Akun";
     document.getElementById("actionBtn").innerText = isLogin ? "Login" : "Daftar";
 
-    const usernameGroup = document.getElementById("usernameGroup");
+    var usernameGroup = document.getElementById("usernameGroup");
     usernameGroup.style.display = isLogin ? "none" : "block";
 
     document.querySelector(".switch").innerHTML = isLogin
@@ -701,9 +702,9 @@
   }
 
   function signup() {
-    const username = document.getElementById("username").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
+    var username = document.getElementById("username").value.trim();
+    var email = document.getElementById("email").value.trim();
+    var password = document.getElementById("password").value.trim();
 
     if (!username || !email || !password) {
       showCustomAlert("Harap Isi Semua Data!");
@@ -720,13 +721,13 @@
       return;
     }
 
-    const btn = document.getElementById("actionBtn");
+    var btn = document.getElementById("actionBtn");
     btn.disabled = true;
     btn.innerText = "Memproses...";
 
     auth.createUserWithEmailAndPassword(email, password)
-      .then(res => {
-        const uid = res.user.uid;
+      .then(function(res) {
+        var uid = res.user.uid;
         return db.ref("users/" + uid).set({
           username: username,
           email: email,
@@ -734,16 +735,16 @@
           createdAt: Date.now()
         });
       })
-      .then(() => {
-        const redirect = localStorage.getItem("redirectAfterLogin");
+      .then(function() {
+        var redirect = localStorage.getItem("redirectAfterLogin");
         if (redirect) {
           localStorage.removeItem("redirectAfterLogin");
           safeRedirect(redirect);
         } else {
-          window.location.href = "index.html";
+          window.location.href = '/demo-star-tools/index.html';
         }
       })
-      .catch(err => {
+      .catch(function(err) {
         showCustomAlert(getFriendlyError(err.code));
         btn.disabled = false;
         btn.innerText = "Daftar";
@@ -771,8 +772,8 @@
     }
   }
 
-  let loginAttempts = 0;
-  let lockUntil = 0;
+  var loginAttempts = 0;
+  var lockUntil = 0;
 
   function login() {
     if (!isLogin) {
@@ -781,35 +782,35 @@
     }
 
     if (Date.now() < lockUntil) {
-      const sisaDetik = Math.ceil((lockUntil - Date.now()) / 1000);
-      showCustomAlert(`Terlalu banyak percobaan. Tunggu ${sisaDetik} detik.`);
+      var sisaDetik = Math.ceil((lockUntil - Date.now()) / 1000);
+      showCustomAlert('Terlalu banyak percobaan. Tunggu ' + sisaDetik + ' detik.');
       return;
     }
 
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
+    var email = document.getElementById("email").value.trim();
+    var password = document.getElementById("password").value;
 
     if (!email || !password) {
       showCustomAlert('Harap isi email dan password.');
       return;
     }
 
-    const btn = document.getElementById("actionBtn");
+    var btn = document.getElementById("actionBtn");
     btn.disabled = true;
     btn.innerText = "Memproses...";
 
     auth.signInWithEmailAndPassword(email, password)
-      .then(() => {
+      .then(function() {
         loginAttempts = 0;
-        const redirect = localStorage.getItem("redirectAfterLogin");
+        var redirect = localStorage.getItem("redirectAfterLogin");
         if (redirect) {
           localStorage.removeItem("redirectAfterLogin");
           safeRedirect(redirect);
         } else {
-          window.location.href = "index.html";
+          window.location.href = '/demo-star-tools/index.html';
         }
       })
-      .catch(err => {
+      .catch(function(err) {
         loginAttempts++;
         if (loginAttempts >= 5) {
           lockUntil = Date.now() + 60000;
@@ -834,19 +835,19 @@
 
   function skipLogin() {
     localStorage.setItem("isGuest", "true");
-    window.location.href = "index.html";
+    window.location.href = '/demo-star-tools/index.html';
   }
 
   function safeRedirect(url) {
     try {
-      const parsed = new URL(url, window.location.origin);
+      var parsed = new URL(url, window.location.origin);
       if (parsed.origin === window.location.origin) {
         window.location.href = parsed.href;
       } else {
-        window.location.href = "index.html";
+        window.location.href = '/demo-star-tools/index.html';
       }
     } catch (e) {
-      window.location.href = "index.html";
+      window.location.href = '/demo-star-tools/index.html';
     }
   }
 
@@ -863,7 +864,6 @@
     document.body.classList.add('dark');
   }
 
-  // FORGOT PASSWORD
   function showForgotPassword() {
     document.getElementById('loginContainer').style.display = 'none';
     document.getElementById('forgotPasswordContainer').style.display = 'block';
@@ -875,7 +875,7 @@
   }
 
   async function handleResetPassword() {
-    const email = document.getElementById('resetEmail').value.trim();
+    var email = document.getElementById('resetEmail').value.trim();
     if (!email) {
       showCustomAlert("Mohon masukkan alamat email Anda.");
       return;
@@ -887,7 +887,7 @@
       document.getElementById('resetEmail').value = '';
       closeForgotPassword();
     } catch (error) {
-      let errorMsg = "Gagal mengirim link reset.";
+      var errorMsg = "Gagal mengirim link reset.";
       if (error.code === 'auth/user-not-found') {
         errorMsg = "Email tidak terdaftar di sistem kami.";
       } else if (error.code === 'auth/invalid-email') {
@@ -897,21 +897,20 @@
     }
   }
 
-  // GOOGLE LOGIN
   async function handleGoogleLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
+    var provider = new firebase.auth.GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
 
     try {
-      const result = await auth.signInWithPopup(provider);
-      const user = result.user;
-      const userRef = db.ref('users/' + user.uid);
-      const snapshot = await userRef.once('value');
+      var result = await auth.signInWithPopup(provider);
+      var user = result.user;
+      var userRef = db.ref('users/' + user.uid);
+      var snapshot = await userRef.once('value');
 
       if (!snapshot.exists()) {
-        const nameParts = (user.displayName || "Pengguna Baru").split(" ");
-        const firstName = nameParts[0] || "Pengguna";
-        const lastName = nameParts.slice(1).join(" ") || "";
+        var nameParts = (user.displayName || "Pengguna Baru").split(" ");
+        var firstName = nameParts[0] || "Pengguna";
+        var lastName = nameParts.slice(1).join(" ") || "";
 
         await userRef.set({
           username: user.displayName || "Pengguna Baru",
@@ -924,12 +923,12 @@
         });
       }
 
-      const redirect = localStorage.getItem("redirectAfterLogin");
+      var redirect = localStorage.getItem("redirectAfterLogin");
       if (redirect) {
         localStorage.removeItem("redirectAfterLogin");
         safeRedirect(redirect);
       } else {
-        window.location.href = "index.html";
+        window.location.href = '/demo-star-tools/index.html';
       }
 
     } catch (error) {
@@ -941,7 +940,7 @@
 
   document.getElementById('logoImage').addEventListener('error', function() {
     this.style.display = 'none';
-    const fallback = document.createElement('div');
+    var fallback = document.createElement('div');
     fallback.innerHTML = `
       <svg viewBox="0 0 100 100" fill="none" style="width:64px;height:64px;">
         <circle cx="50" cy="50" r="45" fill="url(#starGrad)" opacity="0.12"/>

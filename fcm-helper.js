@@ -15,9 +15,9 @@ if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 
-var messaging;
+var messaging = null;
+var VAPID_KEY = "BMDeVPW5lXflflwgl2Aey_5GWsNVWyGRMSvvJ0LZ4pvS0Lt-zh3464ylJzY1ICTj-xNvZQ1JUhfCAWTc1NCxfxk";
 
-// PASTIKAN FIREBASE SUDAH SIAP SEBELUM PAKAI MESSAGING
 function getMessagingInstance() {
     if (!messaging) {
         try {
@@ -30,10 +30,6 @@ function getMessagingInstance() {
     return messaging;
 }
 
-// VAPID KEY
-var VAPID_KEY = "BMDeVPW5lXflflwgl2Aey_5GWsNVWyGRMSvvJ0LZ4pvS0Lt-zh3464ylJzY1ICTj-xNvZQ1JUhfCAWTc1NCxfxk";
-
-// MINTA IZIN NOTIFIKASI
 function requestPermission() {
     console.log('Minta izin notifikasi...');
     Notification.requestPermission().then(function(permission) {
@@ -42,15 +38,15 @@ function requestPermission() {
             getToken();
         } else {
             console.log('Izin notifikasi ditolak');
+            alert('Izin notifikasi ditolak. Token tidak bisa didapat.');
         }
     });
 }
 
-// AMBIL FCM TOKEN
 function getToken() {
     var msg = getMessagingInstance();
     if (!msg) {
-        console.log('Messaging tidak tersedia');
+        alert('Messaging tidak tersedia');
         return;
     }
     
@@ -60,13 +56,14 @@ function getToken() {
             localStorage.setItem('fcmToken', token);
             var display = document.getElementById('tokenDisplay');
             if (display) display.innerText = token;
+            alert('Token berhasil didapat!\n\n' + token);
         })
         .catch(function(err) {
             console.log('Gagal ambil token:', err);
+            alert('Gagal ambil token: ' + err.message);
         });
 }
 
-// HANDLE NOTIFIKASI SAAT FOREGROUND
 function setupOnMessage() {
     var msg = getMessagingInstance();
     if (!msg) return;
@@ -79,30 +76,45 @@ function setupOnMessage() {
     });
 }
 
-// FUNGSI AMBIL TOKEN DARI STORAGE
 function getStoredToken() {
     return localStorage.getItem('fcmToken') || 'Belum ada token';
 }
 
-// FUNGSI DARI NATIVE (WebView)
 function setupFCM(token) {
     console.log('Token dari Native:', token);
     localStorage.setItem('fcmToken', token);
     var display = document.getElementById('tokenDisplay');
     if (display) display.innerText = token;
+    alert('Token dari Native: ' + token);
 }
 
-// REGISTRASI SERVICE WORKER
+function showToken() {
+    var token = getStoredToken();
+    alert('Token FCM:\n\n' + token);
+}
+
+function forceGetToken() {
+    getMessagingInstance();
+    if (Notification.permission === 'default') {
+        requestPermission();
+    } else if (Notification.permission === 'granted') {
+        getToken();
+    } else {
+        alert('Izin notifikasi sudah ditolak. Buka pengaturan browser untuk mengizinkan.');
+    }
+}
+
+// REGISTRASI SERVICE WORKER - PATH SUDAH FIX
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+    navigator.serviceWorker.register('/demo-star-tools/firebase-messaging-sw.js')
         .then(function(registration) {
             console.log('Service Worker registrasi berhasil');
-            // Setelah SW berhasil, baru init FCM
             getMessagingInstance();
             setupOnMessage();
         })
         .catch(function(error) {
             console.log('Service Worker registrasi gagal:', error);
+            alert('Service Worker gagal: ' + error.message);
         });
 }
 
@@ -115,16 +127,13 @@ window.addEventListener('load', function() {
         var display = document.getElementById('tokenDisplay');
         if (display) display.innerText = localStorage.getItem('fcmToken');
     } else {
-        console.log('Mode Browser: Minta izin notifikasi...');
-        // TUNGGU BEBERAPA DETIK BIAR FIREBASE SIAP
+        console.log('Mode Browser: Siap ambil token');
         setTimeout(function() {
-            requestPermission();
-        }, 1000);
+            if (Notification.permission === 'default') {
+                requestPermission();
+            } else if (Notification.permission === 'granted') {
+                getToken();
+            }
+        }, 2000);
     }
 });
-
-// TOMBOL TAMPILKAN TOKEN
-function showToken() {
-    var token = getStoredToken();
-    alert('Token FCM:\n\n' + token);
-}

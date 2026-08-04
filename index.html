@@ -5,20 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Star Tools - Utama</title>
 
- <link rel="manifest" href="/demo-star-tools/manifest.json">
-<link rel="icon" type="image/png" href="logo.jpg">
-<link rel="apple-touch-icon" href="logo.jpg">
+<link rel="icon" type="image/png" href="/demo-star-tools/logo.jpg">
+<link rel="apple-touch-icon" href="/demo-star-tools/logo.jpg">
+<link rel="manifest" href="/demo-star-tools/manifest.json">
 
-<meta property="og:image" content="https://www.stools.web.id/logo.jpg">
-<meta name="twitter:image" content="https://www.stools.web.id/logo.jpg">
+<meta property="og:image" content="https://starplatform.github.io/demo-star-tools/logo.jpg">
+<meta name="twitter:image" content="https://starplatform.github.io/demo-star-tools/logo.jpg">
 
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
  "@type": "WebSite",
  "name": "Star Tools",
- "url": "https://www.stools.web.id/",
- "image": "https://www.stools.web.id/logo.jpg"
+ "url": "https://starplatform.github.io/demo-star-tools/",
+ "image": "https://starplatform.github.io/demo-star-tools/logo.jpg"
 }
 </script>
 
@@ -678,7 +678,6 @@
     }
   }
 
-  /* ===== Tampilan Laptop / PC ===== */
   @media (min-width: 900px) {
     body {
       background: linear-gradient(160deg, #EFF6FF 0%, #F8FAFE 60%);
@@ -730,7 +729,6 @@
     }
   }
 
-  /* Tombol debug */
   .debug-btn {
     position: fixed;
     bottom: 140px;
@@ -746,6 +744,24 @@
     cursor: pointer;
   }
   .debug-btn:active {
+    transform: scale(0.95);
+  }
+
+  .token-btn {
+    position: fixed;
+    bottom: 190px;
+    right: 10px;
+    z-index: 999;
+    background: #2563EB;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 30px;
+    font-size: 11px;
+    box-shadow: 0 4px 12px rgba(37,99,235,0.4);
+    cursor: pointer;
+  }
+  .token-btn:active {
     transform: scale(0.95);
   }
 </style>
@@ -895,13 +911,9 @@
    </div>
   </div>
 
-  <!-- Tombol Debug -->
+  <!-- TOMBOL DEBUG -->
   <button class="debug-btn" onclick="forceGetToken()">Ambil Token</button>
-  <div style="position:fixed;bottom:190px;right:10px;z-index:999;">
-    <button onclick="showToken()" style="background:#2563EB;color:white;border:none;padding:10px 15px;border-radius:30px;font-size:11px;box-shadow:0 4px 12px rgba(37,99,235,0.4);cursor:pointer;">
-        Lihat Token
-    </button>
-  </div>
+  <button class="token-btn" onclick="showToken()">Lihat Token</button>
 
   <!-- FOOTER -->
   <div class="footer-app">
@@ -940,10 +952,11 @@
 
 <div id="tokenDisplay" style="display:none;"></div>
 
+<!-- ============================================ -->
+<!-- FCM HELPER - PATH SUDAH FIX                 -->
+<!-- ============================================ -->
 <script>
-// ============================================
 // KONFIGURASI FIREBASE
-// ============================================
 var firebaseConfig = {
   apiKey: "AIzaSyDgr_nHqvpMsiG4lBkYckzxRErkskXj_6E",
   authDomain: "laporanstartools-c18b2.firebaseapp.com",
@@ -955,20 +968,13 @@ var firebaseConfig = {
   measurementId: "G-L22M87LZY4"
 };
 
-// INISIALISASI - CEK APAKAH SUDAH ADA
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 
 var db = firebase.database();
 var messaging = null;
-
-// VAPID KEY
 var VAPID_KEY = "BMDeVPW5lXflflwgl2Aey_5GWsNVWyGRMSvvJ0LZ4pvS0Lt-zh3464ylJzY1ICTj-xNvZQ1JUhfCAWTc1NCxfxk";
-
-// ============================================
-// FUNGSI NOTIFIKASI
-// ============================================
 
 function getMessagingInstance() {
     if (!messaging) {
@@ -1056,11 +1062,9 @@ function forceGetToken() {
     }
 }
 
-// ============================================
-// REGISTRASI SERVICE WORKER
-// ============================================
+// REGISTRASI SERVICE WORKER - PATH SUDAH FIX
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+    navigator.serviceWorker.register('/demo-star-tools/firebase-messaging-sw.js')
         .then(function(registration) {
             console.log('Service Worker registrasi berhasil');
             getMessagingInstance();
@@ -1072,9 +1076,6 @@ if ('serviceWorker' in navigator) {
         });
 }
 
-// ============================================
-// AUTO START
-// ============================================
 window.addEventListener('load', function() {
     console.log('Inisialisasi FCM...');
     var hasNativeToken = localStorage.getItem('fcmToken') !== null;
@@ -1093,7 +1094,9 @@ window.addEventListener('load', function() {
         }, 2000);
     }
 });
+</script>
 
+<script>
 // ============================================
 // KODE ASLI INDEX.HTML (NAVIGASI, GRID, DLL)
 // ============================================
@@ -1148,7 +1151,6 @@ function trackBelajar(mapel) {
   localStorage.setItem("riwayatBelajar", JSON.stringify(data));
 }
 
-// ======================== PAGE NAVIGATION ========================
 function showPage(pageId) {
   document.querySelectorAll('.page').forEach(function(p) {
     p.classList.remove('active');
@@ -1168,7 +1170,6 @@ function goToMainPage() {
   showPage('pageMain');
 }
 
-// ======================== HOME GRID ========================
 const homeGrid = [
   { type: "subject", name: "Matematika", icon: "mtk", link: "matematika.html" },
   { type: "subject", name: "Ekonomi", icon: "ekonomi", link: "ekonomi.html" },
@@ -1204,7 +1205,6 @@ function renderHomeGrid() {
   });
 }
 
-// ======================== ALL SUBJECTS & FEATURES ========================
 const allSubjects = [
   { name: "Matematika", icon: "mtk", link: "matematika.html" },
   { name: "Ekonomi", icon: "ekonomi", link: "ekonomi.html" },
@@ -1300,7 +1300,7 @@ function showAllFeatures() {
   showPage('pageAllFeatures');
 }
 
-// ======================== BANNER ========================
+// BANNER
 let currentSlide = 0;
 const wrapper = document.getElementById('bannerWrapper');
 const banners = document.querySelectorAll('.banner');
@@ -1368,7 +1368,7 @@ if (banners.length) {
   startAutoSlide();
 }
 
-// ======================== SEARCH ========================
+// SEARCH
 document.getElementById('searchBox').addEventListener('input', function(e) {
   const q = e.target.value.toLowerCase().trim();
   const allItems = document.querySelectorAll('#featureGrid .feature-btn');
@@ -1378,12 +1378,12 @@ document.getElementById('searchBox').addEventListener('input', function(e) {
   });
 });
 
-// ======================== THEME ========================
+// THEME
 if (localStorage.getItem('theme') === 'dark') {
   document.body.classList.add('dark');
 }
 
-// ======================== AUTH & USERNAME ========================
+// AUTH
 function updateUsername(nama) {
   if (nama) {
     document.getElementById('welcomeText').innerText = 'Selamat Datang, ' + nama;
@@ -1430,18 +1430,18 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
 });
 
-// ======================== ACTIVE NAV ========================
+// ACTIVE NAV
 const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 document.querySelectorAll('.nav-item').forEach(item => {
   item.classList.toggle('active', item.dataset.page === currentPage);
 });
 
-// ======================== KEYBOARD ========================
+// KEYBOARD
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') closeSidebar();
 });
 
-// ======================== SEARCH TYPING ========================
+// SEARCH TYPING
 let i = 0, isDeleting = false, typingTimer = null;
 const placeholderText = "Cari mapel atau fitur...";
 
@@ -1464,7 +1464,6 @@ function startTyping() {
 }
 startTyping();
 
-// ======================== BANNER FIX ========================
 window.addEventListener('load', function() {
   if (wrapper) {
     wrapper.style.transform = 'translateX(0%)';
