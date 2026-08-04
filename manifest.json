@@ -1,0 +1,15 @@
+{
+  "name": "Star Tools",
+  "short_name": "Star Tools",
+  "start_url": "/demo-star-tools/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563EB",
+  "icons": [
+    {
+      "src": "logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    }
+  ]
+}
