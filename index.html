@@ -874,12 +874,6 @@
    </div>
   </div>
 
- <!-- Tombol Debug Token -->
-<div style="position:fixed;bottom:80px;right:10px;z-index:999;">
-    <button onclick="showToken()" style="background:#2563EB;color:white;border:none;padding:10px 15px;border-radius:30px;font-size:12px;box-shadow:0 4px 12px rgba(37,99,235,0.4);">
-        Lihat Token
-    </button>
-</div>
   <!-- FOOTER -->
   <div class="footer-app">
     <p>Star Platform | Star Tools 2026</p>
@@ -920,17 +914,19 @@
 <script src="fcm-helper.js"></script>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDgr_nHqvpMsiG4lBkYckzxRErkskXj_6E",
-  authDomain: "laporanstartools-c18b2.firebaseapp.com",
-  databaseURL: "https://laporanstartools-c18b2-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "laporanstartools-c18b2",
-};
-
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
+var db;
+if (firebase.apps.length) {
+    db = firebase.database();
+} else {
+    var config = {
+        apiKey: "AIzaSyDgr_nHqvpMsiG4lBkYckzxRErkskXj_6E",
+        authDomain: "laporanstartools-c18b2.firebaseapp.com",
+        databaseURL: "https://laporanstartools-c18b2-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "laporanstartools-c18b2",
+    };
+    firebase.initializeApp(config);
+    db = firebase.database();
 }
-const db = firebase.database();
 
 let currentUser = null;
 let isPremium = false;

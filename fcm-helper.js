@@ -1,5 +1,5 @@
 // KONFIGURASI FIREBASE
-const firebaseConfig = {
+var firebaseConfig = {
   apiKey: "AIzaSyDgr_nHqvpMsiG4lBkYckzxRErkskXj_6E",
   authDomain: "laporanstartools-c18b2.firebaseapp.com",
   databaseURL: "https://laporanstartools-c18b2-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -10,11 +10,27 @@ const firebaseConfig = {
   measurementId: "G-L22M87LZY4"
 };
 
-// INISIALISASI FIREBASE
-firebase.initializeApp(firebaseConfig);
-var messaging = firebase.messaging();
+// INISIALISASI - CEK APAKAH SUDAH ADA
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 
-// VAPID KEY - GANTI DENGAN PUNYA KAMU
+var messaging;
+
+// PASTIKAN FIREBASE SUDAH SIAP SEBELUM PAKAI MESSAGING
+function getMessagingInstance() {
+    if (!messaging) {
+        try {
+            messaging = firebase.messaging();
+            console.log('Messaging instance siap');
+        } catch (e) {
+            console.log('Gagal init messaging:', e);
+        }
+    }
+    return messaging;
+}
+
+// VAPID KEY
 var VAPID_KEY = "BMDeVPW5lXflflwgl2Aey_5GWsNVWyGRMSvvJ0LZ4pvS0Lt-zh3464ylJzY1ICTj-xNvZQ1JUhfCAWTc1NCxfxk";
 
 // MINTA IZIN NOTIFIKASI
@@ -32,7 +48,13 @@ function requestPermission() {
 
 // AMBIL FCM TOKEN
 function getToken() {
-    messaging.getToken({ vapidKey: VAPID_KEY })
+    var msg = getMessagingInstance();
+    if (!msg) {
+        console.log('Messaging tidak tersedia');
+        return;
+    }
+    
+    msg.getToken({ vapidKey: VAPID_KEY })
         .then(function(token) {
             console.log('FCM Token:', token);
             localStorage.setItem('fcmToken', token);
@@ -45,12 +67,17 @@ function getToken() {
 }
 
 // HANDLE NOTIFIKASI SAAT FOREGROUND
-messaging.onMessage(function(payload) {
-    console.log('Notifikasi diterima:', payload);
-    if (payload.notification) {
-        alert(payload.notification.title + '\n\n' + payload.notification.body);
-    }
-});
+function setupOnMessage() {
+    var msg = getMessagingInstance();
+    if (!msg) return;
+    
+    msg.onMessage(function(payload) {
+        console.log('Notifikasi diterima:', payload);
+        if (payload.notification) {
+            alert(payload.notification.title + '\n\n' + payload.notification.body);
+        }
+    });
+}
 
 // FUNGSI AMBIL TOKEN DARI STORAGE
 function getStoredToken() {
@@ -70,6 +97,9 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/firebase-messaging-sw.js')
         .then(function(registration) {
             console.log('Service Worker registrasi berhasil');
+            // Setelah SW berhasil, baru init FCM
+            getMessagingInstance();
+            setupOnMessage();
         })
         .catch(function(error) {
             console.log('Service Worker registrasi gagal:', error);
@@ -86,7 +116,10 @@ window.addEventListener('load', function() {
         if (display) display.innerText = localStorage.getItem('fcmToken');
     } else {
         console.log('Mode Browser: Minta izin notifikasi...');
-        requestPermission();
+        // TUNGGU BEBERAPA DETIK BIAR FIREBASE SIAP
+        setTimeout(function() {
+            requestPermission();
+        }, 1000);
     }
 });
 
