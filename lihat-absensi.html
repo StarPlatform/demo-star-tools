@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Lihat Absensi - Star Tools</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #F1F5F9;
+    color: #0F172A;
+  }
+  body.dark { background:#0B1120; color:#F1F5F9; }
+
+  .app-container {
+    max-width: 680px;
+    margin: 0 auto;
+    background: #F1F5F9;
+    min-height: 100vh;
+  }
+  body.dark .app-container { background:#0B1120; }
+
+  .header-brand {
+    background: linear-gradient(135deg, #2563EB, #3B82F6);
+    padding: 22px 20px 26px;
+    color: #fff;
+    text-align: center;
+  }
+  .header-brand .logo-mini {
+    display:inline-flex; align-items:center; gap:8px; font-weight:800; font-size:13px;
+    background:rgba(255,255,255,0.15); padding:5px 12px; border-radius:20px; margin-bottom:14px;
+  }
+  .header-brand h1 { font-size:19px; font-weight:800; margin-bottom:2px; }
+  .header-brand p { font-size:12.5px; opacity:0.9; }
+
+  .live-badge {
+    display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.18);
+    padding:5px 12px; border-radius:20px; font-size:11px; font-weight:700; margin-top:12px;
+  }
+  .live-dot { width:7px; height:7px; border-radius:50%; background:#4ADE80; animation:pulseDot 1.5s ease-in-out infinite; }
+  @keyframes pulseDot { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+  .container {
+    background:#FFFFFF;
+    margin:14px 16px;
+    border-radius:16px;
+    padding:16px;
+    border:1px solid #E2E8F0;
+  }
+  body.dark .container { background:#111827; border-color:#1E293B; }
+
+  .select-box {
+    width:100%; padding:11px 14px; border-radius:12px; border:1px solid #E2E8F0;
+    background:#F8FAFE; font-size:14px; color:#0F172A; font-family:inherit;
+  }
+  body.dark .select-box { background:#1E293B; border-color:#334155; color:#F1F5F9; }
+
+  .legend-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
+  .legend-item { display:flex; align-items:center; gap:6px; font-size:11.5px; color:#64748B; }
+  body.dark .legend-item { color:#94A3B8; }
+  .legend-dot { width:10px; height:10px; border-radius:4px; }
+
+  .btn {
+    padding:11px 14px; border-radius:12px; border:none; font-size:13px;
+    font-weight:700; cursor:pointer; font-family:inherit;
+  }
+  .btn-outline { background:transparent; border:1px solid #E2E8F0; color:#0F172A; width:100%; }
+  body.dark .btn-outline { border-color:#334155; color:#F1F5F9; }
+  .btn-outline:active { transform:scale(0.98); }
+
+  .table-wrap {
+    margin: 0 16px 14px;
+    border-radius: 16px;
+    border: 1px solid #E2E8F0;
+    overflow: auto;
+    background: #FFFFFF;
+    max-height: 65vh;
+  }
+  body.dark .table-wrap { background:#111827; border-color:#1E293B; }
+
+  table.grid-table { border-collapse:collapse; font-size:12px; min-width:100%; }
+  .grid-table th, .grid-table td {
+    border-right:1px solid #E2E8F0; border-bottom:1px solid #E2E8F0; padding:0;
+    text-align:center; white-space:nowrap;
+  }
+  body.dark .grid-table th, body.dark .grid-table td { border-color:#1E293B; }
+
+  .grid-table thead th {
+    background:#F1F5F9; color:#334155; font-weight:700; padding:9px 5px;
+    position:sticky; top:0; z-index:3;
+  }
+  body.dark .grid-table thead th { background:#1E293B; color:#E2E8F0; }
+
+  .col-nama { width:130px; min-width:130px; text-align:left !important; }
+  .col-tgl { width:30px; min-width:30px; }
+
+  .sticky-col { position:sticky; left:0; background:#FFFFFF; z-index:2; }
+  body.dark .sticky-col { background:#111827; }
+  thead .sticky-col { z-index:4; }
+
+  .cell-nama { padding:9px 8px; font-weight:600; }
+
+  .cell-status { padding:9px 4px; font-weight:800; color:#CBD5E1; }
+  body.dark .cell-status { color:#334155; }
+  .cell-status.hadir { color:#059669; background:#F0FDF4; }
+  .cell-status.izin { color:#D97706; background:#FFFBEB; }
+  .cell-status.sakit { color:#B45309; background:#FFFBEB; }
+  .cell-status.alpa { color:#DC2626; background:#FEF2F2; }
+  body.dark .cell-status.hadir { background:#0F2A1B; }
+  body.dark .cell-status.izin, body.dark .cell-status.sakit { background:#2A1E0A; }
+  body.dark .cell-status.alpa { background:#2A0F0F; }
+
+  .empty-state, .error-state { text-align:center; padding:40px 20px; color:#94A3B8; font-size:13px; }
+  .error-state svg { width:40px; height:40px; stroke:#DC2626; margin-bottom:12px; }
+
+  .footer-note { text-align:center; padding:20px; color:#94A3B8; font-size:11px; line-height:1.6; }
+
+  .loading-spin {
+    width:28px; height:28px; border:3px solid #E2E8F0; border-top-color:#2563EB;
+    border-radius:50%; animation:spin 0.7s linear infinite; margin:30px auto;
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  @media (min-width: 900px) {
+    body {
+      background: linear-gradient(160deg, #EFF6FF 0%, #F8FAFE 60%);
+      min-height: 100vh;
+    }
+    body.dark {
+      background: linear-gradient(160deg, #0B1120 0%, #111827 60%);
+    }
+    .app-container {
+      max-width: 900px;
+      margin: 36px auto;
+      min-height: auto;
+      background: #F1F5F9;
+      border-radius: 20px;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.12);
+      overflow: hidden;
+      padding-bottom: 24px;
+    }
+    body.dark .app-container {
+      background: #0B1120;
+      border-color: #1E293B;
+      box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+    .header-brand { border-radius: 20px 20px 0 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <div class="header-brand">
+    <div class="logo-mini">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Star Tools
+    </div>
+    <h1 id="namaKelasHeader">Memuat...</h1>
+    <p id="jumlahMuridHeader">-</p>
+    <div class="live-badge"><span class="live-dot"></span> Update Real-Time</div>
+  </div>
+
+  <div id="kontenUtama">
+    <div class="loading-spin"></div>
+  </div>
+
+  <div class="footer-note">
+    Halaman ini hanya bisa dilihat, tidak bisa diubah.<br>
+    Star Platform | Star Tools 2026
+  </div>
+</div>
+
+<script>
+var firebaseConfig = {
+  apiKey: "AIzaSyDgr_nHqvpMsiG4lBkYckzxRErkskXj_6E",
+  authDomain: "laporanstartools-c18b2.firebaseapp.com",
+  databaseURL: "https://laporanstartools-c18b2-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "laporanstartools-c18b2",
+};
+if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+var db = firebase.database();
+
+function getParam(key) {
+  return new URLSearchParams(window.location.search).get(key);
+}
+
+var kelasId = getParam("kelas");
+var namaKelasAktif = "";
+
+var BULAN_LIST = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+var bulanDipilih = new Date().toLocaleString("id-ID", { month: "long" });
+var daftarMuridAktif = [];
+var absenListeners = {};
+
+function daysInMonth(namaBulan) {
+  var idx = BULAN_LIST.indexOf(namaBulan);
+  var now = new Date();
+  return new Date(now.getFullYear(), idx + 1, 0).getDate();
+}
+
+function renderError(msg) {
+  document.getElementById("namaKelasHeader").innerText = "Tidak Ditemukan";
+  document.getElementById("jumlahMuridHeader").innerText = "-";
+  document.getElementById("kontenUtama").innerHTML =
+    '<div class="error-state">' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
+    '<div>' + msg + '</div></div>';
+}
+
+function renderKerangka() {
+  var container = document.getElementById("kontenUtama");
+  var totalHari = daysInMonth(bulanDipilih);
+
+  var html = '<div class="container">';
+  html += '<select class="select-box" id="pilihBulanView" onchange="gantiBulan(this.value)">';
+  BULAN_LIST.forEach(function(b) {
+    html += '<option value="' + b + '"' + (b === bulanDipilih ? ' selected' : '') + '>' + b + '</option>';
+  });
+  html += '</select>';
+
+  html += '<div class="legend-row">' +
+    '<div class="legend-item"><span class="legend-dot" style="background:#059669;"></span>Hadir (H)</div>' +
+    '<div class="legend-item"><span class="legend-dot" style="background:#D97706;"></span>Izin (I)</div>' +
+    '<div class="legend-item"><span class="legend-dot" style="background:#B45309;"></span>Sakit (S)</div>' +
+    '<div class="legend-item"><span class="legend-dot" style="background:#DC2626;"></span>Alpa (A)</div>' +
+  '</div>';
+  html += '</div>';
+
+  html += '<div class="table-wrap"><table class="grid-table" id="tabelGrid">';
+  html += '<thead><tr><th class="sticky-col col-nama">Nama</th>';
+  for (var i = 1; i <= totalHari; i++) {
+    html += '<th class="col-tgl">' + i + '</th>';
+  }
+  html += '</tr></thead><tbody id="tabelGridBody"></tbody></table></div>';
+
+  html += '<div class="container"><button class="btn btn-outline" onclick="exportGridPDF()">Export ke PDF</button></div>';
+
+  container.innerHTML = html;
+}
+
+function renderBaris(totalHari) {
+  var tbody = document.getElementById("tabelGridBody");
+  if (!tbody) return;
+
+  if (daftarMuridAktif.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="' + (totalHari + 1) + '" class="empty-state">Belum ada murid di kelas ini.</td></tr>';
+    return;
+  }
+
+  var html = "";
+  daftarMuridAktif.forEach(function(nama) {
+    var safe = nama.replace(/[^a-zA-Z0-9]/g, "_");
+    html += '<tr><td class="sticky-col cell-nama">' + nama + '</td>';
+    for (var i = 1; i <= totalHari; i++) {
+      html += '<td class="cell-status" id="cell-' + safe + '-' + i + '">-</td>';
+    }
+    html += '</tr>';
+  });
+  tbody.innerHTML = html;
+}
+
+function pasangListenerSemuaMurid() {
+  Object.keys(absenListeners).forEach(function(nama) {
+    if (absenListeners[nama]) absenListeners[nama].off();
+  });
+  absenListeners = {};
+
+  daftarMuridAktif.forEach(function(nama) {
+    var safe = nama.replace(/[^a-zA-Z0-9]/g, "_");
+    var ref = db.ref("kelas/" + kelasId + "/siswa/" + nama + "/absen/" + bulanDipilih);
+    absenListeners[nama] = ref;
+
+    ref.on("value", function(snap) {
+      var data = snap.val() || {};
+      var totalHari = daysInMonth(bulanDipilih);
+      for (var i = 1; i <= totalHari; i++) {
+        var el = document.getElementById("cell-" + safe + "-" + i);
+        if (!el) continue;
+        var rec = data[i];
+        var status = rec ? rec.status : null;
+
+        el.className = "cell-status";
+        if (status === "Hadir") { el.classList.add("hadir"); el.innerText = "H"; }
+        else if (status === "Izin") { el.classList.add("izin"); el.innerText = "I"; }
+        else if (status === "Sakit") { el.classList.add("sakit"); el.innerText = "S"; }
+        else if (status === "Alpa") { el.classList.add("alpa"); el.innerText = "A"; }
+        else { el.innerText = "-"; }
+      }
+    });
+  });
+}
+
+function gantiBulan(bulan) {
+  bulanDipilih = bulan;
+  var totalHari = daysInMonth(bulanDipilih);
+  renderBaris(totalHari);
+  pasangListenerSemuaMurid();
+}
+
+function exportGridPDF() {
+  var jsPDFLib = window.jspdf && window.jspdf.jsPDF;
+  if (!jsPDFLib) {
+    alert("Library PDF belum siap, coba lagi sebentar.");
+    return;
+  }
+
+  var totalHari = daysInMonth(bulanDipilih);
+  var head = [["Nama"].concat(Array.from({ length: totalHari }, function(_, i) { return String(i + 1); }))];
+  var body = daftarMuridAktif.map(function(nama) {
+    var safe = nama.replace(/[^a-zA-Z0-9]/g, "_");
+    var row = [nama];
+    for (var i = 1; i <= totalHari; i++) {
+      var el = document.getElementById("cell-" + safe + "-" + i);
+      row.push(el ? el.innerText : "-");
+    }
+    return row;
+  });
+
+  var doc = new jsPDFLib({ orientation: "landscape" });
+  doc.setFontSize(13);
+  doc.text("Absensi Kelas " + namaKelasAktif + " — " + bulanDipilih, 14, 15);
+
+  doc.autoTable({
+    startY: 21,
+    head: head,
+    body: body,
+    styles: { fontSize: 7, halign: "center" },
+    columnStyles: { 0: { halign: "left", fontStyle: "bold" } },
+    headStyles: { fillColor: [37, 99, 235] }
+  });
+
+  doc.save("Absensi-" + namaKelasAktif.replace(/\s+/g, "_") + "-" + bulanDipilih + ".pdf");
+}
+
+window.addEventListener("DOMContentLoaded", function() {
+  if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark');
+  }
+
+  if (!kelasId) {
+    renderError("Link tidak valid. Pastikan link yang dibuka lengkap dan benar.");
+    return;
+  }
+
+  db.ref("kelas/" + kelasId).once("value").then(function(snap) {
+    if (!snap.exists()) {
+      renderError("Kelas tidak ditemukan.");
+      return;
+    }
+    var kelasData = snap.val();
+    namaKelasAktif = kelasData.nama || "";
+    daftarMuridAktif = kelasData.siswa ? Object.keys(kelasData.siswa) : [];
+
+    document.getElementById("namaKelasHeader").innerText = "Kelas " + namaKelasAktif;
+    document.getElementById("jumlahMuridHeader").innerText = daftarMuridAktif.length + " murid";
+
+    renderKerangka();
+    renderBaris(daysInMonth(bulanDipilih));
+    pasangListenerSemuaMurid();
+  }).catch(function() {
+    renderError("Gagal memuat data. Coba periksa koneksi internet kamu.");
+  });
+});
+</script>
+</body>
+</html>
