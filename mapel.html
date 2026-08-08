@@ -912,6 +912,64 @@
     50% { opacity: 0.3; transform: scale(0.7); }
   }
 
+  #qrWaitScreen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 20px;
+  }
+
+  .qr-wait-card {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+
+  .qr-wait-card h2 {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .qr-wait-desc {
+    font-size: 13px;
+    color: #64748B;
+    line-height: 1.6;
+    margin-bottom: 22px;
+  }
+  body.dark .qr-wait-desc { color: #94A3B8; }
+
+  .qr-wait-box {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    background: #fff;
+    border-radius: 20px;
+    margin: 0 auto 18px;
+    width: fit-content;
+    box-shadow: 0 8px 24px -8px rgba(15, 23, 42, 0.15);
+  }
+
+  .qr-wait-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #2563EB;
+    font-weight: 700;
+    margin-bottom: 24px;
+  }
+
+  .qr-wait-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #2563EB;
+    animation: pulseVerifDot 1.2s ease-in-out infinite;
+  }
+
   .text-center {
     text-align: center;
   }
@@ -2245,20 +2303,9 @@
 
     <hr style="border:1px solid #E2E8F0; margin:16px 0;">
 
-    <div id="verifGuruStep0" class="hidden" style="text-align:center;">
-      <h3 id="verifGuruSapaan0">Halo, Guru!</h3>
-      <p style="font-size:12px; color:#94A3B8; margin-bottom:14px;">Tunjukkan QR ini ke admin/resepsionis untuk discan di Absensi Guru. Setelah discan, sesi hari ini otomatis terbuka.</p>
-      <div id="qrVerifContainer" style="display:flex; justify-content:center; padding:14px; background:#fff; border-radius:16px; margin:0 auto 14px; width:fit-content;"></div>
-      <div style="display:flex; align-items:center; justify-content:center; gap:8px; font-size:12.5px; color:#2563EB; font-weight:700; margin-bottom:14px;">
-        <span style="width:8px; height:8px; border-radius:50%; background:#2563EB; animation:pulseVerifDot 1.2s ease-in-out infinite;"></span>
-        Menunggu discan...
-      </div>
-      <button class="btn btn-outline" onclick="batalVerifGuru()">Batal, Verifikasi Ulang</button>
-    </div>
-
     <div id="verifGuruStep1">
-      <h3>Masuk sebagai Guru Terdaftar (via Sekolah)</h3>
-      <p style="font-size:12px; color:#94A3B8; margin-bottom:10px;">Kalau sekolah kamu pakai Absensi Guru, verifikasi di sini — tanpa perlu ID Kelas & password mapel manual.</p>
+      <h3>Masuk sebagai Guru Terdaftar</h3>
+      <p style="font-size:12px; color:#94A3B8; margin-bottom:10px;">Kalau sekolah kamu pakai Absensi Guru, verifikasi di sini tanpa perlu ID Kelas & password mapel manual.</p>
 
       <input id="verifIdSekolah" class="input" placeholder="ID Sekolah (contoh: SKL-ABC123)">
       <input id="verifNamaGuru" class="input" placeholder="Nama Guru">
@@ -2280,8 +2327,24 @@
       <p style="font-size:13px; font-weight:600; color:#64748B; margin-bottom:8px; text-align:center;">Sesi mapel yang pernah anda masukkan</p>
       <div id="savedClassesList"></div>
     </div>
+  </div>
 
-    <button class="btn btn-outline" onclick="goTo('pendukung.html')" style="margin-top:10px;">Kembali</button>
+  <!-- ===== LAYAR PENUH: MENUNGGU SCAN QR GURU ===== -->
+  <div id="qrWaitScreen" style="display:none;">
+    <div class="qr-wait-card">
+      <h2 id="verifGuruSapaan0">Halo, Guru!</h2>
+      <p class="qr-wait-desc">
+        QR ini adalah kode presensi harian kamu. Tunjukkan ke admin/resepsionis sekolah untuk discan
+        di halaman Absensi Guru. Setelah discan, sesi mengajar hari ini otomatis terbuka dan kamu
+        bisa langsung memilih kelas.
+      </p>
+      <div id="qrVerifContainer" class="qr-wait-box"></div>
+      <div class="qr-wait-status">
+        <span class="qr-wait-dot"></span>
+        Menunggu discan...
+      </div>
+      <button class="btn btn-outline" onclick="batalVerifGuru()">Berhenti / Batalkan Verifikasi</button>
+    </div>
   </div>
 
   <div id="absenBox" style="display:none;">
@@ -2726,6 +2789,28 @@ function quickLogin(id, nama) {
       }
 
       const data = snap.val();
+
+      if (data.viaAbsensiGuru) {
+        const savedVerif = localStorage.getItem("verifDataAktif");
+        if (!savedVerif) {
+          showModal("warning", "Perlu Verifikasi Ulang", "Sesi ini terhubung ke Absensi Guru. Silakan verifikasi ulang lewat form di atas.");
+          return;
+        }
+        verifDataAktif = JSON.parse(savedVerif);
+
+        refAbsensiGuruHariIni(verifDataAktif.idSekolah, verifDataAktif.guruId).once("value").then(function(scanSnap) {
+          const scanData = scanSnap.val();
+          if (scanData && scanData.status === "Hadir") {
+            aktifkanSesiMapel(kelasId, data.kelasNama, id, data.nama, data.guru);
+            localStorage.setItem("verifKelasTanggal", todayKeyGuru());
+            showModal("success", "Selamat Datang!", "Login berhasil ke sesi mapel " + data.nama);
+          } else {
+            tampilkanQrTungguScan();
+          }
+        });
+        return;
+      }
+
       aktifkanSesiMapel(kelasId, data.kelasNama, id, data.nama, data.guru);
       showModal("success", "Selamat Datang!", "Login berhasil ke sesi mapel " + data.nama);
     });
@@ -2772,7 +2857,7 @@ document.addEventListener("DOMContentLoaded", function() {
       localStorage.removeItem("mapelAktif");
       localStorage.removeItem("guruAktif");
 
-      db.ref("sekolah/" + verifDataAktif.idSekolah + "/absensiGuru/" + todayKeyGuru() + "/" + verifDataAktif.guruId).once("value").then(function(snap) {
+      refAbsensiGuruHariIni(verifDataAktif.idSekolah, verifDataAktif.guruId).once("value").then(function(snap) {
         const data = snap.val();
         if (data && data.status === "Hadir") {
           tampilkanPilihanKelasVerif();
@@ -2803,7 +2888,9 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function resumeSesiMapelAktif() {
-  document.getElementById("setupForm").style.display = "none";
+  document.getElementById("welcomeBox").classList.add("hidden");
+  document.getElementById("setupForm").classList.add("hidden");
+  document.getElementById("qrWaitScreen").style.display = "none";
   document.getElementById("absenBox").style.display = "block";
 
   document.getElementById("displayKelasId").innerText = mapelIdAktif;
@@ -3108,6 +3195,13 @@ function todayKeyGuru() {
   return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
 }
 
+function refAbsensiGuruHariIni(idSekolah, guruId) {
+  const d = new Date();
+  const keyBulan = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+  const tgl = d.getDate();
+  return db.ref("sekolah/" + idSekolah + "/absensiGuru/" + keyBulan + "/" + guruId + "/" + tgl);
+}
+
 function verifikasiGuruSekolah() {
   const idSekolah = document.getElementById("verifIdSekolah").value.trim().toUpperCase();
   const namaGuru = document.getElementById("verifNamaGuru").value.trim();
@@ -3159,9 +3253,11 @@ function verifikasiGuruSekolah() {
 function tampilkanQrTungguScan() {
   if (!verifDataAktif) return;
 
-  document.getElementById("verifGuruStep1").classList.add("hidden");
-  document.getElementById("verifGuruStep2").classList.add("hidden");
-  document.getElementById("verifGuruStep0").classList.remove("hidden");
+  document.getElementById("welcomeBox").classList.add("hidden");
+  document.getElementById("setupForm").classList.add("hidden");
+  document.getElementById("absenBox").style.display = "none";
+  document.getElementById("qrWaitScreen").style.display = "flex";
+
   document.getElementById("verifGuruSapaan0").innerText = "Halo, " + verifDataAktif.namaGuru + "!";
 
   const qrContainer = document.getElementById("qrVerifContainer");
@@ -3174,7 +3270,7 @@ function tampilkanQrTungguScan() {
   });
 
   if (verifScanListenerRef) verifScanListenerRef.off();
-  verifScanListenerRef = db.ref("sekolah/" + verifDataAktif.idSekolah + "/absensiGuru/" + todayKeyGuru() + "/" + verifDataAktif.guruId);
+  verifScanListenerRef = refAbsensiGuruHariIni(verifDataAktif.idSekolah, verifDataAktif.guruId);
   verifScanListenerRef.on("value", function(snap) {
     const data = snap.val();
     if (data && data.status === "Hadir") {
@@ -3217,7 +3313,9 @@ function tampilkanPilihanKelasVerif() {
         listEl.appendChild(row);
       });
 
-      document.getElementById("verifGuruStep0").classList.add("hidden");
+      document.getElementById("qrWaitScreen").style.display = "none";
+      document.getElementById("welcomeBox").classList.remove("hidden");
+      document.getElementById("setupForm").classList.remove("hidden");
       document.getElementById("verifGuruStep1").classList.add("hidden");
       document.getElementById("verifGuruStep2").classList.remove("hidden");
     });
@@ -3296,7 +3394,10 @@ function batalVerifGuru() {
   document.getElementById("verifNamaGuru").value = "";
   document.getElementById("verifNamaMapel").value = "";
   document.getElementById("verifKelasList").innerHTML = "";
-  document.getElementById("verifGuruStep0").classList.add("hidden");
+
+  document.getElementById("qrWaitScreen").style.display = "none";
+  document.getElementById("welcomeBox").classList.remove("hidden");
+  document.getElementById("setupForm").classList.remove("hidden");
   document.getElementById("verifGuruStep2").classList.add("hidden");
   document.getElementById("verifGuruStep1").classList.remove("hidden");
 }
