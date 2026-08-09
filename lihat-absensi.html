@@ -231,7 +231,7 @@
   .legend-dot.belum { background: #CBD5E1; }
   body.dark .legend-dot.belum { background: #334155; }
 
-  /* ===== TABLE BESAR ===== */
+  /* ===== TABLE BESAR DENGAN WARNA TERANG ===== */
   .table-wrap {
     border-radius: 14px;
     border: 2px solid #E2E8F0;
@@ -278,20 +278,20 @@
   }
 
   .grid-table thead th {
-    background: #F8FAFE;
-    color: #1E293B;
+    background: #E2E8F0;
+    color: #0F172A;
     font-weight: 800;
     padding: 14px 6px;
     position: sticky;
     top: 0;
     z-index: 5;
     font-size: 15px;
-    border-bottom: 3px solid #E2E8F0;
+    border-bottom: 3px solid #CBD5E1;
     min-height: 50px;
   }
   body.dark .grid-table thead th {
     background: #1E293B;
-    color: #E2E8F0;
+    color: #F1F5F9;
     border-bottom-color: #334155;
   }
 
@@ -307,7 +307,7 @@
     max-width: 44px;
   }
   .col-tgl-weekend {
-    background: #F8FAFE;
+    background: #F1F5F9;
     color: #64748B;
   }
   body.dark .col-tgl-weekend { background: #1A1F2E; color: #94A3B8; }
@@ -327,9 +327,14 @@
     font-size: 17px;
     border-right: 3px solid #E2E8F0 !important;
     min-height: 52px;
+    background: #FFFFFF;
   }
-  body.dark .cell-nama { border-right-color: #334155 !important; }
+  body.dark .cell-nama { 
+    border-right-color: #334155 !important;
+    background: #111827;
+  }
 
+  /* ===== STATUS DENGAN WARNA TERANG & KONTRASTING ===== */
   .cell-status {
     padding: 14px 2px;
     font-weight: 800;
@@ -339,42 +344,64 @@
     color: #CBD5E1;
   }
   body.dark .cell-status { color: #334155; }
+  
+  /* HADIR - Hijau terang */
   .cell-status.hadir {
-    color: #059669;
-    background: #ECFDF5;
-  }
-  .cell-status.izin {
-    color: #D97706;
-    background: #FFFBEB;
-  }
-  .cell-status.sakit {
-    color: #B45309;
-    background: #FFFBEB;
-  }
-  .cell-status.alpa {
-    color: #DC2626;
-    background: #FEF2F2;
+    color: #065F46;
+    background: #D1FAE5;
+    border-bottom: 3px solid #059669;
   }
   body.dark .cell-status.hadir {
-    background: #0A2A1A;
-    color: #34D399;
+    color: #6EE7B7;
+    background: #064E3B;
+    border-bottom: 3px solid #34D399;
+  }
+  
+  /* IZIN - Kuning terang */
+  .cell-status.izin {
+    color: #92400E;
+    background: #FEF3C7;
+    border-bottom: 3px solid #D97706;
   }
   body.dark .cell-status.izin {
-    background: #2A1F0A;
-    color: #FBBF24;
+    color: #FCD34D;
+    background: #78350F;
+    border-bottom: 3px solid #FBBF24;
+  }
+  
+  /* SAKIT - Oranye terang */
+  .cell-status.sakit {
+    color: #92400E;
+    background: #FDE68A;
+    border-bottom: 3px solid #B45309;
   }
   body.dark .cell-status.sakit {
-    background: #2A1F0A;
-    color: #F59E0B;
+    color: #FBBF24;
+    background: #78350F;
+    border-bottom: 3px solid #F59E0B;
+  }
+  
+  /* ALPA - Merah terang */
+  .cell-status.alpa {
+    color: #991B1B;
+    background: #FECACA;
+    border-bottom: 3px solid #DC2626;
   }
   body.dark .cell-status.alpa {
-    background: #2A0F0F;
-    color: #F87171;
+    color: #FCA5A5;
+    background: #7F1D1D;
+    border-bottom: 3px solid #F87171;
   }
+  
+  /* BELUM - Abu-abu */
   .cell-status.belum {
-    color: #CBD5E1;
+    color: #64748B;
+    background: #F1F5F9;
   }
-  body.dark .cell-status.belum { color: #334155; }
+  body.dark .cell-status.belum {
+    color: #64748B;
+    background: #1E293B;
+  }
 
   /* ===== BUTTON ===== */
   .btn-group {
@@ -640,9 +667,9 @@
       <thead>
         <tr>
           <th class="sticky-col col-nama">Nama</th>
-          <tbody id="tabelGridBody"></tbody>
         </tr>
       </thead>
+      <tbody id="tabelGridBody"></tbody>
     </table>
   </div>
 
