@@ -17,46 +17,26 @@
     font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     background: #F1F5F9;
     color: #0F172A;
-    font-size: 18px;
+    font-size: 20px;
   }
   body.dark { background:#0B1120; color:#F1F5F9; }
 
   .app-container {
-    max-width: 860px;
+    max-width: 900px;
     margin: 0 auto;
     background: #F1F5F9;
     min-height: 100vh;
   }
   body.dark .app-container { background:#0B1120; }
 
-  /* ===== HEADER BESAR ===== */
+  /* ===== HEADER ===== */
   .header-brand {
     background: linear-gradient(145deg, #1D4ED8, #2563EB, #3B82F6);
-    padding: 36px 24px 40px;
+    padding: 32px 24px 36px;
     color: #fff;
     text-align: center;
     position: relative;
     overflow: hidden;
-  }
-  .header-brand::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -15%;
-    width: 350px;
-    height: 350px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.06);
-  }
-  .header-brand::after {
-    content: '';
-    position: absolute;
-    bottom: -35%;
-    left: -10%;
-    width: 280px;
-    height: 280px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.04);
   }
 
   .logo-mini {
@@ -64,29 +44,28 @@
     align-items: center;
     gap: 10px;
     font-weight: 800;
-    font-size: 16px;
+    font-size: 15px;
     letter-spacing: 0.5px;
     background: rgba(255,255,255,0.15);
-    padding: 8px 20px;
+    padding: 6px 18px;
     border-radius: 40px;
-    margin-bottom: 20px;
-    backdrop-filter: blur(4px);
+    margin-bottom: 16px;
     position: relative;
     z-index: 1;
   }
-  .logo-mini svg { width: 20px; height: 20px; }
+  .logo-mini svg { width: 18px; height: 18px; }
 
   .header-brand h1 {
-    font-size: 34px;
+    font-size: 32px;
     font-weight: 800;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     letter-spacing: -0.5px;
     position: relative;
     z-index: 1;
     word-break: break-word;
   }
   .header-brand .sub-info {
-    font-size: 18px;
+    font-size: 17px;
     opacity: 0.9;
     font-weight: 400;
     position: relative;
@@ -94,59 +73,58 @@
   }
   .header-brand .sub-info span {
     display: inline-block;
-    background: rgba(255,255,255,0.15);
-    padding: 4px 16px;
+    background: rgba(255,255,255,0.12);
+    padding: 3px 14px;
     border-radius: 30px;
-    margin: 0 4px;
+    margin: 0 3px;
   }
 
   .live-badge {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: rgba(255,255,255,0.15);
-    padding: 8px 20px;
+    background: rgba(255,255,255,0.12);
+    padding: 6px 18px;
     border-radius: 40px;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
-    margin-top: 18px;
-    backdrop-filter: blur(4px);
+    margin-top: 14px;
     position: relative;
     z-index: 1;
   }
   .live-dot {
-    width: 10px;
-    height: 10px;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
     background: #4ADE80;
     animation: pulseDot 1.5s ease-in-out infinite;
   }
   @keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.3;transform:scale(0.8);} }
 
-  /* ===== STATS BAR BESAR ===== */
+  /* ===== STATS BAR ===== */
   .stats-bar {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 10px;
-    margin: -18px 16px 14px;
+    margin: -16px 16px 14px;
     position: relative;
     z-index: 2;
   }
   .stat-card {
     background: #FFFFFF;
-    border-radius: 16px;
-    padding: 16px 8px;
+    border-radius: 14px;
+    padding: 14px 6px;
     border: 2px solid #E2E8F0;
     text-align: center;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
   }
   body.dark .stat-card {
     background: #111827;
     border-color: #1E293B;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
   }
   .stat-card .num {
-    font-size: 32px;
+    font-size: 30px;
     font-weight: 800;
     color: #2563EB;
     line-height: 1.2;
@@ -155,7 +133,7 @@
   .stat-card .label {
     font-size: 14px;
     color: #64748B;
-    margin-top: 4px;
+    margin-top: 3px;
     font-weight: 600;
   }
   body.dark .stat-card .label { color: #94A3B8; }
@@ -174,8 +152,8 @@
   .container {
     background: #FFFFFF;
     margin: 0 16px 14px;
-    border-radius: 18px;
-    padding: 20px;
+    border-radius: 16px;
+    padding: 18px 18px;
     border: 2px solid #E2E8F0;
   }
   body.dark .container {
@@ -185,12 +163,12 @@
 
   .filter-row {
     display: flex;
-    gap: 14px;
+    gap: 12px;
     align-items: center;
     flex-wrap: wrap;
   }
   .filter-row label {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 700;
     color: #0F172A;
   }
@@ -198,12 +176,12 @@
 
   .select-box {
     flex: 1;
-    min-width: 160px;
-    padding: 14px 18px;
-    border-radius: 14px;
+    min-width: 150px;
+    padding: 13px 16px;
+    border-radius: 12px;
     border: 2px solid #E2E8F0;
     background: #F8FAFE;
-    font-size: 18px;
+    font-size: 17px;
     color: #0F172A;
     font-family: inherit;
     cursor: pointer;
@@ -218,11 +196,11 @@
   .search-input {
     flex: 1.5;
     min-width: 140px;
-    padding: 14px 18px;
-    border-radius: 14px;
+    padding: 13px 16px;
+    border-radius: 12px;
     border: 2px solid #E2E8F0;
     background: #F8FAFE;
-    font-size: 18px;
+    font-size: 17px;
     color: #0F172A;
     font-family: inherit;
     outline: none;
@@ -233,58 +211,46 @@
     border-color: #334155;
     color: #F1F5F9;
   }
-  .search-input::placeholder { color: #94A3B8; font-size: 16px; }
+  .search-input::placeholder { color: #94A3B8; font-size: 15px; }
   body.dark .search-input::placeholder { color: #64748B; }
   .search-input:focus { border-color: #2563EB; }
 
-  /* ===== LEGENDA BESAR ===== */
+  /* ===== LEGENDA ===== */
   .legend-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
-    margin-top: 16px;
-    padding-top: 16px;
+    gap: 14px;
+    margin-top: 14px;
+    padding-top: 14px;
     border-top: 2px solid #E2E8F0;
   }
   body.dark .legend-row { border-top-color: #1E293B; }
   .legend-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 16px;
+    gap: 8px;
+    font-size: 15px;
     font-weight: 600;
     color: #0F172A;
   }
   body.dark .legend-item { color: #F1F5F9; }
   .legend-dot {
-    width: 22px;
-    height: 22px;
-    border-radius: 6px;
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
     flex-shrink: 0;
-    border: 1px solid rgba(0,0,0,0.05);
   }
-  body.dark .legend-dot { border-color: rgba(255,255,255,0.05); }
   .legend-dot.hadir { background: #059669; }
   .legend-dot.izin { background: #D97706; }
   .legend-dot.sakit { background: #B45309; }
   .legend-dot.alpa { background: #DC2626; }
   .legend-dot.belum { background: #CBD5E1; }
   body.dark .legend-dot.belum { background: #334155; }
-  .legend-letter {
-    font-weight: 800;
-    font-size: 16px;
-  }
-  .legend-letter.hadir { color: #059669; }
-  .legend-letter.izin { color: #D97706; }
-  .legend-letter.sakit { color: #B45309; }
-  .legend-letter.alpa { color: #DC2626; }
-  .legend-letter.belum { color: #94A3B8; }
-  body.dark .legend-letter.belum { color: #64748B; }
 
   /* ===== TABLE BESAR ===== */
   .table-wrap {
     margin: 0 16px 14px;
-    border-radius: 18px;
+    border-radius: 16px;
     border: 2px solid #E2E8F0;
     overflow: auto;
     background: #FFFFFF;
@@ -313,7 +279,7 @@
 
   table.grid-table {
     border-collapse: collapse;
-    font-size: 18px;
+    font-size: 20px;
     min-width: 100%;
     width: 100%;
   }
@@ -346,16 +312,16 @@
   }
 
   .col-nama {
-    width: 200px;
-    min-width: 200px;
-    max-width: 200px;
+    width: 210px;
+    min-width: 210px;
+    max-width: 210px;
     text-align: left !important;
     font-size: 18px;
   }
   .col-tgl {
-    width: 48px;
-    min-width: 48px;
-    max-width: 48px;
+    width: 50px;
+    min-width: 50px;
+    max-width: 50px;
     font-size: 16px;
   }
   .col-tgl-weekend {
@@ -374,18 +340,18 @@
   thead .sticky-col { z-index: 6; }
 
   .cell-nama {
-    padding: 16px 14px;
+    padding: 18px 14px;
     font-weight: 700;
-    font-size: 19px;
+    font-size: 20px;
     border-right: 3px solid #E2E8F0 !important;
   }
   body.dark .cell-nama { border-right-color: #334155 !important; }
 
   .cell-status {
-    padding: 16px 4px;
+    padding: 18px 4px;
     font-weight: 800;
-    font-size: 20px;
-    min-width: 48px;
+    font-size: 22px;
+    min-width: 50px;
     color: #CBD5E1;
   }
   body.dark .cell-status { color: #334155; }
@@ -426,10 +392,10 @@
   }
   body.dark .cell-status.belum { color: #334155; }
 
-  /* ===== BUTTON BESAR ===== */
+  /* ===== BUTTON ===== */
   .btn {
-    padding: 16px 28px;
-    border-radius: 14px;
+    padding: 16px 24px;
+    border-radius: 12px;
     border: none;
     font-size: 18px;
     font-weight: 700;
@@ -438,8 +404,9 @@
     transition: 0.15s;
     display: inline-flex;
     align-items: center;
-    gap: 12px;
-    min-height: 62px;
+    justify-content: center;
+    gap: 10px;
+    min-height: 60px;
   }
   .btn:active { transform: scale(0.97); }
   .btn-primary {
@@ -461,100 +428,56 @@
 
   .btn-group {
     display: flex;
-    gap: 14px;
+    gap: 12px;
     flex-wrap: wrap;
   }
-  .btn-group .btn { flex: 1; justify-content: center; min-width: 140px; }
-
-  .btn-icon {
-    width: 48px;
-    height: 48px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-    border: 2px solid #E2E8F0;
-    background: #F8FAFE;
-    cursor: pointer;
-    transition: 0.15s;
-  }
-  body.dark .btn-icon {
-    background: #1E293B;
-    border-color: #334155;
-  }
-  .btn-icon svg { width: 24px; height: 24px; stroke: #0F172A; }
-  body.dark .btn-icon svg { stroke: #F1F5F9; }
-  .btn-icon:hover { background: #E2E8F0; }
-  body.dark .btn-icon:hover { background: #334155; }
+  .btn-group .btn { flex: 1; min-width: 140px; }
 
   /* ===== STATES ===== */
   .empty-state, .error-state {
     text-align: center;
-    padding: 60px 20px;
+    padding: 50px 20px;
     color: #94A3B8;
     font-size: 18px;
   }
   body.dark .empty-state, body.dark .error-state { color: #64748B; }
   .error-state svg {
-    width: 64px;
-    height: 64px;
+    width: 56px;
+    height: 56px;
     stroke: #DC2626;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     display: block;
     margin-left: auto;
     margin-right: auto;
   }
   .empty-state svg {
-    width: 64px;
-    height: 64px;
+    width: 56px;
+    height: 56px;
     stroke: #94A3B8;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     display: block;
     margin-left: auto;
     margin-right: auto;
   }
 
   .loading-spin {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     border: 4px solid #E2E8F0;
     border-top-color: #2563EB;
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
-    margin: 60px auto;
+    margin: 50px auto;
   }
   body.dark .loading-spin { border-color: #1E293B; border-top-color: #2563EB; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ===== TOOLTIP ===== */
-  .tooltip {
-    position: relative;
-    cursor: default;
-  }
-  .tooltip:hover::after {
-    content: attr(data-tip);
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: #0F172A;
-    color: #fff;
-    padding: 6px 14px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    white-space: nowrap;
-    z-index: 20;
-  }
-  body.dark .tooltip:hover::after { background: #1E293B; }
-
   /* ===== FOOTER ===== */
   .footer-note {
     text-align: center;
-    padding: 24px 16px;
+    padding: 20px 16px;
     color: #94A3B8;
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.8;
   }
   body.dark .footer-note { color: #64748B; }
@@ -570,7 +493,7 @@
     .stat-card .num { font-size: 24px; }
     .stat-card .label { font-size: 12px; }
 
-    .header-brand { padding: 24px 16px 30px; }
+    .header-brand { padding: 24px 16px 28px; }
     .header-brand h1 { font-size: 24px; }
     .header-brand .sub-info { font-size: 15px; }
     .live-badge { font-size: 13px; padding: 6px 14px; }
@@ -579,7 +502,7 @@
     .filter-row { flex-direction: column; gap: 10px; }
     .filter-row label { font-size: 15px; align-self: flex-start; }
     .select-box, .search-input {
-      font-size: 15px;
+      font-size: 16px;
       padding: 12px 14px;
       width: 100%;
       min-width: auto;
@@ -589,31 +512,36 @@
     .container { padding: 14px; margin: 0 12px 10px; border-radius: 14px; }
     .table-wrap { margin: 0 12px 10px; border-radius: 14px; }
 
-    .col-nama { width: 120px; min-width: 120px; max-width: 120px; font-size: 14px; }
-    .col-tgl { width: 34px; min-width: 34px; max-width: 34px; font-size: 12px; }
-    .cell-nama { font-size: 14px; padding: 12px 8px; }
-    .cell-status { font-size: 15px; padding: 12px 2px; min-width: 34px; }
-    .grid-table thead th { font-size: 12px; padding: 12px 4px; }
+    .col-nama { width: 130px; min-width: 130px; max-width: 130px; font-size: 15px; }
+    .col-tgl { width: 38px; min-width: 38px; max-width: 38px; font-size: 13px; }
+    .cell-nama { font-size: 15px; padding: 14px 8px; }
+    .cell-status { font-size: 17px; padding: 14px 2px; min-width: 38px; }
+    .grid-table thead th { font-size: 13px; padding: 12px 4px; }
 
     .legend-row { gap: 10px; }
     .legend-item { font-size: 13px; }
     .legend-dot { width: 16px; height: 16px; }
 
     .btn-group { flex-direction: column; }
-    .btn-group .btn { font-size: 15px; padding: 14px 20px; min-height: 52px; }
-    .btn { font-size: 15px; padding: 14px 20px; min-height: 52px; }
+    .btn-group .btn { font-size: 16px; padding: 14px 18px; min-height: 52px; }
+    .btn { font-size: 16px; padding: 14px 18px; min-height: 52px; }
 
     .footer-note { font-size: 13px; padding: 16px; }
   }
 
   @media (max-width: 500px) {
     .stats-bar {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 6px;
     }
     .stat-card .num { font-size: 20px; }
     .stat-card .label { font-size: 11px; }
     .stat-card { padding: 10px 4px; }
+    .col-nama { width: 100px; min-width: 100px; max-width: 100px; font-size: 13px; }
+    .col-tgl { width: 32px; min-width: 32px; max-width: 32px; font-size: 11px; }
+    .cell-nama { font-size: 13px; padding: 12px 6px; }
+    .cell-status { font-size: 14px; padding: 12px 1px; min-width: 32px; }
+    .grid-table thead th { font-size: 11px; padding: 10px 2px; }
   }
 
   @media (min-width: 900px) {
@@ -629,28 +557,28 @@
       margin: 32px auto;
       min-height: auto;
       background: #F1F5F9;
-      border-radius: 28px;
+      border-radius: 24px;
       border: 1px solid #E2E8F0;
       box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.12);
       overflow: hidden;
-      padding-bottom: 20px;
+      padding-bottom: 16px;
     }
     body.dark .app-container {
       background: #0B1120;
       border-color: #1E293B;
       box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
     }
-    .header-brand { border-radius: 28px 28px 0 0; }
-    .stats-bar { margin: -20px 20px 16px; }
-    .container { margin: 0 20px 16px; border-radius: 20px; }
-    .table-wrap { margin: 0 20px 16px; border-radius: 20px; }
+    .header-brand { border-radius: 24px 24px 0 0; }
+    .stats-bar { margin: -18px 20px 14px; }
+    .container { margin: 0 20px 14px; border-radius: 18px; }
+    .table-wrap { margin: 0 20px 14px; border-radius: 18px; }
   }
 </style>
 </head>
 <body>
 
 <div class="app-container">
-  <!-- HEADER BESAR -->
+  <!-- HEADER -->
   <div class="header-brand">
     <div class="logo-mini">
       <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -658,14 +586,14 @@
     </div>
     <h1 id="namaKelasHeader">Memuat...</h1>
     <div class="sub-info">
-      👨‍👩‍👧‍👦 <span id="jumlahMuridHeader">- murid</span>
+      <span id="jumlahMuridHeader">- murid</span>
     </div>
     <div class="live-badge">
       <span class="live-dot"></span> Live Update · <span id="lastUpdateText">Real-time</span>
     </div>
   </div>
 
-  <!-- STATS BESAR -->
+  <!-- STATS -->
   <div class="stats-bar" id="statsBar">
     <div class="stat-card">
       <div class="num hadir" id="statHadir">0</div>
@@ -696,7 +624,7 @@
 
   <!-- FOOTER -->
   <div class="footer-note">
-    Halaman ini untuk melihat data absensi anak. Data otomatis terupdate.<br>
+    Halaman ini untuk melihat data absensi. Data otomatis terupdate secara real-time.<br>
     Star Platform &middot; Star Tools 2026
   </div>
 </div>
@@ -744,7 +672,7 @@ function renderError(msg) {
   document.getElementById("kontenUtama").innerHTML =
     '<div class="error-state">' +
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
-    '<div style="font-weight:700;color:#0F172A;margin-bottom:6px;font-size:20px;">' + msg + '</div>' +
+    '<div style="font-weight:700;color:#0F172A;margin-bottom:4px;font-size:20px;">' + msg + '</div>' +
     '<div style="font-size:16px;">Pastikan link yang dibuka lengkap dan benar.</div></div>';
 }
 
@@ -760,15 +688,15 @@ function renderKerangka() {
     html += '<option value="' + b + '"' + (b === bulanDipilih ? ' selected' : '') + '>' + b + '</option>';
   });
   html += '</select>';
-  html += '<input class="search-input" id="searchInput" placeholder="🔍 Cari nama anak..." oninput="filterMurid(this.value)">';
+  html += '<input class="search-input" id="searchInput" placeholder="Cari nama murid..." oninput="filterMurid(this.value)">';
   html += '</div>';
 
   html += '<div class="legend-row">' +
-    '<span class="legend-item"><span class="legend-dot hadir"></span><span class="legend-letter hadir">H</span> Hadir</span>' +
-    '<span class="legend-item"><span class="legend-dot izin"></span><span class="legend-letter izin">I</span> Izin</span>' +
-    '<span class="legend-item"><span class="legend-dot sakit"></span><span class="legend-letter sakit">S</span> Sakit</span>' +
-    '<span class="legend-item"><span class="legend-dot alpa"></span><span class="legend-letter alpa">A</span> Alpa</span>' +
-    '<span class="legend-item"><span class="legend-dot belum"></span><span class="legend-letter belum">-</span> Belum</span>' +
+    '<span class="legend-item"><span class="legend-dot hadir"></span> Hadir (H)</span>' +
+    '<span class="legend-item"><span class="legend-dot izin"></span> Izin (I)</span>' +
+    '<span class="legend-item"><span class="legend-dot sakit"></span> Sakit (S)</span>' +
+    '<span class="legend-item"><span class="legend-dot alpa"></span> Alpa (A)</span>' +
+    '<span class="legend-item"><span class="legend-dot belum"></span> Belum (-)</span>' +
   '</div>';
   html += '</div>';
 
@@ -782,12 +710,8 @@ function renderKerangka() {
 
   html += '<div class="container">';
   html += '<div class="btn-group">';
-  html += '<button class="btn btn-primary" onclick="exportGridPDF()">';
-  html += 'Export PDF';
-  html += '</button>';
-  html += '<button class="btn btn-outline" onclick="exportGridCSV()">';
-  html += 'Export CSV';
-  html += '</button>';
+  html += '<button class="btn btn-primary" onclick="exportGridPDF()">Export PDF</button>';
+  html += '<button class="btn btn-outline" onclick="exportGridCSV()">Export CSV</button>';
   html += '</div>';
   html += '</div>';
 
@@ -823,7 +747,7 @@ function renderBaris(totalHari) {
   var html = "";
   filtered.forEach(function(nama) {
     var safe = nama.replace(/[^a-zA-Z0-9]/g, "_");
-    html += '<tr><td class="sticky-col cell-nama tooltip" data-tip="' + nama + '">' + nama + '</td>';
+    html += '<tr><td class="sticky-col cell-nama">' + nama + '</td>';
     for (var i = 1; i <= totalHari; i++) {
       var cls = isWeekend(i) ? 'cell-status belum' : 'cell-status';
       html += '<td class="' + cls + '" id="cell-' + safe + '-' + i + '">-</td>';
@@ -832,7 +756,7 @@ function renderBaris(totalHari) {
   });
   tbody.innerHTML = html;
 
-  // Pasang ulang listener untuk data yang sudah ada
+  // Pasang ulang listener
   Object.keys(absenListeners).forEach(function(nama) {
     if (absenListeners[nama]) absenListeners[nama].off();
   });
@@ -872,7 +796,6 @@ function updateStats() {
   var totalHari = daysInMonth(bulanDipilih);
   var stats = { Hadir: 0, Izin: 0, Sakit: 0, Alpa: 0, Belum: 0 };
 
-  // Ambil data terakhir dari DOM
   filtered.forEach(function(nama) {
     var safe = nama.replace(/[^a-zA-Z0-9]/g, "_");
     for (var i = 1; i <= totalHari; i++) {
@@ -894,7 +817,6 @@ function updateStats() {
   document.getElementById("statBelum").innerText = stats.Belum;
   document.getElementById("statsBar").style.display = "grid";
 
-  // Update last update time
   var now = new Date();
   var jam = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
   document.getElementById("lastUpdateText").innerText = jam;
@@ -999,7 +921,7 @@ window.addEventListener("DOMContentLoaded", function() {
     namaKelasAktif = kelasData.nama || "Kelas";
     daftarMuridAktif = kelasData.siswa ? Object.keys(kelasData.siswa) : [];
 
-    document.getElementById("namaKelasHeader").innerText = "🏫 " + namaKelasAktif;
+    document.getElementById("namaKelasHeader").innerText = namaKelasAktif;
     document.getElementById("jumlahMuridHeader").innerHTML = daftarMuridAktif.length + " murid";
 
     renderKerangka();
