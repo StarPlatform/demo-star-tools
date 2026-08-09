@@ -17,123 +17,107 @@
     font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     background: #F1F5F9;
     color: #0F172A;
-    font-size: 20px;
   }
   body.dark { background:#0B1120; color:#F1F5F9; }
 
   .app-container {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
     background: #F1F5F9;
     min-height: 100vh;
+    padding: 0 12px;
   }
   body.dark .app-container { background:#0B1120; }
 
   /* ===== HEADER ===== */
   .header-brand {
     background: linear-gradient(145deg, #1D4ED8, #2563EB, #3B82F6);
-    padding: 32px 24px 36px;
+    padding: 28px 20px 32px;
     color: #fff;
     text-align: center;
-    position: relative;
-    overflow: hidden;
+    border-radius: 0 0 18px 18px;
+    margin-bottom: 14px;
   }
 
   .logo-mini {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     font-weight: 800;
-    font-size: 15px;
-    letter-spacing: 0.5px;
+    font-size: 14px;
     background: rgba(255,255,255,0.15);
-    padding: 6px 18px;
-    border-radius: 40px;
-    margin-bottom: 16px;
-    position: relative;
-    z-index: 1;
+    padding: 5px 16px;
+    border-radius: 30px;
+    margin-bottom: 12px;
   }
-  .logo-mini svg { width: 18px; height: 18px; }
+  .logo-mini svg { width: 16px; height: 16px; }
 
   .header-brand h1 {
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 800;
-    margin-bottom: 6px;
-    letter-spacing: -0.5px;
-    position: relative;
-    z-index: 1;
+    margin-bottom: 4px;
+    letter-spacing: -0.3px;
     word-break: break-word;
   }
   .header-brand .sub-info {
-    font-size: 17px;
+    font-size: 16px;
     opacity: 0.9;
-    font-weight: 400;
-    position: relative;
-    z-index: 1;
   }
   .header-brand .sub-info span {
-    display: inline-block;
     background: rgba(255,255,255,0.12);
-    padding: 3px 14px;
-    border-radius: 30px;
-    margin: 0 3px;
+    padding: 2px 14px;
+    border-radius: 20px;
   }
 
   .live-badge {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     background: rgba(255,255,255,0.12);
-    padding: 6px 18px;
-    border-radius: 40px;
-    font-size: 14px;
+    padding: 5px 16px;
+    border-radius: 30px;
+    font-size: 13px;
     font-weight: 700;
-    margin-top: 14px;
-    position: relative;
-    z-index: 1;
+    margin-top: 12px;
   }
   .live-dot {
-    width: 9px;
-    height: 9px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: #4ADE80;
     animation: pulseDot 1.5s ease-in-out infinite;
   }
-  @keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.3;transform:scale(0.8);} }
+  @keyframes pulseDot { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 
   /* ===== STATS BAR ===== */
   .stats-bar {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    margin: -16px 16px 14px;
-    position: relative;
-    z-index: 2;
+    gap: 8px;
+    margin-bottom: 14px;
   }
   .stat-card {
     background: #FFFFFF;
-    border-radius: 14px;
-    padding: 14px 6px;
+    border-radius: 12px;
+    padding: 12px 6px;
     border: 2px solid #E2E8F0;
     text-align: center;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   }
   body.dark .stat-card {
     background: #111827;
     border-color: #1E293B;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   }
   .stat-card .num {
-    font-size: 30px;
+    font-size: 28px;
     font-weight: 800;
-    color: #2563EB;
     line-height: 1.2;
   }
-  body.dark .stat-card .num { color: #60A5FA; }
   .stat-card .label {
-    font-size: 14px;
+    font-size: 13px;
     color: #64748B;
-    margin-top: 3px;
+    margin-top: 2px;
     font-weight: 600;
   }
   body.dark .stat-card .label { color: #94A3B8; }
@@ -148,27 +132,27 @@
   body.dark .stat-card .num.alpa { color: #F87171; }
   body.dark .stat-card .num.belum { color: #64748B; }
 
-  /* ===== CONTAINER ===== */
-  .container {
+  /* ===== FILTER ===== */
+  .filter-container {
     background: #FFFFFF;
-    margin: 0 16px 14px;
-    border-radius: 16px;
-    padding: 18px 18px;
+    border-radius: 14px;
+    padding: 14px 16px;
     border: 2px solid #E2E8F0;
+    margin-bottom: 14px;
   }
-  body.dark .container {
+  body.dark .filter-container {
     background: #111827;
     border-color: #1E293B;
   }
 
   .filter-row {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
     flex-wrap: wrap;
   }
   .filter-row label {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 700;
     color: #0F172A;
   }
@@ -176,12 +160,12 @@
 
   .select-box {
     flex: 1;
-    min-width: 150px;
-    padding: 13px 16px;
+    min-width: 140px;
+    padding: 12px 16px;
     border-radius: 12px;
     border: 2px solid #E2E8F0;
     background: #F8FAFE;
-    font-size: 17px;
+    font-size: 16px;
     color: #0F172A;
     font-family: inherit;
     cursor: pointer;
@@ -195,12 +179,12 @@
 
   .search-input {
     flex: 1.5;
-    min-width: 140px;
-    padding: 13px 16px;
+    min-width: 130px;
+    padding: 12px 16px;
     border-radius: 12px;
     border: 2px solid #E2E8F0;
     background: #F8FAFE;
-    font-size: 17px;
+    font-size: 16px;
     color: #0F172A;
     font-family: inherit;
     outline: none;
@@ -220,8 +204,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: 14px;
-    margin-top: 14px;
-    padding-top: 14px;
+    margin-top: 12px;
+    padding-top: 12px;
     border-top: 2px solid #E2E8F0;
   }
   body.dark .legend-row { border-top-color: #1E293B; }
@@ -235,9 +219,9 @@
   }
   body.dark .legend-item { color: #F1F5F9; }
   .legend-dot {
-    width: 20px;
-    height: 20px;
-    border-radius: 5px;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
     flex-shrink: 0;
   }
   .legend-dot.hadir { background: #059669; }
@@ -249,12 +233,11 @@
 
   /* ===== TABLE BESAR ===== */
   .table-wrap {
-    margin: 0 16px 14px;
-    border-radius: 16px;
+    border-radius: 14px;
     border: 2px solid #E2E8F0;
     overflow: auto;
     background: #FFFFFF;
-    max-height: 70vh;
+    max-height: 68vh;
     position: relative;
   }
   body.dark .table-wrap {
@@ -279,7 +262,7 @@
 
   table.grid-table {
     border-collapse: collapse;
-    font-size: 20px;
+    font-size: 18px;
     min-width: 100%;
     width: 100%;
   }
@@ -288,7 +271,7 @@
     border-bottom: 2px solid #E2E8F0;
     padding: 0;
     text-align: center;
-    white-space: nowrap;
+    vertical-align: middle;
   }
   body.dark .grid-table th, body.dark .grid-table td {
     border-color: #1E293B;
@@ -298,12 +281,13 @@
     background: #F8FAFE;
     color: #1E293B;
     font-weight: 800;
-    padding: 16px 6px;
+    padding: 14px 6px;
     position: sticky;
     top: 0;
     z-index: 5;
-    font-size: 16px;
+    font-size: 15px;
     border-bottom: 3px solid #E2E8F0;
+    min-height: 50px;
   }
   body.dark .grid-table thead th {
     background: #1E293B;
@@ -312,17 +296,15 @@
   }
 
   .col-nama {
-    width: 210px;
-    min-width: 210px;
-    max-width: 210px;
+    width: 180px;
+    min-width: 180px;
+    max-width: 180px;
     text-align: left !important;
-    font-size: 18px;
   }
   .col-tgl {
-    width: 50px;
-    min-width: 50px;
-    max-width: 50px;
-    font-size: 16px;
+    width: 44px;
+    min-width: 44px;
+    max-width: 44px;
   }
   .col-tgl-weekend {
     background: #F8FAFE;
@@ -340,18 +322,20 @@
   thead .sticky-col { z-index: 6; }
 
   .cell-nama {
-    padding: 18px 14px;
+    padding: 14px 12px;
     font-weight: 700;
-    font-size: 20px;
+    font-size: 17px;
     border-right: 3px solid #E2E8F0 !important;
+    min-height: 52px;
   }
   body.dark .cell-nama { border-right-color: #334155 !important; }
 
   .cell-status {
-    padding: 18px 4px;
+    padding: 14px 2px;
     font-weight: 800;
-    font-size: 22px;
-    min-width: 50px;
+    font-size: 20px;
+    min-width: 44px;
+    min-height: 52px;
     color: #CBD5E1;
   }
   body.dark .cell-status { color: #334155; }
@@ -393,11 +377,17 @@
   body.dark .cell-status.belum { color: #334155; }
 
   /* ===== BUTTON ===== */
+  .btn-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
   .btn {
-    padding: 16px 24px;
+    padding: 14px 24px;
     border-radius: 12px;
     border: none;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     cursor: pointer;
     font-family: inherit;
@@ -405,8 +395,10 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    min-height: 60px;
+    gap: 8px;
+    min-height: 52px;
+    flex: 1;
+    min-width: 120px;
   }
   .btn:active { transform: scale(0.97); }
   .btn-primary {
@@ -426,48 +418,53 @@
   .btn-outline:hover { background: #F1F5F9; }
   body.dark .btn-outline:hover { background: #1E293B; }
 
-  .btn-group {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
+  .export-container {
+    background: #FFFFFF;
+    border-radius: 14px;
+    padding: 14px 16px;
+    border: 2px solid #E2E8F0;
+    margin-top: 14px;
   }
-  .btn-group .btn { flex: 1; min-width: 140px; }
+  body.dark .export-container {
+    background: #111827;
+    border-color: #1E293B;
+  }
 
   /* ===== STATES ===== */
   .empty-state, .error-state {
     text-align: center;
-    padding: 50px 20px;
+    padding: 40px 20px;
     color: #94A3B8;
-    font-size: 18px;
+    font-size: 17px;
   }
   body.dark .empty-state, body.dark .error-state { color: #64748B; }
   .error-state svg {
-    width: 56px;
-    height: 56px;
+    width: 50px;
+    height: 50px;
     stroke: #DC2626;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     display: block;
     margin-left: auto;
     margin-right: auto;
   }
   .empty-state svg {
-    width: 56px;
-    height: 56px;
+    width: 50px;
+    height: 50px;
     stroke: #94A3B8;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     display: block;
     margin-left: auto;
     margin-right: auto;
   }
 
   .loading-spin {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     border: 4px solid #E2E8F0;
     border-top-color: #2563EB;
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
-    margin: 50px auto;
+    margin: 40px auto;
   }
   body.dark .loading-spin { border-color: #1E293B; border-top-color: #2563EB; }
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -475,9 +472,9 @@
   /* ===== FOOTER ===== */
   .footer-note {
     text-align: center;
-    padding: 20px 16px;
+    padding: 18px 16px;
     color: #94A3B8;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.8;
   }
   body.dark .footer-note { color: #64748B; }
@@ -486,62 +483,63 @@
   @media (max-width: 700px) {
     .stats-bar {
       grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin: -12px 12px 10px;
+      gap: 6px;
     }
-    .stat-card { padding: 12px 6px; border-radius: 12px; }
-    .stat-card .num { font-size: 24px; }
-    .stat-card .label { font-size: 12px; }
+    .stat-card { padding: 10px 4px; border-radius: 10px; }
+    .stat-card .num { font-size: 22px; }
+    .stat-card .label { font-size: 11px; }
 
-    .header-brand { padding: 24px 16px 28px; }
-    .header-brand h1 { font-size: 24px; }
-    .header-brand .sub-info { font-size: 15px; }
-    .live-badge { font-size: 13px; padding: 6px 14px; }
-    .logo-mini { font-size: 13px; padding: 6px 14px; }
+    .header-brand { padding: 20px 16px 26px; }
+    .header-brand h1 { font-size: 22px; }
+    .header-brand .sub-info { font-size: 14px; }
+    .live-badge { font-size: 12px; padding: 4px 12px; }
+    .logo-mini { font-size: 12px; padding: 4px 12px; }
 
-    .filter-row { flex-direction: column; gap: 10px; }
-    .filter-row label { font-size: 15px; align-self: flex-start; }
+    .filter-row { flex-direction: column; gap: 8px; }
+    .filter-row label { font-size: 14px; align-self: flex-start; }
     .select-box, .search-input {
-      font-size: 16px;
-      padding: 12px 14px;
+      font-size: 15px;
+      padding: 10px 12px;
       width: 100%;
       min-width: auto;
     }
-    .search-input::placeholder { font-size: 14px; }
+    .search-input::placeholder { font-size: 13px; }
 
-    .container { padding: 14px; margin: 0 12px 10px; border-radius: 14px; }
-    .table-wrap { margin: 0 12px 10px; border-radius: 14px; }
+    .filter-container { padding: 12px; border-radius: 12px; }
+    .export-container { padding: 12px; border-radius: 12px; }
 
-    .col-nama { width: 130px; min-width: 130px; max-width: 130px; font-size: 15px; }
-    .col-tgl { width: 38px; min-width: 38px; max-width: 38px; font-size: 13px; }
-    .cell-nama { font-size: 15px; padding: 14px 8px; }
-    .cell-status { font-size: 17px; padding: 14px 2px; min-width: 38px; }
-    .grid-table thead th { font-size: 13px; padding: 12px 4px; }
+    .col-nama { width: 120px; min-width: 120px; max-width: 120px; }
+    .col-tgl { width: 34px; min-width: 34px; max-width: 34px; }
+    .cell-nama { font-size: 14px; padding: 10px 8px; min-height: 42px; }
+    .cell-status { font-size: 16px; padding: 10px 2px; min-width: 34px; min-height: 42px; }
+    .grid-table thead th { font-size: 12px; padding: 10px 4px; min-height: 40px; }
+    table.grid-table { font-size: 14px; }
 
-    .legend-row { gap: 10px; }
+    .legend-row { gap: 8px; }
     .legend-item { font-size: 13px; }
-    .legend-dot { width: 16px; height: 16px; }
+    .legend-dot { width: 14px; height: 14px; }
 
     .btn-group { flex-direction: column; }
-    .btn-group .btn { font-size: 16px; padding: 14px 18px; min-height: 52px; }
-    .btn { font-size: 16px; padding: 14px 18px; min-height: 52px; }
+    .btn { font-size: 14px; padding: 12px 16px; min-height: 46px; }
 
-    .footer-note { font-size: 13px; padding: 16px; }
+    .footer-note { font-size: 12px; padding: 14px; }
   }
 
   @media (max-width: 500px) {
     .stats-bar {
       grid-template-columns: repeat(2, 1fr);
-      gap: 6px;
+      gap: 5px;
     }
-    .stat-card .num { font-size: 20px; }
-    .stat-card .label { font-size: 11px; }
-    .stat-card { padding: 10px 4px; }
-    .col-nama { width: 100px; min-width: 100px; max-width: 100px; font-size: 13px; }
-    .col-tgl { width: 32px; min-width: 32px; max-width: 32px; font-size: 11px; }
-    .cell-nama { font-size: 13px; padding: 12px 6px; }
-    .cell-status { font-size: 14px; padding: 12px 1px; min-width: 32px; }
-    .grid-table thead th { font-size: 11px; padding: 10px 2px; }
+    .stat-card .num { font-size: 18px; }
+    .stat-card .label { font-size: 10px; }
+    .stat-card { padding: 8px 4px; }
+    .col-nama { width: 100px; min-width: 100px; max-width: 100px; }
+    .col-tgl { width: 30px; min-width: 30px; max-width: 30px; }
+    .cell-nama { font-size: 12px; padding: 8px 6px; min-height: 36px; }
+    .cell-status { font-size: 14px; padding: 8px 1px; min-width: 30px; min-height: 36px; }
+    .grid-table thead th { font-size: 10px; padding: 8px 2px; min-height: 34px; }
+    table.grid-table { font-size: 12px; }
+    .header-brand h1 { font-size: 19px; }
   }
 
   @media (min-width: 900px) {
@@ -553,25 +551,28 @@
       background: linear-gradient(160deg, #0B1120 0%, #111827 60%);
     }
     .app-container {
-      max-width: 960px;
-      margin: 32px auto;
+      max-width: 1060px;
+      margin: 24px auto;
       min-height: auto;
       background: #F1F5F9;
-      border-radius: 24px;
+      border-radius: 20px;
       border: 1px solid #E2E8F0;
       box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.12);
       overflow: hidden;
-      padding-bottom: 16px;
+      padding: 0 20px 16px;
     }
     body.dark .app-container {
       background: #0B1120;
       border-color: #1E293B;
       box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
     }
-    .header-brand { border-radius: 24px 24px 0 0; }
-    .stats-bar { margin: -18px 20px 14px; }
-    .container { margin: 0 20px 14px; border-radius: 18px; }
-    .table-wrap { margin: 0 20px 14px; border-radius: 18px; }
+    .header-brand { border-radius: 0 0 18px 18px; margin: -1px -20px 16px; }
+    .col-nama { width: 200px; min-width: 200px; max-width: 200px; }
+    .col-tgl { width: 48px; min-width: 48px; max-width: 48px; }
+    .cell-nama { font-size: 18px; padding: 16px 14px; }
+    .cell-status { font-size: 22px; padding: 16px 4px; min-width: 48px; }
+    table.grid-table { font-size: 18px; }
+    .grid-table thead th { font-size: 16px; padding: 16px 8px; }
   }
 </style>
 </head>
@@ -617,9 +618,40 @@
     </div>
   </div>
 
-  <!-- KONTEN UTAMA -->
-  <div id="kontenUtama">
-    <div class="loading-spin"></div>
+  <!-- FILTER -->
+  <div class="filter-container">
+    <div class="filter-row">
+      <label for="pilihBulanView">Bulan</label>
+      <select class="select-box" id="pilihBulanView" onchange="gantiBulan(this.value)"></select>
+      <input class="search-input" id="searchInput" placeholder="Cari nama murid..." oninput="filterMurid(this.value)">
+    </div>
+    <div class="legend-row">
+      <span class="legend-item"><span class="legend-dot hadir"></span> Hadir (H)</span>
+      <span class="legend-item"><span class="legend-dot izin"></span> Izin (I)</span>
+      <span class="legend-item"><span class="legend-dot sakit"></span> Sakit (S)</span>
+      <span class="legend-item"><span class="legend-dot alpa"></span> Alpa (A)</span>
+      <span class="legend-item"><span class="legend-dot belum"></span> Belum (-)</span>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <table class="grid-table" id="tabelGrid">
+      <thead>
+        <tr>
+          <th class="sticky-col col-nama">Nama</th>
+          <tbody id="tabelGridBody"></tbody>
+        </tr>
+      </thead>
+    </table>
+  </div>
+
+  <!-- EXPORT -->
+  <div class="export-container">
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="exportGridPDF()">Export PDF</button>
+      <button class="btn btn-outline" onclick="exportGridCSV()">Export CSV</button>
+    </div>
   </div>
 
   <!-- FOOTER -->
@@ -669,53 +701,36 @@ function renderError(msg) {
   document.getElementById("namaKelasHeader").innerText = "Tidak Ditemukan";
   document.getElementById("jumlahMuridHeader").innerText = "- murid";
   document.getElementById("statsBar").style.display = "none";
-  document.getElementById("kontenUtama").innerHTML =
-    '<div class="error-state">' +
+  document.getElementById("tabelGridBody").innerHTML =
+    '<tr><td colspan="2" class="error-state">' +
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
     '<div style="font-weight:700;color:#0F172A;margin-bottom:4px;font-size:20px;">' + msg + '</div>' +
-    '<div style="font-size:16px;">Pastikan link yang dibuka lengkap dan benar.</div></div>';
+    '<div style="font-size:16px;">Pastikan link yang dibuka lengkap dan benar.</div></td></tr>';
 }
 
-function renderKerangka() {
-  var container = document.getElementById("kontenUtama");
-  var totalHari = daysInMonth(bulanDipilih);
-
-  var html = '<div class="container">';
-  html += '<div class="filter-row">';
-  html += '<label for="pilihBulanView">Bulan</label>';
-  html += '<select class="select-box" id="pilihBulanView" onchange="gantiBulan(this.value)">';
+function renderBulanOptions() {
+  var select = document.getElementById("pilihBulanView");
+  select.innerHTML = '';
   BULAN_LIST.forEach(function(b) {
-    html += '<option value="' + b + '"' + (b === bulanDipilih ? ' selected' : '') + '>' + b + '</option>';
+    var opt = document.createElement('option');
+    opt.value = b;
+    opt.textContent = b;
+    if (b === bulanDipilih) opt.selected = true;
+    select.appendChild(opt);
   });
-  html += '</select>';
-  html += '<input class="search-input" id="searchInput" placeholder="Cari nama murid..." oninput="filterMurid(this.value)">';
-  html += '</div>';
+}
 
-  html += '<div class="legend-row">' +
-    '<span class="legend-item"><span class="legend-dot hadir"></span> Hadir (H)</span>' +
-    '<span class="legend-item"><span class="legend-dot izin"></span> Izin (I)</span>' +
-    '<span class="legend-item"><span class="legend-dot sakit"></span> Sakit (S)</span>' +
-    '<span class="legend-item"><span class="legend-dot alpa"></span> Alpa (A)</span>' +
-    '<span class="legend-item"><span class="legend-dot belum"></span> Belum (-)</span>' +
-  '</div>';
-  html += '</div>';
-
-  html += '<div class="table-wrap"><table class="grid-table" id="tabelGrid">';
-  html += '<thead><tr><th class="sticky-col col-nama">Nama</th>';
+function renderHeaderTable() {
+  var totalHari = daysInMonth(bulanDipilih);
+  var thead = document.querySelector('#tabelGrid thead tr');
+  if (!thead) return;
+  
+  var html = '<th class="sticky-col col-nama">Nama</th>';
   for (var i = 1; i <= totalHari; i++) {
     var cls = isWeekend(i) ? 'col-tgl col-tgl-weekend' : 'col-tgl';
     html += '<th class="' + cls + '">' + i + '</th>';
   }
-  html += '</tr></thead><tbody id="tabelGridBody"></tbody></table></div>';
-
-  html += '<div class="container">';
-  html += '<div class="btn-group">';
-  html += '<button class="btn btn-primary" onclick="exportGridPDF()">Export PDF</button>';
-  html += '<button class="btn btn-outline" onclick="exportGridCSV()">Export CSV</button>';
-  html += '</div>';
-  html += '</div>';
-
-  container.innerHTML = html;
+  thead.innerHTML = html;
 }
 
 function filterMurid(query) {
@@ -825,6 +840,7 @@ function updateStats() {
 function gantiBulan(bulan) {
   bulanDipilih = bulan;
   var totalHari = daysInMonth(bulanDipilih);
+  renderHeaderTable();
   renderBaris(totalHari);
 }
 
@@ -924,7 +940,8 @@ window.addEventListener("DOMContentLoaded", function() {
     document.getElementById("namaKelasHeader").innerText = namaKelasAktif;
     document.getElementById("jumlahMuridHeader").innerHTML = daftarMuridAktif.length + " murid";
 
-    renderKerangka();
+    renderBulanOptions();
+    renderHeaderTable();
     renderBaris(daysInMonth(bulanDipilih));
     document.getElementById("statsBar").style.display = "grid";
   }).catch(function(err) {
