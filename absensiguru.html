@@ -980,443 +980,8 @@
     z-index: 200;
   }
 
-  .guide-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(6px);
-    display: none;
-    justify-content: center;
-    align-items: flex-end;
-    z-index: 250;
-  }
-
-  .guide-overlay.active {
+  .modal-overlay.active {
     display: flex;
-  }
-
-  .guide-content {
-    background: #FFFFFF;
-    width: 100%;
-    max-width: 440px;
-    height: 82vh;
-    max-height: 82vh;
-    border-radius: 24px 24px 0 0;
-    padding: 20px 20px 24px;
-    border: 1px solid #E2E8F0;
-    border-bottom: none;
-    animation: guideSlideUp 0.28s ease;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    transition: height 0.28s ease, max-height 0.28s ease, border-radius 0.28s ease, transform 0.2s ease;
-  }
-
-  .guide-content.expanded {
-    height: 100vh;
-    max-height: 100vh;
-    border-radius: 0;
-    padding-top: max(20px, env(safe-area-inset-top));
-  }
-
-  .guide-content.dragging {
-    transition: none;
-  }
-
-  body.dark .guide-content {
-    background: #111827;
-    border-color: #1E293B;
-  }
-
-  @keyframes guideSlideUp {
-    from { transform: translateY(30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-
-  .guide-drag-zone {
-    flex-shrink: 0;
-    padding: 6px 0 14px;
-    margin: -6px 0 0;
-    touch-action: none;
-    cursor: grab;
-  }
-
-  .guide-handle {
-    width: 40px;
-    height: 4px;
-    background: #E2E8F0;
-    border-radius: 4px;
-    margin: 0 auto;
-  }
-
-  body.dark .guide-handle {
-    background: #334155;
-  }
-
-  .guide-header {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 4px;
-  }
-
-  .guide-header h3 {
-    font-size: 18px;
-    font-weight: 700;
-    color: #0F172A;
-  }
-
-  body.dark .guide-header h3 {
-    color: #F1F5F9;
-  }
-
-  .guide-header .guide-close {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: #F8FAFE;
-    border: 1px solid #E2E8F0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  body.dark .guide-header .guide-close {
-    background: #1E293B;
-    border-color: #334155;
-  }
-
-  .guide-header .guide-close svg {
-    width: 18px;
-    height: 18px;
-    stroke: #0F172A;
-  }
-
-  body.dark .guide-header .guide-close svg {
-    stroke: #F1F5F9;
-  }
-
-  .guide-subtitle {
-    flex-shrink: 0;
-    font-size: 13px;
-    color: #64748B;
-    margin-bottom: 14px;
-  }
-
-  body.dark .guide-subtitle {
-    color: #94A3B8;
-  }
-
-  .guide-sim {
-    flex-shrink: 0;
-    position: relative;
-    height: 148px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, #EFF6FF, #F8FAFE);
-    border: 1px solid #DBEAFE;
-    margin-bottom: 16px;
-    overflow: hidden;
-  }
-
-  body.dark .guide-sim {
-    background: linear-gradient(135deg, #0F1E3A, #111827);
-    border-color: #1E293B;
-  }
-
-  .sim-scene {
-    position: absolute;
-    top: 0; left: 8px; right: 8px; bottom: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    opacity: 0;
-  }
-
-  .sim-scene-icons {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .sim-scene-icon {
-    position: relative;
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    background: #0F172A;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  body.dark .sim-scene-icon {
-    background: #1E293B;
-    border: 1px solid #334155;
-  }
-
-  .sim-scene-icon.outline {
-    background: #FFFFFF;
-    border: 2px solid #2563EB;
-  }
-
-  body.dark .sim-scene-icon.outline {
-    background: #111827;
-  }
-
-  .sim-scene-icon svg {
-    width: 22px;
-    height: 22px;
-    stroke: #fff;
-  }
-
-  .sim-scene-icon.outline svg {
-    stroke: #2563EB;
-  }
-
-  .sim-scene-label {
-    font-size: 11.5px;
-    font-weight: 700;
-    color: #2563EB;
-    line-height: 1.3;
-    text-align: center;
-    max-width: 200px;
-  }
-
-  body.dark .sim-scene-label {
-    color: #60A5FA;
-  }
-
-  .sim-check-badge {
-    position: absolute;
-    right: -5px;
-    top: -5px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #22C55E;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    animation: checkPopSync 10s ease-in-out infinite;
-  }
-
-  .sim-check-badge svg {
-    width: 9px;
-    height: 9px;
-    stroke: #fff;
-    stroke-width: 3;
-  }
-
-  @keyframes checkPopSync {
-    0%, 68% { opacity: 0; transform: scale(0.5); }
-    72% { opacity: 1; transform: scale(1); }
-    77% { opacity: 1; transform: scale(1); }
-    80% { opacity: 0; }
-    100% { opacity: 0; }
-  }
-
-  .sim-dots {
-    position: absolute;
-    bottom: 12px;
-    left: 0;
-    right: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-  }
-
-  .sim-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #CBD5E1;
-  }
-
-  body.dark .sim-dot {
-    background: #334155;
-  }
-
-  .sim-dot-1 { animation: dotActive1 10s ease-in-out infinite; }
-  .sim-dot-2 { animation: dotActive2 10s ease-in-out infinite; }
-  .sim-dot-3 { animation: dotActive3 10s ease-in-out infinite; }
-  .sim-dot-4 { animation: dotActive4 10s ease-in-out infinite; }
-  .sim-dot-5 { animation: dotActive5 10s ease-in-out infinite; }
-
-  @keyframes dotActive1 {
-    0%, 14% { background: #2563EB; transform: scale(1.3); }
-    17%, 100% { background: #CBD5E1; transform: scale(1); }
-  }
-  @keyframes dotActive2 {
-    0%, 20%, 37%, 100% { background: #CBD5E1; transform: scale(1); }
-    23%, 34% { background: #2563EB; transform: scale(1.3); }
-  }
-  @keyframes dotActive3 {
-    0%, 40%, 57%, 100% { background: #CBD5E1; transform: scale(1); }
-    43%, 54% { background: #2563EB; transform: scale(1.3); }
-  }
-  @keyframes dotActive4 {
-    0%, 60%, 77%, 100% { background: #CBD5E1; transform: scale(1); }
-    63%, 74% { background: #2563EB; transform: scale(1.3); }
-  }
-  @keyframes dotActive5 {
-    0%, 80%, 97% { background: #CBD5E1; transform: scale(1); }
-    83%, 94% { background: #2563EB; transform: scale(1.3); }
-    100% { background: #CBD5E1; transform: scale(1); }
-  }
-
-  .sim-scene-1 { animation: sceneFade1 10s ease-in-out infinite; }
-  .sim-scene-2 { animation: sceneFade2 10s ease-in-out infinite; }
-  .sim-scene-3 { animation: sceneFade3 10s ease-in-out infinite; }
-  .sim-scene-4 { animation: sceneFade4 10s ease-in-out infinite; }
-  .sim-scene-5 { animation: sceneFade5 10s ease-in-out infinite; }
-
-  @keyframes sceneFade1 {
-    0% { opacity: 1; transform: translateY(0); }
-    14% { opacity: 1; transform: translateY(0); }
-    17% { opacity: 0; transform: translateY(-6px); }
-    100% { opacity: 0; }
-  }
-  @keyframes sceneFade2 {
-    0%, 20% { opacity: 0; transform: translateY(6px); }
-    23% { opacity: 1; transform: translateY(0); }
-    34% { opacity: 1; transform: translateY(0); }
-    37% { opacity: 0; transform: translateY(-6px); }
-    100% { opacity: 0; }
-  }
-  @keyframes sceneFade3 {
-    0%, 40% { opacity: 0; transform: translateY(6px); }
-    43% { opacity: 1; transform: translateY(0); }
-    54% { opacity: 1; transform: translateY(0); }
-    57% { opacity: 0; transform: translateY(-6px); }
-    100% { opacity: 0; }
-  }
-  @keyframes sceneFade4 {
-    0%, 60% { opacity: 0; transform: translateY(6px); }
-    63% { opacity: 1; transform: translateY(0); }
-    74% { opacity: 1; transform: translateY(0); }
-    77% { opacity: 0; transform: translateY(-6px); }
-    100% { opacity: 0; }
-  }
-  @keyframes sceneFade5 {
-    0%, 80% { opacity: 0; transform: translateY(6px); }
-    83% { opacity: 1; transform: translateY(0); }
-    97% { opacity: 1; transform: translateY(0); }
-    100% { opacity: 0; }
-  }
-
-  .guide-steps {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    padding-right: 2px;
-    margin-bottom: 16px;
-  }
-
-  .guide-step {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-  }
-
-  .guide-step-num {
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: #2563EB18;
-    color: #2563EB;
-    font-size: 12.5px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  body.dark .guide-step-num {
-    background: #2563EB2E;
-    color: #60A5FA;
-  }
-
-  .guide-step-text b {
-    display: block;
-    font-size: 13.5px;
-    font-weight: 700;
-    color: #0F172A;
-    margin-bottom: 2px;
-  }
-
-  body.dark .guide-step-text b {
-    color: #F1F5F9;
-  }
-
-  .guide-step-text span {
-    font-size: 12.5px;
-    color: #64748B;
-    line-height: 1.5;
-  }
-
-  body.dark .guide-step-text span {
-    color: #94A3B8;
-  }
-
-  .guide-footer {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    padding-top: 12px;
-    border-top: 1px solid #E2E8F0;
-  }
-
-  body.dark .guide-footer {
-    border-top-color: #1E293B;
-  }
-
-  .guide-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: #64748B;
-  }
-
-  body.dark .guide-checkbox {
-    color: #94A3B8;
-  }
-
-  .guide-btn-ok {
-    background: #2563EB;
-    color: #fff;
-    border: none;
-    border-radius: 14px;
-    padding: 12px 24px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    flex-shrink: 0;
-    min-height: 48px;
-  }
-
-  .guide-btn-ok:active {
-    transform: scale(0.96);
   }
 
   .modal-content {
@@ -2010,36 +1575,6 @@
       position: relative;
     }
 
-    .guide-overlay {
-      align-items: center;
-    }
-
-    .guide-content {
-      max-width: 480px;
-      height: auto;
-      max-height: 85vh;
-      border-radius: 20px;
-      border-bottom: 1px solid #E2E8F0;
-    }
-
-    body.dark .guide-content {
-      border-bottom-color: #1E293B;
-    }
-
-    .guide-content.expanded {
-      height: auto;
-      max-height: 90vh;
-      border-radius: 20px;
-    }
-
-    .guide-drag-zone {
-      cursor: default;
-    }
-
-    .guide-handle {
-      opacity: 0.4;
-    }
-
     .container {
       margin: 12px 20px 0 20px;
     }
@@ -2389,134 +1924,20 @@
 </div>
 
 <!-- GUIDE -->
-<div id="guideOverlay" class="guide-overlay">
-  <div class="guide-content" id="guideContent">
-    <div class="guide-drag-zone" id="guideDragZone">
-      <div class="guide-handle"></div>
+<div id="guideOverlay" class="modal-overlay" style="display:none;">
+  <div class="modal-content" style="max-width:420px; text-align:left;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h3 style="margin:0;">Panduan Penggunaan</h3>
+      <button onclick="closeGuideModal()" style="background:transparent; border:none; font-size:24px; cursor:pointer;">×</button>
     </div>
-    <div class="guide-header">
-      <h3>Panduan Penggunaan Absensi Guru</h3>
-      <div class="guide-close" onclick="closeGuideModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-      </div>
+    <div style="font-size:13px; color:#64748B; line-height:1.6; max-height:60vh; overflow-y:auto;">
+      <p><strong>1. Daftarkan Sekolah</strong><br>Masukkan nama sekolah dan buat password untuk membuat akun sekolah baru. ID Sekolah akan dibuat otomatis.</p>
+      <p><strong>2. Tambah Guru</strong><br>Masukkan nama guru dan mata pelajaran yang diajar. Setiap guru otomatis mendapatkan QR Code pribadi untuk absensi.</p>
+      <p><strong>3. Assign Guru ke Kelas</strong><br>Pilih kelas yang boleh diabsen oleh guru tertentu. Satu guru bisa mengajar di beberapa kelas.</p>
+      <p><strong>4. Scan QR untuk Absen</strong><br>Guru menunjukkan QR Code-nya, lalu admin/operator memindai menggunakan kamera atau dari galeri. Status Hadir otomatis tercatat hari ini.</p>
+      <p><strong>5. Lihat Rekap Bulanan</strong><br>Pilih bulan yang diinginkan, tabel absensi guru akan muncul dengan status per tanggal. Bisa diexport ke Excel atau PDF.</p>
     </div>
-    <p class="guide-subtitle">Ikuti langkah-langkah berikut agar absensi guru di sekolah Anda berjalan dengan lancar.</p>
-
-    <div class="guide-sim">
-      <div class="sim-scene sim-scene-1">
-        <div class="sim-scene-icons">
-          <div class="sim-scene-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          </div>
-        </div>
-        <div class="sim-scene-label">Daftar / Login Sekolah</div>
-      </div>
-
-      <div class="sim-scene sim-scene-2">
-        <div class="sim-scene-icons">
-          <div class="sim-scene-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
-          </div>
-        </div>
-        <div class="sim-scene-label">Tambah Guru &amp; QR</div>
-      </div>
-
-      <div class="sim-scene sim-scene-3">
-        <div class="sim-scene-icons">
-          <div class="sim-scene-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 8h3M15 12h3M6 16h12"/></svg>
-          </div>
-        </div>
-        <div class="sim-scene-label">Assign Guru ke Kelas</div>
-      </div>
-
-      <div class="sim-scene sim-scene-4">
-        <div class="sim-scene-icons">
-          <div class="sim-scene-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="14" y2="21"/><line x1="21" y1="14" x2="21" y2="21"/><line x1="17" y1="17" x2="21" y2="17"/></svg>
-          </div>
-          <div class="sim-scene-icon outline">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
-            <div class="sim-check-badge">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            </div>
-          </div>
-        </div>
-        <div class="sim-scene-label">Scan QR &amp; Absen Harian</div>
-      </div>
-
-      <div class="sim-scene sim-scene-5">
-        <div class="sim-scene-icons">
-          <div class="sim-scene-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 11 17 15 12"/></svg>
-          </div>
-        </div>
-        <div class="sim-scene-label">Rekap Absensi Bulanan</div>
-      </div>
-
-      <div class="sim-dots">
-        <div class="sim-dot sim-dot-1"></div>
-        <div class="sim-dot sim-dot-2"></div>
-        <div class="sim-dot sim-dot-3"></div>
-        <div class="sim-dot sim-dot-4"></div>
-        <div class="sim-dot sim-dot-5"></div>
-      </div>
-    </div>
-
-    <div class="guide-steps">
-      <div class="guide-step">
-        <div class="guide-step-num">1</div>
-        <div class="guide-step-text">
-          <b>Daftarkan Sekolah</b>
-          <span>Masukkan nama sekolah dan buat password untuk membuat akun sekolah baru. ID Sekolah akan dibuat otomatis.</span>
-        </div>
-      </div>
-      <div class="guide-step">
-        <div class="guide-step-num">2</div>
-        <div class="guide-step-text">
-          <b>Tambah Guru</b>
-          <span>Masukkan nama guru dan mata pelajaran yang diajar. Setiap guru otomatis mendapatkan QR Code pribadi untuk absensi.</span>
-        </div>
-      </div>
-      <div class="guide-step">
-        <div class="guide-step-num">3</div>
-        <div class="guide-step-text">
-          <b>Assign Guru ke Kelas</b>
-          <span>Pilih kelas yang boleh diabsen oleh guru tertentu. Satu guru bisa mengajar di beberapa kelas, dan satu kelas bisa memiliki banyak guru.</span>
-        </div>
-      </div>
-      <div class="guide-step">
-        <div class="guide-step-num">4</div>
-        <div class="guide-step-text">
-          <b>Scan QR untuk Absen</b>
-          <span>Guru menunjukkan QR Code-nya, lalu admin/operator memindai menggunakan kamera atau dari galeri. Status Hadir otomatis tercatat hari ini.</span>
-        </div>
-      </div>
-      <div class="guide-step">
-        <div class="guide-step-num">5</div>
-        <div class="guide-step-text">
-          <b>Lihat Rekap Bulanan</b>
-          <span>Pilih bulan yang diinginkan, tabel absensi guru akan muncul dengan status per tanggal. Bisa diexport ke Excel atau PDF.</span>
-        </div>
-      </div>
-      <div class="guide-step">
-        <div class="guide-step-num">6</div>
-        <div class="guide-step-text">
-          <b>Export Excel &amp; PDF</b>
-          <span>Data absensi guru dan rekap bulanan bisa diexport ke Excel (CSV) atau PDF untuk keperluan laporan.</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="guide-footer">
-      <label class="guide-checkbox">
-        <input type="checkbox" id="guideDontShow" style="accent-color:#2563EB;">
-        Jangan tampilkan kembali
-      </label>
-      <button class="guide-btn-ok" onclick="closeGuideModal()">Saya Mengerti</button>
-    </div>
+    <button class="btn btn-primary" onclick="closeGuideModal()" style="margin-top:12px;">Saya Mengerti</button>
   </div>
 </div>
 
@@ -2576,56 +1997,11 @@ function closeModal() { document.getElementById('modalOverlay').style.display = 
 
 /* ===== Guide ===== */
 function openGuideModal() {
-  document.getElementById('guideOverlay').classList.add('active');
-  document.body.style.overflow = 'hidden';
+  document.getElementById('guideOverlay').style.display = 'flex';
 }
 function closeGuideModal() {
-  document.getElementById('guideOverlay').classList.remove('active');
-  document.body.style.overflow = '';
-  var dontShow = document.getElementById('guideDontShow');
-  if (dontShow && dontShow.checked) {
-    localStorage.setItem('guruGuideSeen', '1');
-  }
+  document.getElementById('guideOverlay').style.display = 'none';
 }
-
-(function setupGuideDrag() {
-  var startY = 0, dragging = false;
-  function init() {
-    var zone = document.getElementById('guideDragZone');
-    var content = document.getElementById('guideContent');
-    if (!zone || !content) return;
-    zone.addEventListener('touchstart', function(e) {
-      startY = e.touches[0].clientY;
-      dragging = true;
-      content.classList.add('dragging');
-    }, { passive: true });
-    zone.addEventListener('touchmove', function(e) {
-      if (!dragging) return;
-      var deltaY = e.touches[0].clientY - startY;
-      var clamped = Math.max(-40, Math.min(deltaY, 300));
-      content.style.transform = 'translateY(' + clamped + 'px)';
-    }, { passive: true });
-    zone.addEventListener('touchend', function(e) {
-      if (!dragging) return;
-      dragging = false;
-      content.classList.remove('dragging');
-      content.style.transform = '';
-      var deltaY = e.changedTouches[0].clientY - startY;
-      if (deltaY > 60) closeGuideModal();
-      else if (deltaY < -50) content.classList.add('expanded');
-    });
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
-})();
-
-(function autoShowGuide() {
-  if (!localStorage.getItem('guruGuideSeen')) {
-    document.addEventListener('DOMContentLoaded', function() {
-      setTimeout(openGuideModal, 500);
-    });
-  }
-})();
 
 function toggleDropdown(id) {
   var el = document.getElementById(id);
@@ -2829,35 +2205,29 @@ function renderGuruList() {
     var actions = document.createElement('div');
     actions.className = 'guru-actions';
     
-    // Tombol QR - pake addEventListener
     var btnQr = document.createElement('div');
     btnQr.className = 'icon-btn-small';
     btnQr.title = 'Lihat QR';
     btnQr.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="14" y2="21"/><line x1="21" y1="14" x2="21" y2="21"/><line x1="17" y1="17" x2="21" y2="17"/></svg>';
-    btnQr.addEventListener('click', function(e) {
-      e.stopPropagation();
-      openQrModal(guruId);
-    });
+    btnQr.onclick = (function(id) {
+      return function() { openQrModal(id); };
+    })(guruId);
     
-    // Tombol Assign - pake addEventListener
     var btnAssign = document.createElement('div');
     btnAssign.className = 'icon-btn-small';
     btnAssign.title = 'Assign Kelas';
     btnAssign.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="3"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
-    btnAssign.addEventListener('click', function(e) {
-      e.stopPropagation();
-      openAssignModal(guruId);
-    });
+    btnAssign.onclick = (function(id) {
+      return function() { openAssignModal(id); };
+    })(guruId);
     
-    // Tombol Hapus
     var btnHapus = document.createElement('div');
     btnHapus.className = 'icon-btn-small danger';
     btnHapus.title = 'Hapus';
     btnHapus.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>';
-    btnHapus.addEventListener('click', function(e) {
-      e.stopPropagation();
-      hapusGuru(guruId);
-    });
+    btnHapus.onclick = (function(id) {
+      return function() { hapusGuru(id); };
+    })(guruId);
     
     actions.appendChild(btnQr);
     actions.appendChild(btnAssign);
@@ -2882,16 +2252,8 @@ function hapusGuru(guruId) {
 
 /* ===== QR Guru ===== */
 function openQrModal(guruId) {
-  if (!sekolahIdAktif || !guruId) {
-    showModal('warning', 'Data Kurang', 'ID Sekolah atau ID Guru tidak valid.');
-    return;
-  }
   guruAktifModal = guruId;
   var g = daftarGuru[guruId];
-  if (!g) {
-    showModal('error', 'Guru Tidak Ditemukan', 'Data guru tidak ditemukan.');
-    return;
-  }
   document.getElementById('qrModalNama').innerText = g.nama;
   document.getElementById('qrModalMapel').innerText = g.mapel;
   var qrContainer = document.getElementById('qrGuruContainer');
@@ -2902,9 +2264,9 @@ function openQrModal(guruId) {
     height: 200,
     correctLevel: QRCode.CorrectLevel.H
   });
-  document.getElementById('qrModalOverlay').classList.add('active');
+  document.getElementById('qrModalOverlay').style.display = 'flex';
 }
-function closeQrModal() { document.getElementById('qrModalOverlay').classList.remove('active'); guruAktifModal = null; }
+function closeQrModal() { document.getElementById('qrModalOverlay').style.display = 'none'; guruAktifModal = null; }
 function downloadQrGuru() {
   var canvas = document.querySelector('#qrGuruContainer canvas');
   if (!canvas) return;
@@ -2917,16 +2279,8 @@ function downloadQrGuru() {
 
 /* ===== Assign Kelas ===== */
 function openAssignModal(guruId) {
-  if (!sekolahIdAktif || !guruId) {
-    showModal('warning', 'Data Kurang', 'ID Sekolah atau ID Guru tidak valid.');
-    return;
-  }
   guruAktifAssign = guruId;
   var g = daftarGuru[guruId];
-  if (!g) {
-    showModal('error', 'Guru Tidak Ditemukan', 'Data guru tidak ditemukan.');
-    return;
-  }
   document.getElementById('assignModalNama').innerText = 'Assign Kelas — ' + g.nama;
   var list = document.getElementById('assignKelasList');
   var kelasIds = Object.keys(daftarKelasTerdaftar);
@@ -2946,9 +2300,9 @@ function openAssignModal(guruId) {
       list.appendChild(row);
     });
   }
-  document.getElementById('assignModalOverlay').classList.add('active');
+  document.getElementById('assignModalOverlay').style.display = 'flex';
 }
-function closeAssignModal() { document.getElementById('assignModalOverlay').classList.remove('active'); guruAktifAssign = null; }
+function closeAssignModal() { document.getElementById('assignModalOverlay').style.display = 'none'; guruAktifAssign = null; }
 function simpanAssignKelas() {
   var checkboxes = document.querySelectorAll('#assignKelasList input[type="checkbox"]');
   var kelasDiizinkan = {};
@@ -3028,11 +2382,8 @@ function hapusKelasDariSekolah(kelasId) {
     'Keluarkan Kelas',
     'Yakin ingin mengeluarkan kelas "' + (k ? k.namaKelas : kelasId) + '" dari sekolah ini?\n\nKelas tetap ada di database, tapi tidak lagi terafiliasi dengan sekolah ini. Guru yang sudah di-assign ke kelas ini juga otomatis terlepas.',
     function() {
-      // Hapus dari daftar kelas terdaftar sekolah
       db.ref('sekolah/' + sekolahIdAktif + '/kelasTerdaftar/' + kelasId).remove().then(function() {
-        // Hapus referensi sekolahId dari data kelas
         db.ref('kelas/' + kelasId + '/sekolahId').remove();
-        // Hapus assign guru ke kelas ini
         return db.ref('sekolah/' + sekolahIdAktif + '/guru').once('value').then(function(guruSnap) {
           var guruList = guruSnap.val() || {};
           var updates = {};
@@ -3228,7 +2579,6 @@ function loadTabelGuru() {
 
     guruIds.forEach(function(guruId) {
       var g = daftarGuru[guruId];
-      var safe = guruId.replace(/\s/g, '_');
       html += '<tr><td class="sticky-col" style="text-align:left;font-weight:600;border:1px solid #E2E8F0;font-size:11px;">' + g.nama + '</td>';
       html += '<td class="sticky-col-2" style="text-align:left;border:1px solid #E2E8F0;font-size:10px;">' + g.mapel + '</td>';
 
@@ -3390,7 +2740,6 @@ window.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// Pastikan semua fungsi ada di window
 window.openSidebar = openSidebar;
 window.closeSidebar = closeSidebar;
 window.goTo = goTo;
@@ -3420,7 +2769,6 @@ window.closeGuideModal = closeGuideModal;
 window.openGuideModal = openGuideModal;
 window.copyIdSekolah = copyIdSekolah;
 window.hapusKelasDariSekolah = hapusKelasDariSekolah;
-window.hapusGuru = hapusGuru;
 </script>
 
 </body>
