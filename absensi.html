@@ -2322,7 +2322,7 @@
       <input id="loginIdSekolah" class="input" placeholder="ID Sekolah (opsional, contoh: SKL-ABC123)">
       </div>
     <div class="input-group">
-      <p style="font-size:11.5px; color:#94A3B8; margin-top:4px; text-align:center;">Kosongkan jika kelas ini tidak terdaftar di sekolah manapun. Isi jika kamu ingin masuk sebagai kelas yang terdaftar di sekolah tersebut.</p>
+      <p style="font-size:11.5px; color:#94A3B8; margin-top:4px; text-align:center;">Kosongkan jika kelas ini tidak terdaftar di sekolah manapun. Kalau kelas ini memang terdaftar di sekolah, ID Sekolah wajib diisi.</p>
     </div>
     <button class="btn btn-primary" onclick="loginKelas()">Login</button>
     
@@ -2530,7 +2530,7 @@
       <div id="tabelAbsen" style="overflow-x:auto;"></div>
       <div class="export-btn-group">
         <button class="btn btn-export-excel btn-sm" onclick="confirmExportExcel()">Export Excel</button>
-        <button class="btn btn-outline btn-sm" onclick="exportRekapCSV()">Export Rekap</button>
+        <button class="btn btn-export-excel btn-sm" onclick="exportRekapCSV()">Export Rekap</button>
       </div>
       <button class="btn btn-primary btn-sm" style="width:100%; margin-top:8px;" onclick="bagikanAbsensiKelas()">Bagikan Absensi Kelas ke Orang Tua</button>
     </div>
@@ -3170,9 +3170,15 @@ function loginKelas() {
       return;
     }
 
-    if (idSekolah && data.sekolahId !== idSekolah) {
-      showModal("error", "Tidak Terdaftar di Sekolah Ini", "Kelas ini tidak terdaftar di sekolah dengan ID tersebut. Kosongkan kolom ID Sekolah kalau ingin login biasa.");
-      return;
+    if (data.sekolahId) {
+      if (!idSekolah) {
+        showModal("warning", "ID Sekolah Diperlukan", "Kelas ini terdaftar di salah satu sekolah. Masukkan ID Sekolah untuk melanjutkan login.");
+        return;
+      }
+      if (data.sekolahId !== idSekolah) {
+        showModal("error", "Tidak Terdaftar di Sekolah Ini", "Kelas ini tidak terdaftar di sekolah dengan ID tersebut. Periksa lagi ID Sekolah yang dimasukkan.");
+        return;
+      }
     }
 
     kelasAktif = data.nama;
@@ -3624,17 +3630,11 @@ function downloadKartuID() {
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, W, 190);
 
-  // Header decorative circles
-  ctx.fillStyle = "rgba(255,255,255,0.08)";
-  ctx.beginPath(); ctx.arc(W - 30, 20, 90, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(30, 170, 60, 0, Math.PI * 2); ctx.fill();
-
-  // Star icon
+  // Wordmark
   ctx.fillStyle = "#FFFFFF";
   ctx.font = "bold 22px Arial";
   ctx.textAlign = "center";
-  drawStar(ctx, W / 2 - 62, 55, 5, 11, 5);
-  ctx.fillText("STAR TOOLS", W / 2 + 20, 63);
+  ctx.fillText("STAR TOOLS", W / 2, 63);
 
   ctx.font = "600 15px Arial";
   ctx.fillStyle = "rgba(255,255,255,0.9)";
@@ -3714,26 +3714,6 @@ function downloadKartuID() {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-}
-
-function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {
-  let rot = (Math.PI / 2) * 3;
-  const step = Math.PI / spikes;
-  ctx.beginPath();
-  ctx.moveTo(cx, cy - outerRadius);
-  for (let i = 0; i < spikes; i++) {
-    let x = cx + Math.cos(rot) * outerRadius;
-    let y = cy + Math.sin(rot) * outerRadius;
-    ctx.lineTo(x, y);
-    rot += step;
-    x = cx + Math.cos(rot) * innerRadius;
-    y = cy + Math.sin(rot) * innerRadius;
-    ctx.lineTo(x, y);
-    rot += step;
-  }
-  ctx.lineTo(cx, cy - outerRadius);
-  ctx.closePath();
-  ctx.fill();
 }
 
 function wrapCenteredText(ctx, text, x, y, maxWidth, lineHeight) {

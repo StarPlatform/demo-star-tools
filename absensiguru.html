@@ -216,6 +216,48 @@
     color: #fff;
   }
 
+  body.dark .guide-content {
+    background: #111827;
+    border-color: #1E293B;
+  }
+
+  body.dark .guide-handle {
+    background: #334155;
+  }
+
+  body.dark .guide-header h3 {
+    color: #F1F5F9;
+  }
+
+  body.dark .guide-header .guide-close {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  body.dark .guide-header .guide-close svg {
+    stroke: #F1F5F9;
+  }
+
+  body.dark .guide-subtitle {
+    color: #94A3B8;
+  }
+
+  body.dark .guide-step-text b {
+    color: #F1F5F9;
+  }
+
+  body.dark .guide-step-text span {
+    color: #94A3B8;
+  }
+
+  body.dark .guide-footer {
+    border-top-color: #1E293B;
+  }
+
+  body.dark .guide-checkbox {
+    color: #94A3B8;
+  }
+
   .app-container {
     max-width: 560px;
     margin: 0 auto;
@@ -844,6 +886,73 @@
     background: #111827;
   }
 
+  /* ===== NAMA GURU BISA DIKLIK ===== */
+  .guru-name-clickable {
+    cursor: pointer;
+    text-decoration: underline dotted;
+    text-underline-offset: 2px;
+    color: #2563EB;
+    transition: 0.2s;
+  }
+  .guru-name-clickable:hover {
+    color: #1D4ED8;
+  }
+  body.dark .guru-name-clickable {
+    color: #60A5FA;
+  }
+  body.dark .guru-name-clickable:hover {
+    color: #93BBFC;
+  }
+
+  .mapel-tooltip {
+    display: none;
+    font-size: 11px;
+    color: #64748B;
+    font-weight: 400;
+    margin-left: 4px;
+  }
+  body.dark .mapel-tooltip {
+    color: #94A3B8;
+  }
+  .guru-name-clickable.active .mapel-tooltip {
+    display: inline;
+  }
+
+  /* ===== STATUS DENGAN JAM ===== */
+  .cell-status {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 2px;
+  }
+  .cell-status .jam-scan {
+    display: block;
+    font-size: 8px;
+    font-weight: 400;
+    color: #64748B;
+    margin-top: 1px;
+  }
+  body.dark .cell-status .jam-scan {
+    color: #94A3B8;
+  }
+
+  .status-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .status-pill.hadir { background:#DCFCE7; color:#059669; }
+  .status-pill.sakit { background:#FEF9C3; color:#B45309; }
+  .status-pill.izin { background:#FFEDD5; color:#D97706; }
+  .status-pill.tidak-mengajar { background:#F1F5F9; color:#64748B; }
+  .status-pill.belum { background:#F1F5F9; color:#94A3B8; }
+  body.dark .status-pill.hadir { background:#064E3B; color:#34D399; }
+  body.dark .status-pill.sakit { background:#78350F; color:#FBBF24; }
+  body.dark .status-pill.izin { background:#7F1D1D; color:#F87171; }
+  body.dark .status-pill.tidak-mengajar { background:#1E293B; color:#94A3B8; }
+  body.dark .status-pill.belum { background:#1E293B; color:#64748B; }
+
   .scan-area {
     border: 2px dashed #E2E8F0;
     border-radius: 16px;
@@ -1343,6 +1452,7 @@
     display: none;
   }
 
+  /* ===== ID BANNER - ID SEKOLAH BESAR + COPY ===== */
   .id-banner {
     margin: 14px 16px;
     padding: 18px 20px;
@@ -1350,18 +1460,25 @@
     background: linear-gradient(135deg, #2563EB, #3B82F6);
     color: #fff;
   }
-  .id-banner .label { font-size: 12px; opacity: 0.85; margin-bottom: 4px; }
+  .id-banner .label { 
+    font-size: 12px; 
+    opacity: 0.85; 
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
   .id-banner .id-value {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 800;
     letter-spacing: 0.5px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
   }
-  .id-banner .copy-btn {
-    width: 32px;
-    height: 32px;
+  .id-banner .id-value .copy-btn {
+    width: 36px;
+    height: 36px;
     border-radius: 8px;
     background: rgba(255,255,255,0.2);
     display: flex;
@@ -1369,9 +1486,21 @@
     justify-content: center;
     cursor: pointer;
     flex-shrink: 0;
+    transition: 0.2s;
   }
-  .id-banner .copy-btn svg { width: 16px; height: 16px; stroke: #fff; }
-  .id-banner .sekolah-name { font-size: 14px; opacity: 0.9; margin-top: 6px; }
+  .id-banner .id-value .copy-btn:active {
+    transform: scale(0.9);
+  }
+  .id-banner .id-value .copy-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke: #fff;
+  }
+  .id-banner .sekolah-name { 
+    font-size: 14px; 
+    opacity: 0.9; 
+    margin-top: 4px; 
+  }
 
   .guru-card {
     display: flex;
@@ -1388,7 +1517,7 @@
   .guru-avatar {
     width: 44px;
     height: 44px;
-    border-radius: 12px;
+    border-radius: 50%;
     background: #EFF6FF;
     color: #2563EB;
     display: flex;
@@ -1397,8 +1526,15 @@
     font-weight: 800;
     font-size: 16px;
     flex-shrink: 0;
+    overflow: hidden;
+    object-fit: cover;
   }
   body.dark .guru-avatar { background: #1D2B4A; color: #60A5FA; }
+  .guru-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
   .guru-info { flex: 1; min-width: 0; }
   .guru-info .nama { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1542,6 +1678,618 @@
     background: rgba(220, 38, 38, 0.2);
   }
 
+  /* ===== QR MODAL ===== */
+  .qr-modal-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .qr-modal-box .qr-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #2563EB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #EFF6FF;
+    font-size: 30px;
+    font-weight: 800;
+    color: #2563EB;
+    position: relative;
+  }
+  body.dark .qr-modal-box .qr-avatar {
+    border-color: #60A5FA;
+    background: #1D2B4A;
+    color: #60A5FA;
+  }
+  .qr-modal-box .qr-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ===== DESAIN TOMBOL UPLOAD FILE ===== */
+  .upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    width: 100%;
+  }
+
+  .upload-btn-wrapper .btn-upload-custom {
+    background: #EFF6FF;
+    border: 2px dashed #2563EB;
+    color: #2563EB;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 52px;
+  }
+  body.dark .upload-btn-wrapper .btn-upload-custom {
+    background: #1E3A5F;
+    border-color: #60A5FA;
+    color: #60A5FA;
+  }
+
+  .upload-btn-wrapper .btn-upload-custom:hover {
+    background: #DBEAFE;
+  }
+  body.dark .upload-btn-wrapper .btn-upload-custom:hover {
+    background: #1D4ED8;
+    color: #fff;
+  }
+
+  .upload-btn-wrapper .btn-upload-custom svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+  }
+
+  .upload-btn-wrapper input[type=file] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .file-name-display {
+    font-size: 12px;
+    color: #64748B;
+    margin-top: 6px;
+    text-align: center;
+    word-break: break-all;
+  }
+  body.dark .file-name-display {
+    color: #94A3B8;
+  }
+
+  /* ===== MODAL EDIT FOTO ===== */
+  .photo-editor-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 300;
+    padding: 20px;
+  }
+
+  .photo-editor-overlay.active {
+    display: flex;
+  }
+
+  .photo-editor-content {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 24px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+  }
+
+  body.dark .photo-editor-content {
+    background: #111827;
+  }
+
+  .photo-editor-content h3 {
+    margin-bottom: 12px;
+  }
+
+  .photo-editor-canvas-wrap {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #2563EB;
+    background: #F1F5F9;
+  }
+
+  body.dark .photo-editor-canvas-wrap {
+    background: #1E293B;
+  }
+
+  .photo-editor-canvas-wrap canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .photo-editor-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .photo-editor-controls .slider-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .photo-editor-controls .slider-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748B;
+    min-width: 50px;
+    text-align: left;
+  }
+
+  body.dark .photo-editor-controls .slider-group label {
+    color: #94A3B8;
+  }
+
+  .photo-editor-controls input[type="range"] {
+    flex: 1;
+    accent-color: #2563EB;
+  }
+
+  .photo-editor-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .photo-editor-actions .btn {
+    flex: 1;
+    margin: 0;
+  }
+
+  /* ===== GUIDE OVERLAY ===== */
+  .guide-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    display: none;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 250;
+  }
+
+  .guide-overlay.active {
+    display: flex;
+  }
+
+  .guide-content {
+    background: #FFFFFF;
+    width: 100%;
+    max-width: 440px;
+    height: 82vh;
+    max-height: 82vh;
+    border-radius: 24px 24px 0 0;
+    padding: 20px 20px 24px;
+    border: 1px solid #E2E8F0;
+    border-bottom: none;
+    animation: guideSlideUp 0.28s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: height 0.28s ease, max-height 0.28s ease, border-radius 0.28s ease, transform 0.2s ease;
+  }
+
+  .guide-content.expanded {
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    padding-top: max(20px, env(safe-area-inset-top));
+  }
+
+  .guide-content.dragging {
+    transition: none;
+  }
+
+  @keyframes guideSlideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .guide-drag-zone {
+    flex-shrink: 0;
+    padding: 6px 0 14px;
+    margin: -6px 0 0;
+    touch-action: none;
+    cursor: grab;
+  }
+
+  .guide-handle {
+    width: 40px;
+    height: 4px;
+    background: #E2E8F0;
+    border-radius: 4px;
+    margin: 0 auto;
+  }
+
+  .guide-header {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  .guide-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0F172A;
+  }
+
+  .guide-header .guide-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #F8FAFE;
+    border: 1px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .guide-header .guide-close svg {
+    width: 16px;
+    height: 16px;
+    stroke: #0F172A;
+  }
+
+  .guide-subtitle {
+    flex-shrink: 0;
+    font-size: 13px;
+    color: #64748B;
+    margin-bottom: 14px;
+  }
+
+  .guide-sim {
+    flex-shrink: 0;
+    position: relative;
+    height: 148px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #EFF6FF, #F8FAFE);
+    border: 1px solid #DBEAFE;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  body.dark .guide-sim {
+    background: linear-gradient(135deg, #0F1E3A, #111827);
+    border-color: #1E293B;
+  }
+
+  .sim-scene {
+    position: absolute;
+    top: 0; left: 8px; right: 8px; bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    opacity: 0;
+  }
+
+  .sim-scene-icons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sim-scene-icon {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: #0F172A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  body.dark .sim-scene-icon {
+    background: #1E293B;
+    border: 1px solid #334155;
+  }
+
+  .sim-scene-icon.outline {
+    background: #FFFFFF;
+    border: 2px solid #2563EB;
+  }
+
+  body.dark .sim-scene-icon.outline {
+    background: #111827;
+  }
+
+  .sim-scene-icon svg {
+    width: 22px;
+    height: 22px;
+    stroke: #fff;
+  }
+
+  .sim-scene-icon.outline svg {
+    stroke: #2563EB;
+  }
+
+  .sim-scene-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #2563EB;
+    line-height: 1.3;
+    text-align: center;
+    max-width: 200px;
+  }
+
+  body.dark .sim-scene-label {
+    color: #60A5FA;
+  }
+
+  .sim-check-badge {
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #22C55E;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: checkPopSync 10s ease-in-out infinite;
+  }
+
+  .sim-check-badge svg {
+    width: 9px;
+    height: 9px;
+    stroke: #fff;
+    stroke-width: 3;
+  }
+
+  @keyframes checkPopSync {
+    0%, 68% { opacity: 0; transform: scale(0.5); }
+    72% { opacity: 1; transform: scale(1); }
+    77% { opacity: 1; transform: scale(1); }
+    80% { opacity: 0; }
+    100% { opacity: 0; }
+  }
+
+  .sim-dots {
+    position: absolute;
+    bottom: 12px;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .sim-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #CBD5E1;
+  }
+
+  body.dark .sim-dot {
+    background: #334155;
+  }
+
+  .sim-dot-1 { animation: dotActive1 10s ease-in-out infinite; }
+  .sim-dot-2 { animation: dotActive2 10s ease-in-out infinite; }
+  .sim-dot-3 { animation: dotActive3 10s ease-in-out infinite; }
+  .sim-dot-4 { animation: dotActive4 10s ease-in-out infinite; }
+  .sim-dot-5 { animation: dotActive5 10s ease-in-out infinite; }
+
+  @keyframes dotActive1 {
+    0%, 14% { background: #2563EB; transform: scale(1.3); }
+    17%, 100% { background: #CBD5E1; transform: scale(1); }
+  }
+  @keyframes dotActive2 {
+    0%, 20%, 37%, 100% { background: #CBD5E1; transform: scale(1); }
+    23%, 34% { background: #2563EB; transform: scale(1.3); }
+  }
+  @keyframes dotActive3 {
+    0%, 40%, 57%, 100% { background: #CBD5E1; transform: scale(1); }
+    43%, 54% { background: #2563EB; transform: scale(1.3); }
+  }
+  @keyframes dotActive4 {
+    0%, 60%, 77%, 100% { background: #CBD5E1; transform: scale(1); }
+    63%, 74% { background: #2563EB; transform: scale(1.3); }
+  }
+  @keyframes dotActive5 {
+    0%, 80%, 97% { background: #CBD5E1; transform: scale(1); }
+    83%, 94% { background: #2563EB; transform: scale(1.3); }
+    100% { background: #CBD5E1; transform: scale(1); }
+  }
+
+  .sim-scene-1 { animation: sceneFade1 10s ease-in-out infinite; }
+  .sim-scene-2 { animation: sceneFade2 10s ease-in-out infinite; }
+  .sim-scene-3 { animation: sceneFade3 10s ease-in-out infinite; }
+  .sim-scene-4 { animation: sceneFade4 10s ease-in-out infinite; }
+  .sim-scene-5 { animation: sceneFade5 10s ease-in-out infinite; }
+
+  @keyframes sceneFade1 {
+    0% { opacity: 1; transform: translateY(0); }
+    14% { opacity: 1; transform: translateY(0); }
+    17% { opacity: 0; transform: translateY(-6px); }
+    100% { opacity: 0; }
+  }
+  @keyframes sceneFade2 {
+    0%, 20% { opacity: 0; transform: translateY(6px); }
+    23% { opacity: 1; transform: translateY(0); }
+    34% { opacity: 1; transform: translateY(0); }
+    37% { opacity: 0; transform: translateY(-6px); }
+    100% { opacity: 0; }
+  }
+  @keyframes sceneFade3 {
+    0%, 40% { opacity: 0; transform: translateY(6px); }
+    43% { opacity: 1; transform: translateY(0); }
+    54% { opacity: 1; transform: translateY(0); }
+    57% { opacity: 0; transform: translateY(-6px); }
+    100% { opacity: 0; }
+  }
+  @keyframes sceneFade4 {
+    0%, 60% { opacity: 0; transform: translateY(6px); }
+    63% { opacity: 1; transform: translateY(0); }
+    74% { opacity: 1; transform: translateY(0); }
+    77% { opacity: 0; transform: translateY(-6px); }
+    100% { opacity: 0; }
+  }
+  @keyframes sceneFade5 {
+    0%, 80% { opacity: 0; transform: translateY(6px); }
+    83% { opacity: 1; transform: translateY(0); }
+    97% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; }
+  }
+
+  .guide-steps {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-right: 2px;
+    margin-bottom: 16px;
+  }
+
+  .guide-step {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .guide-step-num {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #2563EB18;
+    color: #2563EB;
+    font-size: 12.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  body.dark .guide-step-num {
+    background: #2563EB2E;
+    color: #60A5FA;
+  }
+
+  .guide-step-text b {
+    display: block;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 2px;
+  }
+
+  body.dark .guide-step-text b {
+    color: #F1F5F9;
+  }
+
+  .guide-step-text span {
+    font-size: 12.5px;
+    color: #64748B;
+    line-height: 1.5;
+  }
+
+  body.dark .guide-step-text span {
+    color: #94A3B8;
+  }
+
+  .guide-footer {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid #E2E8F0;
+  }
+
+  body.dark .guide-footer {
+    border-top-color: #1E293B;
+  }
+
+  .guide-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #64748B;
+  }
+
+  body.dark .guide-checkbox {
+    color: #94A3B8;
+  }
+
+  .guide-btn-ok {
+    background: #2563EB;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 10px 20px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .guide-btn-ok:active {
+    transform: scale(0.96);
+  }
+
   /* ===== Tampilan Laptop / PC ===== */
   @media (min-width: 900px) {
     body {
@@ -1605,6 +2353,40 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
+    }
+
+    .photo-editor-content {
+      max-width: 450px;
+    }
+
+    .guide-overlay {
+      align-items: center;
+    }
+
+    .guide-content {
+      max-width: 480px;
+      height: auto;
+      max-height: 85vh;
+      border-radius: 20px;
+      border-bottom: 1px solid #E2E8F0;
+    }
+
+    body.dark .guide-content {
+      border-bottom-color: #1E293B;
+    }
+
+    .guide-content.expanded {
+      height: auto;
+      max-height: 90vh;
+      border-radius: 20px;
+    }
+
+    .guide-drag-zone {
+      cursor: default;
+    }
+
+    .guide-handle {
+      opacity: 0.4;
     }
   }
 </style>
@@ -1716,6 +2498,7 @@
   <!-- DASHBOARD -->
   <div id="layarDashboard" class="hidden">
 
+    <!-- ID BANNER - ID SEKOLAH BESAR + COPY -->
     <div class="id-banner">
       <div class="label">ID Sekolah</div>
       <div class="id-value">
@@ -1745,6 +2528,20 @@
         <div class="input-group">
           <label>Mata Pelajaran yang Diajar</label>
           <input id="mapelGuruBaru" class="input" placeholder="Contoh: Matematika">
+        </div>
+        <div class="input-group" style="margin-top:8px;">
+          <label>Foto Guru (opsional)</label>
+          <div class="upload-btn-wrapper">
+            <div class="btn-upload-custom" onclick="document.getElementById('fotoGuruInput').click()">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              Pilih Foto
+            </div>
+            <input type="file" id="fotoGuruInput" accept="image/*">
+          </div>
+          <div id="fileFotoName" class="file-name-display">Belum ada file dipilih</div>
+          <div id="previewFotoGuru" style="width:60px;height:60px;border-radius:50%;overflow:hidden;border:2px solid #E2E8F0;display:none;margin:8px auto 0;">
+            <img id="previewFotoGuruImg" style="width:100%;height:100%;object-fit:cover;">
+          </div>
         </div>
         <button class="btn btn-primary" onclick="tambahGuru()">Tambah Guru &amp; Buat QR</button>
       </div>
@@ -1896,14 +2693,19 @@
 <div id="qrModalOverlay" class="modal-overlay">
   <div class="modal-content">
     <div class="qr-modal-box" style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+      <div class="qr-avatar" id="qrAvatarModal">
+        <span id="qrAvatarText">B</span>
+        <img id="qrAvatarImg" style="display:none;">
+      </div>
       <h3 id="qrModalNama" style="margin-bottom:0;">Nama Guru</h3>
       <p style="margin-bottom:4px;" id="qrModalMapel">Mapel</p>
       <div id="qrGuruContainer" style="padding:14px; background:#fff; border-radius:16px;"></div>
       <p style="font-size:11px; color:#94A3B8;">QR ini dipakai guru untuk check-in absensi setiap hari.</p>
     </div>
-    <div class="modal-actions" style="display:flex; gap:8px; margin-top:12px;">
+    <div class="modal-actions" style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
       <button class="btn btn-outline" onclick="closeQrModal()" style="flex:1;">Tutup</button>
-      <button class="btn btn-primary" onclick="downloadQrGuru()" style="flex:1;">Unduh QR</button>
+      <button class="btn btn-primary" onclick="downloadQrOnly()" style="flex:1;">Download QR</button>
+      <button class="btn btn-success" onclick="openPhotoEditor()" style="flex:1;">Edit & Download Kartu</button>
     </div>
   </div>
 </div>
@@ -1923,25 +2725,169 @@
   </div>
 </div>
 
-<!-- GUIDE -->
-<div id="guideOverlay" class="modal-overlay" style="display:none;">
-  <div class="modal-content" style="max-width:420px; text-align:left;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-      <h3 style="margin:0;">Panduan Penggunaan</h3>
-      <button onclick="closeGuideModal()" style="background:transparent; border:none; font-size:24px; cursor:pointer;">×</button>
+<!-- PHOTO EDITOR MODAL -->
+<div id="photoEditorOverlay" class="photo-editor-overlay">
+  <div class="photo-editor-content">
+    <h3>Atur Posisi Foto</h3>
+    <p style="font-size:12px; color:#64748B; margin-bottom:12px;">Geser foto agar pas di lingkaran</p>
+    <div class="photo-editor-canvas-wrap">
+      <canvas id="photoEditorCanvas" width="400" height="400"></canvas>
     </div>
-    <div style="font-size:13px; color:#64748B; line-height:1.6; max-height:60vh; overflow-y:auto;">
-      <p><strong>1. Daftarkan Sekolah</strong><br>Masukkan nama sekolah dan buat password untuk membuat akun sekolah baru. ID Sekolah akan dibuat otomatis.</p>
-      <p><strong>2. Tambah Guru</strong><br>Masukkan nama guru dan mata pelajaran yang diajar. Setiap guru otomatis mendapatkan QR Code pribadi untuk absensi.</p>
-      <p><strong>3. Assign Guru ke Kelas</strong><br>Pilih kelas yang boleh diabsen oleh guru tertentu. Satu guru bisa mengajar di beberapa kelas.</p>
-      <p><strong>4. Scan QR untuk Absen</strong><br>Guru menunjukkan QR Code-nya, lalu admin/operator memindai menggunakan kamera atau dari galeri. Status Hadir otomatis tercatat hari ini.</p>
-      <p><strong>5. Lihat Rekap Bulanan</strong><br>Pilih bulan yang diinginkan, tabel absensi guru akan muncul dengan status per tanggal. Bisa diexport ke Excel atau PDF.</p>
+    <div class="photo-editor-controls">
+      <div class="slider-group">
+        <label>Atas/Bawah</label>
+        <input type="range" id="photoOffsetY" min="-100" max="100" value="0">
+      </div>
+      <div class="slider-group">
+        <label>Kanan/kiri</label>
+        <input type="range" id="photoOffsetX" min="-100" max="100" value="0">
+      </div>
+      <div class="slider-group">
+        <label>Zoom</label>
+        <input type="range" id="photoZoom" min="50" max="200" value="100">
+      </div>
     </div>
-    <button class="btn btn-primary" onclick="closeGuideModal()" style="margin-top:12px;">Saya Mengerti</button>
+    <div class="photo-editor-actions">
+      <button class="btn btn-outline" onclick="closePhotoEditor()" style="flex:1;">Batal</button>
+      <button class="btn btn-success" onclick="downloadKartuIDWithEditor()" style="flex:1;">Download Kartu ID</button>
+    </div>
+  </div>
+</div>
+
+<!-- GUIDE OVERLAY -->
+<div id="guideOverlay" class="guide-overlay">
+  <div class="guide-content" id="guideContent">
+    <div class="guide-drag-zone" id="guideDragZone">
+      <div class="guide-handle"></div>
+    </div>
+    <div class="guide-header">
+      <h3>Panduan Penggunaan Absensi Guru</h3>
+      <div class="guide-close" onclick="closeGuideModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </div>
+    </div>
+    <p class="guide-subtitle">Ikuti langkah-langkah berikut agar absensi guru di sekolah Anda berjalan dengan lancar.</p>
+
+    <div class="guide-sim">
+      <div class="sim-scene sim-scene-1">
+        <div class="sim-scene-icons">
+          <div class="sim-scene-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+        </div>
+        <div class="sim-scene-label">Daftar / Login Sekolah</div>
+      </div>
+
+      <div class="sim-scene sim-scene-2">
+        <div class="sim-scene-icons">
+          <div class="sim-scene-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+          </div>
+        </div>
+        <div class="sim-scene-label">Tambah Guru &amp; QR</div>
+      </div>
+
+      <div class="sim-scene sim-scene-3">
+        <div class="sim-scene-icons">
+          <div class="sim-scene-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 8h3M15 12h3M6 16h12"/></svg>
+          </div>
+        </div>
+        <div class="sim-scene-label">Assign Guru ke Kelas</div>
+      </div>
+
+      <div class="sim-scene sim-scene-4">
+        <div class="sim-scene-icons">
+          <div class="sim-scene-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="14" y2="21"/><line x1="21" y1="14" x2="21" y2="21"/><line x1="17" y1="17" x2="21" y2="17"/></svg>
+          </div>
+          <div class="sim-scene-icon outline">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+            <div class="sim-check-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="sim-scene-label">Scan QR &amp; Absen Harian</div>
+      </div>
+
+      <div class="sim-scene sim-scene-5">
+        <div class="sim-scene-icons">
+          <div class="sim-scene-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 11 17 15 12"/></svg>
+          </div>
+        </div>
+        <div class="sim-scene-label">Rekap Absensi Bulanan</div>
+      </div>
+
+      <div class="sim-dots">
+        <div class="sim-dot sim-dot-1"></div>
+        <div class="sim-dot sim-dot-2"></div>
+        <div class="sim-dot sim-dot-3"></div>
+        <div class="sim-dot sim-dot-4"></div>
+        <div class="sim-dot sim-dot-5"></div>
+      </div>
+    </div>
+
+    <div class="guide-steps">
+      <div class="guide-step">
+        <div class="guide-step-num">1</div>
+        <div class="guide-step-text">
+          <b>Daftarkan Sekolah</b>
+          <span>Masukkan nama sekolah dan buat password untuk membuat akun sekolah baru. ID Sekolah akan dibuat otomatis.</span>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">2</div>
+        <div class="guide-step-text">
+          <b>Tambah Guru</b>
+          <span>Masukkan nama guru dan mata pelajaran yang diajar. Setiap guru otomatis mendapatkan QR Code pribadi untuk absensi.</span>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">3</div>
+        <div class="guide-step-text">
+          <b>Assign Guru ke Kelas</b>
+          <span>Pilih kelas yang boleh diabsen oleh guru tertentu. Satu guru bisa mengajar di beberapa kelas, dan satu kelas bisa memiliki banyak guru.</span>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">4</div>
+        <div class="guide-step-text">
+          <b>Scan QR untuk Absen</b>
+          <span>Guru menunjukkan QR Code-nya, lalu admin/operator memindai menggunakan kamera atau dari galeri. Status Hadir otomatis tercatat hari ini.</span>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">5</div>
+        <div class="guide-step-text">
+          <b>Lihat Rekap Bulanan</b>
+          <span>Pilih bulan yang diinginkan, tabel absensi guru akan muncul dengan status per tanggal. Bisa diexport ke Excel atau PDF.</span>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">6</div>
+        <div class="guide-step-text">
+          <b>Export Excel &amp; PDF</b>
+          <span>Data absensi guru dan rekap bulanan bisa diexport ke Excel (CSV) atau PDF untuk keperluan laporan.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide-footer">
+      <label class="guide-checkbox">
+        <input type="checkbox" id="guideDontShow" style="accent-color:#2563EB;">
+        Jangan tampilkan kembali
+      </label>
+      <button class="guide-btn-ok" onclick="closeGuideModal()">Saya Mengerti</button>
+    </div>
   </div>
 </div>
 
 <script>
+// ===== FIREBASE =====
 var firebaseConfig = {
   apiKey: "AIzaSyDgr_nHqvpMsiG4lBkYckzxRErkskXj_6E",
   authDomain: "laporanstartools-c18b2.firebaseapp.com",
@@ -1952,6 +2898,23 @@ var firebaseConfig = {
 if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
 var db = firebase.database();
 
+// ===== VARIABEL =====
+var sekolahIdAktif = localStorage.getItem('sekolahIdAktif') || '';
+var sekolahPwAktif = localStorage.getItem('sekolahPwAktif') || '';
+var namaSekolahAktif = '';
+var daftarGuru = {};
+var daftarKelasTerdaftar = {};
+var html5QrCode = null;
+var isScanning = false;
+var currentScanMode = 'camera';
+var guruAktifModal = null;
+var guruAktifAssign = null;
+var bulanDipilihGuru = localStorage.getItem('bulanGuru') || '';
+var fotoGuruData = {};
+var fotoEditorData = { image: null, offsetX: 0, offsetY: 0, zoom: 100 };
+var daftarKelasNama = {};
+
+// ===== FUNGSI DASAR =====
 function goTo(page) { window.location.href = page; }
 
 function openSidebar() {
@@ -1963,13 +2926,13 @@ function closeSidebar() {
   document.getElementById('sidebarNav').classList.remove('active');
 }
 
-/* ===== Modal custom ===== */
 function getIcon(type) {
   if (type === 'success') return '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>';
   if (type === 'error') return '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
   if (type === 'warning') return '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
   return '';
 }
+
 function showModal(iconType, title, message, actions) {
   document.getElementById('modalIcon').innerHTML = getIcon(iconType);
   document.getElementById('modalTitle').innerText = title;
@@ -1977,6 +2940,7 @@ function showModal(iconType, title, message, actions) {
   document.getElementById('modalActions').innerHTML = actions || '<button class="btn btn-primary" onclick="closeModal()">Mengerti</button>';
   document.getElementById('modalOverlay').style.display = 'flex';
 }
+
 var pendingConfirmAction = null;
 function showConfirmModal(title, message, onConfirm) {
   pendingConfirmAction = onConfirm;
@@ -1990,18 +2954,64 @@ function showConfirmModal(title, message, onConfirm) {
     '</div>';
   document.getElementById('modalOverlay').style.display = 'flex';
 }
+
 function runPendingConfirm() {
   var a = pendingConfirmAction; pendingConfirmAction = null; closeModal(); if (a) a();
 }
 function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
 
-/* ===== Guide ===== */
+// ===== GUIDE =====
 function openGuideModal() {
-  document.getElementById('guideOverlay').style.display = 'flex';
+  document.getElementById('guideOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
 }
 function closeGuideModal() {
-  document.getElementById('guideOverlay').style.display = 'none';
+  document.getElementById('guideOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+  var dontShow = document.getElementById('guideDontShow');
+  if (dontShow && dontShow.checked) {
+    localStorage.setItem('guruGuideSeen', '1');
+  }
 }
+
+(function setupGuideDrag() {
+  var startY = 0, dragging = false;
+  function init() {
+    var zone = document.getElementById('guideDragZone');
+    var content = document.getElementById('guideContent');
+    if (!zone || !content) return;
+    zone.addEventListener('touchstart', function(e) {
+      startY = e.touches[0].clientY;
+      dragging = true;
+      content.classList.add('dragging');
+    }, { passive: true });
+    zone.addEventListener('touchmove', function(e) {
+      if (!dragging) return;
+      var deltaY = e.touches[0].clientY - startY;
+      var clamped = Math.max(-40, Math.min(deltaY, 300));
+      content.style.transform = 'translateY(' + clamped + 'px)';
+    }, { passive: true });
+    zone.addEventListener('touchend', function(e) {
+      if (!dragging) return;
+      dragging = false;
+      content.classList.remove('dragging');
+      content.style.transform = '';
+      var deltaY = e.changedTouches[0].clientY - startY;
+      if (deltaY > 60) closeGuideModal();
+      else if (deltaY < -50) content.classList.add('expanded');
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+
+(function autoShowGuide() {
+  if (!localStorage.getItem('guruGuideSeen')) {
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(openGuideModal, 500);
+    });
+  }
+})();
 
 function toggleDropdown(id) {
   var el = document.getElementById(id);
@@ -2011,26 +3021,12 @@ function closeDropdowns() {
   document.querySelectorAll('.options').forEach(function(el) { el.classList.remove('active'); });
 }
 
-/* ===== State ===== */
-var sekolahIdAktif = localStorage.getItem('sekolahIdAktif') || '';
-var sekolahPwAktif = localStorage.getItem('sekolahPwAktif') || '';
-var namaSekolahAktif = '';
-var daftarGuru = {};
-var daftarKelasTerdaftar = {};
-var html5QrCode = null;
-var isScanning = false;
-var currentScanMode = 'camera';
-var guruAktifModal = null;
-var guruAktifAssign = null;
-var bulanDipilihGuru = localStorage.getItem('bulanGuru') || '';
-
+// ===== AUTH =====
 function switchAuthTab(tab) {
   document.getElementById('tabDaftarBtn').classList.toggle('active', tab === 'daftar');
   document.getElementById('tabLoginBtn').classList.toggle('active', tab === 'login');
-
   var daftarForm = document.getElementById('formDaftarSekolah');
   var loginForm = document.getElementById('formLoginSekolah');
-
   if (tab === 'daftar') {
     daftarForm.classList.remove('hidden');
     loginForm.classList.add('hidden');
@@ -2077,7 +3073,7 @@ function generateKelasId() {
   return result;
 }
 
-/* ===== Daftar / Login Sekolah ===== */
+// ===== DAFTAR / LOGIN SEKOLAH =====
 function daftarSekolah() {
   var nama = document.getElementById('daftarNamaSekolah').value.trim();
   var pw = document.getElementById('daftarPwSekolah').value;
@@ -2121,11 +3117,21 @@ function logoutSekolah() {
 function masukDashboard() {
   document.getElementById('layarLogin').classList.add('hidden');
   document.getElementById('layarDashboard').classList.remove('hidden');
+
   document.getElementById('idSekolahText').innerText = sekolahIdAktif;
 
   db.ref('sekolah/' + sekolahIdAktif + '/nama').once('value').then(function(snap) {
     namaSekolahAktif = snap.val() || '';
     document.getElementById('namaSekolahText').innerText = namaSekolahAktif;
+  });
+
+  // Load daftar kelas untuk ambil nama kelas
+  db.ref('sekolah/' + sekolahIdAktif + '/kelasTerdaftar').on('value', function(snap) {
+    var data = snap.val() || {};
+    daftarKelasNama = {};
+    Object.keys(data).forEach(function(kelasId) {
+      daftarKelasNama[kelasId] = data[kelasId].namaKelas || kelasId;
+    });
   });
 
   db.ref('sekolah/' + sekolahIdAktif + '/guru').once('value').then(function(snap) {
@@ -2152,17 +3158,46 @@ function copyIdSekolah() {
   });
 }
 
-/* ===== Kelola Guru ===== */
+// ===== PREVIEW FOTO =====
+document.getElementById('fotoGuruInput').addEventListener('change', function(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  document.getElementById('fileFotoName').innerText = file.name;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var img = document.getElementById('previewFotoGuruImg');
+    img.src = ev.target.result;
+    document.getElementById('previewFotoGuru').style.display = 'block';
+    fotoGuruData['preview'] = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+// ===== KELOLA GURU =====
 function tambahGuru() {
   var nama = document.getElementById('namaGuruBaru').value.trim();
   var mapel = document.getElementById('mapelGuruBaru').value.trim();
   if (!nama || !mapel) { showModal('warning', 'Belum Lengkap', 'Isi nama guru dan mata pelajaran.'); return; }
   var guruId = generateId('GRU');
-  db.ref('sekolah/' + sekolahIdAktif + '/guru/' + guruId).set({
-    nama: nama, mapel: mapel, dibuatPada: Date.now(), kelasDiizinkan: {}
-  }).then(function() {
+  
+  var dataGuru = {
+    nama: nama, 
+    mapel: mapel, 
+    dibuatPada: Date.now(), 
+    kelasDiizinkan: {}
+  };
+  
+  if (fotoGuruData['preview']) {
+    dataGuru.foto = fotoGuruData['preview'];
+  }
+  
+  db.ref('sekolah/' + sekolahIdAktif + '/guru/' + guruId).set(dataGuru).then(function() {
     document.getElementById('namaGuruBaru').value = '';
     document.getElementById('mapelGuruBaru').value = '';
+    document.getElementById('fotoGuruInput').value = '';
+    document.getElementById('previewFotoGuru').style.display = 'none';
+    document.getElementById('fileFotoName').innerText = 'Belum ada file dipilih';
+    fotoGuruData = {};
     showModal('success', 'Guru Ditambahkan', nama + ' berhasil ditambahkan. QR sudah siap.');
     loadGuru();
   });
@@ -2196,7 +3231,13 @@ function renderGuruList() {
     
     var avatar = document.createElement('div');
     avatar.className = 'guru-avatar';
-    avatar.textContent = initial;
+    if (g.foto) {
+      var img = document.createElement('img');
+      img.src = g.foto;
+      avatar.appendChild(img);
+    } else {
+      avatar.textContent = initial;
+    }
     
     var info = document.createElement('div');
     info.className = 'guru-info';
@@ -2250,12 +3291,25 @@ function hapusGuru(guruId) {
   });
 }
 
-/* ===== QR Guru ===== */
+// ===== QR GURU =====
 function openQrModal(guruId) {
   guruAktifModal = guruId;
   var g = daftarGuru[guruId];
   document.getElementById('qrModalNama').innerText = g.nama;
   document.getElementById('qrModalMapel').innerText = g.mapel;
+  
+  var avatarText = document.getElementById('qrAvatarText');
+  var avatarImg = document.getElementById('qrAvatarImg');
+  if (g.foto) {
+    avatarText.style.display = 'none';
+    avatarImg.style.display = 'block';
+    avatarImg.src = g.foto;
+  } else {
+    avatarText.style.display = 'block';
+    avatarImg.style.display = 'none';
+    avatarText.innerText = (g.nama || '?').charAt(0).toUpperCase();
+  }
+  
   var qrContainer = document.getElementById('qrGuruContainer');
   qrContainer.innerHTML = '';
   new QRCode(qrContainer, {
@@ -2267,17 +3321,288 @@ function openQrModal(guruId) {
   document.getElementById('qrModalOverlay').style.display = 'flex';
 }
 function closeQrModal() { document.getElementById('qrModalOverlay').style.display = 'none'; guruAktifModal = null; }
-function downloadQrGuru() {
+
+function downloadQrOnly() {
   var canvas = document.querySelector('#qrGuruContainer canvas');
-  if (!canvas) return;
+  if (!canvas) {
+    showModal('warning', 'Tidak Ada QR', 'Generate QR terlebih dahulu.');
+    return;
+  }
   var g = daftarGuru[guruAktifModal];
   var link = document.createElement('a');
   link.download = 'QR-Guru-' + (g ? g.nama.replace(/\s+/g, '_') : 'guru') + '.png';
   link.href = canvas.toDataURL('image/png');
   link.click();
+  showModal('success', 'Berhasil!', 'QR Code berhasil diunduh.');
 }
 
-/* ===== Assign Kelas ===== */
+// ===== PHOTO EDITOR =====
+function openPhotoEditor() {
+  var g = daftarGuru[guruAktifModal];
+  if (!g) return;
+  
+  var foto = g.foto || null;
+  if (!foto) {
+    showModal('warning', 'Tidak Ada Foto', 'Guru ini belum punya foto. Upload foto dulu di menu Tambah Guru.');
+    return;
+  }
+  
+  fotoEditorData.image = foto;
+  fotoEditorData.offsetX = 0;
+  fotoEditorData.offsetY = 0;
+  fotoEditorData.zoom = 100;
+  
+  document.getElementById('photoOffsetX').value = 0;
+  document.getElementById('photoOffsetY').value = 0;
+  document.getElementById('photoZoom').value = 100;
+  
+  document.getElementById('photoEditorOverlay').classList.add('active');
+  renderPhotoEditor();
+}
+
+function closePhotoEditor() {
+  document.getElementById('photoEditorOverlay').classList.remove('active');
+}
+
+function renderPhotoEditor() {
+  var canvas = document.getElementById('photoEditorCanvas');
+  var ctx = canvas.getContext('2d');
+  var w = canvas.width, h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
+  
+  ctx.fillStyle = '#EFF6FF';
+  ctx.beginPath();
+  ctx.arc(w/2, h/2, w/2 - 2, 0, Math.PI * 2);
+  ctx.fill();
+  
+  if (!fotoEditorData.image) return;
+  
+  var img = new Image();
+  img.onload = function() {
+    var zoom = fotoEditorData.zoom / 100;
+    var offsetX = fotoEditorData.offsetX * 1.5;
+    var offsetY = fotoEditorData.offsetY * 1.5;
+    
+    var imgW = img.width * zoom;
+    var imgH = img.height * zoom;
+    
+    var sx = (w - imgW) / 2 + offsetX;
+    var sy = (h - imgH) / 2 + offsetY;
+    
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(w/2, h/2, w/2 - 2, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.drawImage(img, sx, sy, imgW, imgH);
+    ctx.restore();
+    
+    ctx.strokeStyle = '#2563EB';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(w/2, h/2, w/2 - 2, 0, Math.PI * 2);
+    ctx.stroke();
+  };
+  img.src = fotoEditorData.image;
+}
+
+document.getElementById('photoOffsetX').addEventListener('input', function() {
+  fotoEditorData.offsetX = parseInt(this.value) || 0;
+  renderPhotoEditor();
+});
+document.getElementById('photoOffsetY').addEventListener('input', function() {
+  fotoEditorData.offsetY = parseInt(this.value) || 0;
+  renderPhotoEditor();
+});
+document.getElementById('photoZoom').addEventListener('input', function() {
+  fotoEditorData.zoom = parseInt(this.value) || 100;
+  renderPhotoEditor();
+});
+
+// ===== DOWNLOAD KARTU ID - NAMA SEKOLAH DI FOOTER =====
+function downloadKartuIDWithEditor() {
+  var g = daftarGuru[guruAktifModal];
+  if (!g) {
+    showModal('warning', 'Error', 'Data guru tidak ditemukan.');
+    return;
+  }
+  
+  var qrContainer = document.getElementById('qrGuruContainer');
+  var qrCanvas = qrContainer.querySelector('canvas');
+  if (!qrCanvas) {
+    showModal('warning', 'Tidak Ada QR', 'Generate QR terlebih dahulu.');
+    return;
+  }
+  
+  var nama = g.nama || 'Guru';
+  var mapel = g.mapel || 'Mapel';
+  var foto = g.foto || null;
+  var namaSekolah = namaSekolahAktif || 'Sekolah';
+  
+  var W = 500, H = 800;
+  var card = document.createElement('canvas');
+  card.width = W;
+  card.height = H;
+  var ctx = card.getContext('2d');
+
+  function roundRect(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  ctx.fillStyle = '#FFFFFF';
+  roundRect(0, 0, W, H, 28);
+  ctx.fill();
+  ctx.save();
+  roundRect(0, 0, W, H, 28);
+  ctx.clip();
+
+  var grad = ctx.createLinearGradient(0, 0, W, 200);
+  grad.addColorStop(0, '#2563EB');
+  grad.addColorStop(1, '#3B82F6');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, 190);
+
+  ctx.fillStyle = 'rgba(255,255,255,0.08)';
+  ctx.beginPath(); ctx.arc(W - 30, 20, 90, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(30, 170, 60, 0, Math.PI * 2); ctx.fill();
+
+  // STAR TOOLS - tanpa nama sekolah di bawahnya
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 22px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('STAR TOOLS', W / 2, 63);
+
+  ctx.font = '600 15px Arial';
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.fillText('KARTU ABSENSI GURU', W / 2, 100);
+
+  var avatarY = 190;
+  ctx.fillStyle = '#EFF6FF';
+  ctx.beginPath();
+  ctx.arc(W / 2, avatarY, 62, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#2563EB';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  var editorCanvas = document.getElementById('photoEditorCanvas');
+  if (foto && editorCanvas) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(W / 2, avatarY, 58, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.drawImage(editorCanvas, W / 2 - 58, avatarY - 58, 116, 116);
+    ctx.restore();
+  } else if (foto) {
+    var img = new Image();
+    img.onload = function() {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(W / 2, avatarY, 58, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(img, W / 2 - 58, avatarY - 58, 116, 116);
+      ctx.restore();
+      drawCardContent();
+    };
+    img.src = foto;
+    drawCardContent();
+    return;
+  } else {
+    ctx.fillStyle = '#2563EB';
+    ctx.font = 'bold 52px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(nama.trim().charAt(0).toUpperCase(), W / 2, avatarY + 4);
+    ctx.textBaseline = 'alphabetic';
+  }
+  
+  drawCardContent();
+
+  function drawCardContent() {
+    ctx.fillStyle = '#0F172A';
+    ctx.font = 'bold 30px Arial';
+    ctx.textAlign = 'center';
+    wrapCenteredText(ctx, nama, W / 2, 300, 440, 34);
+
+    ctx.fillStyle = '#64748B';
+    ctx.font = '600 18px Arial';
+    ctx.fillText(mapel, W / 2, 340);
+
+    var qrBoxSize = 260;
+    var qrBoxX = (W - qrBoxSize) / 2;
+    var qrBoxY = 375;
+    ctx.fillStyle = '#F8FAFE';
+    roundRect(qrBoxX, qrBoxY, qrBoxSize, qrBoxSize, 18);
+    ctx.fill();
+    ctx.strokeStyle = '#E2E8F0';
+    ctx.lineWidth = 1.5;
+    roundRect(qrBoxX, qrBoxY, qrBoxSize, qrBoxSize, 18);
+    ctx.stroke();
+
+    var qrPad = 20;
+    ctx.drawImage(qrCanvas, qrBoxX + qrPad, qrBoxY + qrPad, qrBoxSize - qrPad * 2, qrBoxSize - qrPad * 2);
+
+    ctx.fillStyle = '#94A3B8';
+    ctx.font = '600 14px Arial';
+    ctx.fillText('Scan untuk Presensi', W / 2, qrBoxY + qrBoxSize + 34);
+
+    // FOOTER - NAMA SEKOLAH di sini, TANPA ID SEKOLAH
+    ctx.strokeStyle = '#E2E8F0';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(40, H - 70);
+    ctx.lineTo(W - 40, H - 70);
+    ctx.stroke();
+
+    ctx.fillStyle = '#94A3B8';
+    ctx.font = '500 13px Arial';
+    ctx.fillText(namaSekolah.toUpperCase(), W / 2, H - 40);
+    ctx.fillText('Star Platform | Star Tools 2026', W / 2, H - 20);
+
+    ctx.restore();
+    ctx.strokeStyle = '#E2E8F0';
+    ctx.lineWidth = 2;
+    roundRect(1, 1, W - 2, H - 2, 28);
+    ctx.stroke();
+
+    var link = document.createElement('a');
+    link.download = 'KartuID_Guru_' + nama.replace(/\s+/g, '_') + '.png';
+    link.href = card.toDataURL('image/png');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    closePhotoEditor();
+    showModal('success', 'Berhasil!', 'Kartu ID berhasil diunduh.');
+  }
+}
+
+function wrapCenteredText(ctx, text, x, y, maxWidth, lineHeight) {
+  var words = text.split(' ');
+  var line = '';
+  var lines = [];
+  words.forEach(function(word) {
+    var testLine = line + word + ' ';
+    if (ctx.measureText(testLine).width > maxWidth && line !== '') {
+      lines.push(line.trim());
+      line = word + ' ';
+    } else {
+      line = testLine;
+    }
+  });
+  lines.push(line.trim());
+
+  var startY = y - ((lines.length - 1) * lineHeight) / 2;
+  lines.forEach(function(l, i) {
+    ctx.fillText(l, x, startY + i * lineHeight);
+  });
+}
+
+// ===== ASSIGN KELAS =====
 function openAssignModal(guruId) {
   guruAktifAssign = guruId;
   var g = daftarGuru[guruId];
@@ -2315,7 +3640,7 @@ function simpanAssignKelas() {
   });
 }
 
-/* ===== Kelas ===== */
+// ===== KELAS =====
 function buatKelasBaru() {
   var nama = document.getElementById('namaKelasBaru').value.trim();
   var pw = document.getElementById('pwKelasBaru').value.trim();
@@ -2375,7 +3700,6 @@ function renderKelasList() {
   });
 }
 
-/* ===== Hapus kelas dari sekolah (tidak hapus dari database) ===== */
 function hapusKelasDariSekolah(kelasId) {
   var k = daftarKelasTerdaftar[kelasId];
   showConfirmModal(
@@ -2401,7 +3725,7 @@ function hapusKelasDariSekolah(kelasId) {
   );
 }
 
-/* ===== Scanner ===== */
+// ===== SCANNER =====
 function switchScanMode(mode) {
   currentScanMode = mode;
   document.querySelectorAll('.scan-mode-btn').forEach(function(el) {
@@ -2491,6 +3815,7 @@ function processGalleryImage(imgData) {
       resultDiv.textContent = 'Gagal membaca QR: ' + err.message;
       resultDiv.classList.remove('hidden');
       setTimeout(function() { resultDiv.classList.add('hidden'); }, 5000);
+      showModal('error', 'Gagal', 'Foto tidak bisa dibaca sebagai QR. Pastikan foto jelas, tidak buram, dan QR tidak terpotong.');
     });
 }
 
@@ -2501,20 +3826,15 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
   this.value = '';
 });
 
-function todayKey() {
-  var d = new Date();
-  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-}
-
 function handleScanGuru(kode) {
   var parts = kode.split('|');
   if (parts.length !== 2 || parts[0] !== sekolahIdAktif) {
-    showModal('error', 'QR Tidak Valid', 'QR ini bukan QR guru dari sekolah ini.');
+    showModal('error', 'Gagal', 'QR ini bukan QR guru dari sekolah ini.');
     return;
   }
   var guruId = parts[1];
   var g = daftarGuru[guruId];
-  if (!g) { showModal('error', 'Guru Tidak Ditemukan', 'QR ini tidak terdaftar di sekolah ini.'); return; }
+  if (!g) { showModal('error', 'Gagal', 'QR ini tidak terdaftar di sekolah ini.'); return; }
   var now = new Date();
   var jam = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
   var tgl = now.getDate();
@@ -2524,13 +3844,19 @@ function handleScanGuru(kode) {
   db.ref('sekolah/' + sekolahIdAktif + '/absensiGuru/' + keyBulan + '/' + guruId + '/' + tgl).set({
     status: 'Hadir', jamScan: jam, waktu: Date.now()
   }).then(function() {
-    document.getElementById('scanResult').classList.remove('hidden');
-    document.getElementById('scanResult').className = 'scan-result success';
-    document.getElementById('scanResult').innerHTML = g.nama + ' — Hadir pukul ' + jam;
+    var resultEl = document.getElementById('scanResult');
+    if (resultEl) {
+      resultEl.classList.remove('hidden');
+      resultEl.className = 'scan-result success';
+      resultEl.innerHTML = g.nama + ' — Hadir pukul ' + jam;
+    }
+    showModal('success', 'Berhasil!', g.nama + ' berhasil dicatat Hadir pukul ' + jam + '.');
+  }).catch(function(err) {
+    showModal('error', 'Gagal', 'Absensi tidak tersimpan: ' + (err.message || err));
   });
 }
 
-/* ===== Bulan Options ===== */
+// ===== BULAN OPTIONS =====
 function renderBulanOptions() {
   var container = document.getElementById('optionBulanGuru');
   var bulanList = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
@@ -2552,7 +3878,7 @@ function pilihBulanGuru(bulan) {
   loadRekapGuru();
 }
 
-/* ===== Tabel Absensi Guru (full bulan) ===== */
+// ===== TABEL ABSENSI GURU =====
 function loadTabelGuru() {
   var box = document.getElementById('tabelAbsenGuru');
   if (!box || !sekolahIdAktif || !bulanDipilihGuru) return;
@@ -2571,26 +3897,40 @@ function loadTabelGuru() {
 
   db.ref('sekolah/' + sekolahIdAktif + '/absensiGuru/' + keyBulan).once('value').then(function(snap) {
     var absenBulan = snap.val() || {};
-    var html = '<div class="table-wrap"><table><tr><th class="sticky-col" style="min-width:120px;border:1px solid #E2E8F0;">Nama Guru</th><th class="sticky-col-2" style="min-width:80px;border:1px solid #E2E8F0;">Mapel</th>';
+    var html = '<div class="table-wrap"><table><tr><th class="sticky-col" style="min-width:140px;border:1px solid #E2E8F0;">Nama Guru</th>';
     for (var i = 1; i <= daysInMonth; i++) {
-      html += '<th style="min-width:28px;border:1px solid #E2E8F0;font-size:9px;">' + i + '</th>';
+      html += '<th style="min-width:50px;border:1px solid #E2E8F0;font-size:10px;">' + i + '</th>';
     }
     html += '</tr>';
 
     guruIds.forEach(function(guruId) {
       var g = daftarGuru[guruId];
-      html += '<tr><td class="sticky-col" style="text-align:left;font-weight:600;border:1px solid #E2E8F0;font-size:11px;">' + g.nama + '</td>';
-      html += '<td class="sticky-col-2" style="text-align:left;border:1px solid #E2E8F0;font-size:10px;">' + g.mapel + '</td>';
+      html += '<tr><td class="sticky-col" style="text-align:left;font-weight:600;border:1px solid #E2E8F0;font-size:12px;">';
+      html += '<span class="guru-name-clickable" onclick="toggleMapel(this)" data-mapel="' + g.mapel + '">' + g.nama + ' <span class="mapel-tooltip">(' + g.mapel + ')</span></span>';
+      html += '</td>';
 
       var guruAbsen = absenBulan[guruId] || {};
       for (var d = 1; d <= daysInMonth; d++) {
-        var status = guruAbsen[d] ? guruAbsen[d].status : '-';
+        var data = guruAbsen[d];
+        var status = data ? data.status : '-';
+        var jam = data ? data.jamScan : '';
         var color = '#94A3B8';
-        if (status === 'Hadir') color = '#059669';
-        else if (status === 'Sakit') color = '#D97706';
-        else if (status === 'Izin') color = '#D97706';
-        else if (status === 'Tidak Mengajar') color = '#64748B';
-        html += '<td style="border:1px solid #E2E8F0;text-align:center;font-size:9px;color:' + color + ';font-weight:600;">' + status.charAt(0) + '</td>';
+        var bg = 'transparent';
+        if (status === 'Hadir') { color = '#059669'; bg = '#DCFCE7'; }
+        else if (status === 'Sakit') { color = '#B45309'; bg = '#FEF9C3'; }
+        else if (status === 'Izin') { color = '#D97706'; bg = '#FFEDD5'; }
+        else if (status === 'Tidak Mengajar') { color = '#64748B'; bg = '#F1F5F9'; }
+        
+        html += '<td style="border:1px solid #E2E8F0;text-align:center;background:' + bg + ';padding:4px 2px;">';
+        if (status !== '-') {
+          html += '<span style="font-weight:700;color:' + color + ';">' + status.charAt(0) + '</span>';
+          if (jam) {
+            html += '<span class="jam-scan" style="display:block;font-size:8px;color:#64748B;font-weight:400;">' + jam + '</span>';
+          }
+        } else {
+          html += '-';
+        }
+        html += '</td>';
       }
       html += '</tr>';
     });
@@ -2600,7 +3940,11 @@ function loadTabelGuru() {
   });
 }
 
-/* ===== Rekap Bulanan Guru ===== */
+function toggleMapel(el) {
+  el.classList.toggle('active');
+}
+
+// ===== REKAP BULANAN GURU =====
 function loadRekapGuru() {
   var box = document.getElementById('rekapBulananGuru');
   if (!box || !sekolahIdAktif || !bulanDipilihGuru) return;
@@ -2621,7 +3965,7 @@ function loadRekapGuru() {
     var absenBulan = snap.val() || {};
     var html = '<div class="table-wrap"><table><tr><th class="sticky-col" style="min-width:120px;border:1px solid #E2E8F0;">Nama Guru</th>';
     html += '<th style="border:1px solid #E2E8F0;color:#059669;">H</th>';
-    html += '<th style="border:1px solid #E2E8F0;color:#D97706;">S</th>';
+    html += '<th style="border:1px solid #E2E8F0;color:#B45309;">S</th>';
     html += '<th style="border:1px solid #E2E8F0;color:#D97706;">I</th>';
     html += '<th style="border:1px solid #E2E8F0;color:#64748B;">TM</th>';
     html += '<th style="border:1px solid #E2E8F0;color:#94A3B8;">-</th>';
@@ -2639,7 +3983,7 @@ function loadRekapGuru() {
       }
       html += '<tr><td class="sticky-col" style="text-align:left;font-weight:600;border:1px solid #E2E8F0;">' + g.nama + '</td>';
       html += '<td style="border:1px solid #E2E8F0;color:#059669;font-weight:700;text-align:center;">' + rekap.Hadir + '</td>';
-      html += '<td style="border:1px solid #E2E8F0;color:#D97706;font-weight:700;text-align:center;">' + rekap.Sakit + '</td>';
+      html += '<td style="border:1px solid #E2E8F0;color:#B45309;font-weight:700;text-align:center;">' + rekap.Sakit + '</td>';
       html += '<td style="border:1px solid #E2E8F0;color:#D97706;font-weight:700;text-align:center;">' + rekap.Izin + '</td>';
       html += '<td style="border:1px solid #E2E8F0;color:#64748B;font-weight:700;text-align:center;">' + rekap['Tidak Mengajar'] + '</td>';
       html += '<td style="border:1px solid #E2E8F0;color:#94A3B8;font-weight:700;text-align:center;">' + rekap.Belum + '</td>';
@@ -2651,7 +3995,7 @@ function loadRekapGuru() {
   });
 }
 
-/* ===== Export ===== */
+// ===== EXPORT =====
 function tableToCSVRowsGuru(tableEl) {
   var out = '';
   var rows = tableEl.querySelectorAll('tr');
@@ -2660,6 +4004,10 @@ function tableToCSVRowsGuru(tableEl) {
     var rowData = [];
     cells.forEach(function(cell) {
       var text = cell.innerText.trim();
+      var jamSpan = cell.querySelector('.jam-scan');
+      if (jamSpan) {
+        text = text.replace(jamSpan.innerText, '').trim() + ' (' + jamSpan.innerText.trim() + ')';
+      }
       if (text.includes(',') || text.includes('"')) text = '"' + text.replace(/"/g, '""') + '"';
       rowData.push(text);
     });
@@ -2712,6 +4060,10 @@ function exportAbsensiGuruPDF() {
     var rowData = [];
     cells.forEach(function(cell) {
       var text = cell.innerText.trim();
+      var jamSpan = cell.querySelector('.jam-scan');
+      if (jamSpan) {
+        text = text.replace(jamSpan.innerText, '').trim() + ' (' + jamSpan.innerText.trim() + ')';
+      }
       rowData.push(text);
     });
     if (idx === 0) head.push(rowData);
@@ -2723,7 +4075,7 @@ function exportAbsensiGuruPDF() {
   showModal('success', 'Export Berhasil!', 'Data berhasil diexport ke PDF.');
 }
 
-/* ===== Init ===== */
+// ===== INIT =====
 window.addEventListener('DOMContentLoaded', function() {
   if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
 
@@ -2740,6 +4092,7 @@ window.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+// ===== EXPOSE FUNGSI KE WINDOW =====
 window.openSidebar = openSidebar;
 window.closeSidebar = closeSidebar;
 window.goTo = goTo;
@@ -2757,7 +4110,10 @@ window.switchScanMode = switchScanMode;
 window.requestCameraPermission = requestCameraPermission;
 window.openQrModal = openQrModal;
 window.closeQrModal = closeQrModal;
-window.downloadQrGuru = downloadQrGuru;
+window.downloadQrOnly = downloadQrOnly;
+window.openPhotoEditor = openPhotoEditor;
+window.closePhotoEditor = closePhotoEditor;
+window.downloadKartuIDWithEditor = downloadKartuIDWithEditor;
 window.openAssignModal = openAssignModal;
 window.closeAssignModal = closeAssignModal;
 window.simpanAssignKelas = simpanAssignKelas;
@@ -2767,8 +4123,8 @@ window.exportAbsensiGuruPDF = exportAbsensiGuruPDF;
 window.closeModal = closeModal;
 window.closeGuideModal = closeGuideModal;
 window.openGuideModal = openGuideModal;
-window.copyIdSekolah = copyIdSekolah;
 window.hapusKelasDariSekolah = hapusKelasDariSekolah;
+window.toggleMapel = toggleMapel;
 </script>
 
 </body>
