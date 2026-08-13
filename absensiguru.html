@@ -5,6 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Absensi Guru - Star Tools</title>
 
+<link rel="icon" type="image/png" href="logo.jpg">
+<link rel="apple-touch-icon" href="logo.jpg">
+
+<meta property="og:image" content="https://www.stools.web.id/logo.jpg">
+<meta name="twitter:image" content="https://www.stools.web.id/logo.jpg">
+
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "WebSite",
+ "name": "Star Tools",
+ "url": "https://www.stools.web.id/",
+ "image": "https://www.stools.web.id/logo.jpg"
+}
+</script>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -3462,8 +3478,8 @@ function downloadKartuIDWithEditor() {
   ctx.clip();
 
   var grad = ctx.createLinearGradient(0, 0, W, 200);
-  grad.addColorStop(0, '#2563EB');
-  grad.addColorStop(1, '#3B82F6');
+  grad.addColorStop(0, '#0D6B3E');
+  grad.addColorStop(1, '#059669');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, W, 190);
 
@@ -3471,7 +3487,6 @@ function downloadKartuIDWithEditor() {
   ctx.beginPath(); ctx.arc(W - 30, 20, 90, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.arc(30, 170, 60, 0, Math.PI * 2); ctx.fill();
 
-  // STAR TOOLS - tanpa nama sekolah di bawahnya
   ctx.fillStyle = '#FFFFFF';
   ctx.font = 'bold 22px Arial';
   ctx.textAlign = 'center';
@@ -3486,7 +3501,7 @@ function downloadKartuIDWithEditor() {
   ctx.beginPath();
   ctx.arc(W / 2, avatarY, 62, 0, Math.PI * 2);
   ctx.fill();
-  ctx.strokeStyle = '#2563EB';
+  ctx.strokeStyle = '#0D6B3E';
   ctx.lineWidth = 3;
   ctx.stroke();
 
@@ -3513,7 +3528,7 @@ function downloadKartuIDWithEditor() {
     drawCardContent();
     return;
   } else {
-    ctx.fillStyle = '#2563EB';
+    ctx.fillStyle = '#006B3E';
     ctx.font = 'bold 52px Arial';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';

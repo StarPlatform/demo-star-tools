@@ -5,6 +5,22 @@
 <title>Login - Star Tools</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 
+<link rel="icon" type="image/png" href="logo.jpg">
+<link rel="apple-touch-icon" href="logo.jpg">
+
+<meta property="og:image" content="https://www.stools.web.id/logo.jpg">
+<meta name="twitter:image" content="https://www.stools.web.id/logo.jpg">
+
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "WebSite",
+ "name": "Star Tools",
+ "url": "https://www.stools.web.id/",
+ "image": "https://www.stools.web.id/logo.jpg"
+}
+</script>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -438,45 +454,6 @@
     background: #3B82F6;
   }
 
-  .theme-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 40px;
-    height: 40px;
-    border-radius: 40px;
-    background: #FFFFFF;
-    border: 1px solid #E2E8F0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: 0.2s;
-    z-index: 10;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  }
-
-  body.dark .theme-toggle {
-    background: #1E293B;
-    border-color: #334155;
-  }
-
-  .theme-toggle:active {
-    transform: scale(0.92);
-  }
-
-  .theme-toggle svg {
-    width: 18px;
-    height: 18px;
-    stroke: #0F172A;
-    fill: none;
-    stroke-width: 2;
-  }
-
-  body.dark .theme-toggle svg {
-    stroke: #F1F5F9;
-  }
-
   @media (max-width: 420px) {
     .login-container {
       padding: 32px 20px 28px;
@@ -531,22 +508,76 @@
   body.dark #forgotPasswordContainer .input-group input:focus {
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
   }
+
+  /* ===== Tampilan Laptop / PC ===== */
+  @media (min-width: 900px) {
+    body {
+      background: linear-gradient(160deg, #EFF6FF 0%, #F8FAFE 60%);
+      min-height: 100vh;
+    }
+
+    body.dark {
+      background: linear-gradient(160deg, #0B1120 0%, #111827 60%);
+    }
+
+    .login-container {
+      max-width: 440px;
+      padding: 48px 36px 36px;
+      border-radius: 32px;
+      box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.12);
+    }
+
+    body.dark .login-container {
+      box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .login-header .app-icon img {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+    }
+
+    .login-header h1 {
+      font-size: 28px;
+    }
+
+    .login-header .tagline {
+      font-size: 14px;
+    }
+
+    .input-group input {
+      padding: 16px 18px;
+      border-radius: 16px;
+      font-size: 15px;
+    }
+
+    .btn-login {
+      padding: 16px;
+      border-radius: 16px;
+      font-size: 16px;
+    }
+
+    .btn-google {
+      padding: 16px;
+      border-radius: 16px;
+      font-size: 16px;
+    }
+
+    #forgotPasswordContainer {
+      max-width: 440px;
+      padding: 48px 36px 36px;
+      border-radius: 32px;
+    }
+
+    #customAlert > div {
+      max-width: 360px;
+      padding: 32px 28px;
+      border-radius: 28px;
+    }
+  }
 </style>
 </head>
 <body>
-
-<!-- THEME TOGGLE -->
-<div class="theme-toggle" onclick="toggleTheme()">
-  <svg viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="5"/>
-    <line x1="12" y1="1" x2="12" y2="3"/>
-    <line x1="12" y1="21" x2="12" y2="23"/>
-    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-    <line x1="1" y1="12" x2="3" y2="12"/>
-    <line x1="21" y1="12" x2="23" y2="12"/>
-  </svg>
-</div>
 
 <!-- LOGIN CARD -->
 <div class="login-container" id="loginContainer">
@@ -851,15 +882,7 @@
     }
   }
 
-  function toggleTheme() {
-    document.body.classList.toggle('dark');
-    localStorage.setItem('loginTheme', document.body.classList.contains('dark') ? 'dark' : 'light');
-  }
-
-  if (localStorage.getItem('loginTheme') === 'dark') {
-    document.body.classList.add('dark');
-  }
-
+  // Theme dari localStorage (default terang)
   if (localStorage.getItem('theme') === 'dark') {
     document.body.classList.add('dark');
   }

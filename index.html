@@ -406,6 +406,7 @@
   .sains { stroke: #60A5FA; }
   .coding { stroke: #A78BFA; }
   .bahasa { stroke: #FBBF24; }
+  .robotik { stroke: #0EA5E9; }
   .pendukung { stroke: #F472B6; }
   .absensi { stroke: #22D3EE; }
   .absensiMapel { stroke: #818CF8; }
@@ -824,10 +825,7 @@
       <!-- SEMUA FITUR -->
       <div class="card-modern">
         <div class="section-header">
-          <h2>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            Semua Fitur
-          </h2>
+          <h2>Semua Fitur</h2>
           <button class="view-all" onclick="showAllFeatures()">Lihat Semua</button>
         </div>
         <div class="grid-2" id="featureGrid"></div>
@@ -854,7 +852,6 @@
       <div class="card-modern">
         <div class="section-header">
           <h2>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
             Semua Fitur
           </h2>
         </div>
@@ -1001,11 +998,10 @@ const homeGrid = [
   { type: "subject", name: "Matematika", icon: "mtk", link: "matematika.html" },
   { type: "subject", name: "Ekonomi", icon: "ekonomi", link: "ekonomi.html" },
   { type: "subject", name: "Sains", icon: "sains", link: "sains.html" },
-  { type: "feature", name: "Absensi Kelas", icon: "absensi", link: "absensi.html" },
+  { type: "subject", name: "Robotik", icon: "robotik", link: "dasar-robotik.html", badge:"BARU" },
+  { type: "feature", name: "Absensi Digital", icon: "absensi", link: "absensi-dasar.html" },
   { type: "feature", name: "Keuangan Digital", icon: "keuangan", link: "keuangan.html" },
-  { type: "feature", name: "Tugas Digital", icon: "tugas", link: "kelas.html" },
-  { type: "feature", name: "Absensi Mapel", icon: "absensiMapel", link: "mapel.html" },
-  { type: "feature", name: "Catatan Nilai", icon: "catatanNilai", link: "nilai.html", badge: "NEW" }
+  { type: "feature", name: "Catatan Nilai", icon: "catatanNilai", link: "nilai.html", badge: "BARU" }
 ];
 
 function renderHomeGrid() {
@@ -1038,19 +1034,19 @@ const allSubjects = [
   { name: "Ekonomi", icon: "ekonomi", link: "ekonomi.html" },
   { name: "Sains", icon: "sains", link: "sains.html" },
   { name: "Bahasa", icon: "bahasa", link: "bahasa.html" },
-  { name: "Coding", icon: "coding", link: "coding.html" }
+  { name: "Coding", icon: "coding", link: "coding.html" },
+  { name: "Robotik", icon: "robotik", link: "dasar-robotik.html", badge: "BARU" }
 ];
 
 const allFeatures = [
-  { name: "Absensi Kelas", icon: "absensi", link: "absensi.html" },
+  { name: "Absensi Digital", icon: "absensi", link: "absensi-digital.html" },
   { name: "Keuangan Digital", icon: "keuangan", link: "keuangan.html" },
   { name: "Nilai Rata-Rata", icon: "rata", link: "rata.html" },
   { name: "Rangking", icon: "ranking", link: "ranking.html" },
   { name: "Total Nilai", icon: "total", link: "total.html" },
   { name: "Nita AI Asisten", icon: "nita", link: "nita.html" },
-  { name: "Absensi Mapel", icon: "absensiMapel", link: "mapel.html" },
   { name: "Tugas Digital", icon: "tugas", link: "kelas.html" },
-  { name: "Catatan Nilai", icon: "catatanNilai", link: "nilai.html", badge: "NEW" }
+  { name: "Catatan Nilai", icon: "catatanNilai", link: "nilai.html", badge: "BARU" }
 ];
 
 const iconColors = {
@@ -1059,6 +1055,7 @@ const iconColors = {
   sains: "#60A5FA",
   bahasa: "#FBBF24",
   coding: "#A78BFA",
+  robotik: "#0EA5E9",
   absensi: "#22D3EE",
   absensiMapel: "#818CF8",
   keuangan: "#F59E0B",
@@ -1076,8 +1073,8 @@ const iconPaths = {
   sains: '<circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(45 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-45 12 12)"/>',
   bahasa: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14z"/><path d="M9 7h6"/><path d="M9 11h6"/>',
   coding: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+  robotik: '<rect x="4" y="8" width="16" height="12" rx="2"/><circle cx="9" cy="14" r="1.4" fill="#2563EB" stroke="none"/><circle cx="15" cy="14" r="1.4" fill="#2563EB" stroke="none"/><path d="M9 18h6"/><path d="M12 8V4"/><circle cx="12" cy="3" r="1"/><path d="M4 12H2"/><path d="M22 12h-2"/>',
   absensi: '<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 2v4"/><path d="M16 2v4"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8.5 15l2 2 4-4"/>',
-  absensiMapel: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 8h7"/><path d="M9 11.5l1.5 1.5L14 9.5"/>',
   keuangan: '<rect x="2" y="6" width="20" height="14" rx="3"/><line x1="2" y1="10" x2="22" y2="10"/><circle cx="17" cy="14.5" r="1.5" fill="#F59E0B"/>',
   rata: '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
   ranking: '<path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 4-4"/><path d="M7 10l4 4 4-4 4 4"/>',
