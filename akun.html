@@ -1958,6 +1958,24 @@
 
         <div class="setting-item">
           <div class="setting-label">
+            Pengingat Absensi
+            <div class="sub">Notifikasi kalau kelas belum diisi absensinya hari ini</div>
+          </div>
+          <div class="toggle-switch" id="toggleNotifAbsen" onclick="toggleNotifAbsen()">
+            <div class="toggle-dot"></div>
+          </div>
+        </div>
+
+        <div class="setting-item" id="jamNotifAbsenRow" style="display:none;">
+          <div class="setting-label">
+            Jam Pengingat
+            <div class="sub">Ingatkan mulai jam berapa kalau belum absen</div>
+          </div>
+          <input type="time" id="jamNotifAbsenInput" class="input" style="width:110px;padding:8px;text-align:center;" onchange="saveJamNotifAbsen()">
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-label">
             Mode Gelap Otomatis
             <div class="sub">Ikuti tema sistem perangkat</div>
           </div>
@@ -2612,6 +2630,59 @@ function resetData() {
   }
 }
 
+// ======================== PENGINGAT ABSENSI ========================
+var NOTIF_AKTIF_KEY = 'notifAbsenAktif';
+var NOTIF_JAM_KEY = 'notifAbsenJam';
+
+function initNotifAbsenSetting() {
+  var aktif = localStorage.getItem(NOTIF_AKTIF_KEY) === '1';
+  var toggle = document.getElementById('toggleNotifAbsen');
+  var jamRow = document.getElementById('jamNotifAbsenRow');
+  var jamInput = document.getElementById('jamNotifAbsenInput');
+  if (toggle) toggle.classList.toggle('active', aktif);
+  if (jamRow) jamRow.style.display = aktif ? '' : 'none';
+  if (jamInput) jamInput.value = localStorage.getItem(NOTIF_JAM_KEY) || '10:00';
+}
+
+function toggleNotifAbsen() {
+  var toggle = document.getElementById('toggleNotifAbsen');
+  var jamRow = document.getElementById('jamNotifAbsenRow');
+  var mauAktif = !toggle.classList.contains('active');
+
+  if (!mauAktif) {
+    toggle.classList.remove('active');
+    if (jamRow) jamRow.style.display = 'none';
+    localStorage.setItem(NOTIF_AKTIF_KEY, '0');
+    showToast('Pengingat absensi dimatikan');
+    return;
+  }
+
+  if (!('Notification' in window)) {
+    showToast('Browser ini tidak mendukung notifikasi', 'error');
+    return;
+  }
+
+  Notification.requestPermission().then(function(perm) {
+    if (perm === 'granted') {
+      toggle.classList.add('active');
+      if (jamRow) jamRow.style.display = '';
+      localStorage.setItem(NOTIF_AKTIF_KEY, '1');
+      showToast('Pengingat absensi diaktifkan!');
+    } else {
+      toggle.classList.remove('active');
+      localStorage.setItem(NOTIF_AKTIF_KEY, '0');
+      showToast('Izin notifikasi ditolak, aktifkan lewat pengaturan browser', 'error');
+    }
+  });
+}
+
+function saveJamNotifAbsen() {
+  var jamInput = document.getElementById('jamNotifAbsenInput');
+  var jam = (jamInput && jamInput.value) || '10:00';
+  localStorage.setItem(NOTIF_JAM_KEY, jam);
+  showToast('Jam pengingat disimpan: ' + jam);
+}
+
 // ======================== AUTH ========================
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
@@ -2653,6 +2724,8 @@ document.addEventListener('keydown', function(e) {
     closeLogoutAlert();
   }
 });
+
+initNotifAbsenSetting();
 </script>
 
 </body>

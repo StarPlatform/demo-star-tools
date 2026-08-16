@@ -2213,7 +2213,6 @@
       padding: 6px 10px;
     }
   }
-
 </style>
 </head>
 <body>
@@ -2755,6 +2754,65 @@ let undoStack = [];
 let redoStack = [];
 let resetMethod = "";
 
+// ===== PENGINGAT ABSENSI (NOTIFIKASI ASLI) =====
+// Pengaturan aktif/nonaktif & jam pengingat diatur di halaman akun.html > Pengaturan.
+// Di sini cuma logic pengecekan & munculin notifikasinya.
+var NOTIF_AKTIF_KEY = "notifAbsenAktif";
+var NOTIF_JAM_KEY = "notifAbsenJam";
+var NOTIF_LASTDATE_KEY_PREFIX = "notifAbsenLastDate_";
+
+function todayStr() {
+  var now = new Date();
+  return now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0");
+}
+
+function checkAndNotifyAbsen(forceCheck) {
+  if (!kelasIdAktif) return;
+  if (!("Notification" in window)) return;
+  if (Notification.permission !== "granted") return;
+  if (localStorage.getItem(NOTIF_AKTIF_KEY) !== "1") return;
+
+  var jamSetting = localStorage.getItem(NOTIF_JAM_KEY) || "10:00";
+  var now = new Date();
+  var jamSekarang = String(now.getHours()).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0");
+  if (!forceCheck && jamSekarang < jamSetting) return;
+
+  var lastDateKey = NOTIF_LASTDATE_KEY_PREFIX + kelasIdAktif;
+  if (!forceCheck && localStorage.getItem(lastDateKey) === todayStr()) return;
+
+  var now2 = new Date();
+  var tgl = now2.getDate();
+
+  db.ref("kelas/" + kelasIdAktif + "/siswa").once("value").then(function(snap) {
+    var data = snap.val() || {};
+    var namaList = Object.keys(data);
+    if (!namaList.length) return;
+
+    var bulan = now2.toLocaleString("id-ID", { month: "long" });
+    var sudahAdaAbsen = namaList.some(function(nama) {
+      var siswa = data[nama];
+      return siswa && siswa.absen && siswa.absen[bulan] && siswa.absen[bulan][tgl];
+    });
+
+    if (!sudahAdaAbsen) {
+      try {
+        var notif = new Notification("Belum Absensi Hari Ini", {
+          body: "Kelas " + kelasAktif + " belum diisi absensinya hari ini. Yuk isi sekarang!",
+          icon: "logo.jpg",
+          tag: "pengingat-absen-" + kelasIdAktif
+        });
+        notif.onclick = function() {
+          window.focus();
+          notif.close();
+        };
+      } catch (e) {}
+      localStorage.setItem(lastDateKey, todayStr());
+    }
+  });
+}
+
+setInterval(function() { checkAndNotifyAbsen(false); }, 20 * 60 * 1000);
+
 function generateKelasId() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let result = 'KLS-';
@@ -2853,6 +2911,7 @@ function quickLogin(id, nama) {
     loadTabel();
     loadRekap();
     showModal("success", "Selamat Datang!", "Login berhasil ke kelas " + data.nama);
+    setTimeout(function() { checkAndNotifyAbsen(false); }, 1500);
   });
 }
 
@@ -2902,6 +2961,8 @@ document.addEventListener("DOMContentLoaded", function() {
     loadTabel();
     loadRekap();
   }
+
+  setTimeout(function() { checkAndNotifyAbsen(false); }, 1500);
 
   document.getElementById("fileInput").addEventListener("change", function(e) {
     const file = e.target.files[0];
@@ -3218,6 +3279,7 @@ function loginKelas() {
     showModal("success", "Selamat Datang!", idSekolah
       ? "Login berhasil ke kelas " + data.nama + " (terdaftar di sekolah)."
       : "Login berhasil ke kelas " + data.nama);
+    setTimeout(function() { checkAndNotifyAbsen(false); }, 1500);
   });
 }
 
