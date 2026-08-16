@@ -1,0 +1,2659 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Star Tools - Akun</title>
+
+<link rel="icon" type="image/png" href="logo.jpg">
+<link rel="apple-touch-icon" href="logo.jpg">
+
+<meta property="og:image" content="https://www.stools.web.id/logo.jpg">
+<meta name="twitter:image" content="https://www.stools.web.id/logo.jpg">
+
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "WebSite",
+ "name": "Star Tools",
+ "url": "https://www.stools.web.id/",
+ "image": "https://www.stools.web.id/logo.jpg"
+}
+</script>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #F1F5F9;
+    color: #0F172A;
+  }
+
+  body.dark {
+    background: #0B1120;
+    color: #F1F5F9;
+  }
+
+  body.dark .card-modern,
+  body.dark .app-header,
+  body.dark .sidebar-nav,
+  body.dark .alert-card {
+    background: #111827;
+    border-color: #1E293B;
+  }
+
+  body.dark .menu-item {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  body.dark .menu-item span {
+    color: #E2E8F0;
+  }
+
+  body.dark .menu-item .desc {
+    color: #94A3B8;
+  }
+
+  body.dark .bottom-nav {
+    background: #111827;
+    border-top-color: #1E293B;
+  }
+
+  body.dark .footer-app {
+    color: #94A3B8;
+    border-top-color: #1E293B;
+  }
+
+  body.dark .profile-name {
+    color: #F1F5F9;
+  }
+
+  body.dark .profile-bio {
+    color: #94A3B8;
+  }
+
+  body.dark .input-field {
+    background: #1E293B;
+    border-color: #334155;
+    color: #F1F5F9;
+  }
+
+  body.dark .input-field::placeholder {
+    color: #64748B;
+  }
+
+  body.dark .btn-save {
+    background: #2563EB;
+  }
+
+  body.dark .riwayat-item {
+    background: #1E293B;
+  }
+
+  body.dark .riwayat-item .riwayat-mapel {
+    color: #F1F5F9;
+  }
+
+  body.dark .riwayat-item .riwayat-waktu {
+    color: #94A3B8;
+  }
+
+  body.dark .about-box {
+    background: #1E293B;
+  }
+
+  body.dark .about-box p,
+  body.dark .about-box li {
+    color: #CBD5E1;
+  }
+
+  body.dark .help-item {
+    border-bottom-color: #1E293B;
+  }
+
+  body.dark .help-item .help-a {
+    color: #94A3B8;
+  }
+
+  body.dark .menu-list-item {
+    background: #1E293B;
+  }
+
+  body.dark .menu-list-item .title {
+    color: #E2E8F0;
+  }
+
+  body.dark .menu-list-item .sub {
+    color: #94A3B8;
+  }
+
+  body.dark .setting-item {
+    border-bottom-color: #1E293B;
+  }
+
+  body.dark .toggle-switch {
+    background: #475569;
+  }
+
+  body.dark .logout-item-bottom {
+    background: #1E293B !important;
+  }
+
+  .app-container {
+    max-width: 560px;
+    margin: 0 auto;
+    background: #F1F5F9;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  body.dark .app-container {
+    background: #0B1120;
+  }
+
+  .app-header {
+    background: #FFFFFF;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #E2E8F0;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  body.dark .app-header {
+    background: #111827;
+    border-bottom-color: #1E293B;
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .menu-icon {
+    width: 40px;
+    height: 40px;
+    background: #F8FAFE;
+    border-radius: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #E2E8F0;
+  }
+
+  body.dark .menu-icon {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  .menu-icon svg {
+    stroke: #0F172A;
+  }
+
+  body.dark .menu-icon svg {
+    stroke: #F1F5F9;
+  }
+
+  .app-title {
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.3px;
+    background: linear-gradient(135deg, #2563EB, #60A5FA);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .header-back {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+  }
+
+  .header-back svg {
+    stroke: #0F172A;
+  }
+
+  body.dark .header-back svg {
+    stroke: #F1F5F9;
+  }
+
+  .header-back span {
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.25s;
+  }
+
+  .sidebar-overlay.active {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .sidebar-nav {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    background: #FFFFFF;
+    z-index: 101;
+    transition: 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    padding: 70px 20px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .sidebar-nav.active {
+    left: 0;
+  }
+
+  .sidebar-nav a {
+    padding: 14px 18px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 18px;
+    text-decoration: none;
+    color: #0F172A;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  body.dark .sidebar-nav a {
+    color: #F1F5F9;
+  }
+
+  .sidebar-nav a:active {
+    background: #DBEAFE;
+  }
+
+  body.dark .sidebar-nav a:active {
+    background: #1E293B;
+  }
+
+  .close-sidebar-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+  }
+
+  .screen {
+    padding: 16px 16px 30px;
+    flex: 1;
+  }
+
+  .page {
+    display: none;
+    animation: fadeSlide 0.25s ease;
+  }
+
+  .page.active {
+    display: block;
+  }
+
+  @keyframes fadeSlide {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .card-modern {
+    background: #FFFFFF;
+    border-radius: 24px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8F0;
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-sub {
+    font-size: 14px;
+    color: #64748B;
+    margin-bottom: 16px;
+  }
+
+  body.dark .section-sub {
+    color: #94A3B8;
+  }
+
+  /* ============================================================
+     PROFILE BANNER + LEVEL INFO CARD = SATU KESATUAN
+     ============================================================ */
+  .profile-card-container {
+    border-radius: 24px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    border: 1px solid #E2E8F0;
+    background: #FFFFFF;
+  }
+
+  body.dark .profile-card-container {
+    border-color: #1E293B;
+    background: #111827;
+  }
+
+  /* BANNER ATAS */
+  .profile-banner {
+    width: 100%;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 -20px 40px rgba(0,0,0,0.08);
+  }
+
+  /* STANDARD */
+  .profile-banner.standard {
+    background: linear-gradient(135deg, #475569, #64748B);
+  }
+
+  /* SILVER */
+  .profile-banner.silver {
+    background: linear-gradient(135deg, #94A3B8, #CBD5E1);
+    box-shadow: inset 0 0 60px rgba(255,255,255,0.1), inset 0 -20px 40px rgba(0,0,0,0.08);
+  }
+  .profile-banner.silver::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 80%, rgba(255,255,255,0.2), transparent 60%);
+    pointer-events: none;
+  }
+
+  /* GOLD */
+  .profile-banner.gold {
+    background: linear-gradient(135deg, #B45309, #F59E0B, #FBBF24, #F59E0B, #92400E);
+    background-size: 250% 250%;
+    animation: goldShimmer 4s ease-in-out infinite;
+  }
+  .profile-banner.gold::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.25), transparent 60%);
+    pointer-events: none;
+  }
+  @keyframes goldShimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* PLATINUM */
+  .profile-banner.platinum {
+    background: linear-gradient(135deg, #06B6D4, #3B82F6, #8B5CF6);
+    background-size: 200% 200%;
+    animation: platinumShimmer 3s ease-in-out infinite;
+  }
+  .profile-banner.platinum::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.15), transparent 60%);
+    pointer-events: none;
+  }
+  @keyframes platinumShimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* DIAMOND - tier tertinggi, butuh 4 mapel premium (bebas kombinasi) */
+  .profile-banner.diamond {
+    background: linear-gradient(135deg, #0B1120, #1E293B, #0B1120);
+    background-size: 250% 250%;
+    animation: diamondBase 6s ease-in-out infinite;
+    box-shadow: inset 0 0 60px rgba(125,211,252,0.08), inset 0 -20px 40px rgba(0,0,0,0.25);
+  }
+  .profile-banner.diamond::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 25%, rgba(224,242,254,0.55) 42%, rgba(165,243,252,0.35) 48%, rgba(224,242,254,0.55) 54%, transparent 72%);
+    background-size: 250% 250%;
+    animation: diamondSweep 3.2s ease-in-out infinite;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+  .profile-banner.diamond::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(165,243,252,0.18), transparent 40%),
+      radial-gradient(circle at 85% 75%, rgba(196,181,253,0.15), transparent 45%);
+    pointer-events: none;
+  }
+  @keyframes diamondBase {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  @keyframes diamondSweep {
+    0% { background-position: -60% -60%; }
+    100% { background-position: 160% 160%; }
+  }
+
+  .profile-banner .banner-stars {
+    position: absolute;
+    font-size: 12px;
+    opacity: 0.15;
+    z-index: 1;
+    pointer-events: none;
+    color: white;
+  }
+  .profile-banner .banner-stars.s1 { top: 8px; left: 16px; }
+  .profile-banner .banner-stars.s2 { top: 35px; left: 100px; }
+  .profile-banner .banner-stars.s3 { top: 10px; right: 80px; }
+  .profile-banner .banner-stars.s4 { bottom: 15px; right: 16px; }
+  .profile-banner .banner-stars.s5 { top: 45px; right: 130px; }
+
+  .banner-level-badge {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 40px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(8px);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.15);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .banner-level-badge svg {
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
+    stroke: none;
+  }
+
+.banner-level-badge.gold { 
+  background: rgba(0,0,0,0.4); 
+  color: #FFFFFF; 
+  border-color: rgba(255,215,0,0.4); 
+  text-shadow: 0 0 12px rgba(255,215,0,0.3);
+}
+
+.banner-level-badge.platinum { 
+  background: rgba(0,0,0,0.4); 
+  color: #FFFFFF; 
+  border-color: rgba(147,197,253,0.4);
+}
+
+.banner-level-badge.silver { 
+  background: rgba(0,0,0,0.25); 
+  color: #FFFFFF; 
+  border-color: rgba(255,255,255,0.2);
+}
+
+.banner-level-badge.diamond {
+  background: rgba(0,0,0,0.5);
+  color: #FFFFFF;
+  border-color: rgba(165,243,252,0.5);
+  text-shadow: 0 0 14px rgba(165,243,252,0.5);
+}
+
+  .banner-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #2563EB, #60A5FA);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    z-index: 2;
+    position: relative;
+  }
+
+  .banner-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .banner-info {
+    margin-left: 14px;
+    z-index: 2;
+    position: relative;
+    flex: 1;
+  }
+
+  .banner-info .name {
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .banner-info .bio {
+    font-size: 12px;
+    color: rgba(255,255,255,0.8);
+    text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    margin-top: 1px;
+  }
+
+  .banner-info .verified {
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+  }
+
+  .banner-info .verified svg {
+    fill: #3B82F6;
+    width: 16px;
+    height: 16px;
+  }
+
+  /* LEVEL INFO CARD - LANGSUNG DI BAWAH BANNER, FULL WIDTH */
+  .level-info-card {
+    width: 100%;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    background: rgba(0,0,0,0.15);
+    backdrop-filter: blur(4px);
+  }
+
+  .profile-banner.standard + .level-info-card {
+    background: rgba(255,255,255,0.05);
+  }
+
+  .profile-banner.silver + .level-info-card {
+    background: rgba(0,0,0,0.08);
+  }
+
+  .profile-banner.gold + .level-info-card {
+    background: rgba(0,0,0,0.12);
+  }
+
+  .profile-banner.platinum + .level-info-card {
+    background: rgba(0,0,0,0.12);
+  }
+
+  .profile-banner.diamond + .level-info-card {
+    background: rgba(0,0,0,0.3);
+  }
+
+  .level-info-card .left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .level-info-card .left .icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .level-info-card .left .icon svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .level-info-card .left .icon.silver svg { stroke: #94A3B8; }
+  .level-info-card .left .icon.gold svg { stroke: #FBBF24; }
+  .level-info-card .left .icon.platinum svg { stroke: #60A5FA; }
+  .level-info-card .left .icon.diamond svg { stroke: #A5F3FC; }
+
+  .level-info-card .left .icon.silver { background: rgba(148,163,184,0.2); }
+  .level-info-card .left .icon.gold { background: rgba(251,191,36,0.2); }
+  .level-info-card .left .icon.platinum { background: rgba(59,130,246,0.2); }
+  .level-info-card .left .icon.diamond { background: rgba(165,243,252,0.2); }
+
+  .level-info-card .left .info .title {
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.1);
+  }
+
+  .level-info-card .left .info .sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .level-info-card .right .level-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 14px;
+    border-radius: 40px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .level-info-card .right .level-badge.silver { background: #94A3B8; color: #0F172A; }
+  .level-info-card .right .level-badge.gold { background: #FBBF24; color: #0F172A; }
+  .level-info-card .right .level-badge.platinum { background: #3B82F6; color: #fff; }
+  .level-info-card .right .level-badge.diamond { background: linear-gradient(135deg, #A5F3FC, #67E8F9); color: #0B1120; }
+
+  .menu-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+
+  .menu-item {
+    background: #F8FAFE;
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    padding: 14px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .menu-item:active {
+    transform: scale(0.95);
+    border-color: #2563EB;
+  }
+
+  .menu-item svg {
+    width: 28px;
+    height: 28px;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    margin-bottom: 4px;
+  }
+
+  .menu-item span {
+    font-size: 11px;
+    font-weight: 600;
+    color: #0F172A;
+    display: block;
+  }
+
+  .menu-item .desc {
+    font-size: 9px;
+    color: #94A3B8;
+    font-weight: 400;
+  }
+
+  .menu-item.theme-item svg {
+    stroke: #8B5CF6;
+  }
+
+  .menu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .menu-list-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .menu-list-item:active {
+    background: #F1F5F9;
+  }
+
+  body.dark .menu-list-item:active {
+    background: #1E293B;
+  }
+
+  .menu-list-item svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+
+  .menu-list-item .info {
+    flex: 1;
+  }
+
+  .menu-list-item .info .title {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .menu-list-item .info .sub {
+    font-size: 12px;
+    color: #94A3B8;
+  }
+
+  .menu-list-item .arrow {
+    color: #94A3B8;
+    font-size: 16px;
+  }
+
+  .logout-item-bottom {
+    border-top: 1px solid #E2E8F0;
+    border-radius: 0 !important;
+    padding-top: 14px !important;
+    margin-top: 4px;
+  }
+
+  .logout-item-bottom svg {
+    stroke: #DC2626;
+  }
+
+  .logout-item-bottom .title {
+    color: #DC2626 !important;
+  }
+
+  .input-field {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid #E2E8F0;
+    background: #FFFFFF;
+    color: #0F172A;
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .input-field:focus {
+    outline: none;
+    border-color: #2563EB;
+  }
+
+  .input-field::placeholder {
+    color: #94A3B8;
+  }
+
+  .btn-save {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    background: #2563EB;
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .btn-save:active {
+    transform: scale(0.97);
+    background: #1D4ED8;
+  }
+
+  .btn-danger {
+    background: #DC2626 !important;
+  }
+
+  .btn-danger:active {
+    background: #B91C1C !important;
+  }
+
+  .riwayat-empty {
+    text-align: center;
+    padding: 30px 0;
+    color: #94A3B8;
+    font-size: 14px;
+  }
+
+  .riwayat-item {
+    background: #F8FAFE;
+    padding: 14px 16px;
+    border-radius: 14px;
+    margin-bottom: 10px;
+    border: 1px solid #E2E8F0;
+  }
+
+  .riwayat-item .riwayat-mapel {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .riwayat-item .riwayat-waktu {
+    font-size: 12px;
+    color: #94A3B8;
+  }
+
+  .about-box {
+    background: #F8FAFE;
+    padding: 16px;
+    border-radius: 16px;
+    margin-bottom: 12px;
+    border: 1px solid #E2E8F0;
+  }
+
+  .about-box p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #334155;
+  }
+
+  .about-box ul {
+    padding-left: 20px;
+  }
+
+  .about-box li {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #334155;
+  }
+
+  .about-box h3 {
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+
+  .help-item {
+    padding: 14px 0;
+    border-bottom: 1px solid #E2E8F0;
+  }
+
+  body.dark .help-item {
+    border-bottom-color: #1E293B;
+  }
+
+  .help-item:last-child {
+    border-bottom: none;
+  }
+
+  .help-item .help-q {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .help-item .help-a {
+    font-size: 13px;
+    color: #64748B;
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+
+  body.dark .help-item .help-a {
+    color: #94A3B8;
+  }
+
+  .setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #E2E8F0;
+  }
+
+  body.dark .setting-item {
+    border-bottom-color: #1E293B;
+  }
+
+  .setting-item:last-child {
+    border-bottom: none;
+  }
+
+  .setting-item .setting-label {
+    font-size: 14px;
+  }
+
+  .setting-item .setting-label .sub {
+    font-size: 12px;
+    color: #94A3B8;
+  }
+
+  .toggle-switch {
+    width: 44px;
+    height: 24px;
+    background: #CBD5E1;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: 0.3s;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  body.dark .toggle-switch {
+    background: #475569;
+  }
+
+  .toggle-switch.active {
+    background: #2563EB;
+  }
+
+  .toggle-switch .toggle-dot {
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    transition: 0.3s;
+  }
+
+  .toggle-switch.active .toggle-dot {
+    left: 23px;
+  }
+
+  .session-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    background: #F8FAFE;
+    border: 1px solid #E2E8F0;
+    border-radius: 14px;
+    margin-bottom: 10px;
+  }
+
+  .session-item .session-icon svg {
+    width: 28px;
+    height: 28px;
+    stroke: #64748B;
+    fill: none;
+    stroke-width: 1.5;
+  }
+
+  .session-item .session-info {
+    flex: 1;
+  }
+
+  .session-item .session-info .session-name {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .session-item .session-info .session-detail {
+    font-size: 12px;
+    color: #94A3B8;
+  }
+
+  .session-item .session-status {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 12px;
+    border-radius: 40px;
+  }
+
+  .session-item .session-status.active {
+    background: #34D39920;
+    color: #059669;
+  }
+
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+    right: 0;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0 12px 0;
+    z-index: 50;
+    border-top: 1px solid #E2E8F0;
+  }
+
+  body.dark .bottom-nav {
+    background: #111827;
+    border-top-color: #1E293B;
+  }
+
+  .bottom-nav .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    color: #94A3B8;
+    font-size: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+    padding: 4px 12px;
+    border-radius: 12px;
+    background: transparent;
+    border: none;
+  }
+
+  .bottom-nav .nav-item:active {
+    transform: scale(0.95);
+  }
+
+  .bottom-nav svg {
+    width: 22px;
+    height: 22px;
+    stroke: #94A3B8;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: 0.2s;
+  }
+
+  .bottom-nav .nav-item.active {
+    color: #2563EB;
+  }
+
+  .bottom-nav .nav-item.active svg {
+    stroke: #2563EB;
+  }
+
+  .footer-app {
+    text-align: center;
+    padding: 16px;
+    font-size: 11px;
+    color: #64748B;
+    border-top: 1px solid #E2E8F0;
+    margin-bottom: 60px;
+  }
+
+  body.dark .footer-app {
+    color: #94A3B8;
+    border-top-color: #1E293B;
+  }
+
+  .alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+  }
+
+  .alert-card {
+    background: #FFFFFF;
+    width: 300px;
+    border-radius: 28px;
+    padding: 24px 22px;
+    text-align: center;
+    border: 1px solid #E2E8F0;
+  }
+
+  body.dark .alert-card {
+    background: #111827;
+    border-color: #1E293B;
+  }
+
+  .btn-full {
+    background: #2563EB;
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 12px;
+    border-radius: 40px;
+    font-size: 14px;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .btn-full:active {
+    transform: scale(0.97);
+  }
+
+  .alert-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .alert-actions button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .alert-actions .btn-cancel {
+    background: #F1F5F9;
+    color: #0F172A;
+  }
+
+  body.dark .alert-actions .btn-cancel {
+    background: #1E293B;
+    color: #F1F5F9;
+  }
+
+  .alert-actions .btn-cancel:active {
+    transform: scale(0.95);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .toast {
+    position: fixed;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1E293B;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 14px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 300;
+    border-left: 4px solid #34D399;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .toast.error {
+    border-left-color: #F87171;
+  }
+
+  body.dark .card-modern p {
+    color: #94A3B8;
+  }
+
+  body.dark .card-modern .sub {
+    color: #94A3B8;
+  }
+
+  .profile-pic-edit {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #E2E8F0;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px dashed #94A3B8;
+    position: relative;
+  }
+
+  body.dark .profile-pic-edit {
+    background: #1E293B;
+    border-color: #475569;
+  }
+
+  .profile-pic-edit img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .profile-pic-edit .placeholder {
+    font-size: 30px;
+    font-weight: 700;
+    color: #94A3B8;
+  }
+
+  .profile-pic-edit .upload-hint {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 9px;
+    padding: 4px 0;
+    text-align: center;
+  }
+
+  /* ===== Tampilan Laptop / PC ===== */
+  @media (min-width: 900px) {
+    body {
+      background: linear-gradient(160deg, #EFF6FF 0%, #F8FAFE 60%);
+      min-height: 100vh;
+    }
+
+    body.dark {
+      background: linear-gradient(160deg, #0B1120 0%, #111827 60%);
+    }
+
+    .app-container {
+      max-width: 720px;
+      margin: 36px auto;
+      min-height: auto;
+      background: #F1F5F9;
+      border-radius: 20px;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.12);
+      overflow: hidden;
+      padding-bottom: 24px;
+    }
+
+    body.dark .app-container {
+      background: #0B1120;
+      border-color: #1E293B;
+      box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .app-header {
+      border-radius: 20px 20px 0 0;
+    }
+  }
+  /* ===== Zoom Foto Profil ===== */
+  .foto-zoom-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.92);
+    display: none;
+    place-items: center;
+    z-index: 400;
+    padding: 20px;
+  }
+
+  .foto-zoom-overlay.active {
+    display: grid;
+  }
+
+  .foto-zoom-overlay img {
+    max-width: 100%;
+    max-height: 85vh;
+    border-radius: 12px;
+    animation: fotoZoomIn 0.2s ease;
+  }
+
+  @keyframes fotoZoomIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .foto-zoom-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .foto-zoom-close svg {
+    width: 20px;
+    height: 20px;
+    stroke: #fff;
+    stroke-width: 2.5;
+  }
+
+  .banner-avatar {
+    cursor: pointer;
+  }
+
+  .banner-edit-btn {
+    position: absolute;
+    top: 50px;
+    right: 14px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 5;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .banner-edit-btn:active { transform: scale(0.92); }
+
+  .banner-edit-btn svg {
+    width: 16px;
+    height: 16px;
+    stroke: #fff;
+    stroke-width: 2.2;
+  }
+  /* ===== Pilih Banner ===== */
+  .bp-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px);
+    display: none;
+    place-items: center;
+    z-index: 400;
+    padding: 20px;
+  }
+
+  .bp-overlay.active { display: grid; }
+
+  .bp-content {
+    background: #FFFFFF;
+    width: 100%;
+    max-width: 380px;
+    border-radius: 20px;
+    padding: 20px;
+  }
+
+  body.dark .bp-content {
+    background: #111827;
+  }
+
+  .bp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  .bp-header h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0F172A;
+  }
+
+  body.dark .bp-header h3 { color: #F1F5F9; }
+
+  .bp-close {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #F1F5F9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  body.dark .bp-close { background: #1E293B; }
+
+  .bp-close svg { width: 15px; height: 15px; stroke: #0F172A; }
+  body.dark .bp-close svg { stroke: #F1F5F9; }
+
+  .bp-sub {
+    font-size: 12.5px;
+    color: #64748B;
+    margin-bottom: 16px;
+  }
+
+  body.dark .bp-sub { color: #94A3B8; }
+
+  .bp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .bp-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 14px;
+    border: 2px solid #E2E8F0;
+    cursor: pointer;
+    position: relative;
+  }
+
+  body.dark .bp-option { border-color: #1E293B; }
+
+  .bp-option.selected {
+    border-color: #2563EB;
+    background: #EFF6FF;
+  }
+
+  body.dark .bp-option.selected {
+    background: #1D2B4A;
+  }
+
+  .bp-option.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .bp-swatch {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bp-swatch.standard { background: linear-gradient(135deg, #475569, #64748B); }
+  .bp-swatch.silver { background: linear-gradient(135deg, #94A3B8, #CBD5E1); }
+  .bp-swatch.gold { background: linear-gradient(135deg, #F59E0B, #FBBF24); }
+  .bp-swatch.platinum { background: linear-gradient(135deg, #06B6D4, #3B82F6, #8B5CF6); }
+  .bp-swatch.diamond { background: linear-gradient(135deg, #0B1120, #1E293B, #67E8F9, #1E293B); }
+
+  .bp-info { flex: 1; }
+
+  .bp-info b {
+    display: block;
+    font-size: 13.5px;
+    color: #0F172A;
+  }
+
+  body.dark .bp-info b { color: #F1F5F9; }
+
+  .bp-info span {
+    font-size: 11.5px;
+    color: #64748B;
+  }
+
+  body.dark .bp-info span { color: #94A3B8; }
+
+  .bp-check {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #2563EB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .bp-check svg { width: 12px; height: 12px; stroke: #fff; stroke-width: 3; }
+
+  .bp-lock {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bp-lock svg { width: 16px; height: 16px; stroke: #94A3B8; }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- HEADER -->
+  <div class="app-header" id="mainHeader">
+    <div class="logo-area">
+      <div class="menu-icon" onclick="openSidebar()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </div>
+      <span class="app-title">Star Tools</span>
+    </div>
+  </div>
+
+  <!-- HEADER BACK -->
+  <div class="app-header hidden" id="subHeader">
+    <div class="logo-area">
+      <div class="header-back" onclick="goToMainPage()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        <span id="subHeaderTitle">Kembali</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+  <div class="sidebar-nav" id="sidebarNav">
+    <div class="close-sidebar-icon" onclick="closeSidebar()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </div>
+    <a href="#" onclick="goTo('index.html')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Utama
+    </a>
+    <a href="#" onclick="goTo('berita.html')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg> Berita
+    </a>
+    <a href="#" onclick="goTo('premium.html')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Premium
+    </a>
+    <a href="#" onclick="goTo('akun.html')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Akun
+    </a>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast"></div>
+
+  <!-- ZOOM FOTO PROFIL -->
+  <div class="foto-zoom-overlay" id="fotoZoomOverlay" onclick="closeFotoZoom(event)">
+    <div class="foto-zoom-close" onclick="closeFotoZoom(event)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </div>
+    <img id="fotoZoomImg" src="" onclick="event.stopPropagation()">
+  </div>
+
+  <!-- PILIH BANNER -->
+  <div class="bp-overlay" id="bpOverlay" onclick="closeBannerPicker(event)">
+    <div class="bp-content" onclick="event.stopPropagation()">
+      <div class="bp-header">
+        <h3>Pilih Banner</h3>
+        <div class="bp-close" onclick="closeBannerPicker()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </div>
+      </div>
+      <p class="bp-sub">Pilih banner yang mau dipamerin di profil kamu. Banner yang masih terkunci bisa dibuka dengan berlangganan premium mapel lebih banyak.</p>
+      <div class="bp-list" id="bpList"></div>
+    </div>
+  </div>
+
+  <!-- MAIN SCREEN -->
+  <div class="screen">
+
+    <!-- ==================== HALAMAN UTAMA AKUN ==================== -->
+    <div id="pageMain" class="page active">
+
+      <!-- PROFILE CARD CONTAINER - SATU KESATUAN -->
+      <div class="profile-card-container">
+        <!-- BANNER ATAS -->
+        <div class="profile-banner standard" id="profileBanner">
+          <span class="banner-stars s1">✦</span>
+          <span class="banner-stars s2">✦</span>
+          <span class="banner-stars s3">✦</span>
+          <span class="banner-stars s4">✦</span>
+          <span class="banner-stars s5">✦</span>
+
+          <div class="banner-edit-btn" onclick="openBannerPicker()" aria-label="Pilih Banner">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none;">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </div>
+
+          <span class="banner-level-badge" id="levelBadgeBanner">
+            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Standard
+          </span>
+
+          <div class="banner-avatar" id="bannerAvatar" onclick="openFotoZoom()">U</div>
+
+          <div class="banner-info">
+            <div class="name">
+              <span id="bannerName">User</span>
+              <span class="verified" id="verifiedBadgeBanner" style="display:none;">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 2l2.2 2 3-.5.8 2.9 2.9.8-.5 3 2 2-2 2 .5 3-2.9.8-.8 2.9-3-.5-2.2 2-2.2-2-3 .5-.8-2.9-2.9-.8.5-3-2-2 2-2-.5-3 2.9-.8.8-2.9 3 .5z" fill="#3B82F6"/>
+                  <path d="M8 12.5l2.5 2.5 5.5-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </div>
+            <div class="bio" id="bannerBio">Belum ada bio</div>
+          </div>
+        </div>
+
+        <!-- LEVEL INFO CARD - LANGSUNG DI BAWAH, FULL WIDTH -->
+        <div class="level-info-card" id="levelInfoCard" style="display:none;">
+          <div class="left">
+            <div class="icon" id="levelIcon">
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div class="info">
+              <div class="title" id="levelTitle">Premium Gold</div>
+              <div class="sub" id="levelSub">2 Mapel Premium</div>
+            </div>
+          </div>
+          <div class="right">
+            <span class="level-badge" id="levelBadge">Gold</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MENU GRID -->
+      <div class="card-modern">
+        <div class="menu-grid">
+          <div class="menu-item" onclick="showPage('pageEditProfile')">
+            <svg viewBox="0 0 24 24" stroke="#60A5FA"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+            <span>Edit Profil</span>
+            <span class="desc">Ubah data</span>
+          </div>
+          <div class="menu-item" onclick="showPage('pageRiwayat')">
+            <svg viewBox="0 0 24 24" stroke="#34D399"><path d="M3 12a9 9 0 1 0 3-6"/><polyline points="3 3 3 9 9 9"/><polyline points="12 7 12 12 16 14"/></svg>
+            <span>Riwayat</span>
+            <span class="desc">Aktivitas</span>
+          </div>
+          <div class="menu-item theme-item" onclick="toggleTheme()">
+            <svg viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
+            <span id="themeLabel">Mode Terang</span>
+            <span class="desc">Ganti tema</span>
+          </div>
+          <div class="menu-item" onclick="showPage('pageTentang')">
+            <svg viewBox="0 0 24 24" stroke="#FBBF24"><circle cx="12" cy="12" r="9"/><path d="M12 10v6"/><path d="M12 7h.01"/></svg>
+            <span>Tentang</span>
+            <span class="desc">Info app</span>
+          </div>
+          <div class="menu-item" onclick="showPage('pageBantuan')">
+            <svg viewBox="0 0 24 24" stroke="#F472B6"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>Bantuan</span>
+            <span class="desc">Pusat bantuan</span>
+          </div>
+          <div class="menu-item" onclick="showPage('pageKelolaAkun')">
+            <svg viewBox="0 0 24 24" stroke="#8B5CF6"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Kelola Akun</span>
+            <span class="desc">Keamanan</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MENU LIST -->
+      <div class="card-modern">
+        <div class="menu-list">
+          <div class="menu-list-item" onclick="showPage('pagePengaturan')">
+            <svg viewBox="0 0 24 24" stroke="#8B5CF6"><circle cx="12" cy="12" r="3"/><path d="M19.14 12.94a7.49 7.49 0 0 0 .05-.94 7.49 7.49 0 0 0-.05-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.28 7.28 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54a7.28 7.28 0 0 0-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.84a.5.5 0 0 0 .12.64l2.03 1.58a7.49 7.49 0 0 0-.05.94 7.49 7.49 0 0 0 .05.94l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32a.5.5 0 0 0 .6.22l2.39-.96a7.28 7.28 0 0 0 1.63.94l.36 2.54a.5.5 0 0 0 .5.42h3.84a.5.5 0 0 0 .5-.42l.36-2.54a7.28 7.28 0 0 0 1.63-.94l2.39.96a.5.5 0 0 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58z"/></svg>
+            <div class="info">
+              <div class="title">Pengaturan</div>
+              <div class="sub">Notifikasi, reset data, dan preferensi</div>
+            </div>
+            <span class="arrow"></span>
+          </div>
+          <div class="menu-list-item" onclick="showPage('pagePrestasi')">
+            <svg viewBox="0 0 24 24" stroke="#FBBF24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <div class="info">
+              <div class="title">Prestasi & Sertifikat</div>
+              <div class="sub">Lihat pencapaian yang diperoleh</div>
+            </div>
+            <span class="arrow"></span>
+          </div>
+          <div class="menu-list-item" onclick="showPage('pageKeamanan')">
+            <svg viewBox="0 0 24 24" stroke="#34D399"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 7h8"/><path d="M8 12h8"/><path d="M8 17h4"/></svg>
+            <div class="info">
+              <div class="title">Privasi & Keamanan</div>
+              <div class="sub">Kelola data pribadi dan keamanan</div>
+            </div>
+            <span class="arrow"></span>
+          </div>
+          <div class="menu-list-item" onclick="goTo('mailto:startoolsid@gmail.com')">
+            <svg viewBox="0 0 24 24" stroke="#60A5FA"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>
+            <div class="info">
+              <div class="title">Pelayanan Pelanggan</div>
+              <div class="sub">Hubungi kami via email</div>
+            </div>
+            <span class="arrow"></span>
+          </div>
+          <div class="menu-list-item" onclick="showLogoutAlert()">
+            <svg viewBox="0 0 24 24" stroke="#DC2626"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            <div class="info">
+              <div class="title" style="color:#DC2626;">Keluar</div>
+              <div class="sub">Logout dari akun kamu</div>
+            </div>
+            <span class="arrow"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HALAMAN EDIT PROFIL -->
+    <div id="pageEditProfile" class="page">
+      <div class="card-modern">
+        <div class="section-title">Edit Profil</div>
+        <div class="section-sub">Kelola data pribadi kamu</div>
+
+        <div class="profile-pic-edit" onclick="document.getElementById('fotoInput').click()">
+          <img id="fotoPreview" style="display:none;">
+          <span class="placeholder" id="fotoPlaceholder">📷</span>
+          <span class="upload-hint">Tap untuk ganti</span>
+        </div>
+        <input type="file" id="fotoInput" accept="image/*" style="display:none;">
+
+        <input type="text" id="editNama" class="input-field" placeholder="Nama lengkap">
+        <input type="text" id="editBio" class="input-field" placeholder="Bio">
+        <input type="text" id="editSekolah" class="input-field" placeholder="Asal sekolah">
+        <input type="text" id="editKelas" class="input-field" placeholder="Kelas">
+        <input type="text" id="editJurusan" class="input-field" placeholder="Jurusan">
+
+        <button class="btn-save" onclick="saveProfile()">Simpan Perubahan</button>
+      </div>
+    </div>
+
+    <!-- HALAMAN KELOLA AKUN -->
+    <div id="pageKelolaAkun" class="page">
+      <div class="card-modern">
+        <div class="section-title">Kelola Akun</div>
+        <div class="section-sub">Kelola keamanan dan pengaturan akun kamu.</div>
+
+        <div class="menu-list">
+          <div class="menu-list-item" onclick="showPage('pageGantiPassword')">
+            <svg viewBox="0 0 24 24" stroke="#F59E0B"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <div class="info">
+              <div class="title">Ganti Password</div>
+              <div class="sub">Perbarui kata sandi akun kamu</div>
+            </div>
+            <span class="arrow">→</span>
+          </div>
+          <div class="menu-list-item" onclick="showPage('pageGantiEmail')">
+            <svg viewBox="0 0 24 24" stroke="#60A5FA"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 8l10 6 10-6"/></svg>
+            <div class="info">
+              <div class="title">Ganti Email</div>
+              <div class="sub">Perbarui alamat email akun kamu</div>
+            </div>
+            <span class="arrow">→</span>
+          </div>
+          <div class="menu-list-item" onclick="showPage('pageKeamanan')">
+            <svg viewBox="0 0 24 24" stroke="#34D399"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 7h8"/><path d="M8 12h8"/><path d="M8 17h4"/></svg>
+            <div class="info">
+              <div class="title">Privasi & Keamanan</div>
+              <div class="sub">Kelola data pribadi dan keamanan</div>
+            </div>
+            <span class="arrow">→</span>
+          </div>
+          <div class="menu-list-item" onclick="showPage('pageSession')">
+            <svg viewBox="0 0 24 24" stroke="#8B5CF6"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M8 2v4"/><path d="M16 2v4"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            <div class="info">
+              <div class="title">Sesi Aktif</div>
+              <div class="sub">Lihat perangkat yang sedang login</div>
+            </div>
+            <span class="arrow">→</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HALAMAN GANTI PASSWORD -->
+    <div id="pageGantiPassword" class="page">
+      <div class="card-modern">
+        <div class="section-title">Ganti Password</div>
+        <div class="section-sub">Perbarui kata sandi akun kamu.</div>
+
+        <input type="password" id="oldPassword" class="input-field" placeholder="Password lama">
+        <input type="password" id="newPassword" class="input-field" placeholder="Password baru (min 6 karakter)">
+        <input type="password" id="confirmPassword" class="input-field" placeholder="Konfirmasi password baru">
+
+        <button class="btn-save" onclick="changePassword()">Ganti Password</button>
+      </div>
+    </div>
+
+    <!-- HALAMAN GANTI EMAIL -->
+    <div id="pageGantiEmail" class="page">
+      <div class="card-modern">
+        <div class="section-title">Ganti Email</div>
+        <div class="section-sub">Email digunakan untuk login dan menerima notifikasi penting.</div>
+
+        <input type="email" id="newEmail" class="input-field" placeholder="Email baru">
+        <input type="password" id="emailPassword" class="input-field" placeholder="Password untuk verifikasi">
+
+        <button class="btn-save" onclick="changeEmail()">Ganti Email</button>
+      </div>
+    </div>
+
+    <!-- HALAMAN SESI AKTIF -->
+    <div id="pageSession" class="page">
+      <div class="card-modern">
+        <div class="section-title">Sesi Aktif</div>
+        <div class="section-sub">Perangkat yang sedang terhubung ke akun kamu.</div>
+
+        <div class="session-item">
+          <div class="session-icon">
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M8 2v4"/><path d="M16 2v4"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          </div>
+          <div class="session-info">
+            <div class="session-name" id="deviceName">Perangkat Ini</div>
+            <div class="session-detail" id="deviceDetail">Sedang aktif</div>
+          </div>
+          <span class="session-status active">Aktif</span>
+        </div>
+
+        <p style="font-size:12px;color:#94A3B8;text-align:center;margin-top:10px;">* Hanya menampilkan perangkat yang sedang login saat ini</p>
+      </div>
+    </div>
+
+    <!-- HALAMAN RIWAYAT -->
+    <div id="pageRiwayat" class="page">
+      <div class="card-modern">
+        <div class="section-title">Riwayat Belajar</div>
+        <div class="section-sub">Catatan aktivitas belajar kamu.</div>
+        <div id="riwayatContainer"></div>
+      </div>
+    </div>
+
+    <!-- HALAMAN TENTANG -->
+    <div id="pageTentang" class="page">
+      <div class="card-modern">
+        <div class="section-title">Tentang Aplikasi</div>
+        <div class="section-sub">Versi 2.2.0</div>
+
+        <div class="about-box">
+          <p>Star Tools adalah platform pembelajaran digital yang dirancang untuk membantu siswa belajar dengan cara yang lebih fleksibel, modern, dan relevan.</p>
+        </div>
+
+        <div class="about-box">
+          <h3>Tujuan Dibuat</h3>
+          <ul>
+            <li>Membantu siswa memahami materi dengan lebih mudah</li>
+            <li>Menyediakan tools belajar dalam satu platform</li>
+            <li>Meningkatkan skill yang relevan dengan dunia kerja</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- HALAMAN BANTUAN -->
+    <div id="pageBantuan" class="page">
+      <div class="card-modern">
+        <div class="section-title">Pusat Bantuan</div>
+        <div class="section-sub">Temukan jawaban dari pertanyaan yang sering diajukan.</div>
+
+        <div class="help-item">
+          <div class="help-q">Bagaimana cara upgrade ke Premium?</div>
+          <div class="help-a">Klik menu Premium, pilih paket yang diinginkan, lalu ikuti instruksi pembayaran.</div>
+        </div>
+        <div class="help-item">
+          <div class="help-q">Mengapa materi saya tidak bisa dibuka?</div>
+          <div class="help-a">Akun gratis hanya bisa membuka 2 materi per hari. Upgrade ke Premium untuk akses tanpa batas.</div>
+        </div>
+        <div class="help-item">
+          <div class="help-q">Bagaimana cara menghubungi admin?</div>
+          <div class="help-a">Kirim email ke startoolsid@gmail.com untuk bantuan lebih lanjut.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HALAMAN PENGATURAN -->
+    <div id="pagePengaturan" class="page">
+      <div class="card-modern">
+        <div class="section-title">Pengaturan</div>
+        <div class="section-sub">Sesuaikan preferensi aplikasi sesuai dengan kebutuhan kamu.</div>
+
+        <div class="setting-item">
+          <div class="setting-label">
+            Notifikasi
+            <div class="sub">Terima notifikasi aktivitas belajar</div>
+          </div>
+          <div class="toggle-switch active" onclick="this.classList.toggle('active')">
+            <div class="toggle-dot"></div>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-label">
+            Mode Gelap Otomatis
+            <div class="sub">Ikuti tema sistem perangkat</div>
+          </div>
+          <div class="toggle-switch" onclick="this.classList.toggle('active')">
+            <div class="toggle-dot"></div>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-label">
+            Reset Data Lokal
+            <div class="sub">Hapus semua data tersimpan di perangkat</div>
+          </div>
+          <button style="background:#DC2626;color:white;border:none;padding:6px 16px;border-radius:10px;font-weight:600;cursor:pointer;" onclick="resetData()">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- HALAMAN PRESTASI -->
+    <div id="pagePrestasi" class="page">
+      <div class="card-modern">
+        <div class="section-title">Prestasi & Sertifikat</div>
+        <div class="section-sub">Kumpulkan prestasi dan sertifikat seiring perjalanan belajar kamu.</div>
+
+        <div class="about-box" style="text-align:center;padding:30px 20px;">
+          <svg viewBox="0 0 24 24" stroke="#FBBF24" style="width:48px;height:48px;margin:0 auto 12px;fill:none;stroke-width:1.5;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <h3 style="margin-bottom:8px;">Belum Ada Prestasi</h3>
+          <p style="color:#94A3B8;font-size:14px;">Selesaikan lebih banyak materi untuk mendapatkan sertifikat.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- HALAMAN KEAMANAN -->
+    <div id="pageKeamanan" class="page">
+      <div class="card-modern">
+        <div class="section-title">Privasi & Keamanan</div>
+        <div class="section-sub">Kelola data pribadi dan tingkat keamanan akun kamu.</div>
+
+        <div class="about-box">
+          <h3>Data yang Tersimpan</h3>
+          <ul>
+            <li>Nama dan biodata</li>
+            <li>Riwayat belajar</li>
+            <li>Progress materi</li>
+            <li>Preferensi aplikasi</li>
+          </ul>
+        </div>
+
+        <div class="about-box">
+          <h3>Keamanan</h3>
+          <ul>
+            <li>Data dienkripsi dengan aman</li>
+            <li>Login menggunakan akun Google</li>
+            <li>Data tidak dibagikan ke pihak ketiga</li>
+          </ul>
+        </div>
+
+        <button class="btn-save btn-danger" onclick="showToast('Data privasi telah dihapus!')">Hapus Data Pribadi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-app">
+    <p>Star Platform | Star Tools 2026</p>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-item" data-page="index.html" onclick="goTo('index.html')">
+    <svg viewBox="0 0 24 24"><path d="M4 10.5L12 4l8 6.5"/><path d="M6 10v9h5v-5h2v5h5v-9"/></svg>
+    <span>Utama</span>
+  </button>
+  <button class="nav-item" data-page="berita.html" onclick="goTo('berita.html')">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="13" y2="16"/></svg>
+    <span>Berita</span>
+  </button>
+  <button class="nav-item" data-page="premium.html" onclick="goTo('premium.html')">
+    <svg viewBox="0 0 24 24"><path d="M12 2l2.5 6H21l-5 3.5L18 18l-6-4-6 4 2-6.5L3 8h6.5z"/></svg>
+    <span>Premium</span>
+  </button>
+  <button class="nav-item active" data-page="akun.html" onclick="goTo('akun.html')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+    <span>Akun</span>
+  </button>
+</div>
+
+<!-- LOGOUT ALERT -->
+<div id="logoutAlert" class="alert-overlay">
+  <div class="alert-card">
+    <p style="margin-bottom:20px;font-size:15px;">Yakin ingin keluar dari akun?</p>
+    <div class="alert-actions">
+      <button class="btn-cancel" onclick="closeLogoutAlert()">Batal</button>
+      <button class="btn-full btn-danger" onclick="confirmLogout()">Keluar</button>
+    </div>
+  </div>
+</div>
+
+<!-- GLOBAL ALERT -->
+<div id="globalAlert" class="alert-overlay">
+  <div class="alert-card">
+    <p id="alertMessage" style="margin-bottom:20px;">Pemberitahuan</p>
+    <button class="btn-full" onclick="closeAlertGlobal()">Mengerti</button>
+    <div id="alertExtraBtn"></div>
+  </div>
+</div>
+
+
+<script>
+var firebaseConfig = {
+  apiKey: "AIzaSyDgr_nHqvpMsiG4lBkYckzxRErkskXj_6E",
+  authDomain: "laporanstartools-c18b2.firebaseapp.com",
+  databaseURL: "https://laporanstartools-c18b2-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "laporanstartools-c18b2",
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+var db = firebase.database();
+var auth = firebase.auth();
+
+var currentUser = null;
+var fotoBase64 = "";
+var profileData = {};
+var premiumMapel = {};
+
+var PROFILE_KEY = 'userProfileData';
+var PREMIUM_KEY = 'userPremiumData';
+var PROFILE_LOADED_KEY = 'profileLoadedOnce';
+
+// ======================== LEVEL PREMIUM ========================
+function getPremiumLevel(mapelObj) {
+  var count = 0;
+  var mapelList = ['ekonomi', 'sains', 'coding', 'matematika', 'bahasa', 'pendukung', 'robotik'];
+  mapelList.forEach(function(m) {
+    if (mapelObj[m] === true) count++;
+  });
+
+  if (count >= 4) return { level: 'diamond', name: 'Diamond', color: 'diamond' };
+  if (count >= 3) return { level: 'gold', name: 'Gold', color: 'gold' };
+  if (count >= 2) return { level: 'platinum', name: 'Platinum', color: 'platinum' };
+  if (count >= 1) return { level: 'silver', name: 'Silver', color: 'silver' };
+  return { level: 'standard', name: 'Standard', color: 'standard' };
+}
+
+// ======================== NAVIGASI ========================
+function goTo(page) {
+  window.location.href = page;
+}
+
+function openSidebar() {
+  document.getElementById('sidebarOverlay').classList.add('active');
+  document.getElementById('sidebarNav').classList.add('active');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebarOverlay').classList.remove('active');
+  document.getElementById('sidebarNav').classList.remove('active');
+}
+
+function closeAlertGlobal() {
+  document.getElementById('globalAlert').style.display = 'none';
+}
+
+function showAlert(message, showUpgrade) {
+  var overlay = document.getElementById('globalAlert');
+  document.getElementById('alertMessage').innerText = message;
+  var extraDiv = document.getElementById('alertExtraBtn');
+  extraDiv.innerHTML = '';
+  if (showUpgrade) {
+    var btn = document.createElement('button');
+    btn.className = 'btn-full';
+    btn.innerText = 'Tingkatkan ke Premium';
+    btn.style.marginTop = '12px';
+    btn.onclick = function() { closeAlertGlobal(); goTo('premium.html'); };
+    extraDiv.appendChild(btn);
+  }
+  overlay.style.display = 'flex';
+}
+
+function showToast(message, type) {
+  var toast = document.getElementById('toast');
+  toast.innerText = message;
+  toast.className = 'toast show';
+  if (type === 'error') toast.classList.add('error');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(function() {
+    toast.classList.remove('show');
+  }, 2500);
+}
+
+// ======================== LOGOUT ========================
+function showLogoutAlert() {
+  document.getElementById('logoutAlert').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLogoutAlert() {
+  document.getElementById('logoutAlert').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function confirmLogout() {
+  closeLogoutAlert();
+  auth.signOut().then(function() {
+    localStorage.removeItem('user');
+    window.location.href = 'login.html';
+  }).catch(function() {
+    window.location.href = 'login.html';
+  });
+}
+
+// ======================== THEME ========================
+function toggleTheme() {
+  var isDark = document.body.classList.toggle('dark');
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  updateThemeLabels(isDark);
+}
+
+function updateThemeLabels(isDark) {
+  var label = document.getElementById('themeLabel');
+  var text = isDark ? 'Mode Gelap' : 'Mode Terang';
+  if (label) label.innerText = text;
+}
+
+if (localStorage.getItem('theme') === 'dark') {
+  document.body.classList.add('dark');
+  updateThemeLabels(true);
+} else {
+  updateThemeLabels(false);
+}
+
+// ======================== PAGE NAVIGATION ========================
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(function(p) {
+    p.classList.remove('active');
+  });
+  document.getElementById(pageId).classList.add('active');
+
+  if (pageId === 'pageMain') {
+    document.getElementById('mainHeader').classList.remove('hidden');
+    document.getElementById('subHeader').classList.add('hidden');
+  } else {
+    document.getElementById('mainHeader').classList.add('hidden');
+    document.getElementById('subHeader').classList.remove('hidden');
+    var titles = {
+      'pageEditProfile': 'Edit Profil',
+      'pageRiwayat': 'Riwayat Belajar',
+      'pageTentang': 'Tentang Aplikasi',
+      'pageBantuan': 'Pusat Bantuan',
+      'pagePengaturan': 'Pengaturan',
+      'pagePrestasi': 'Prestasi & Sertifikat',
+      'pageKeamanan': 'Privasi & Keamanan',
+      'pageKelolaAkun': 'Kelola Akun',
+      'pageGantiPassword': 'Ganti Password',
+      'pageGantiEmail': 'Ganti Email',
+      'pageSession': 'Sesi Aktif'
+    };
+    document.getElementById('subHeaderTitle').innerText = titles[pageId] || 'Kembali';
+  }
+
+  if (pageId === 'pageRiwayat') loadRiwayat();
+  if (pageId === 'pageEditProfile') loadProfileDataToEdit();
+  if (pageId === 'pageSession') loadSession();
+}
+
+function goToMainPage() {
+  showPage('pageMain');
+}
+
+// ======================== PILIH BANNER ========================
+var BANNER_TIERS = [
+  { color: 'standard', name: 'Standard', desc: 'Banner default, terbuka untuk semua', minCount: 0 },
+  { color: 'silver', name: 'Silver', desc: 'Terbuka mulai 1 mapel premium', minCount: 1 },
+  { color: 'platinum', name: 'Platinum', desc: 'Terbuka mulai 2 mapel premium', minCount: 2 },
+  { color: 'gold', name: 'Gold', desc: 'Terbuka mulai 3 mapel premium', minCount: 3 },
+  { color: 'diamond', name: 'Diamond', desc: 'Terbuka mulai 4 mapel premium', minCount: 4 }
+];
+
+function getPremiumCount() {
+  var count = 0;
+  var mapelList = ['ekonomi', 'sains', 'coding', 'matematika', 'bahasa', 'pendukung', 'robotik'];
+  mapelList.forEach(function(m) {
+    if (premiumMapel[m] === true) count++;
+  });
+  return count;
+}
+
+function openBannerPicker() {
+  var count = getPremiumCount();
+  var current = profileData.bannerPilihan || getPremiumLevel(premiumMapel).color;
+  var list = document.getElementById('bpList');
+  list.innerHTML = '';
+
+  BANNER_TIERS.forEach(function(tier) {
+    var unlocked = count >= tier.minCount;
+    var div = document.createElement('div');
+    div.className = 'bp-option' + (unlocked ? '' : ' locked') + (current === tier.color ? ' selected' : '');
+    div.innerHTML =
+      '<div class="bp-swatch ' + tier.color + '"></div>' +
+      '<div class="bp-info"><b>' + tier.name + '</b><span>' + tier.desc + '</span></div>' +
+      (current === tier.color
+        ? '<div class="bp-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>'
+        : (!unlocked ? '<div class="bp-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>' : ''));
+
+    if (unlocked) {
+      div.onclick = function() { pilihBanner(tier.color); };
+    }
+    list.appendChild(div);
+  });
+
+  document.getElementById('bpOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBannerPicker(e) {
+  if (e) e.stopPropagation();
+  document.getElementById('bpOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function pilihBanner(color) {
+  if (!currentUser) return;
+  profileData.bannerPilihan = color;
+  db.ref('users/' + currentUser + '/profile/bannerPilihan').set(color).then(function() {
+    updateUIProfile();
+    closeBannerPicker();
+    showToast('Banner berhasil diganti');
+  });
+}
+
+// ======================== ZOOM FOTO PROFIL ========================
+function openFotoZoom() {
+  if (!profileData.foto) return;
+  document.getElementById('fotoZoomImg').src = profileData.foto;
+  document.getElementById('fotoZoomOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeFotoZoom(e) {
+  if (e) e.stopPropagation();
+  document.getElementById('fotoZoomOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// ======================== FOTO PROFIL ========================
+document.getElementById('fotoInput').addEventListener('change', function(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+
+  var reader = new FileReader();
+  reader.onload = function(event) {
+    fotoBase64 = event.target.result;
+    var preview = document.getElementById('fotoPreview');
+    var placeholder = document.getElementById('fotoPlaceholder');
+    preview.src = fotoBase64;
+    preview.style.display = 'block';
+    placeholder.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+});
+
+// ======================== LOAD PROFILE ========================
+function loadProfile(user) {
+  if (!user) return;
+
+  var savedProfile = localStorage.getItem(PROFILE_KEY);
+  var savedPremium = localStorage.getItem(PREMIUM_KEY);
+
+  if (savedProfile) {
+    try {
+      profileData = JSON.parse(savedProfile);
+    } catch(e) {
+      profileData = {};
+    }
+  }
+  
+  if (savedPremium) {
+    try {
+      premiumMapel = JSON.parse(savedPremium);
+    } catch(e) {
+      premiumMapel = {};
+    }
+  }
+
+  updateUIProfile();
+
+  var uid = user.uid;
+
+  db.ref('users/' + uid + '/profile').on('value', function(snap) {
+    var data = snap.val() || {};
+    profileData = data;
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(data));
+    localStorage.setItem(PROFILE_LOADED_KEY, 'true');
+    updateUIProfile();
+  });
+
+  db.ref('users/' + uid + '/premium').on('value', function(snap) {
+    premiumMapel = snap.val() || {};
+    localStorage.setItem(PREMIUM_KEY, JSON.stringify(premiumMapel));
+    updateUIProfile();
+  });
+}
+
+// ======================== UPDATE UI PROFILE ========================
+function updateUIProfile() {
+  var avatar = document.getElementById('bannerAvatar');
+  var nameEl = document.getElementById('bannerName');
+  var bioEl = document.getElementById('bannerBio');
+  var verifiedEl = document.getElementById('verifiedBadgeBanner');
+  var bannerEl = document.getElementById('profileBanner');
+  var levelBadge = document.getElementById('levelBadgeBanner');
+  var levelInfoCard = document.getElementById('levelInfoCard');
+  var levelIcon = document.getElementById('levelIcon');
+  var levelTitle = document.getElementById('levelTitle');
+  var levelSub = document.getElementById('levelSub');
+  var levelBadgeCard = document.getElementById('levelBadge');
+
+  var nama = profileData.nama || 'User';
+  var bio = profileData.bio || 'Belum ada bio';
+
+  nameEl.innerText = nama;
+  bioEl.innerText = bio;
+  
+  // Avatar
+  if (profileData.foto) {
+    avatar.innerHTML = '<img src="' + profileData.foto + '">';
+    avatar.style.background = 'transparent';
+  } else {
+    avatar.innerHTML = nama.charAt(0).toUpperCase();
+    avatar.style.background = 'linear-gradient(135deg, #2563EB, #60A5FA)';
+  }
+
+  // Verified
+  if (profileData.verified === true) {
+    verifiedEl.style.display = 'inline-flex';
+  } else {
+    verifiedEl.style.display = 'none';
+  }
+
+  // Hitung premium
+  var count = 0;
+  var mapelList = ['ekonomi', 'sains', 'coding', 'matematika', 'bahasa', 'pendukung', 'robotik'];
+  mapelList.forEach(function(m) {
+    if (premiumMapel[m] === true) count++;
+  });
+
+  var hasPremium = count > 0;
+  var level = getPremiumLevel(premiumMapel);
+
+  // Tentukan banner yang ditampilkan: pilihan user (kalau masih terbuka), atau default sesuai level
+  var displayColor = level.color;
+  var displayName = level.name;
+  if (profileData.bannerPilihan) {
+    var chosen = BANNER_TIERS.find(function(t) { return t.color === profileData.bannerPilihan; });
+    if (chosen && count >= chosen.minCount) {
+      displayColor = chosen.color;
+      displayName = chosen.name;
+    }
+  }
+
+  // Update BANNER
+  bannerEl.className = 'profile-banner ' + displayColor;
+  
+  // Level badge di pojok
+  levelBadge.className = 'banner-level-badge ' + displayColor;
+  levelBadge.innerHTML = 
+    '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> ' +
+    (hasPremium ? displayName : 'Standard');
+
+  // Level Info Card - FULL WIDTH
+  if (hasPremium) {
+    levelInfoCard.style.display = 'flex';
+    levelIcon.className = 'icon ' + level.color;
+    levelIcon.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+    levelTitle.innerText = 'Premium ' + level.name;
+    levelSub.innerText = count + ' Mapel Premium';
+    levelBadgeCard.className = 'level-badge ' + level.color;
+    levelBadgeCard.innerText = level.name;
+  } else {
+    levelInfoCard.style.display = 'none';
+  }
+}
+
+// ======================== EDIT PROFIL ========================
+function loadProfileDataToEdit() {
+  document.getElementById('editNama').value = profileData.nama || '';
+  document.getElementById('editBio').value = profileData.bio || '';
+  document.getElementById('editSekolah').value = profileData.sekolah || '';
+  document.getElementById('editKelas').value = profileData.kelas || '';
+  document.getElementById('editJurusan').value = profileData.jurusan || '';
+
+  if (profileData.foto) {
+    var preview = document.getElementById('fotoPreview');
+    var placeholder = document.getElementById('fotoPlaceholder');
+    preview.src = profileData.foto;
+    preview.style.display = 'block';
+    placeholder.style.display = 'none';
+    fotoBase64 = profileData.foto;
+  }
+}
+
+function saveProfile() {
+  if (!currentUser) {
+    showToast('Silakan login terlebih dahulu', 'error');
+    return;
+  }
+
+  var data = {
+    nama: document.getElementById('editNama').value.trim() || 'User',
+    bio: document.getElementById('editBio').value.trim() || '',
+    sekolah: document.getElementById('editSekolah').value.trim() || '',
+    kelas: document.getElementById('editKelas').value.trim() || '',
+    jurusan: document.getElementById('editJurusan').value.trim() || ''
+  };
+
+  if (fotoBase64) {
+    data.foto = fotoBase64;
+  }
+
+  db.ref('users/' + currentUser + '/profile').update(data).then(function() {
+    profileData = data;
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(data));
+    updateUIProfile();
+    showToast('Profil berhasil diperbarui!');
+    goToMainPage();
+  }).catch(function(err) {
+    showToast('Gagal menyimpan: ' + err.message, 'error');
+  });
+}
+
+// ======================== GANTI PASSWORD ========================
+function changePassword() {
+  var oldPass = document.getElementById('oldPassword').value;
+  var newPass = document.getElementById('newPassword').value;
+  var confirmPass = document.getElementById('confirmPassword').value;
+
+  if (!oldPass || !newPass || !confirmPass) {
+    showToast('Semua field harus diisi!', 'error');
+    return;
+  }
+
+  if (newPass.length < 6) {
+    showToast('Password baru minimal 6 karakter!', 'error');
+    return;
+  }
+
+  if (newPass !== confirmPass) {
+    showToast('Password baru tidak cocok!', 'error');
+    return;
+  }
+
+  var user = auth.currentUser;
+  var credential = firebase.auth.EmailAuthProvider.credential(user.email, oldPass);
+
+  user.reauthenticateWithCredential(credential).then(function() {
+    return user.updatePassword(newPass);
+  }).then(function() {
+    showToast('Password berhasil diubah!');
+    goToMainPage();
+  }).catch(function(err) {
+    showToast('Error: ' + err.message, 'error');
+  });
+}
+
+// ======================== GANTI EMAIL ========================
+function changeEmail() {
+  var newEmail = document.getElementById('newEmail').value;
+  var password = document.getElementById('emailPassword').value;
+
+  if (!newEmail || !password) {
+    showToast('Semua field harus diisi!', 'error');
+    return;
+  }
+
+  if (!newEmail.includes('@')) {
+    showToast('Email tidak valid!', 'error');
+    return;
+  }
+
+  if (newEmail === auth.currentUser.email) {
+    showToast('Email baru sama dengan email sekarang!', 'error');
+    return;
+  }
+
+  var user = auth.currentUser;
+  var credential = firebase.auth.EmailAuthProvider.credential(user.email, password);
+
+  user.reauthenticateWithCredential(credential).then(function() {
+    return user.updateEmail(newEmail);
+  }).then(function() {
+    showToast('Email berhasil diubah!');
+    db.ref('users/' + currentUser + '/profile/email').set(newEmail);
+    goToMainPage();
+  }).catch(function(err) {
+    showToast('Error: ' + err.message, 'error');
+  });
+}
+
+// ======================== SESI AKTIF ========================
+function loadSession() {
+  var user = auth.currentUser;
+  if (!user) return;
+
+  var deviceName = document.getElementById('deviceName');
+  var deviceDetail = document.getElementById('deviceDetail');
+
+  var userAgent = navigator.userAgent;
+  var browser = 'Browser Tidak Dikenal';
+  if (userAgent.includes('Chrome')) browser = 'Chrome';
+  else if (userAgent.includes('Firefox')) browser = 'Firefox';
+  else if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) browser = 'Safari';
+  else if (userAgent.includes('Edge')) browser = 'Edge';
+
+  var os = 'OS Tidak Dikenal';
+  if (userAgent.includes('Windows')) os = 'Windows';
+  else if (userAgent.includes('Mac')) os = 'macOS';
+  else if (userAgent.includes('Android')) os = 'Android';
+  else if (userAgent.includes('iPhone') || userAgent.includes('iPad')) os = 'iOS';
+
+  deviceName.innerText = browser + ' - ' + os;
+  deviceDetail.innerText = 'Login sebagai ' + user.email + ' | ' + new Date().toLocaleString('id-ID');
+}
+
+// ======================== RIWAYAT ========================
+function loadRiwayat() {
+  var container = document.getElementById('riwayatContainer');
+  var data = JSON.parse(localStorage.getItem('riwayatBelajar')) || [];
+
+  if (data.length === 0) {
+    container.innerHTML = '<div class="riwayat-empty">Belum ada riwayat belajar</div>';
+    return;
+  }
+
+  var html = '';
+  data.forEach(function(item) {
+    html += '<div class="riwayat-item">' +
+      '<div class="riwayat-mapel">' + item.mapel + '</div>' +
+      '<div class="riwayat-waktu">' + item.waktu + '</div>' +
+      '</div>';
+  });
+  container.innerHTML = html;
+}
+
+// ======================== RESET DATA ========================
+function resetData() {
+  if (confirm('Yakin ingin menghapus semua data lokal?')) {
+    localStorage.clear();
+    showToast('Data lokal berhasil direset!');
+  }
+}
+
+// ======================== AUTH ========================
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    currentUser = user.uid;
+    loadProfile(user);
+  } else {
+    var isGuest = localStorage.getItem('isGuest') === 'true';
+    if (isGuest) {
+      document.getElementById('bannerName').innerText = 'Guest';
+      document.getElementById('bannerAvatar').innerHTML = 'G';
+      document.getElementById('bannerAvatar').style.background = 'linear-gradient(135deg, #6B7280, #9CA3AF)';
+      document.getElementById('bannerBio').innerText = 'Belum login';
+      document.getElementById('verifiedBadgeBanner').style.display = 'none';
+      document.getElementById('profileBanner').className = 'profile-banner standard';
+      document.getElementById('levelBadgeBanner').className = 'banner-level-badge';
+      document.getElementById('levelBadgeBanner').innerHTML = 
+        '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Guest';
+      document.getElementById('levelInfoCard').style.display = 'none';
+    } else {
+      window.location.href = 'login.html';
+    }
+  }
+});
+
+// ======================== ACTIVE NAV ========================
+var currentPageNav = window.location.pathname.split('/').pop() || 'index.html';
+document.querySelectorAll('.nav-item').forEach(function(item) {
+  if (item.dataset.page === currentPageNav) {
+    item.classList.add('active');
+  } else {
+    item.classList.remove('active');
+  }
+});
+
+// ======================== KEYBOARD ========================
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeSidebar();
+    closeLogoutAlert();
+  }
+});
+</script>
+
+</body>
+</html>
