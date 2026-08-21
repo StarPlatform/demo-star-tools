@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Star Tools - Bagikan Lokasi</title>
+
+<link rel="icon" type="image/png" href="logo.jpg">
+<link rel="apple-touch-icon" href="logo.jpg">
+
+<meta property="og:image" content="https://www.stools.web.id/logo.jpg">
+<meta name="twitter:image" content="https://www.stools.web.id/logo.jpg">
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #F1F5F9; color: #0F172A;
+  }
+  body.dark { background:#0B1120; color:#F1F5F9; }
+
+  .app-container { max-width:560px; margin:0 auto; background:#F1F5F9; min-height:100vh; display:flex; flex-direction:column; position:relative; }
+  body.dark .app-container { background:#0B1120; }
+
+  .app-header {
+    background:#FFFFFF; padding:16px 20px; display:flex; align-items:center; justify-content:space-between;
+    border-bottom:1px solid #E2E8F0; position:sticky; top:0; z-index:20;
+  }
+  body.dark .app-header { background:#111827; border-bottom-color:#1E293B; }
+  .logo-area { display:flex; align-items:center; gap:12px; }
+  .menu-icon {
+    width:44px; height:44px; background:#F8FAFE; border-radius:32px; display:flex; align-items:center;
+    justify-content:center; cursor:pointer; border:1px solid #E2E8F0;
+  }
+  body.dark .menu-icon { background:#1E293B; border-color:#334155; }
+  .menu-icon svg { stroke:#0F172A; }
+  body.dark .menu-icon svg { stroke:#F1F5F9; }
+  .app-title { font-weight:700; font-size:20px; letter-spacing:-0.3px; background:linear-gradient(135deg, #2563EB, #60A5FA); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .close-btn {
+    width:44px; height:44px; background:rgba(0,0,0,0.05); border-radius:50%; display:flex; align-items:center;
+    justify-content:center; cursor:pointer; border:none; transition:0.2s;
+  }
+  body.dark .close-btn { background:rgba(255,255,255,0.05); }
+  .close-btn:active { transform:scale(0.92); }
+  .close-btn svg { stroke:#0F172A; width:22px; height:22px; }
+  body.dark .close-btn svg { stroke:#F1F5F9; }
+
+  .sidebar-overlay {
+    position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);
+    backdrop-filter:blur(4px); z-index:100; visibility:hidden; opacity:0; transition:0.25s;
+  }
+  .sidebar-overlay.active { visibility:visible; opacity:1; }
+  .sidebar-nav {
+    position:fixed; top:0; left:-280px; width:280px; height:100%; background:#FFFFFF; z-index:101;
+    transition:0.3s cubic-bezier(0.2,0.9,0.4,1.1); padding:70px 20px 30px; display:flex; flex-direction:column; gap:4px; box-shadow:4px 0 20px rgba(0,0,0,0.1);
+  }
+  body.dark .sidebar-nav { background:#111827; }
+  .sidebar-nav.active { left:0; }
+  .sidebar-nav a {
+    padding:14px 18px; font-size:16px; font-weight:500; border-radius:18px; text-decoration:none;
+    color:#0F172A; transition:0.2s; display:flex; align-items:center; gap:14px;
+  }
+  body.dark .sidebar-nav a { color:#F1F5F9; }
+  .sidebar-nav a:active { background:#DBEAFE; }
+  body.dark .sidebar-nav a:active { background:#1E293B; }
+  .sidebar-nav a .icon { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+  .sidebar-nav a.active-link {
+    background:#DBEAFE; color:#2563EB;
+  }
+  body.dark .sidebar-nav a.active-link {
+    background:#1E3A5F; color:#60A5FA;
+  }
+  .sidebar-nav a.active-link .icon {
+    stroke:#2563EB;
+  }
+  body.dark .sidebar-nav a.active-link .icon {
+    stroke:#60A5FA;
+  }
+  .logout-link {
+    margin-top:20px; border-top:1px solid #E2E8F0; padding-top:16px;
+  }
+  body.dark .logout-link { border-top-color:#334155; }
+  .logout-link a { color:#DC2626 !important; }
+  .logout-link a .icon { stroke:#DC2626 !important; }
+  body.dark .logout-link a { color:#F87171 !important; }
+  body.dark .logout-link a .icon { stroke:#F87171 !important; }
+  .close-sidebar-icon {
+    position:absolute; top:20px; right:20px; cursor:pointer; width:44px; height:44px;
+    display:flex; align-items:center; justify-content:center; border-radius:30px;
+  }
+  .close-sidebar-icon svg { width:24px; height:24px; stroke:#0F172A; stroke-width:2; }
+  body.dark .close-sidebar-icon svg { stroke:#F1F5F9; }
+
+  .screen { padding:16px 16px 30px; flex:1; }
+
+  .card-modern {
+    background:#FFFFFF; border-radius:24px; padding:20px; margin-bottom:16px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.04); border:1px solid #E2E8F0;
+    animation: fadeSlide 0.25s ease;
+  }
+  body.dark .card-modern { background:#111827; border-color:#1E293B; }
+  @keyframes fadeSlide { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  .section-title { font-size:17px; font-weight:700; margin-bottom:4px; display:flex; align-items:center; gap:8px; }
+  .section-sub { font-size:13px; color:#64748B; margin-bottom:16px; line-height:1.5; }
+  body.dark .section-sub { color:#94A3B8; }
+
+  .status-row { display:flex; align-items:center; gap:14px; margin-bottom:18px; }
+  .status-dot-wrap { width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; position:relative; flex-shrink:0; background:#F1F5F9; }
+  body.dark .status-dot-wrap { background:#1E293B; }
+  .status-dot-wrap svg { width:24px; height:24px; stroke:#94A3B8; z-index:2; }
+  .status-dot-wrap.on { background:#DCFCE7; }
+  body.dark .status-dot-wrap.on { background:#064E3B; }
+  .status-dot-wrap.on svg { stroke:#059669; }
+  body.dark .status-dot-wrap.on svg { stroke:#34D399; }
+  .status-pulse {
+    position:absolute; inset:0; border-radius:50%; background:#059669; opacity:0; z-index:1;
+  }
+  .status-dot-wrap.on .status-pulse { animation: pulseRing 1.8s ease-out infinite; }
+  @keyframes pulseRing {
+    0% { transform:scale(0.8); opacity:0.5; }
+    100% { transform:scale(1.9); opacity:0; }
+  }
+  .status-text-title { font-size:15px; font-weight:700; }
+  .status-text-sub { font-size:12px; color:#94A3B8; margin-top:2px; }
+
+  .btn-toggle {
+    width:100%; border:none; border-radius:16px; padding:14px; font-size:15px; font-weight:700;
+    cursor:pointer; transition:0.2s; min-height:52px; color:#fff;
+  }
+  .btn-toggle:active { transform:scale(0.97); }
+  .btn-toggle.start { background:#2563EB; }
+  .btn-toggle.stop { background:#DC2626; }
+
+  .link-box {
+    background:#F8FAFE; border:1px solid #E2E8F0; border-radius:14px; padding:12px 14px;
+    font-size:12.5px; word-break:break-all; color:#2563EB; font-weight:600; margin-bottom:12px;
+  }
+  body.dark .link-box { background:#1E293B; border-color:#334155; color:#60A5FA; }
+  .link-actions { display:flex; gap:8px; }
+  .link-actions button {
+    flex:1; padding:11px; border-radius:12px; border:1px solid #E2E8F0; background:#F8FAFE;
+    font-size:13px; font-weight:600; cursor:pointer; transition:0.2s; color:#0F172A;
+    display:flex; align-items:center; justify-content:center; gap:6px; min-height:44px;
+  }
+  body.dark .link-actions button { background:#1E293B; border-color:#334155; color:#F1F5F9; }
+  .link-actions button svg { width:16px; height:16px; stroke:currentColor; }
+  .link-actions button:active { transform:scale(0.96); }
+  .link-actions .btn-copy-primary { background:#2563EB; border-color:#2563EB; color:#fff; }
+
+  .request-item, .access-item {
+    display:flex; align-items:center; gap:12px; padding:12px; border-radius:14px;
+    background:#F8FAFE; border:1px solid #E2E8F0; margin-bottom:8px;
+  }
+  body.dark .request-item, body.dark .access-item { background:#1E293B; border-color:#334155; }
+  .request-item:last-child, .access-item:last-child { margin-bottom:0; }
+  .request-icon, .access-icon {
+    width:40px; height:40px; border-radius:50%; background:#FEF3C7; display:flex; align-items:center;
+    justify-content:center; flex-shrink:0;
+  }
+  .request-icon svg { width:20px; height:20px; stroke:#D97706; }
+  .access-icon { background:#DCFCE7; }
+  .access-icon svg { width:20px; height:20px; stroke:#059669; }
+  .request-info, .access-info { flex:1; min-width:0; }
+  .request-info .title, .access-info .title { font-size:13px; font-weight:700; }
+  .request-info .sub, .access-info .sub { font-size:11px; color:#94A3B8; margin-top:1px; }
+  .request-actions { display:flex; gap:6px; flex-shrink:0; }
+  .request-actions button, .access-actions button {
+    width:36px; height:36px; border-radius:10px; border:none; cursor:pointer; display:flex;
+    align-items:center; justify-content:center; transition:0.2s;
+  }
+  .request-actions button:active, .access-actions button:active { transform:scale(0.9); }
+  .btn-approve { background:#059669; }
+  .btn-approve svg { width:16px; height:16px; stroke:#fff; }
+  .btn-deny { background:#DC2626; }
+  .btn-deny svg { width:16px; height:16px; stroke:#fff; }
+  .btn-revoke {
+    background:transparent; border:1px solid #DC2626 !important; color:#DC2626; font-size:11px;
+    font-weight:700; padding:0 10px; width:auto !important; border-radius:10px;
+  }
+
+  .empty-state { text-align:center; padding:20px 10px; color:#94A3B8; font-size:13px; }
+  .empty-state svg { width:32px; height:32px; stroke:#CBD5E1; margin-bottom:8px; }
+  body.dark .empty-state svg { stroke:#475569; }
+
+  .note-box {
+    display:flex; gap:10px; background:#EFF6FF; border:1px solid #DBEAFE; border-radius:14px; padding:12px 14px;
+  }
+  body.dark .note-box { background:#0F1E3D; border-color:#1E3A5F; }
+  .note-box svg { width:18px; height:18px; stroke:#2563EB; flex-shrink:0; margin-top:1px; }
+  .note-box p { font-size:12px; color:#1D4ED8; line-height:1.5; }
+  body.dark .note-box p { color:#93C5FD; }
+
+  .guest-card { text-align:center; padding:30px 20px; }
+  .guest-card svg { width:44px; height:44px; stroke:#94A3B8; margin-bottom:12px; }
+  .guest-card h3 { font-size:16px; font-weight:700; margin-bottom:6px; }
+  .guest-card p { font-size:13px; color:#64748B; line-height:1.5; margin-bottom:16px; }
+  body.dark .guest-card p { color:#94A3B8; }
+  .btn-full { background:#2563EB; border:none; color:#fff; font-weight:600; padding:12px; border-radius:40px; font-size:14px; width:100%; cursor:pointer; }
+  .btn-full:active { transform:scale(0.97); }
+
+  .hidden { display:none !important; }
+
+  .footer { text-align:center; padding:14px; font-size:11px; color:#64748B; border-top:1px solid #E2E8F0; margin-top:16px; }
+  body.dark .footer { color:#94A3B8; border-top-color:#1E293B; }
+
+  .toast {
+    position:fixed; top:70px; left:50%; transform:translateX(-50%); background:#1E293B; color:#fff;
+    padding:12px 24px; border-radius:14px; font-size:14px; opacity:0; pointer-events:none;
+    transition:all 0.3s ease; z-index:300; border-left:4px solid #34D399;
+  }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(6px); }
+  .toast.error { border-left-color:#F87171; }
+
+  .alert-overlay {
+    position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(6px); display:none; justify-content:center; align-items:center; z-index:200;
+  }
+  .alert-card { background:#FFFFFF; width:300px; border-radius:28px; padding:24px 22px; text-align:center; border:1px solid #E2E8F0; }
+  body.dark .alert-card { background:#111827; border-color:#1E293B; }
+  .alert-card h3 { font-size:16px; font-weight:700; margin-bottom:8px; }
+  .alert-card p { font-size:13px; color:#64748B; line-height:1.5; margin-bottom:18px; }
+  body.dark .alert-card p { color:#94A3B8; }
+  .alert-actions { display:flex; gap:10px; }
+  .alert-actions button { flex:1; padding:12px; border:none; border-radius:14px; font-weight:600; cursor:pointer; transition:0.2s; font-size:13px; }
+  .alert-actions .btn-cancel { background:#F1F5F9; color:#0F172A; }
+  body.dark .alert-actions .btn-cancel { background:#1E293B; color:#F1F5F9; }
+  .alert-actions .btn-confirm { background:#DC2626; color:#fff; }
+  .alert-actions button:active { transform:scale(0.95); }
+
+  .intro-overlay {
+    position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(6px); display:none; justify-content:center; align-items:flex-end; z-index:250;
+  }
+  .intro-overlay.active { display:flex; }
+  .intro-content {
+    background:#FFFFFF; width:100%; max-width:440px; border-radius:24px 24px 0 0; padding:28px 22px 26px;
+    border:1px solid #E2E8F0; border-bottom:none; animation:introSlideUp 0.28s ease; text-align:center;
+  }
+  body.dark .intro-content { background:#111827; border-color:#1E293B; }
+  @keyframes introSlideUp { from { transform:translateY(30px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+
+  .intro-pin-wrap { width:84px; height:84px; margin:0 auto 18px; position:relative; display:flex; align-items:center; justify-content:center; }
+  .intro-pin-ring { position:absolute; inset:0; border-radius:50%; background:#DBEAFE; animation:pulseRing 1.8s ease-out infinite; }
+  body.dark .intro-pin-ring { background:#1E3A5F; }
+  .intro-pin-circle { width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg, #2563EB, #60A5FA); display:flex; align-items:center; justify-content:center; z-index:2; box-shadow:0 8px 20px rgba(37,99,235,0.3); }
+  .intro-pin-circle svg { width:30px; height:30px; stroke:#fff; }
+
+  .intro-content h2 { font-size:19px; font-weight:800; margin-bottom:8px; }
+  .intro-content .intro-desc { font-size:13.5px; color:#64748B; line-height:1.6; margin-bottom:20px; }
+  body.dark .intro-content .intro-desc { color:#94A3B8; }
+
+  .intro-points { text-align:left; margin-bottom:22px; display:flex; flex-direction:column; gap:12px; }
+  .intro-point { display:flex; gap:12px; align-items:flex-start; }
+  .intro-point-icon {
+    width:34px; height:34px; border-radius:10px; background:#EFF6FF; display:flex; align-items:center;
+    justify-content:center; flex-shrink:0;
+  }
+  body.dark .intro-point-icon { background:#0F1E3D; }
+  .intro-point-icon svg { width:17px; height:17px; stroke:#2563EB; }
+  body.dark .intro-point-icon svg { stroke:#60A5FA; }
+  .intro-point-text { font-size:12.5px; line-height:1.5; padding-top:6px; }
+  .intro-point-text b { display:block; font-size:13.5px; margin-bottom:1px; }
+
+  .intro-checkbox { display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:14px; font-size:12.5px; color:#64748B; }
+  body.dark .intro-checkbox { color:#94A3B8; }
+  .intro-checkbox input { width:16px; height:16px; accent-color:#2563EB; }
+
+  @media (min-width: 900px) {
+    body { background:linear-gradient(160deg, #EFF6FF 0%, #F8FAFE 60%); min-height:100vh; }
+    body.dark { background:linear-gradient(160deg, #0B1120 0%, #111827 60%); }
+    .app-container {
+      max-width:720px; margin:36px auto; min-height:auto; background:#F1F5F9; border-radius:20px;
+      border:1px solid #E2E8F0; box-shadow:0 20px 50px -12px rgba(15,23,42,0.12); overflow:hidden; padding-bottom:24px;
+    }
+    body.dark .app-container { background:#0B1120; border-color:#1E293B; box-shadow:0 20px 50px -12px rgba(0,0,0,0.5); }
+    .app-header { border-radius:20px 20px 0 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <div class="app-header">
+    <div class="logo-area">
+      <div class="menu-icon" onclick="openSidebar()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </div>
+      <span class="app-title">Bagikan Lokasi</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:6px;">
+      <button class="close-btn" onclick="openIntro(true)" aria-label="Info" style="font-weight:700; font-size:15px;">
+        <span style="color:#2563EB;">?</span>
+      </button>
+      <button class="close-btn" onclick="goTo('akun.html')" aria-label="Kembali">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+  <div class="sidebar-nav" id="sidebarNav">
+    <div class="close-sidebar-icon" onclick="closeSidebar()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </div>
+    <a href="#" onclick="goTo('index.html')">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Utama
+    </a>
+    <a href="#" onclick="goTo('berita.html')">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg>
+      Berita
+    </a>
+    <a href="#" onclick="goTo('premium.html')">
+      <svg class="icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Premium
+    </a>
+    <a href="#" onclick="goTo('akun.html')">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Akun
+    </a>
+    <a href="#" class="active-link" onclick="goTo('lokasi.html')">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      Lokasi
+    </a>
+    <div class="logout-link">
+      <a href="#" onclick="logoutAction()">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Keluar
+      </a>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <div class="intro-overlay" id="introOverlay">
+    <div class="intro-content">
+      <div class="intro-pin-wrap">
+        <div class="intro-pin-ring"></div>
+        <div class="intro-pin-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+          </svg>
+        </div>
+      </div>
+      <h2>Bagikan Lokasi kepada Orang Tua</h2>
+      <p class="intro-desc">Fitur ini menciptakan satu tautan permanen yang dapat Anda berikan kepada orang tua, sehingga mereka dapat melihat posisi terakhir Anda.</p>
+      <div class="intro-points">
+        <div class="intro-point">
+          <div class="intro-point-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+          <div class="intro-point-text"><b>Tautan Permanen</b>Setelah dibuat, tautan tidak akan pernah berubah. Anda dapat menonaktifkan atau mengaktifkannya kapan saja.</div>
+        </div>
+        <div class="intro-point">
+          <div class="intro-point-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div class="intro-point-text"><b>Kendali Penuh di Tangan Anda</b>Matikan lokasi kapan pun Anda mau, maka lokasi akan segera berhenti dibagikan.</div>
+        </div>
+        <div class="intro-point">
+          <div class="intro-point-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg></div>
+          <div class="intro-point-text"><b>Anda yang Menyetujui</b>Setiap kali seseorang membuka tautan Anda, Anda akan diminta untuk mengizinkan atau menolaknya terlebih dahulu.</div>
+        </div>
+      </div>
+      <label class="intro-checkbox">
+        <input type="checkbox" id="introDontShow">
+        Jangan tampilkan lagi
+      </label>
+      <button class="btn-full" onclick="closeIntro()">Mengerti, Lanjutkan</button>
+    </div>
+  </div>
+
+  <div class="screen">
+
+    <div id="guestCard" class="card-modern guest-card hidden">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <h3>Perlu Akun Terlebih Dahulu</h3>
+      <p>Fitur Bagikan Lokasi menggunakan akun Anda agar tautan tetap permanen dan aman. Silakan masuk atau daftar terlebih dahulu.</p>
+      <button class="btn-full" onclick="goToLoginWithRedirect()">Masuk / Daftar Akun</button>
+    </div>
+
+    <div id="mainContent" class="hidden">
+
+      <div class="card-modern">
+        <div class="status-row">
+          <div class="status-dot-wrap" id="statusDotWrap">
+            <div class="status-pulse"></div>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div>
+            <div class="status-text-title" id="statusTitle">Lokasi Nonaktif</div>
+            <div class="status-text-sub" id="statusSub">Belum pernah dibagikan</div>
+          </div>
+        </div>
+        <button class="btn-toggle start" id="btnToggleShare" onclick="onToggleShareClick()">Mulai Bagikan Lokasi</button>
+      </div>
+
+      <div class="card-modern">
+        <div class="section-title">Tautan Lokasi Anda</div>
+        <div class="section-sub">Berikan tautan ini kepada orang tua Anda. Tautan ini bersifat permanen dan tidak akan berubah meskipun lokasi dimatikan.</div>
+        <div class="link-box" id="linkLokasi">Memuat tautan...</div>
+        <div class="link-actions">
+          <button class="btn-copy-primary" onclick="copyLink()">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Salin Tautan
+          </button>
+          <button onclick="shareLink()">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Bagikan
+          </button>
+        </div>
+      </div>
+
+      <div class="card-modern">
+        <div class="section-title">Permintaan Akses</div>
+        <div class="section-sub">Jika ada yang membuka tautan lokasi Anda, mereka akan muncul di sini dan Andalah yang menentukan apakah mereka diizinkan atau tidak.</div>
+        <div id="requestList">
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <div>Belum ada permintaan akses</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-modern">
+        <div class="section-title">Yang Dapat Melihat Lokasi Anda</div>
+        <div class="section-sub">Daftar orang yang telah Anda izinkan. Akses dapat dicabut kapan saja jika ada yang mencurigakan.</div>
+        <div id="accessList">
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <div>Belum ada yang diizinkan</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="footer">Star Platform | Star Tools 2026</div>
+</div>
+
+<div class="alert-overlay" id="alertOverlay">
+  <div class="alert-card">
+    <h3 id="alertTitle">Konfirmasi</h3>
+    <p id="alertMessage">Apakah Anda yakin?</p>
+    <div class="alert-actions">
+      <button class="btn-cancel" onclick="closeAlertConfirm(false)">Batal</button>
+      <button class="btn-confirm" id="alertConfirmBtn" onclick="closeAlertConfirm(true)">Ya</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var firebaseConfig = {
+  apiKey: "AIzaSyDgr_nHqvpMsiG4lBkYckzxRErkskXj_6E",
+  authDomain: "laporanstartools-c18b2.firebaseapp.com",
+  databaseURL: "https://laporanstartools-c18b2-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "laporanstartools-c18b2",
+};
+if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+var db = firebase.database();
+var auth = firebase.auth();
+
+var currentUser = null;
+var myToken = null;
+var watchId = null;
+var confirmCallback = null;
+
+function goTo(page) { window.location.href = page; }
+function goToLoginWithRedirect() {
+  localStorage.setItem('redirectAfterLogin', 'lokasi.html');
+  window.location.href = 'login.html';
+}
+
+function openSidebar() { document.getElementById('sidebarOverlay').classList.add('active'); document.getElementById('sidebarNav').classList.add('active'); }
+function closeSidebar() { document.getElementById('sidebarOverlay').classList.remove('active'); document.getElementById('sidebarNav').classList.remove('active'); }
+
+function logoutAction() {
+  showConfirmAlert('Keluar', 'Apakah Anda yakin ingin keluar dari akun?', function() {
+    auth.signOut().then(function() {
+      localStorage.removeItem('redirectAfterLogin');
+      window.location.href = 'login.html';
+    });
+  });
+}
+
+function showToast(message, type) {
+  var toast = document.getElementById('toast');
+  toast.innerText = message;
+  toast.className = 'toast show';
+  if (type === 'error') toast.classList.add('error');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(function() { toast.classList.remove('show'); }, 2500);
+}
+
+function showConfirmAlert(title, message, onConfirm) {
+  document.getElementById('alertTitle').innerText = title;
+  document.getElementById('alertMessage').innerText = message;
+  document.getElementById('alertOverlay').style.display = 'flex';
+  confirmCallback = onConfirm;
+}
+function closeAlertConfirm(result) {
+  document.getElementById('alertOverlay').style.display = 'none';
+  if (result && confirmCallback) confirmCallback();
+  confirmCallback = null;
+}
+
+function openIntro(force) {
+  if (!force && localStorage.getItem('lokasiIntroSeen')) return;
+  document.getElementById('introOverlay').classList.add('active');
+}
+function closeIntro() {
+  if (document.getElementById('introDontShow').checked) { localStorage.setItem('lokasiIntroSeen', '1'); }
+  document.getElementById('introOverlay').classList.remove('active');
+}
+
+function escapeHtml(str) {
+  var div = document.createElement('div');
+  div.innerText = str == null ? '' : String(str);
+  return div.innerHTML;
+}
+
+function generateToken() {
+  var chars = 'abcdefghijkmnpqrstuvwxyz23456789';
+  var result = '';
+  for (var i = 0; i < 22; i++) { result += chars.charAt(Math.floor(Math.random() * chars.length)); }
+  return result;
+}
+
+function initToken(uid) {
+  db.ref('users/' + uid + '/lokasiToken').once('value').then(function(snap) {
+    if (snap.exists()) {
+      myToken = snap.val();
+      afterTokenReady();
+      return;
+    }
+    myToken = generateToken();
+    db.ref('users/' + uid + '/lokasiToken').set(myToken).then(function() {
+      return db.ref('lokasi/' + myToken).set({ uid: uid, aktif: false, createdAt: Date.now() });
+    }).then(afterTokenReady);
+  });
+}
+
+function afterTokenReady() {
+  renderLink();
+  listenStatus();
+  listenRequests();
+}
+
+function renderLink() {
+  var url = window.location.origin + '/lacak.html?t=' + myToken;
+  document.getElementById('linkLokasi').innerText = url;
+}
+
+function listenStatus() {
+  db.ref('lokasi/' + myToken).on('value', function(snap) {
+    var d = snap.val() || {};
+    updateStatusUI(d.aktif, d.updatedAt);
+  });
+}
+
+function formatWaktu(ts) {
+  if (!ts) return '';
+  var d = new Date(ts);
+  return d.toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+}
+
+function updateStatusUI(aktif, updatedAt) {
+  var wrap = document.getElementById('statusDotWrap');
+  var title = document.getElementById('statusTitle');
+  var sub = document.getElementById('statusSub');
+  var btn = document.getElementById('btnToggleShare');
+  if (aktif) {
+    wrap.classList.add('on');
+    title.innerText = 'Lokasi Aktif';
+    sub.innerText = updatedAt ? ('Pembaruan terakhir ' + formatWaktu(updatedAt)) : 'Sedang membagikan lokasi';
+    btn.className = 'btn-toggle stop';
+    btn.innerText = 'Matikan Lokasi';
+  } else {
+    wrap.classList.remove('on');
+    title.innerText = 'Lokasi Nonaktif';
+    sub.innerText = updatedAt ? ('Terakhir aktif ' + formatWaktu(updatedAt)) : 'Belum pernah dibagikan';
+    btn.className = 'btn-toggle start';
+    btn.innerText = 'Mulai Bagikan Lokasi';
+  }
+}
+
+function onToggleShareClick() {
+  var btn = document.getElementById('btnToggleShare');
+  if (btn.classList.contains('stop')) {
+    showConfirmAlert('Matikan Lokasi', 'Apakah Anda yakin ingin mematikan berbagi lokasi? Orang tua Anda tidak akan dapat melihat posisi Anda lagi.', stopSharing);
+  } else {
+    startSharing();
+  }
+}
+
+function startSharing() {
+  if (!navigator.geolocation) { showToast('Perangkat tidak mendukung GPS', 'error'); return; }
+  var btn = document.getElementById('btnToggleShare');
+  btn.disabled = true;
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    db.ref('lokasi/' + myToken).update({
+      aktif: true, lat: pos.coords.latitude, lng: pos.coords.longitude, updatedAt: Date.now()
+    }).then(function() {
+      btn.disabled = false;
+      showToast('Lokasi mulai dibagikan');
+      if (watchId !== null) { navigator.geolocation.clearWatch(watchId); }
+      watchId = navigator.geolocation.watchPosition(function(p) {
+        db.ref('lokasi/' + myToken).update({ lat: p.coords.latitude, lng: p.coords.longitude, updatedAt: Date.now() });
+      }, function(err) { showToast('Gagal memperbarui lokasi: ' + err.message, 'error'); }, { enableHighAccuracy: true, maximumAge: 10000, timeout: 20000 });
+    });
+  }, function(err) {
+    btn.disabled = false;
+    showToast('Izin lokasi ditolak atau gagal: ' + err.message, 'error');
+  }, { enableHighAccuracy: true, timeout: 20000 });
+}
+
+function stopSharing() {
+  if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
+  db.ref('lokasi/' + myToken).update({ aktif: false, updatedAt: Date.now() }).then(function() {
+    showToast('Lokasi dimatikan');
+  });
+}
+
+function copyLink() {
+  var text = document.getElementById('linkLokasi').innerText;
+  navigator.clipboard.writeText(text).then(function() { showToast('Tautan berhasil disalin!'); })
+    .catch(function() {
+      var input = document.createElement('input');
+      input.value = text; document.body.appendChild(input); input.select();
+      document.execCommand('copy'); document.body.removeChild(input);
+      showToast('Tautan berhasil disalin!');
+    });
+}
+
+function shareLink() {
+  var text = document.getElementById('linkLokasi').innerText;
+  if (navigator.share) {
+    navigator.share({ title: 'Lokasi Saya - Star Tools', url: text }).catch(function() {});
+  } else {
+    copyLink();
+  }
+}
+
+function listenRequests() {
+  db.ref('lokasi/' + myToken + '/requests').on('value', function(snap) {
+    var all = snap.val() || {};
+    renderRequests(all);
+    renderAccessList(all);
+  });
+}
+
+function renderRequests(all) {
+  var box = document.getElementById('requestList');
+  var ids = Object.keys(all).filter(function(id) { return all[id].status === 'pending'; });
+  if (ids.length === 0) {
+    box.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><div>Belum ada permintaan akses</div></div>';
+    return;
+  }
+  ids.sort(function(a, b) { return (all[b].createdAt || 0) - (all[a].createdAt || 0); });
+  var html = '';
+  ids.forEach(function(id) {
+    var r = all[id];
+    html += '<div class="request-item">' +
+      '<div class="request-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>' +
+      '<div class="request-info"><div class="title">' + escapeHtml(r.nama || 'Tidak diketahui') + '</div><div class="sub">' + formatWaktu(r.createdAt) + '</div></div>' +
+      '<div class="request-actions">' +
+      '<button class="btn-approve" onclick="izinkanAkses(\'' + id + '\')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>' +
+      '<button class="btn-deny" onclick="tolakAkses(\'' + id + '\')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
+      '</div></div>';
+  });
+  box.innerHTML = html;
+}
+
+function renderAccessList(all) {
+  var box = document.getElementById('accessList');
+  var ids = Object.keys(all).filter(function(id) { return all[id].status === 'approved'; });
+  if (ids.length === 0) {
+    box.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><div>Belum ada yang diizinkan</div></div>';
+    return;
+  }
+  ids.sort(function(a, b) { return (all[b].respondedAt || 0) - (all[a].respondedAt || 0); });
+  var html = '';
+  ids.forEach(function(id) {
+    var r = all[id];
+    html += '<div class="access-item">' +
+      '<div class="access-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg></div>' +
+      '<div class="access-info"><div class="title">Diizinkan</div><div class="sub">Sejak ' + formatWaktu(r.respondedAt) + '</div></div>' +
+      '<button class="btn-revoke" onclick="cabutAkses(\'' + id + '\')">Cabut</button>' +
+      '</div>';
+  });
+  box.innerHTML = html;
+}
+
+function izinkanAkses(id) {
+  db.ref('lokasi/' + myToken + '/requests/' + id).update({ status: 'approved', respondedAt: Date.now() }).then(function() {
+    showToast('Akses diizinkan');
+  });
+}
+function tolakAkses(id) {
+  showConfirmAlert('Tolak Permintaan', 'Apakah Anda yakin ingin menolak permintaan akses ini?', function() {
+    db.ref('lokasi/' + myToken + '/requests/' + id).update({ status: 'denied', respondedAt: Date.now() }).then(function() {
+      showToast('Permintaan ditolak');
+    });
+  });
+}
+function cabutAkses(id) {
+  showConfirmAlert('Cabut Akses', 'Orang ini tidak akan dapat melihat lokasi Anda lagi. Apakah Anda yakin?', function() {
+    db.ref('lokasi/' + myToken + '/requests/' + id).update({ status: 'revoked', respondedAt: Date.now() }).then(function() {
+      showToast('Akses dicabut');
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (localStorage.getItem('theme') === 'dark') { document.body.classList.add('dark'); }
+  openIntro(false);
+});
+
+auth.onAuthStateChanged(function(user) {
+  if (user) {
+    currentUser = user.uid;
+    document.getElementById('guestCard').classList.add('hidden');
+    document.getElementById('mainContent').classList.remove('hidden');
+    initToken(user.uid);
+  } else {
+    document.getElementById('mainContent').classList.add('hidden');
+    document.getElementById('guestCard').classList.remove('hidden');
+  }
+});
+</script>
+</body>
+</html>

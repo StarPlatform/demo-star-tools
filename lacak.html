@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Star Tools - Lacak Lokasi</title>
+
+<link rel="icon" type="image/png" href="logo.jpg">
+<link rel="apple-touch-icon" href="logo.jpg">
+
+<meta property="og:image" content="https://www.stools.web.id/logo.jpg">
+<meta name="twitter:image" content="https://www.stools.web.id/logo.jpg">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #F1F5F9; color: #0F172A;
+  }
+  body.dark { background:#0B1120; color:#F1F5F9; }
+
+  .app-container { max-width:560px; margin:0 auto; background:#F1F5F9; min-height:100vh; display:flex; flex-direction:column; position:relative; }
+  body.dark .app-container { background:#0B1120; }
+
+  .app-header {
+    background:#FFFFFF; padding:16px 20px; display:flex; align-items:center; justify-content:center;
+    border-bottom:1px solid #E2E8F0; position:sticky; top:0; z-index:20;
+  }
+  body.dark .app-header { background:#111827; border-bottom-color:#1E293B; }
+  .app-title { font-weight:700; font-size:20px; letter-spacing:-0.3px; background:linear-gradient(135deg, #2563EB, #60A5FA); -webkit-background-clip:text; background-clip:text; color:transparent; }
+
+  .screen { padding:16px 16px 30px; flex:1; display:flex; flex-direction:column; }
+
+  .card-modern {
+    background:#FFFFFF; border-radius:24px; padding:20px; margin-bottom:16px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.04); border:1px solid #E2E8F0;
+    animation: fadeSlide 0.25s ease;
+  }
+  body.dark .card-modern { background:#111827; border-color:#1E293B; }
+  @keyframes fadeSlide { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  .hidden { display:none !important; }
+
+  .center-state { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:30px 20px; }
+  .center-icon-wrap { width:84px; height:84px; margin-bottom:20px; position:relative; display:flex; align-items:center; justify-content:center; }
+  .center-icon-ring { position:absolute; inset:0; border-radius:50%; opacity:0; }
+  .center-icon-ring.pulsing { animation: pulseRing 1.8s ease-out infinite; opacity:1; }
+  @keyframes pulseRing { 0% { transform:scale(0.8); opacity:0.5; } 100% { transform:scale(1.9); opacity:0; } }
+  .center-icon-circle { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:2; box-shadow:0 8px 20px rgba(0,0,0,0.12); }
+  .center-icon-circle svg { width:30px; height:30px; stroke:#fff; }
+
+  .icon-blue .center-icon-ring { background:#DBEAFE; }
+  body.dark .icon-blue .center-icon-ring { background:#1E3A5F; }
+  .icon-blue .center-icon-circle { background:linear-gradient(135deg, #2563EB, #60A5FA); }
+
+  .icon-amber .center-icon-ring { background:#FEF3C7; }
+  body.dark .icon-amber .center-icon-ring { background:#3F2D0B; }
+  .icon-amber .center-icon-circle { background:linear-gradient(135deg, #D97706, #F59E0B); }
+
+  .icon-red .center-icon-ring { background:#FEE2E2; }
+  body.dark .icon-red .center-icon-ring { background:#4C1D1D; }
+  .icon-red .center-icon-circle { background:linear-gradient(135deg, #DC2626, #F87171); }
+
+  .center-state h2 { font-size:18px; font-weight:800; margin-bottom:8px; }
+  .center-state p { font-size:13.5px; color:#64748B; line-height:1.6; max-width:320px; }
+  body.dark .center-state p { color:#94A3B8; }
+
+  .name-input {
+    width:100%; padding:13px 16px; border-radius:14px; border:1px solid #E2E8F0; background:#F8FAFE;
+    font-size:14px; color:#0F172A; margin:18px 0 12px; outline:none;
+  }
+  body.dark .name-input { background:#1E293B; border-color:#334155; color:#F1F5F9; }
+  .name-input:focus { border-color:#2563EB; }
+
+  .btn-full { background:#2563EB; border:none; color:#fff; font-weight:600; padding:13px; border-radius:40px; font-size:14px; width:100%; max-width:320px; cursor:pointer; }
+  .btn-full:active { transform:scale(0.97); }
+
+  .status-badge {
+    display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:40px; font-size:12.5px; font-weight:700;
+  }
+  .status-badge.on { background:#DCFCE7; color:#059669; }
+  body.dark .status-badge.on { background:#064E3B; color:#34D399; }
+  .status-badge.off { background:#F1F5F9; color:#64748B; }
+  body.dark .status-badge.off { background:#1E293B; color:#94A3B8; }
+  .status-dot { width:7px; height:7px; border-radius:50%; background:currentColor; }
+  .status-dot.blink { animation: blinkDot 1.4s ease-in-out infinite; }
+  @keyframes blinkDot { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+  .map-header-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .map-header-row .updated-text { font-size:11.5px; color:#94A3B8; }
+
+  #mapEl { width:100%; height:340px; border-radius:16px; overflow:hidden; border:1px solid #E2E8F0; }
+  body.dark #mapEl { border-color:#334155; }
+
+  .note-box {
+    display:flex; gap:10px; background:#EFF6FF; border:1px solid #DBEAFE; border-radius:14px; padding:12px 14px; margin-top:14px;
+  }
+  body.dark .note-box { background:#0F1E3D; border-color:#1E3A5F; }
+  .note-box svg { width:18px; height:18px; stroke:#2563EB; flex-shrink:0; margin-top:1px; }
+  .note-box p { font-size:12px; color:#1D4ED8; line-height:1.5; }
+  body.dark .note-box p { color:#93C5FD; }
+
+  .footer { text-align:center; padding:14px; font-size:11px; color:#64748B; }
+  body.dark .footer { color:#94A3B8; }
+
+  @media (min-width: 900px) {
+    body { background:linear-gradient(160deg, #EFF6FF 0%, #F8FAFE 60%); min-height:100vh; }
+    body.dark { background:linear-gradient(160deg, #0B1120 0%, #111827 60%); }
+    .app-container {
+      max-width:720px; margin:36px auto; min-height:auto; background:#F1F5F9; border-radius:20px;
+      border:1px solid #E2E8F0; box-shadow:0 20px 50px -12px rgba(15,23,42,0.12); overflow:hidden; padding-bottom:24px;
+    }
+    body.dark .app-container { background:#0B1120; border-color:#1E293B; box-shadow:0 20px 50px -12px rgba(0,0,0,0.5); }
+    .app-header { border-radius:20px 20px 0 0; }
+    #mapEl { height:420px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <div class="app-header">
+    <span class="app-title">Star Tools</span>
+  </div>
+
+  <div class="screen">
+
+    <div id="stateLoading" class="center-state">
+      <div class="center-icon-wrap icon-blue">
+        <div class="center-icon-ring pulsing"></div>
+        <div class="center-icon-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+      </div>
+      <h2>Memuat...</h2>
+      <p>Sebentar ya, lagi cek link lokasinya.</p>
+    </div>
+
+    <div id="stateInvalid" class="center-state hidden">
+      <div class="center-icon-wrap icon-red">
+        <div class="center-icon-ring"></div>
+        <div class="center-icon-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+      </div>
+      <h2>Link Tidak Valid</h2>
+      <p>Link ini gak ditemukan atau sudah tidak berlaku. Coba minta link terbaru.</p>
+    </div>
+
+    <div id="stateAskName" class="center-state hidden">
+      <div class="center-icon-wrap icon-blue">
+        <div class="center-icon-ring"></div>
+        <div class="center-icon-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+      </div>
+      <h2>Minta Izin Lihat Lokasi</h2>
+      <p>Sebelum lihat lokasinya, kamu perlu izin dulu. Boleh kasih tau nama kamu biar dia tau siapa yang minta.</p>
+      <input type="text" id="namaInput" class="name-input" placeholder="Nama kamu (opsional)" maxlength="40">
+      <button class="btn-full" onclick="submitRequest()">Kirim Permintaan Akses</button>
+    </div>
+
+    <div id="stateWaiting" class="center-state hidden">
+      <div class="center-icon-wrap icon-amber">
+        <div class="center-icon-ring pulsing"></div>
+        <div class="center-icon-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+      </div>
+      <h2>Menunggu Izin</h2>
+      <p>Permintaan kamu udah dikirim. Halaman ini bakal otomatis kebuka begitu diizinkan.</p>
+    </div>
+
+    <div id="stateDenied" class="center-state hidden">
+      <div class="center-icon-wrap icon-red">
+        <div class="center-icon-ring"></div>
+        <div class="center-icon-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+      </div>
+      <h2>Akses Ditolak</h2>
+      <p>Permintaan kamu untuk melihat lokasi ini tidak diizinkan.</p>
+    </div>
+
+    <div id="stateRevoked" class="center-state hidden">
+      <div class="center-icon-wrap icon-red">
+        <div class="center-icon-ring"></div>
+        <div class="center-icon-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+        </div>
+      </div>
+      <h2>Akses Dicabut</h2>
+      <p>Akses kamu untuk melihat lokasi ini sudah dicabut oleh pemiliknya.</p>
+    </div>
+
+    <div id="stateApproved" class="hidden">
+      <div class="card-modern">
+        <div class="map-header-row">
+          <span class="status-badge off" id="statusBadge">
+            <span class="status-dot" id="statusDot"></span>
+            <span id="statusBadgeText">Memuat status...</span>
+          </span>
+          <span class="updated-text" id="updatedText"></span>
+        </div>
+        <div id="mapEl"></div>
+        <div class="note-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <p>Lokasi ini cuma keupdate kalau pemiliknya lagi aktif membagikan. Kalau statusnya nonaktif, posisi yang tampil adalah lokasi terakhir yang tercatat.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">Star Tools &copy; 2026 &mdash; Lacak Lokasi</div>
+</div>
+
+<script>
+var firebaseConfig = {
+  apiKey: "AIzaSyDgr_nHqvpMsiG4lBkYckzxRErkskXj_6E",
+  authDomain: "laporanstartools-c18b2.firebaseapp.com",
+  databaseURL: "https://laporanstartools-c18b2-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "laporanstartools-c18b2",
+};
+if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+var db = firebase.database();
+
+var params = new URLSearchParams(window.location.search);
+var token = params.get('t');
+var requestId = null;
+var map = null;
+var marker = null;
+
+function showState(id) {
+  ['stateLoading','stateInvalid','stateAskName','stateWaiting','stateDenied','stateRevoked','stateApproved'].forEach(function(s) {
+    document.getElementById(s).classList.toggle('hidden', s !== id);
+  });
+}
+
+function formatWaktu(ts) {
+  if (!ts) return '';
+  var d = new Date(ts);
+  return d.toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+}
+
+function init() {
+  if (!token) { showState('stateInvalid'); return; }
+  db.ref('lokasi/' + token).once('value').then(function(snap) {
+    if (!snap.exists()) { showState('stateInvalid'); return; }
+    var savedId = localStorage.getItem('lokasiReq_' + token);
+    if (savedId) {
+      db.ref('lokasi/' + token + '/requests/' + savedId).once('value').then(function(rs) {
+        if (rs.exists()) {
+          requestId = savedId;
+          listenRequestStatus();
+        } else {
+          localStorage.removeItem('lokasiReq_' + token);
+          showState('stateAskName');
+        }
+      });
+    } else {
+      showState('stateAskName');
+    }
+  }).catch(function() {
+    showState('stateInvalid');
+  });
+}
+
+function submitRequest() {
+  var nama = document.getElementById('namaInput').value.trim();
+  showState('stateWaiting');
+  var ref = db.ref('lokasi/' + token + '/requests').push();
+  requestId = ref.key;
+  ref.set({
+    status: 'pending',
+    nama: nama || 'Tidak diketahui',
+    createdAt: Date.now()
+  }).then(function() {
+    localStorage.setItem('lokasiReq_' + token, requestId);
+    listenRequestStatus();
+  }).catch(function() {
+    showState('stateInvalid');
+  });
+}
+
+function listenRequestStatus() {
+  db.ref('lokasi/' + token + '/requests/' + requestId).on('value', function(snap) {
+    var d = snap.val();
+    if (!d) { showState('stateInvalid'); return; }
+    if (d.status === 'pending') { showState('stateWaiting'); }
+    else if (d.status === 'denied') { showState('stateDenied'); }
+    else if (d.status === 'revoked') { showState('stateRevoked'); }
+    else if (d.status === 'approved') { showState('stateApproved'); listenLocation(); }
+  });
+}
+
+function listenLocation() {
+  db.ref('lokasi/' + token).on('value', function(snap) {
+    var d = snap.val() || {};
+    updateLocationUI(d);
+  });
+}
+
+function updateLocationUI(d) {
+  var badge = document.getElementById('statusBadge');
+  var dot = document.getElementById('statusDot');
+  var text = document.getElementById('statusBadgeText');
+  var updatedText = document.getElementById('updatedText');
+
+  if (d.aktif) {
+    badge.className = 'status-badge on';
+    dot.className = 'status-dot blink';
+    text.innerText = 'Aktif';
+  } else {
+    badge.className = 'status-badge off';
+    dot.className = 'status-dot';
+    text.innerText = 'Nonaktif';
+  }
+  updatedText.innerText = d.updatedAt ? ('Update ' + formatWaktu(d.updatedAt)) : '';
+
+  if (typeof d.lat === 'number' && typeof d.lng === 'number') {
+    renderMap(d.lat, d.lng);
+  }
+}
+
+function renderMap(lat, lng) {
+  if (!map) {
+    map = L.map('mapEl').setView([lat, lng], 16);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+    marker = L.marker([lat, lng]).addTo(map);
+  } else {
+    marker.setLatLng([lat, lng]);
+    map.panTo([lat, lng]);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (localStorage.getItem('theme') === 'dark') { document.body.classList.add('dark'); }
+  init();
+});
+</script>
+</body>
+</html>
