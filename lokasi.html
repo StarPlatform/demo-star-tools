@@ -542,13 +542,36 @@ function initToken(uid) {
   db.ref('users/' + uid + '/lokasiToken').once('value').then(function(snap) {
     if (snap.exists()) {
       myToken = snap.val();
-      afterTokenReady();
+      ensureLokasiNode(uid);
       return;
     }
     myToken = generateToken();
     db.ref('users/' + uid + '/lokasiToken').set(myToken).then(function() {
       return db.ref('lokasi/' + myToken).set({ uid: uid, aktif: false, createdAt: Date.now() });
-    }).then(afterTokenReady);
+    }).then(afterTokenReady).catch(function(err) {
+      showToast('Gagal membuat link lokasi: ' + err.message, 'error');
+      console.error('initToken gagal:', err);
+    });
+  }).catch(function(err) {
+    showToast('Gagal memuat data: ' + err.message, 'error');
+    console.error('load lokasiToken gagal:', err);
+  });
+}
+
+function ensureLokasiNode(uid) {
+  db.ref('lokasi/' + myToken).once('value').then(function(snap) {
+    var d = snap.val();
+    if (d && d.uid) {
+      afterTokenReady();
+      return;
+    }
+    db.ref('lokasi/' + myToken).set({ uid: uid, aktif: false, createdAt: Date.now() }).then(afterTokenReady).catch(function(err) {
+      showToast('Gagal memperbaiki data lokasi: ' + err.message, 'error');
+      console.error('ensureLokasiNode gagal:', err);
+    });
+  }).catch(function(err) {
+    showToast('Gagal memuat data lokasi: ' + err.message, 'error');
+    console.error('cek lokasi node gagal:', err);
   });
 }
 
