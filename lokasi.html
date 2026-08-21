@@ -617,8 +617,13 @@ function startSharing() {
       showToast('Lokasi mulai dibagikan');
       if (watchId !== null) { navigator.geolocation.clearWatch(watchId); }
       watchId = navigator.geolocation.watchPosition(function(p) {
-        db.ref('lokasi/' + myToken).update({ lat: p.coords.latitude, lng: p.coords.longitude, updatedAt: Date.now() });
+        db.ref('lokasi/' + myToken).update({ lat: p.coords.latitude, lng: p.coords.longitude, updatedAt: Date.now() })
+          .catch(function(err) { showToast('Gagal update posisi: ' + err.message, 'error'); console.error('update posisi gagal:', err); });
       }, function(err) { showToast('Gagal memperbarui lokasi: ' + err.message, 'error'); }, { enableHighAccuracy: true, maximumAge: 10000, timeout: 20000 });
+    }).catch(function(err) {
+      btn.disabled = false;
+      showToast('Gagal mulai berbagi: ' + err.message, 'error');
+      console.error('startSharing gagal:', err, 'myToken=', myToken, 'currentUser=', currentUser);
     });
   }, function(err) {
     btn.disabled = false;
@@ -630,6 +635,9 @@ function stopSharing() {
   if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
   db.ref('lokasi/' + myToken).update({ aktif: false, updatedAt: Date.now() }).then(function() {
     showToast('Lokasi dimatikan');
+  }).catch(function(err) {
+    showToast('Gagal matikan lokasi: ' + err.message, 'error');
+    console.error('stopSharing gagal:', err);
   });
 }
 
