@@ -233,9 +233,18 @@ var db = firebase.database();
 
 var params = new URLSearchParams(window.location.search);
 var token = params.get('t');
+var tokenHash = null;
 var requestId = null;
 var map = null;
 var marker = null;
+
+function sha256Hex(str) {
+  var enc = new TextEncoder().encode(str);
+  return crypto.subtle.digest('SHA-256', enc).then(function(buf) {
+    var bytes = Array.from(new Uint8Array(buf));
+    return bytes.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+  });
+}
 
 function showState(id) {
   ['stateLoading','stateInvalid','stateAskName','stateWaiting','stateDenied','stateRevoked','stateApproved'].forEach(function(s) {
@@ -251,31 +260,34 @@ function formatWaktu(ts) {
 
 function init() {
   if (!token) { showState('stateInvalid'); return; }
-  db.ref('lokasi/' + token).once('value').then(function(snap) {
-    if (!snap.exists()) { showState('stateInvalid'); return; }
-    var savedId = localStorage.getItem('lokasiReq_' + token);
-    if (savedId) {
-      db.ref('lokasi/' + token + '/requests/' + savedId).once('value').then(function(rs) {
-        if (rs.exists()) {
-          requestId = savedId;
-          listenRequestStatus();
-        } else {
-          localStorage.removeItem('lokasiReq_' + token);
-          showState('stateAskName');
-        }
-      });
-    } else {
-      showState('stateAskName');
-    }
-  }).catch(function() {
-    showState('stateInvalid');
+  sha256Hex(token).then(function(hash) {
+    tokenHash = hash;
+    db.ref('lokasi/' + tokenHash).once('value').then(function(snap) {
+      if (!snap.exists()) { showState('stateInvalid'); return; }
+      var savedId = localStorage.getItem('lokasiReq_' + token);
+      if (savedId) {
+        db.ref('lokasi/' + tokenHash + '/requests/' + savedId).once('value').then(function(rs) {
+          if (rs.exists()) {
+            requestId = savedId;
+            listenRequestStatus();
+          } else {
+            localStorage.removeItem('lokasiReq_' + token);
+            showState('stateAskName');
+          }
+        });
+      } else {
+        showState('stateAskName');
+      }
+    }).catch(function() {
+      showState('stateInvalid');
+    });
   });
 }
 
 function submitRequest() {
   var nama = document.getElementById('namaInput').value.trim();
   showState('stateWaiting');
-  var ref = db.ref('lokasi/' + token + '/requests').push();
+  var ref = db.ref('lokasi/' + tokenHash + '/requests').push();
   requestId = ref.key;
   ref.set({
     status: 'pending',
@@ -290,7 +302,7 @@ function submitRequest() {
 }
 
 function listenRequestStatus() {
-  db.ref('lokasi/' + token + '/requests/' + requestId).on('value', function(snap) {
+  db.ref('lokasi/' + tokenHash + '/requests/' + requestId).on('value', function(snap) {
     var d = snap.val();
     if (!d) { showState('stateInvalid'); return; }
     if (d.status === 'pending') { showState('stateWaiting'); }
@@ -301,7 +313,7 @@ function listenRequestStatus() {
 }
 
 function listenLocation() {
-  db.ref('lokasi/' + token).on('value', function(snap) {
+  db.ref('lokasi/' + tokenHash).on('value', function(snap) {
     var d = snap.val() || {};
     updateLocationUI(d);
   });

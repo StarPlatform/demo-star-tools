@@ -474,8 +474,17 @@ var auth = firebase.auth();
 
 var currentUser = null;
 var myToken = null;
+var myTokenHash = null;
 var watchId = null;
 var confirmCallback = null;
+
+function sha256Hex(str) {
+  var enc = new TextEncoder().encode(str);
+  return crypto.subtle.digest('SHA-256', enc).then(function(buf) {
+    var bytes = Array.from(new Uint8Array(buf));
+    return bytes.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+  });
+}
 
 function goTo(page) { window.location.href = page; }
 function goToLoginWithRedirect() {
@@ -542,12 +551,15 @@ function initToken(uid) {
   db.ref('users/' + uid + '/lokasiToken').once('value').then(function(snap) {
     if (snap.exists()) {
       myToken = snap.val();
-      ensureLokasiNode(uid);
+      sha256Hex(myToken).then(function(hash) { myTokenHash = hash; ensureLokasiNode(uid); });
       return;
     }
     myToken = generateToken();
-    db.ref('users/' + uid + '/lokasiToken').set(myToken).then(function() {
-      return db.ref('lokasi/' + myToken).set({ uid: uid, aktif: false, createdAt: Date.now() });
+    sha256Hex(myToken).then(function(hash) {
+      myTokenHash = hash;
+      return db.ref('users/' + uid + '/lokasiToken').set(myToken).then(function() {
+        return db.ref('lokasi/' + myTokenHash).set({ uid: uid, aktif: false, createdAt: Date.now() });
+      });
     }).then(afterTokenReady).catch(function(err) {
       showToast('Gagal membuat link lokasi: ' + err.message, 'error');
       console.error('initToken gagal:', err);
@@ -559,13 +571,13 @@ function initToken(uid) {
 }
 
 function ensureLokasiNode(uid) {
-  db.ref('lokasi/' + myToken).once('value').then(function(snap) {
+  db.ref('lokasi/' + myTokenHash).once('value').then(function(snap) {
     var d = snap.val();
     if (d && d.uid) {
       afterTokenReady();
       return;
     }
-    db.ref('lokasi/' + myToken).set({ uid: uid, aktif: false, createdAt: Date.now() }).then(afterTokenReady).catch(function(err) {
+    db.ref('lokasi/' + myTokenHash).set({ uid: uid, aktif: false, createdAt: Date.now() }).then(afterTokenReady).catch(function(err) {
       showToast('Gagal memperbaiki data lokasi: ' + err.message, 'error');
       console.error('ensureLokasiNode gagal:', err);
     });
@@ -587,7 +599,7 @@ function renderLink() {
 }
 
 function listenStatus() {
-  db.ref('lokasi/' + myToken).on('value', function(snap) {
+  db.ref('lokasi/' + myTokenHash).on('value', function(snap) {
     var d = snap.val() || {};
     updateStatusUI(d.aktif, d.updatedAt);
   });
@@ -633,20 +645,20 @@ function startSharing() {
   var btn = document.getElementById('btnToggleShare');
   btn.disabled = true;
   navigator.geolocation.getCurrentPosition(function(pos) {
-    db.ref('lokasi/' + myToken).update({
+    db.ref('lokasi/' + myTokenHash).update({
       aktif: true, lat: pos.coords.latitude, lng: pos.coords.longitude, updatedAt: Date.now()
     }).then(function() {
       btn.disabled = false;
       showToast('Lokasi mulai dibagikan');
       if (watchId !== null) { navigator.geolocation.clearWatch(watchId); }
       watchId = navigator.geolocation.watchPosition(function(p) {
-        db.ref('lokasi/' + myToken).update({ lat: p.coords.latitude, lng: p.coords.longitude, updatedAt: Date.now() })
+        db.ref('lokasi/' + myTokenHash).update({ lat: p.coords.latitude, lng: p.coords.longitude, updatedAt: Date.now() })
           .catch(function(err) { showToast('Gagal update posisi: ' + err.message, 'error'); console.error('update posisi gagal:', err); });
       }, function(err) { showToast('Gagal memperbarui lokasi: ' + err.message, 'error'); }, { enableHighAccuracy: true, maximumAge: 10000, timeout: 20000 });
     }).catch(function(err) {
       btn.disabled = false;
       showToast('Gagal mulai berbagi: ' + err.message, 'error');
-      console.error('startSharing gagal:', err, 'myToken=', myToken, 'currentUser=', currentUser);
+      console.error('startSharing gagal:', err, 'myTokenHash=', myTokenHash, 'currentUser=', currentUser);
     });
   }, function(err) {
     btn.disabled = false;
@@ -656,7 +668,7 @@ function startSharing() {
 
 function stopSharing() {
   if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
-  db.ref('lokasi/' + myToken).update({ aktif: false, updatedAt: Date.now() }).then(function() {
+  db.ref('lokasi/' + myTokenHash).update({ aktif: false, updatedAt: Date.now() }).then(function() {
     showToast('Lokasi dimatikan');
   }).catch(function(err) {
     showToast('Gagal matikan lokasi: ' + err.message, 'error');
@@ -685,7 +697,7 @@ function shareLink() {
 }
 
 function listenRequests() {
-  db.ref('lokasi/' + myToken + '/requests').on('value', function(snap) {
+  db.ref('lokasi/' + myTokenHash + '/requests').on('value', function(snap) {
     var all = snap.val() || {};
     renderRequests(all);
     renderAccessList(all);
@@ -735,20 +747,20 @@ function renderAccessList(all) {
 }
 
 function izinkanAkses(id) {
-  db.ref('lokasi/' + myToken + '/requests/' + id).update({ status: 'approved', respondedAt: Date.now() }).then(function() {
+  db.ref('lokasi/' + myTokenHash + '/requests/' + id).update({ status: 'approved', respondedAt: Date.now() }).then(function() {
     showToast('Akses diizinkan');
   });
 }
 function tolakAkses(id) {
   showConfirmAlert('Tolak Permintaan', 'Apakah Anda yakin ingin menolak permintaan akses ini?', function() {
-    db.ref('lokasi/' + myToken + '/requests/' + id).update({ status: 'denied', respondedAt: Date.now() }).then(function() {
+    db.ref('lokasi/' + myTokenHash + '/requests/' + id).update({ status: 'denied', respondedAt: Date.now() }).then(function() {
       showToast('Permintaan ditolak');
     });
   });
 }
 function cabutAkses(id) {
   showConfirmAlert('Cabut Akses', 'Orang ini tidak akan dapat melihat lokasi Anda lagi. Apakah Anda yakin?', function() {
-    db.ref('lokasi/' + myToken + '/requests/' + id).update({ status: 'revoked', respondedAt: Date.now() }).then(function() {
+    db.ref('lokasi/' + myTokenHash + '/requests/' + id).update({ status: 'revoked', respondedAt: Date.now() }).then(function() {
       showToast('Akses dicabut');
     });
   });
