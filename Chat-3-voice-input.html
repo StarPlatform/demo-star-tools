@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Nita Chat - Asisten AI</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <style>
+:root {
+    --bg-main: #ffffff;
+    --bg-soft: #f7f7f8;
+    --bubble-user: #f4f4f5;
+    --accent-pink: #4f46e5;
+    --accent-purple: #7c3aed;
+    --text-main: #1f2023;
+    --text-muted: #6e7075;
+    --border-subtle: #e6e6e9;
+    --border-strong: #d9d9de;
+}
+        * { margin:0; padding:0; box-sizing:border-box; min-width:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; }
+        html, body { width:100%; height:100%; overflow:hidden; background:var(--bg-main); color:var(--text-main); display:flex; flex-direction:column; }
+        .header-nav { height:58px; background:rgba(255,255,255,0.9); backdrop-filter:blur(10px); border-bottom:1px solid var(--border-subtle); padding:0 18px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; z-index:10; }
+        .logo { display:flex; align-items:center; gap:9px; }
+        .logo-mark { width:30px; height:30px; border-radius:9px; background:linear-gradient(135deg, #4f46e5, #7c3aed); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .logo-mark svg { width:17px; height:17px; }
+        .logo-text { font-size:15px; font-weight:700; line-height:1.15; }
+        .logo-text span { display:block; font-size:10.5px; font-weight:500; color:var(--text-muted); }
+        .menu-btn { width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--text-muted); cursor:pointer; }
+        .menu-btn:active { background:var(--bg-soft); }
+        .menu-btn svg { width:19px; height:19px; }
+        .dropdown-menu { position:absolute; top:44px; right:0; background:#fff; border:1px solid var(--border-subtle); border-radius:12px; display:none; z-index:100; overflow:hidden; box-shadow:0 12px 28px rgba(20,20,30,0.12); min-width:170px; }
+        .dropdown-menu button { width:100%; background:transparent; border:none; padding:13px 16px; text-align:left; cursor:pointer; font-size:13.5px; font-weight:500; }
+        .dropdown-menu button:active { background:var(--bg-soft); }
+        .mode-section { padding:12px 16px 10px; }
+        .mode-label { font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-muted); margin-bottom:8px; }
+        .mode-options { display:flex; gap:6px; }
+        .mode-opt { flex:1; padding:7px 0; border-radius:8px; border:1px solid var(--border-subtle); background:var(--bg-soft); font-size:11.5px; font-weight:600; color:var(--text-muted); cursor:pointer; text-align:center; }
+        .mode-opt.active { background:linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); color:#fff; border-color:transparent; }
+        .message-feed { flex:1; overflow-y:auto; padding:18px 16px; display:flex; flex-direction:column; gap:20px; }
+        .welcome-screen { text-align:center; padding:36px 16px; width:100%; max-width:440px; margin:auto; }
+        .ai-avatar { width:60px; height:60px; background:linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; box-shadow:0 10px 24px rgba(139,92,246,0.28); }
+        .welcome-screen h2 { font-size:20px; font-weight:700; margin-bottom:8px; }
+        .welcome-screen p { color:var(--text-muted); font-size:12.5px; margin-bottom:18px; line-height:1.55; }
+        .suggestion-grid { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+        .suggestion-chip { background:#fff; border:1px solid var(--border-subtle); padding:9px 14px; border-radius:30px; font-size:12px; font-weight:500; cursor:pointer; }
+        .suggestion-chip:active { background:var(--bg-soft); transform:scale(0.96); }
+        .msg-row { display:flex; gap:10px; max-width:92%; }
+        .msg-row.user { align-self:flex-end; justify-content:flex-end; }
+        .msg-row.nita { align-self:flex-start; width:92%; }
+        .msg-avatar { width:26px; height:26px; border-radius:8px; background:linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+        .msg-avatar svg { width:14px; height:14px; }
+        .msg-content { display:flex; flex-direction:column; min-width:0; flex:1; }
+        .sender-tag { font-size:11.5px; font-weight:600; margin-bottom:4px; color:var(--text-muted); }
+        .msg-row.user .sender-tag { display:none; }
+        .bubble-box { font-size:14.5px; line-height:1.6; word-wrap:break-word; }
+        .msg-row.user .bubble-box { background:var(--bubble-user); padding:10px 15px; border-radius:18px 18px 4px 18px; }
+        .msg-row.nita .bubble-box { padding:0; }
+        .bubble-box strong { color:var(--text-main); font-weight:700; }
+        .bubble-box code { background:var(--bg-soft); padding:2px 6px; border-radius:4px; font-family:'SFMono-Regular',Consolas,monospace; font-size:13px; color:#7c3aed; }
+        .bubble-box pre { background:var(--bg-soft); border:1px solid var(--border-subtle); border-radius:10px; padding:12px; overflow-x:auto; font-family:'SFMono-Regular',Consolas,monospace; font-size:12.5px; color:var(--text-main); margin:6px 0; }
+        .stream-cursor::after { content:'\258B'; animation:cursorBlink 0.8s step-end infinite; color:var(--accent-purple); }
+        @keyframes cursorBlink { 0%,100%{opacity:1} 50%{opacity:0} }
+        .loading-row { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-muted); }
+        .loading-spinner { width:16px; height:16px; border-radius:50%; border:2px solid rgba(139,92,246,0.2); border-top-color:var(--accent-purple); animation:spin 0.7s linear infinite; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .error-card { border:1px solid #fecaca; background:#fff5f5; border-radius:14px; padding:12px 14px; font-size:13px; color:#b91c1c; line-height:1.5; }
+        .input-area { position:relative; width:100%; padding:12px 16px 20px; background:linear-gradient(transparent, var(--bg-main) 40%); flex-shrink:0; }
+        .input-wrapper { width:100%; display:flex; align-items:center; gap:6px; padding:8px 8px 8px 6px; background:#fff; border:1.5px solid var(--border-strong); border-radius:26px; box-shadow:0 2px 10px rgba(20,20,30,0.05); }
+        .input-wrapper:focus-within { border-color:var(--accent-purple); }
+        .icon-btn { width:34px; height:34px; border-radius:50%; border:none; background:var(--bg-soft); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; color:var(--text-muted); }
+        .icon-btn:active { transform:scale(0.9); }
+        .icon-btn svg { width:16px; height:16px; }
+        .input-wrapper input { flex:1; width:100%; height:34px; background:transparent; border:none; outline:none; font-size:14px; }
+        .input-wrapper input::placeholder { color:#a2a3ac; }
+        .btn-send { width:34px; height:34px; flex-shrink:0; border-radius:50%; background:linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+        .btn-send:active { transform:scale(0.93); }
+        .btn-mic.listening { background:#ef4444; animation:micPulse 1s infinite; color:#fff; }
+        @keyframes micPulse { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.35)} 50%{box-shadow:0 0 0 8px rgba(239,68,68,0)} }
+
+        .btn-send svg { width:15px; height:15px; fill:white; }
+        .message-feed::-webkit-scrollbar { width:4px; }
+        .message-feed::-webkit-scrollbar-track { background:transparent; }
+        .message-feed::-webkit-scrollbar-thumb { background:var(--border-strong); border-radius:4px; }
+        .custom-alert-overlay { position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(20,20,30,0.5); backdrop-filter:blur(6px); }
+        .custom-alert-box { width:100%; max-width:380px; padding:24px; text-align:center; background:#fff; border:1px solid var(--border-subtle); border-radius:18px; box-shadow:0 20px 45px rgba(0,0,0,0.18); }
+        .custom-alert-title { font-size:14.5px; font-weight:700; color:var(--accent-purple); margin-bottom:12px; }
+        .custom-alert-msg { font-size:13.5px; line-height:1.5; color:var(--text-muted); margin-bottom:20px; }
+        .custom-alert-btn { background:var(--bg-soft); border:1px solid var(--border-subtle); color:var(--text-main); padding:9px 24px; border-radius:10px; font-size:12.5px; font-weight:600; cursor:pointer; }
+        .custom-alert-btn:active { transform:scale(0.97); }
+        #confirmYesBtn { background:#ef4444 !important; color:#fff !important; border-color:#ef4444 !important; }
+    </style>
+</head>
+<body>
+<div class="header-nav">
+    <div class="logo">
+        <div class="logo-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                <circle cx="8" cy="11" r="1" fill="white" stroke="none"/><circle cx="12" cy="11" r="1" fill="white" stroke="none"/><circle cx="16" cy="11" r="1" fill="white" stroke="none"/>
+            </svg>
+        </div>
+        <div class="logo-text">Nita Chat<span>Asisten AI</span></div>
+    </div>
+    <div style="position:relative;">
+        <div class="menu-btn" onclick="toggleMenu()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/></svg>
+        </div>
+        <div id="dropdownMenu" class="dropdown-menu">
+            <div class="mode-section">
+                <div class="mode-label">Gaya Bicara Nita</div>
+                <div class="mode-options">
+                    <button class="mode-opt" data-mode="baku" onclick="setNitaMode('baku')">Baku</button>
+                    <button class="mode-opt" data-mode="santai" onclick="setNitaMode('santai')">Santai</button>
+                    <button class="mode-opt" data-mode="sarkas" onclick="setNitaMode('sarkas')">Sarkas</button>
+                </div>
+            </div>
+            <button onclick="clearHistory()" style="border-top:1px solid var(--border-subtle); color:#dc2626;">Hapus Riwayat</button>
+        </div>
+    </div>
+</div>
+<div class="message-feed" id="chatFeed">
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="ai-avatar">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                <circle cx="8" cy="11" r="1" fill="white" stroke="none"/><circle cx="12" cy="11" r="1" fill="white" stroke="none"/><circle cx="16" cy="11" r="1" fill="white" stroke="none"/>
+            </svg>
+        </div>
+        <h2>Nita Chat</h2>
+        <p>Asisten AI yang siap bantu jawab soal, ngoding, analisis, atau ngobrol topik apa aja.</p>
+        <div class="suggestion-grid">
+            <div class="suggestion-chip" onclick="quickAsk('Jelaskan konsep limit dalam kalkulus beserta contohnya')">Soal Matematika</div>
+            <div class="suggestion-chip" onclick="quickAsk('Jelaskan hukum Newton 1, 2, 3')">Konsep Fisika</div>
+            <div class="suggestion-chip" onclick="quickAsk('Buatkan contoh kode Python untuk sorting array')">Bantu Coding</div>
+        </div>
+    </div>
+</div>
+<div class="input-area">
+    <div class="input-wrapper">
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;" onchange="processCameraImage(this)">
+        <button class="icon-btn" onclick="document.getElementById('cameraInput').click()" title="Foto soal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </button>
+        <input type="text" id="messageInput" placeholder="Tanya apa saja ke Nita..." onkeypress="if(event.key==='Enter'){event.preventDefault();sendMessage();}">
+        <button class="icon-btn btn-mic" id="micBtn" onclick="toggleVoiceInput()" title="Ngobrol pakai suara" aria-label="Ngobrol pakai suara">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8"/></svg>
+        </button>
+        <button class="btn-send" onclick="sendMessage()">
+            <svg viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+    </div>
+</div>
+<div id="customAlertModal" class="custom-alert-overlay">
+    <div class="custom-alert-box">
+        <div id="customAlertTitle" class="custom-alert-title">INFO</div>
+        <div id="customAlertMessage" class="custom-alert-msg">Pesan.</div>
+        <button class="custom-alert-btn" onclick="closeCustomAlert()">OK</button>
+    </div>
+</div>
+<div id="customConfirmModal" class="custom-alert-overlay" style="display:none;">
+    <div class="custom-alert-box" style="max-width:380px; width:90%;">
+        <div class="custom-alert-title">KONFIRMASI</div>
+        <div id="customConfirmMessage" class="custom-alert-msg">Apakah Anda yakin?</div>
+        <div style="display:flex; gap:12px; justify-content:center; margin-top:8px;">
+            <button id="confirmYesBtn" class="custom-alert-btn">Ya</button>
+            <button id="confirmNoBtn" class="custom-alert-btn">Tidak</button>
+        </div>
+    </div>
+</div>
+<script>
+    /* ══════════════════════════════════════════════════════
+       SEMENTARA: manggil API kiosapi.id LANGSUNG dari browser
+       (belum pakai backend). Tinggal isi API key kamu di bawah.
+
+       ⚠️ PENTING: cara ini expose API key ke siapa pun yang buka
+       "View Source" / DevTools di browser mereka. Aman-aman aja
+       buat testing/development, tapi SEBELUM di-share ke orang
+       lain / dipublish, pindahin fetch ini ke backend (kayak
+       Nita Coder pakai Vercel) biar key-nya nggak kelihatan.
+       ══════════════════════════════════════════════════════ */
+    const KIOSAPI_API_KEY = ""; // <-- ganti dengan API key kiosapi.id kamu
+    const KIOSAPI_ENDPOINT = "https://api.kiosapi.id/v1/chat/completions";
+    // Daftar model GRATIS kiosapi.id, diurutin dari yang paling bagus.
+    // Kalau model pertama gagal/limit, otomatis nyoba yang berikutnya.
+    const KIOSAPI_FREE_MODELS = [
+        "google/gemini-2.5-flash",
+        "meta/llama-3.1-8b",
+        "qwen/qwen3-30b",
+        "zai/glm-4.7-flash",
+        "google/gemma-4-26b",
+        "aisingapore/sea-lion-27b"
+    ];
+
+    const MODE_PROMPTS = {
+        baku: "Kamu adalah Nita, asisten AI dari Nita AI. Jawab menggunakan Bahasa Indonesia yang baku, sopan, jelas, dan terstruktur. Tetap ramah dan membantu.",
+        santai: "Kamu adalah Nita, asisten AI yang santai dan asik diajak ngobrol. Jawab pakai Bahasa Indonesia gaul/santai, boleh sesekali pakai emoji, tapi tetap jelas dan membantu.",
+        sarkas: "Kamu adalah Nita, asisten AI dengan gaya bicara SARKAS BENERAN, bukan sarkas basa-basi. Selalu pakai kata ganti 'lu' dan 'gw', jangan pernah pakai 'kamu/Anda/saya'. Nyeletuk, julid, dan pedes ke user, boleh sesekali selipin kata kasar ringan (misalnya 'anjir', 'goblok', 'bego', 'sialan', 'kampret') buat nambahin rasa sarkasnya, TAPI JANGAN BERLEBIHAN — jangan sampai jadi hate speech, ngehina fisik/keluarga/SARA, atau kasar sampai nyakitin beneran. Di balik sindiran dan nyinyirannya, jawaban yang lu kasih tetap harus benar, lengkap, dan berguna — jangan sampai jawabannya jadi asal-asalan cuma gara-gara sarkas."
+    };
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDMNoOwpigjoyKQhw_luGXLpiMHAt5Yu3k",
+        authDomain: "nita-4cf57.firebaseapp.com",
+        databaseURL: "https://nita-4cf57-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "nita-4cf57",
+        storageBucket: "nita-4cf57.firebasestorage.app",
+        messagingSenderId: "1065921283781",
+        appId: "1:1065921283781:web:5c25c5780afdfd5d8e92ac"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const HISTORY_KEY = "nita_chat_history";
+    const MODE_KEY = "nita_chat_mode";
+    let isFirstMessageSent = false;
+    let isSending = false;
+    let currentMode = localStorage.getItem(MODE_KEY) || "baku";
+
+    const AVATAR_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><circle cx="8" cy="11" r="1" fill="white" stroke="none"/><circle cx="12" cy="11" r="1" fill="white" stroke="none"/><circle cx="16" cy="11" r="1" fill="white" stroke="none"/></svg>`;
+    function nitaAvatarHtml() { return `<div class="msg-avatar">${AVATAR_SVG}</div>`; }
+
+    window.onload = function () {
+        loadChatHistory();
+        applyModeUI();
+    };
+
+    /* ---------- mode ---------- */
+    function setNitaMode(mode) {
+        currentMode = mode;
+        localStorage.setItem(MODE_KEY, mode);
+        applyModeUI();
+        toggleMenu();
+    }
+    function applyModeUI() {
+        document.querySelectorAll(".mode-opt").forEach(btn => {
+            btn.classList.toggle("active", btn.dataset.mode === currentMode);
+        });
+    }
+
+    /* ---------- voice input / dictation ---------- */
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition = null;
+    let isListening = false;
+    let baseTranscript = "";
+
+    function setupSpeechRecognition() {
+        if (!SpeechRecognition) return false;
+        if (recognition) return true;
+
+        recognition = new SpeechRecognition();
+        recognition.lang = "id-ID";
+        recognition.continuous = false;
+        recognition.interimResults = true;
+
+        recognition.onstart = () => {
+            isListening = true;
+            document.getElementById("micBtn").classList.add("listening");
+        };
+
+        recognition.onresult = (event) => {
+            let transcript = baseTranscript;
+            let interim = "";
+
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const text = event.results[i][0].transcript;
+                if (event.results[i].isFinal) transcript += text + " ";
+                else interim += text;
+            }
+
+            document.getElementById("messageInput").value =
+                (transcript + interim).trim();
+        };
+
+        recognition.onerror = (event) => {
+            if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+                showCustomAlert(
+                    "Izin mikrofon belum diberikan. Izinkan mikrofon di browser lalu coba lagi.",
+                    "Mikrofon"
+                );
+            }
+        };
+
+        recognition.onend = () => {
+            isListening = false;
+            document.getElementById("micBtn").classList.remove("listening");
+        };
+
+        return true;
+    }
+
+    function toggleVoiceInput() {
+        if (!setupSpeechRecognition()) {
+            showCustomAlert(
+                "Browser ini belum mendukung fitur input suara. Coba pakai Chrome versi terbaru.",
+                "Mikrofon Tidak Didukung"
+            );
+            return;
+        }
+
+        if (isListening) {
+            recognition.stop();
+            return;
+        }
+
+        baseTranscript = document.getElementById("messageInput").value.trim();
+        if (baseTranscript) baseTranscript += " ";
+
+        try {
+            recognition.start();
+        } catch (e) {
+            // Browser bisa menolak start ulang jika sesi sebelumnya belum sepenuhnya selesai.
+        }
+    }
+
+    /* ---------- send flow ---------- */
+    function quickAsk(text) {
+        document.getElementById("messageInput").value = text;
+        sendMessage();
+    }
+    async function sendMessage() {
+        if (isSending) return;
+        const inputEl = document.getElementById("messageInput");
+        const text = inputEl.value.trim();
+        if (!text) return;
+
+        if (!isFirstMessageSent) {
+            const w = document.getElementById("welcomeScreen");
+            if (w) w.style.display = "none";
+            isFirstMessageSent = true;
+        }
+
+        renderBubble(text, "user");
+        inputEl.value = "";
+        saveChatToStorage("user", text);
+
+        await callNita(text);
+    }
+
+    function getRecentHistoryForContext() {
+        try {
+            const chats = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+            return chats.slice(-8).map(c => ({
+                role: c.sender === "user" ? "user" : "assistant",
+                content: c.text
+            }));
+        } catch (e) { return []; }
+    }
+
+    async function callKiosapiModel(model, messages) {
+        const resp = await fetch(KIOSAPI_ENDPOINT, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + KIOSAPI_API_KEY
+            },
+            body: JSON.stringify({ model, messages })
+        });
+        let data = null;
+        try { data = await resp.json(); } catch (e) {}
+        return { ok: resp.ok, status: resp.status, data };
+    }
+
+    async function callNita(message) {
+        isSending = true;
+
+        const typingRow = renderTypingBubble();
+        const label = typingRow.querySelector(".loading-row span");
+        try {
+            const messages = [
+                { role: "system", content: MODE_PROMPTS[currentMode] || MODE_PROMPTS.baku },
+                ...getRecentHistoryForContext(),
+                { role: "user", content: message }
+            ];
+
+            let lastError = null;
+            for (let i = 0; i < KIOSAPI_FREE_MODELS.length; i++) {
+                const model = KIOSAPI_FREE_MODELS[i];
+                try {
+                    const result = await callKiosapiModel(model, messages);
+                    // 429 (limit) / 402 (saldo) / 502-504 (server) -> coba model lain
+                    if (!result.ok) {
+                        const retryableStatus = [429, 402, 500, 502, 503, 504].includes(result.status);
+                        lastError = (result.data && result.data.error && (result.data.error.message || result.data.error)) || `HTTP ${result.status}`;
+                        if (retryableStatus && i < KIOSAPI_FREE_MODELS.length - 1) {
+                            if (label) label.textContent = "Model lagi sibuk, nyoba model lain...";
+                            continue;
+                        }
+                        removeEl(typingRow);
+                        renderErrorBubble(lastError);
+                        isSending = false;
+                        return;
+                    }
+                    const reply = ((result.data.choices && result.data.choices[0] && result.data.choices[0].message && result.data.choices[0].message.content) || "").trim();
+                    removeEl(typingRow);
+                    if (!reply) {
+                        renderErrorBubble("Model tidak memberikan balasan.");
+                        isSending = false;
+                        return;
+                    }
+                    renderBubble(reply, "nita");
+                    saveChatToStorage("nita", reply);
+                    isSending = false;
+
+                    return;
+                } catch (err) {
+                    lastError = err.message;
+                    if (i < KIOSAPI_FREE_MODELS.length - 1) continue;
+                }
+            }
+            removeEl(typingRow);
+            renderErrorBubble("Koneksi gagal: " + (lastError || "semua model gratis lagi bermasalah"));
+        } catch (err) {
+            removeEl(typingRow);
+            renderErrorBubble("Koneksi gagal: " + err.message);
+        }
+        isSending = false;
+    }
+
+    /* ---------- render helpers ---------- */
+    function renderBubble(text, sender) {
+        const feed = document.getElementById("chatFeed");
+        const row = document.createElement("div");
+        row.className = `msg-row ${sender}`;
+        if (sender === "user") {
+            row.innerHTML = `<div class="msg-content"><div class="bubble-box">${escHtml(text)}</div></div>`;
+        } else {
+            row.innerHTML = `${nitaAvatarHtml()}<div class="msg-content"><span class="sender-tag">Nita Chat</span><div class="bubble-box">${formatMarkdown(text)}</div></div>`;
+        }
+        feed.appendChild(row);
+        scrollToBottom();
+        return row;
+    }
+    function renderTypingBubble() {
+        const feed = document.getElementById("chatFeed");
+        const row = document.createElement("div");
+        row.className = "msg-row nita";
+        row.innerHTML = `${nitaAvatarHtml()}<div class="msg-content"><span class="sender-tag">Nita Chat</span><div class="bubble-box"><div class="loading-row"><div class="loading-spinner"></div><span>Nita lagi mikir...</span></div></div></div>`;
+        feed.appendChild(row);
+        scrollToBottom();
+        return row;
+    }
+    function renderErrorBubble(msg) {
+        const feed = document.getElementById("chatFeed");
+        const row = document.createElement("div");
+        row.className = "msg-row nita";
+        row.innerHTML = `${nitaAvatarHtml()}<div class="msg-content"><span class="sender-tag">Nita Chat</span><div class="bubble-box"><div class="error-card">${escHtml(msg)}<br><span style="opacity:0.75;">Cek koneksi internet kamu, atau coba lagi beberapa saat ya.</span></div></div></div>`;
+        feed.appendChild(row);
+        scrollToBottom();
+    }
+    function removeEl(el) { if (el && el.parentNode) el.parentNode.removeChild(el); }
+    function scrollToBottom() {
+        const feed = document.getElementById("chatFeed");
+        if (feed) feed.scrollTop = feed.scrollHeight;
+    }
+
+    /* ---------- markdown ---------- */
+    function formatMarkdown(text) {
+        let t = escHtml(text);
+        t = t.replace(/```(\w*)\n?([\s\S]*?)```/g, "<pre><code>$2</code></pre>");
+        t = t.replace(/`([^`]+)`/g, "<code>$1</code>");
+        t = t.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+        t = t.replace(/\*(.+?)\*/g, "<em>$1</em>");
+        t = t.replace(/^### (.+)$/gm, '<div style="font-size:14px;font-weight:700;margin:8px 0 4px;">$1</div>');
+        t = t.replace(/^## (.+)$/gm, '<div style="font-size:15px;font-weight:700;margin:8px 0 4px;">$1</div>');
+        t = t.replace(/^# (.+)$/gm, '<div style="font-size:16px;font-weight:700;margin:8px 0 4px;">$1</div>');
+        t = t.replace(/^\s*[-•]\s+(.+)$/gm, '<div style="display:flex;gap:6px;margin:2px 0;"><span style="color:var(--accent-purple);flex-shrink:0;">&bull;</span><span>$1</span></div>');
+        t = t.replace(/^\s*(\d+)\.\s+(.+)$/gm, '<div style="display:flex;gap:6px;margin:2px 0;"><span style="color:var(--accent-purple);font-weight:600;flex-shrink:0;">$1.</span><span>$2</span></div>');
+        t = t.replace(/\n\n/g, "<br><br>");
+        t = t.replace(/\n/g, "<br>");
+        return t;
+    }
+    function escHtml(str) {
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    /* ---------- storage ---------- */
+    function saveChatToStorage(sender, text) {
+        try {
+            let chats = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+            chats.push({ sender, text, timestamp: Date.now() });
+            if (chats.length > 200) chats = chats.slice(-200);
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(chats));
+        } catch (e) {}
+        try {
+            db.ref("nita-chat/messages").push({ sender, text: text.substring(0, 500), timestamp: Date.now(), device: "web" });
+        } catch (e) {}
+    }
+    function loadChatHistory() {
+        try {
+            const chats = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+            if (chats.length > 0) {
+                const w = document.getElementById("welcomeScreen");
+                if (w) w.style.display = "none";
+                isFirstMessageSent = true;
+                chats.slice(-30).forEach(c => renderBubble(c.text, c.sender));
+            }
+        } catch (e) {}
+    }
+
+    /* ---------- clear ---------- */
+    function clearHistory() {
+        toggleMenu();
+        customConfirm("Hapus semua riwayat chat Nita?", () => {
+            localStorage.removeItem(HISTORY_KEY);
+
+            const feed = document.getElementById("chatFeed");
+            feed.innerHTML = `
+                <div class="welcome-screen" id="welcomeScreen">
+                    <div class="ai-avatar">${AVATAR_SVG}</div>
+                    <h2>Nita Chat</h2>
+                    <p>Asisten AI yang siap bantu jawab soal, ngoding, analisis, atau ngobrol topik apa aja.</p>
+                    <div class="suggestion-grid">
+                        <div class="suggestion-chip" onclick="quickAsk('Jelaskan konsep limit dalam kalkulus beserta contohnya')">Soal Matematika</div>
+                        <div class="suggestion-chip" onclick="quickAsk('Jelaskan hukum Newton 1, 2, 3')">Konsep Fisika</div>
+                        <div class="suggestion-chip" onclick="quickAsk('Buatkan contoh kode Python untuk sorting array')">Bantu Coding</div>
+                    </div>
+                </div>`;
+            isFirstMessageSent = false;
+            try { db.ref("nita-chat/messages").remove(); } catch (e) {}
+        });
+    }
+
+    /* ---------- OCR (foto soal) ---------- */
+    async function processCameraImage(input) {
+        if (!input.files || !input.files[0]) return;
+        const file = input.files[0];
+        if (!isFirstMessageSent) {
+            const w = document.getElementById("welcomeScreen");
+            if (w) w.style.display = "none";
+            isFirstMessageSent = true;
+        }
+        const typingRow = renderTypingBubble();
+        const label = typingRow.querySelector(".loading-row span");
+        if (label) label.textContent = "Nita lagi baca gambarnya...";
+        try {
+            const result = await Tesseract.recognize(file, "ind+eng");
+            removeEl(typingRow);
+            const scannedText = result.data.text.trim();
+            if (scannedText.length < 3) {
+                showCustomAlert("Teks di foto kurang jelas. Coba foto ulang dengan pencahayaan yang lebih terang ya.", "Gagal Membaca");
+                return;
+            }
+            document.getElementById("messageInput").value = scannedText;
+            renderErrorBubbleNeutral("Ini hasil baca fotonya, cek dulu sebelum dikirim ya (OCR kadang meleset):\n" + scannedText);
+            document.getElementById("messageInput").focus();
+        } catch (error) {
+            removeEl(typingRow);
+            showCustomAlert("Gagal memproses gambar: " + error.message, "Error");
+        }
+        input.value = "";
+    }
+    function renderErrorBubbleNeutral(msg) {
+        const feed = document.getElementById("chatFeed");
+        const row = document.createElement("div");
+        row.className = "msg-row nita";
+        row.innerHTML = `${nitaAvatarHtml()}<div class="msg-content"><span class="sender-tag">Nita Chat</span><div class="bubble-box">${formatMarkdown(msg)}</div></div>`;
+        feed.appendChild(row);
+        scrollToBottom();
+    }
+
+    /* ---------- alerts / menu ---------- */
+    function showCustomAlert(message, title) {
+        document.getElementById("customAlertTitle").textContent = title || "INFO";
+        document.getElementById("customAlertMessage").textContent = message;
+        document.getElementById("customAlertModal").style.display = "flex";
+    }
+    function closeCustomAlert() { document.getElementById("customAlertModal").style.display = "none"; }
+    function customConfirm(message, onYes) {
+        const modal = document.getElementById("customConfirmModal");
+        document.getElementById("customConfirmMessage").textContent = message;
+        modal.style.display = "flex";
+        const handleYes = () => { modal.style.display = "none"; onYes(); cleanup(); };
+        const handleNo = () => { modal.style.display = "none"; cleanup(); };
+        const cleanup = () => {
+            document.getElementById("confirmYesBtn").removeEventListener("click", handleYes);
+            document.getElementById("confirmNoBtn").removeEventListener("click", handleNo);
+        };
+        document.getElementById("confirmYesBtn").addEventListener("click", handleYes);
+        document.getElementById("confirmNoBtn").addEventListener("click", handleNo);
+    }
+    function toggleMenu() {
+        const menu = document.getElementById("dropdownMenu");
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+    document.addEventListener("click", function (e) {
+        const menu = document.getElementById("dropdownMenu");
+        const btn = document.querySelector(".menu-btn");
+        if (menu && !menu.contains(e.target) && !btn?.contains(e.target)) menu.style.display = "none";
+    });
+</script>
+</body>
+</html>
