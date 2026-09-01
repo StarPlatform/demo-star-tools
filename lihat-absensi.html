@@ -81,6 +81,10 @@
     color: #64748B;
     background: #1E293B;
   }
+  body.dark .cell-status.weekend {
+    color: #64748B;
+    background: #1E293B;
+  }
 
   body.dark .btn-outline {
     border-color: #334155;
@@ -91,6 +95,14 @@
   body.dark .footer-note { color: #64748B; }
   body.dark .empty-state { color: #64748B; }
   body.dark .loading-spin { border-color: #1E293B; border-top-color: #2563EB; }
+
+  body.dark .modal-content {
+    background: #111827;
+    border-color: #1E293B;
+  }
+  body.dark .modal-content h3 { color: #F1F5F9; }
+  body.dark .modal-content p { color: #94A3B8; }
+  body.dark .modal-content .btn-modal { background: #2563EB; color: #fff; }
 
   .app-container {
     max-width: 720px;
@@ -104,7 +116,7 @@
   .header-card {
     background: #FFFFFF;
     border-radius: 16px;
-    padding: 20px 18px;
+    padding: 18px 16px;
     border: 1px solid #E2E8F0;
     margin-bottom: 12px;
   }
@@ -285,7 +297,6 @@
     max-width: 36px;
   }
 
-  /* FIX: Sticky column ga nembus */
   .sticky-col {
     position: sticky;
     left: 0;
@@ -442,12 +453,7 @@
     cursor: pointer;
     min-width: 100px;
   }
-  body.dark .modal-content {
-    background: #111827;
-    border: 1px solid #1E293B;
-  }
-  body.dark .modal-content p { color: #94A3B8; }
-  body.dark .modal-content h3 { color: #F1F5F9; }
+  .modal-content .btn-modal:active { transform: scale(0.97); }
 
   /* RESPONSIVE */
   @media (max-width: 600px) {
@@ -528,7 +534,6 @@
         <span class="live-dot"></span>
         <span id="lastUpdate">Real-time</span>
       </span>
-      <span id="hariKe">Hari ke-</span>
     </div>
   </div>
 
@@ -578,8 +583,8 @@
 
   <!-- EXPORT -->
   <div class="export-card">
-    <button class="btn btn-primary" onclick="exportPDF()">Export PDF</button>
-    <button class="btn btn-outline" onclick="exportCSV()">Export Excel</button>
+    <button class="btn btn-primary" onclick="exportPDF()">📄 PDF</button>
+    <button class="btn btn-outline" onclick="exportCSV()">📊 CSV</button>
   </div>
 
   <div class="footer-note">
@@ -627,7 +632,7 @@ let namaKelas = '';
 let daftarMurid = [];
 let tanggalDipilih = new Date().toISOString().split('T')[0];
 let searchQuery = '';
-let listenerRef = null;
+let listenerRefs = [];
 
 // ===== RENDER =====
 function formatTanggal(dateStr) {
@@ -635,17 +640,10 @@ function formatTanggal(dateStr) {
   return d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-function getHariKe(dateStr) {
-  const d = new Date(dateStr + 'T00:00:00');
-  const start = new Date(d.getFullYear(), d.getMonth(), 1);
-  return Math.ceil((d - start) / 86400000) + 1;
-}
-
 function renderHeader() {
   document.getElementById('namaKelas').innerText = namaKelas || 'Kelas';
   document.getElementById('jmlMurid').innerText = daftarMurid.length + ' murid';
   document.getElementById('tanggalDisplay').innerText = formatTanggal(tanggalDipilih);
-  document.getElementById('hariKe').innerText = 'Hari ke-' + getHariKe(tanggalDipilih);
 }
 
 function filterMurid(query) {
@@ -658,15 +656,20 @@ function getFilteredMurid() {
   return daftarMurid.filter(n => n.toLowerCase().includes(searchQuery));
 }
 
+// ===== RENDER TABLE DENGAN LISTENER REALTIME =====
 function renderTable() {
   const tbody = document.getElementById('tabelGridBody');
   const filtered = getFilteredMurid();
+
+  // Bersihkan listener lama
+  listenerRefs.forEach(ref => ref.off());
+  listenerRefs = [];
 
   if (filtered.length === 0) {
     tbody.innerHTML = `<tr><td colspan="2" class="empty-state">
       ${daftarMurid.length === 0 ? 'Belum ada murid di kelas ini.' : 'Tidak ada murid yang cocok.'}
     </td></tr>`;
-    updateStats({});
+    updateStats({ Hadir: 0, Izin: 0, Sakit: 0, Alpa: 0, Belum: 0 });
     return;
   }
 
@@ -682,71 +685,13 @@ function renderTable() {
   });
   tbody.innerHTML = html;
 
-  // Load data dari Firebase
-  loadAbsensi();
-}
-
-function loadAbsensi() {
-  if (listenerRef) {
-    listenerRef.off();
-    listenerRef = null;
-  }
-
-  const filtered = getFilteredMurid();
-  if (filtered.length === 0) return;
-
-  // Ambil data absensi per murid
-  const promises = filtered.map(nama => {
-    return db.ref(`kelas/${kelasId}/siswa/${nama}/absen/${tanggalDipilih}`).once('value');
-  });
-
-  Promise.all(promises).then(snapshots => {
-    const stats = { Hadir: 0, Izin: 0, Sakit: 0, Alpa: 0, Belum: 0 };
-
-    snapshots.forEach((snap, i) => {
-      const nama = filtered[i];
-      const safe = nama.replace(/[^a-zA-Z0-9]/g, '_');
-      const el = document.getElementById(`cell-${safe}`);
-      if (!el) return;
-
-      const data = snap.val();
-      const status = data ? data.status : null;
-
-      el.className = 'cell-status';
-      if (status === 'Hadir') {
-        el.classList.add('hadir');
-        el.innerText = 'H';
-        stats.Hadir++;
-      } else if (status === 'Izin') {
-        el.classList.add('izin');
-        el.innerText = 'I';
-        stats.Izin++;
-      } else if (status === 'Sakit') {
-        el.classList.add('sakit');
-        el.innerText = 'S';
-        stats.Sakit++;
-      } else if (status === 'Alpa') {
-        el.classList.add('alpa');
-        el.innerText = 'A';
-        stats.Alpa++;
-      } else {
-        el.classList.add('belum');
-        el.innerText = '-';
-        stats.Belum++;
-      }
-    });
-
-    updateStats(stats);
-    updateLastUpdate();
-  }).catch(err => {
-    console.error('Load absensi error:', err);
-  });
-
-  // Setup realtime listener
+  // Pasang listener per murid
   filtered.forEach(nama => {
+    const safe = nama.replace(/[^a-zA-Z0-9]/g, '_');
     const ref = db.ref(`kelas/${kelasId}/siswa/${nama}/absen/${tanggalDipilih}`);
+    listenerRefs.push(ref);
+    
     ref.on('value', snap => {
-      const safe = nama.replace(/[^a-zA-Z0-9]/g, '_');
       const el = document.getElementById(`cell-${safe}`);
       if (!el) return;
 
@@ -773,8 +718,9 @@ function loadAbsensi() {
       updateStatsFromDOM();
       updateLastUpdate();
     });
-    listenerRef = ref;
   });
+
+  updateStatsFromDOM();
 }
 
 function updateStatsFromDOM() {
@@ -806,6 +752,9 @@ function updateLastUpdate() {
 
 function gantiTanggal(date) {
   tanggalDipilih = date;
+  // Bersihkan listener lama
+  listenerRefs.forEach(ref => ref.off());
+  listenerRefs = [];
   renderHeader();
   renderTable();
 }
@@ -870,23 +819,9 @@ function exportCSV() {
   showAlert('Berhasil', 'CSV berhasil diunduh.');
 }
 
-// ===== INIT =====
-window.addEventListener('DOMContentLoaded', function() {
-  if (localStorage.getItem('theme') === 'dark') {
-    document.body.classList.add('dark');
-  }
-
-  if (!kelasId) {
-    showAlert('Error', 'Link tidak valid.');
-    return;
-  }
-
-  // Set default date
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('pilihTanggal').value = today;
-  tanggalDipilih = today;
-
-  db.ref(`kelas/${kelasId}`).once('value').then(snap => {
+// ===== LOAD DATA =====
+function loadKelas() {
+  db.ref(`kelas/${kelasId}`).on('value', snap => {
     if (!snap.exists()) {
       showAlert('Error', 'Kelas tidak ditemukan.');
       return;
@@ -894,12 +829,28 @@ window.addEventListener('DOMContentLoaded', function() {
     const data = snap.val();
     namaKelas = data.nama || 'Kelas';
     daftarMurid = data.siswa ? Object.keys(data.siswa) : [];
-
     renderHeader();
     renderTable();
-  }).catch(() => {
-    showAlert('Error', 'Gagal memuat data kelas.');
   });
+}
+
+// ===== INIT =====
+window.addEventListener('DOMContentLoaded', function() {
+  if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark');
+  }
+
+  if (!kelasId) {
+    showAlert('Error', 'Link tidak valid. Pastikan URL mengandung ?kelas=...');
+    return;
+  }
+
+  // Set default date ke hari ini
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('pilihTanggal').value = today;
+  tanggalDipilih = today;
+
+  loadKelas();
 });
 </script>
 </body>
