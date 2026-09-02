@@ -8,6 +8,19 @@
 <link rel="icon" type="image/png" href="logo.jpg">
 <link rel="apple-touch-icon" href="logo.jpg">
 
+<meta property="og:image" content="https://www.stools.web.id/logo.jpg">
+<meta name="twitter:image" content="https://www.stools.web.id/logo.jpg">
+
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "WebSite",
+ "name": "Star Tools",
+ "url": "https://www.stools.web.id/",
+ "image": "https://www.stools.web.id/logo.jpg"
+}
+</script>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -52,6 +65,7 @@
   }
   body.dark .search-input::placeholder { color: #64748B; }
 
+  body.dark .divider-line { border-top-color: #1E293B; }
   body.dark .legend-item { color: #F1F5F9; }
   body.dark .legend-dot.belum { background: #334155; }
 
@@ -61,8 +75,7 @@
 
   body.dark .rekap-table th { background: #1E293B; color: #E2E8F0; border-color: #334155; }
   body.dark .rekap-table td { border-color: #1E293B; }
-  body.dark .rekap-table .rekap-nama { background: #111827; color: #F1F5F9; }
-  body.dark .rekap-table thead th.rekap-nama { background: #1E293B; }
+  body.dark .rekap-table .rekap-nama { color: #F1F5F9; }
 
   body.dark .btn-outline { border-color: #334155; color: #F1F5F9; }
   body.dark .btn-outline:active { background: #1E293B; }
@@ -76,11 +89,6 @@
   body.dark .modal-content h3 { color: #F1F5F9; }
   body.dark .modal-content p { color: #94A3B8; }
 
-  body.dark .rekap-wrap::-webkit-scrollbar-track { background: #1E293B; }
-  body.dark .rekap-wrap::-webkit-scrollbar-thumb { background: #334155; }
-  body.dark .list-wrap::-webkit-scrollbar-track { background: #1E293B; }
-  body.dark .list-wrap::-webkit-scrollbar-thumb { background: #334155; }
-
   .app-container {
     max-width: 640px;
     margin: 0 auto;
@@ -89,6 +97,7 @@
     padding: 0 12px 20px;
   }
 
+  /* ===== HEADER ===== */
   .header-brand {
     background: linear-gradient(145deg, #1D4ED8, #2563EB, #3B82F6);
     padding: 24px 20px 28px;
@@ -138,6 +147,7 @@
   }
   @keyframes pulseDot { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 
+  /* ===== VIEW TABS ===== */
   .view-tabs {
     display: flex;
     background: #E2E8F0;
@@ -161,6 +171,7 @@
   }
   .view-tab.active { background: #2563EB; color: #fff; box-shadow: 0 2px 8px rgba(37,99,235,0.3); }
 
+  /* ===== MAIN CARD (consolidated) ===== */
   .main-card {
     background: #FFFFFF;
     border-radius: 18px;
@@ -169,6 +180,7 @@
     box-shadow: 0 2px 10px rgba(0,0,0,0.04);
   }
 
+  /* ---- filter row ---- */
   .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
   .select-box {
     flex: 1;
@@ -197,6 +209,7 @@
   .search-input::placeholder { color: #94A3B8; }
   .search-input:focus, .select-box:focus { border-color: #2563EB; }
 
+  /* ---- stats ---- */
   .stats-bar {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -218,57 +231,20 @@
   .stat-card .num.alpa { color: #DC2626; }
   .stat-card .num.belum { color: #94A3B8; }
 
-  /* ===== LIST WRAP (HARIAN) ===== */
-  .list-wrap {
-    border-radius: 12px;
-    border: 1px solid #E2E8F0;
-    overflow: auto;
-    max-height: 400px;
-    margin-bottom: 14px;
-  }
-  .list-wrap::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  .list-wrap::-webkit-scrollbar-track {
-    background: #F1F5F9;
-    border-radius: 4px;
-  }
-  .list-wrap::-webkit-scrollbar-thumb {
-    background: #CBD5E1;
-    border-radius: 4px;
-  }
-
-  table.harian-table {
-    border-collapse: separate;
-    border-spacing: 0;
-    width: 100%;
-    font-size: 13.5px;
-  }
+  /* ---- harian: table style (no internal scroll) ---- */
+  .list-wrap { border-radius: 12px; border: 1px solid #E2E8F0; overflow: hidden; margin-bottom: 14px; }
+  table.harian-table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 13.5px; }
   .harian-table th, .harian-table td {
-    padding: 10px 8px;
-    border-bottom: 1px solid #E2E8F0;
+    padding: 10px 8px; border-bottom: 1px solid #E2E8F0;
   }
   .harian-table thead th {
-    background: #F8FAFE;
-    color: #1E293B;
-    font-weight: 700;
-    font-size: 12.5px;
-    text-align: left;
-    position: sticky;
-    top: 0;
-    z-index: 2;
+    background: #F8FAFE; color: #1E293B; font-weight: 700; font-size: 12.5px; text-align: left;
   }
   .harian-table thead th.col-status { text-align: center; }
   .harian-table tbody tr:last-child td { border-bottom: none; }
   .murid-name { font-weight: 600; }
   .murid-status-badge {
-    display: inline-block;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 5px 12px;
-    border-radius: 30px;
-    white-space: nowrap;
+    display: inline-block; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 30px; white-space: nowrap;
   }
   .col-status { text-align: center; }
   .murid-status-badge.hadir { color: #065F46; background: #D1FAE5; }
@@ -278,74 +254,23 @@
   .murid-status-badge.belum { color: #64748B; background: #F1F5F9; }
   .murid-status-badge.libur { color: #64748B; background: #F1F5F9; }
 
-  /* ===== REKAP WRAP (dengan scroll) ===== */
-  .rekap-wrap {
-    border-radius: 12px;
-    border: 1px solid #E2E8F0;
-    overflow: auto;
-    max-height: 400px;
-    margin-bottom: 14px;
-  }
-  .rekap-wrap::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  .rekap-wrap::-webkit-scrollbar-track {
-    background: #F1F5F9;
-    border-radius: 4px;
-  }
-  .rekap-wrap::-webkit-scrollbar-thumb {
-    background: #CBD5E1;
-    border-radius: 4px;
-  }
-
-  table.rekap-table {
-    border-collapse: separate;
-    border-spacing: 0;
-    width: 100%;
-    font-size: 13.5px;
-    min-width: 480px;
-  }
+  .table-wrap { border-radius: 12px; border: 1px solid #E2E8F0; overflow: hidden; margin-bottom: 14px; }
+  table.rekap-table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 13.5px; }
   .rekap-table th, .rekap-table td {
-    padding: 10px 6px;
-    text-align: center;
-    border-bottom: 1px solid #E2E8F0;
-    white-space: nowrap;
+    padding: 10px 6px; text-align: center; border-bottom: 1px solid #E2E8F0; white-space: nowrap;
   }
   .rekap-table thead th {
-    background: #F8FAFE;
-    color: #1E293B;
-    font-weight: 700;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    font-size: 12.5px;
+    background: #F8FAFE; color: #1E293B; font-weight: 700; position: sticky; top: 0; z-index: 2; font-size: 12.5px;
   }
-  .rekap-table .rekap-nama {
-    text-align: left;
-    font-weight: 600;
-    padding-left: 10px;
-    position: sticky;
-    left: 0;
-    background: #FFFFFF;
-    z-index: 2;
-    min-width: 120px;
-  }
-  .rekap-table thead th.rekap-nama {
-    background: #F8FAFE;
-    z-index: 3;
-  }
+  .rekap-table .rekap-nama { text-align: left; font-weight: 600; padding-left: 10px; }
   .rekap-table td.rekap-hadir { color: #059669; font-weight: 700; }
   .rekap-table td.rekap-izin { color: #D97706; font-weight: 700; }
   .rekap-table td.rekap-sakit { color: #B45309; font-weight: 700; }
   .rekap-table td.rekap-alpa { color: #DC2626; font-weight: 700; }
 
+  /* ---- legend ---- */
   .legend-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    padding-top: 12px;
-    margin-bottom: 12px;
+    display: flex; flex-wrap: wrap; gap: 12px; padding-top: 12px; margin-bottom: 12px;
     border-top: 1px solid #E2E8F0;
   }
   .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; }
@@ -356,138 +281,60 @@
   .legend-dot.alpa { background: #DC2626; }
   .legend-dot.belum { background: #CBD5E1; }
 
+  /* ---- buttons ---- */
   .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
   .btn {
-    padding: 12px 18px;
-    border-radius: 10px;
-    border: none;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: inherit;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    min-height: 44px;
-    flex: 1;
-    min-width: 120px;
+    padding: 12px 18px; border-radius: 10px; border: none; font-size: 14px; font-weight: 700;
+    cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; justify-content: center;
+    gap: 6px; min-height: 44px; flex: 1; min-width: 120px;
   }
   .btn:active { transform: scale(0.97); }
   .btn-primary { background: #2563EB; color: #fff; }
   .btn-outline { background: transparent; border: 2px solid #E2E8F0; color: #0F172A; }
 
-  .empty-state, .error-state {
-    text-align: center;
-    padding: 34px 16px;
-    color: #94A3B8;
-    font-size: 14.5px;
-  }
+  /* ---- states ---- */
+  .empty-state, .error-state { text-align: center; padding: 34px 16px; color: #94A3B8; font-size: 14.5px; }
   .error-state svg, .empty-state svg {
-    width: 44px;
-    height: 44px;
-    stroke: #94A3B8;
-    margin: 0 auto 10px;
-    display: block;
+    width: 44px; height: 44px; stroke: #94A3B8; margin: 0 auto 10px; display: block;
   }
   .error-state svg { stroke: #DC2626; }
   .loading-spin {
-    width: 34px;
-    height: 34px;
-    border: 4px solid #E2E8F0;
-    border-top-color: #2563EB;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    margin: 30px auto;
+    width: 34px; height: 34px; border: 4px solid #E2E8F0; border-top-color: #2563EB; border-radius: 50%;
+    animation: spin 0.7s linear infinite; margin: 30px auto;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .footer-note {
-    text-align: center;
-    padding: 16px;
-    color: #94A3B8;
-    font-size: 12px;
-    line-height: 1.7;
-  }
+  .footer-note { text-align: center; padding: 16px; color: #94A3B8; font-size: 12px; line-height: 1.7; }
 
+  /* ---- alert modal ---- */
   .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(6px);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(6px); display: none; justify-content: center; align-items: center; z-index: 999;
   }
   .modal-overlay.active { display: flex; }
   .modal-content {
-    background: #FFFFFF;
-    width: 320px;
-    max-width: 90%;
-    border-radius: 22px;
-    padding: 26px 22px;
-    text-align: center;
-    border: 1px solid #E2E8F0;
-    animation: modalPop 0.25s ease;
+    background: #FFFFFF; width: 320px; max-width: 90%; border-radius: 22px; padding: 26px 22px;
+    text-align: center; border: 1px solid #E2E8F0; animation: modalPop 0.25s ease;
   }
-  @keyframes modalPop {
-    from { transform: scale(0.85); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
+  @keyframes modalPop { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   .modal-content .modal-icon { margin-bottom: 10px; }
-  .modal-content .modal-icon svg {
-    width: 48px;
-    height: 48px;
-    stroke: #DC2626;
-    fill: none;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
+  .modal-content .modal-icon svg { width: 48px; height: 48px; stroke: #DC2626; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .modal-content h3 { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
   .modal-content p { font-size: 14px; color: #64748B; margin-bottom: 16px; line-height: 1.5; }
   .modal-content .btn-modal {
-    background: #2563EB;
-    color: #fff;
-    border: none;
-    padding: 11px 26px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    min-width: 110px;
+    background: #2563EB; color: #fff; border: none; padding: 11px 26px; border-radius: 10px;
+    font-size: 14px; font-weight: 700; cursor: pointer; min-width: 110px;
   }
   .modal-content .btn-modal:active { transform: scale(0.96); }
 
   @media (min-width: 900px) {
-    body {
-      background: linear-gradient(160deg, #EFF6FF 0%, #F8FAFE 60%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    body.dark {
-      background: linear-gradient(160deg, #0B1120 0%, #111827 60%);
-    }
+    body { background: linear-gradient(160deg, #EFF6FF 0%, #F8FAFE 60%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    body.dark { background: linear-gradient(160deg, #0B1120 0%, #111827 60%); }
     .app-container {
-      max-width: 640px;
-      margin: 32px auto;
-      background: #FFFFFF;
-      border-radius: 20px;
-      border: 1px solid #E2E8F0;
-      box-shadow: 0 20px 50px -12px rgba(15,23,42,0.12);
-      overflow: hidden;
-      padding: 0 0 20px;
+      max-width: 640px; margin: 32px auto; background: #FFFFFF; border-radius: 20px; border: 1px solid #E2E8F0;
+      box-shadow: 0 20px 50px -12px rgba(15,23,42,0.12); overflow: hidden; padding: 0 0 20px;
     }
-    body.dark .app-container {
-      background: #111827;
-      border-color: #1E293B;
-    }
+    body.dark .app-container { background: #111827; border-color: #1E293B; }
     .header-brand { border-radius: 20px 20px 0 0; margin: 0 0 12px; }
     .view-tabs, .main-card, .footer-note { margin-left: 20px; margin-right: 20px; }
     .view-tabs { width: calc(100% - 40px); }
@@ -498,6 +345,7 @@
 <body>
 
 <div class="app-container">
+  <!-- HEADER -->
   <div class="header-brand">
     <div class="logo-mini">Star Tools</div>
     <h1 id="namaKelasHeader">Memuat...</h1>
@@ -507,11 +355,13 @@
     </div>
   </div>
 
+  <!-- VIEW TABS -->
   <div class="view-tabs">
     <button class="view-tab active" data-view="harian" onclick="switchView('harian')">Per Hari</button>
     <button class="view-tab" data-view="rekap" onclick="switchView('rekap')">Rekap Bulanan</button>
   </div>
 
+  <!-- MAIN CARD -->
   <div class="main-card">
     <div class="filter-row">
       <select class="select-box" id="pilihBulanView" onchange="gantiBulan(this.value)"></select>
@@ -527,6 +377,7 @@
       <div class="stat-card"><div class="num belum" id="statBelum">0</div><div class="label">Belum</div></div>
     </div>
 
+    <!-- PER HARI VIEW -->
     <div class="list-wrap" id="harianViewWrap">
       <table class="harian-table" id="harianTable">
         <thead>
@@ -541,20 +392,23 @@
       </table>
     </div>
 
-    <div class="rekap-wrap" id="rekapView" style="display:none;">
-      <table class="rekap-table" id="rekapTable">
-        <thead>
-          <tr>
-            <th class="rekap-nama">Nama</th>
-            <th>Hadir</th>
-            <th>Izin</th>
-            <th>Sakit</th>
-            <th>Alpa</th>
-          </tr>
-        </thead>
-        <tbody id="rekapTableBody"></tbody>
-      </table>
-    </div>
+<!-- REKAP BULANAN VIEW - dengan scroll horizontal -->
+<div class="table-wrap" id="rekapView" style="display:none;">
+  <div style="overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px;">
+    <table class="rekap-table" id="rekapTable" style="min-width: 500px; width: 100%;">
+      <thead>
+        <tr>
+          <th class="rekap-nama" style="min-width: 140px;">Nama</th>
+          <th style="min-width: 60px;">Hadir</th>
+          <th style="min-width: 60px;">Izin</th>
+          <th style="min-width: 60px;">Sakit</th>
+          <th style="min-width: 60px;">Alpa</th>
+        </tr>
+      </thead>
+      <tbody id="rekapTableBody"></tbody>
+    </table>
+  </div>
+</div>
 
     <div class="btn-group">
       <button class="btn btn-primary" onclick="exportPDF()">Export PDF</button>
@@ -562,11 +416,14 @@
     </div>
   </div>
 
+  <!-- FOOTER -->
   <div class="footer-note">
+    Halaman ini untuk melihat data absensi. Data otomatis terupdate secara real-time.<br>
     Star Platform &middot; Star Tools 2026
   </div>
 </div>
 
+<!-- MODAL ALERT -->
 <div id="modalOverlay" class="modal-overlay">
   <div class="modal-content">
     <div class="modal-icon">
@@ -603,6 +460,7 @@ var viewMode = "harian";
 var harianListeners = {};
 var rekapListeners = {};
 
+// ===== MODAL =====
 function showAlertModal(title, message) {
   document.getElementById("modalTitle").innerText = title || "Perhatian";
   document.getElementById("modalMessage").innerText = message || "";
@@ -624,6 +482,16 @@ function isWeekend(bulan, tgl) {
   var d = new Date(year, idx, tgl);
   var day = d.getDay();
   return day === 0 || day === 6;
+}
+
+function renderError(msg) {
+  document.getElementById("namaKelasHeader").innerText = "Tidak Ditemukan";
+  document.getElementById("jumlahMuridHeader").innerText = "- murid";
+  document.getElementById("statsBar").style.display = "none";
+  document.getElementById("harianView").innerHTML = "";
+  document.querySelector(".view-tabs").style.display = "none";
+  document.querySelector(".btn-group").style.display = "none";
+  showAlertModal("Link Tidak Valid", msg || "Pastikan link yang dibuka lengkap dan benar.");
 }
 
 function renderBulanOptions() {
@@ -749,7 +617,7 @@ function updateStatsHarian() {
     else if (text === "Izin") stats.Izin++;
     else if (text === "Sakit") stats.Sakit++;
     else if (text === "Alpa") stats.Alpa++;
-    else if (text !== "Memuat..." && text !== "Libur") stats.Belum++;
+    else if (text !== "Memuat...") stats.Belum++;
   });
   document.getElementById("statHadir").innerText = stats.Hadir;
   document.getElementById("statIzin").innerText = stats.Izin;
@@ -795,16 +663,10 @@ function loadRekapView() {
     ref.on("value", function(snap) {
       var data = snap.val() || {};
       var count = { Hadir: 0, Izin: 0, Sakit: 0, Alpa: 0 };
-      
       Object.keys(data).forEach(function(tgl) {
-        var item = data[tgl];
-        var status = item ? item.status : null;
-        if (status === "Hadir") count.Hadir++;
-        else if (status === "Izin") count.Izin++;
-        else if (status === "Sakit") count.Sakit++;
-        else if (status === "Alpa") count.Alpa++;
+        var status = data[tgl] ? data[tgl].status : null;
+        if (count.hasOwnProperty(status)) count[status]++;
       });
-      
       var elH = document.getElementById("rHadir-" + safe);
       var elI = document.getElementById("rIzin-" + safe);
       var elS = document.getElementById("rSakit-" + safe);
@@ -898,13 +760,13 @@ window.addEventListener("DOMContentLoaded", function() {
   }
 
   if (!kelasId) {
-    showAlertModal("Error", "Link tidak valid. Pastikan link yang dibuka lengkap dan benar.");
+    renderError("Link tidak valid. Pastikan link yang dibuka lengkap dan benar.");
     return;
   }
 
   db.ref("kelas/" + kelasId).once("value").then(function(snap) {
     if (!snap.exists()) {
-      showAlertModal("Error", "Kelas tidak ditemukan. ID Kelas tidak terdaftar di database.");
+      renderError("Kelas tidak ditemukan. ID Kelas tidak terdaftar di database.");
       return;
     }
     var kelasData = snap.val();
@@ -918,7 +780,7 @@ window.addEventListener("DOMContentLoaded", function() {
     renderTanggalOptions();
     loadHarianView();
   }).catch(function(err) {
-    showAlertModal("Error", "Gagal memuat data. Periksa koneksi internet.");
+    renderError("Gagal memuat data. Periksa koneksi internet.");
   });
 });
 </script>
