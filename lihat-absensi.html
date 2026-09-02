@@ -69,9 +69,9 @@
   body.dark .legend-item { color: #F1F5F9; }
   body.dark .legend-dot.belum { background: #334155; }
 
-  body.dark .murid-row { border-bottom-color: #1E293B; }
   body.dark .murid-name { color: #F1F5F9; }
-  body.dark .murid-avatar { background: #1E3A5F; color: #93C5FD; }
+  body.dark .harian-table thead th { background: #1E293B; color: #E2E8F0; border-color: #334155; }
+  body.dark .harian-table td { border-color: #1E293B; }
 
   body.dark .rekap-table th { background: #1E293B; color: #E2E8F0; border-color: #334155; }
   body.dark .rekap-table td { border-color: #1E293B; }
@@ -231,24 +231,22 @@
   .stat-card .num.alpa { color: #DC2626; }
   .stat-card .num.belum { color: #94A3B8; }
 
-  /* ---- harian: murid row list ---- */
-  .list-wrap { max-height: 55vh; overflow-y: auto; -webkit-overflow-scrolling: touch; margin-bottom: 14px; }
-  .murid-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 4px;
-    border-bottom: 1px solid #E2E8F0;
+  /* ---- harian: table style (no internal scroll) ---- */
+  .list-wrap { border-radius: 12px; border: 1px solid #E2E8F0; overflow: hidden; margin-bottom: 14px; }
+  table.harian-table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 13.5px; }
+  .harian-table th, .harian-table td {
+    padding: 10px 8px; border-bottom: 1px solid #E2E8F0;
   }
-  .murid-row:last-child { border-bottom: none; }
-  .murid-avatar {
-    width: 38px; height: 38px; border-radius: 50%; background: #EFF6FF; color: #2563EB;
-    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0;
+  .harian-table thead th {
+    background: #F8FAFE; color: #1E293B; font-weight: 700; font-size: 12.5px; text-align: left;
   }
-  .murid-name { flex: 1; font-weight: 600; font-size: 14.5px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .harian-table thead th.col-status { text-align: center; }
+  .harian-table tbody tr:last-child td { border-bottom: none; }
+  .murid-name { font-weight: 600; }
   .murid-status-badge {
-    font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 30px; flex-shrink: 0; white-space: nowrap;
+    display: inline-block; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 30px; white-space: nowrap;
   }
+  .col-status { text-align: center; }
   .murid-status-badge.hadir { color: #065F46; background: #D1FAE5; }
   .murid-status-badge.izin { color: #92400E; background: #FEF3C7; }
   .murid-status-badge.sakit { color: #92400E; background: #FDE68A; }
@@ -256,8 +254,7 @@
   .murid-status-badge.belum { color: #64748B; background: #F1F5F9; }
   .murid-status-badge.libur { color: #64748B; background: #F1F5F9; }
 
-  /* ---- rekap: summary table (few columns, no sticky needed) ---- */
-  .table-wrap { border-radius: 12px; border: 1px solid #E2E8F0; overflow: auto; max-height: 55vh; margin-bottom: 14px; }
+  .table-wrap { border-radius: 12px; border: 1px solid #E2E8F0; overflow: hidden; margin-bottom: 14px; }
   table.rekap-table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 13.5px; }
   .rekap-table th, .rekap-table td {
     padding: 10px 6px; text-align: center; border-bottom: 1px solid #E2E8F0; white-space: nowrap;
@@ -381,8 +378,18 @@
     </div>
 
     <!-- PER HARI VIEW -->
-    <div class="list-wrap" id="harianView">
-      <div class="loading-spin"></div>
+    <div class="list-wrap" id="harianViewWrap">
+      <table class="harian-table" id="harianTable">
+        <thead>
+          <tr>
+            <th>Nama</th>
+            <th class="col-status">Status</th>
+          </tr>
+        </thead>
+        <tbody id="harianView">
+          <tr><td colspan="2"><div class="loading-spin"></div></td></tr>
+        </tbody>
+      </table>
     </div>
 
     <!-- REKAP BULANAN VIEW -->
@@ -538,7 +545,7 @@ function switchView(mode) {
   viewMode = mode;
   document.querySelectorAll('.view-tab').forEach(function(t) { t.classList.remove('active'); });
   document.querySelector('.view-tab[data-view="' + mode + '"]').classList.add('active');
-  document.getElementById('harianView').style.display = mode === 'harian' ? 'block' : 'none';
+  document.getElementById('harianViewWrap').style.display = mode === 'harian' ? 'block' : 'none';
   document.getElementById('rekapView').style.display = mode === 'rekap' ? 'block' : 'none';
   document.getElementById('pilihTanggalView').style.display = mode === 'harian' ? 'block' : 'none';
   document.getElementById('statsBar').style.display = mode === 'harian' ? 'grid' : 'none';
@@ -556,9 +563,9 @@ function loadHarianView() {
   harianListeners = {};
 
   if (filtered.length === 0) {
-    container.innerHTML = '<div class="empty-state">' +
+    container.innerHTML = '<tr><td colspan="2" class="empty-state">' +
       (daftarMuridAktif.length === 0 ? 'Belum ada murid di kelas ini.' : 'Tidak ada murid yang cocok dengan pencarian.') +
-      '</div>';
+      '</td></tr>';
     updateStatsHarian();
     return;
   }
@@ -566,12 +573,10 @@ function loadHarianView() {
   var html = '';
   filtered.forEach(function(nama) {
     var safe = nama.replace(/[^a-zA-Z0-9]/g, "_");
-    var initial = nama.trim().charAt(0).toUpperCase();
-    html += '<div class="murid-row" id="hrow-' + safe + '">' +
-      '<div class="murid-avatar">' + initial + '</div>' +
-      '<div class="murid-name">' + nama + '</div>' +
-      '<div class="murid-status-badge belum" id="hstatus-' + safe + '">Memuat...</div>' +
-      '</div>';
+    html += '<tr id="hrow-' + safe + '">' +
+      '<td class="murid-name">' + nama + '</td>' +
+      '<td class="col-status"><span class="murid-status-badge belum" id="hstatus-' + safe + '">Memuat...</span></td>' +
+      '</tr>';
   });
   container.innerHTML = html;
 
