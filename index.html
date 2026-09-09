@@ -113,6 +113,13 @@ body{
   outline-offset:-1px;
 }
 .field input:disabled{color:var(--muted);}
+.password-wrap{position:relative;}
+.password-wrap input{padding-right:46px;}
+.password-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;}
+.password-toggle:hover{background:var(--bg);color:var(--text);}
+.password-toggle svg{width:19px;height:19px;}
+.today-note-reveal{display:none;width:100%;margin-top:12px;border:1px solid var(--border);background:var(--card);color:var(--primary);border-radius:10px;padding:10px 12px;font-size:12px;font-weight:700;cursor:pointer;}
+.today-note-reveal.active{display:block;}
 .btn{
   width:100%;
   padding:14px;
@@ -338,7 +345,12 @@ tbody tr.disabled{cursor:not-allowed;opacity:0.45;}
       </div>
       <div class="field">
         <label>Kata Sandi</label>
-        <input type="password" id="login-password" required autocomplete="current-password">
+        <div class="password-wrap">
+          <input type="password" id="login-password" required autocomplete="current-password">
+          <button type="button" class="password-toggle" data-target="login-password" aria-label="Tampilkan kata sandi" title="Tampilkan kata sandi">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+          </button>
+        </div>
       </div>
       <button type="submit" class="btn">Masuk</button>
     </form>
@@ -354,7 +366,12 @@ tbody tr.disabled{cursor:not-allowed;opacity:0.45;}
       </div>
       <div class="field">
         <label>Kata Sandi</label>
-        <input type="password" id="reg-password" required autocomplete="new-password" minlength="6">
+        <div class="password-wrap">
+          <input type="password" id="reg-password" required autocomplete="new-password" minlength="6">
+          <button type="button" class="password-toggle" data-target="reg-password" aria-label="Tampilkan kata sandi" title="Tampilkan kata sandi">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+          </button>
+        </div>
       </div>
       <button type="submit" class="btn">Daftar</button>
     </form>
@@ -388,6 +405,7 @@ tbody tr.disabled{cursor:not-allowed;opacity:0.45;}
         <div class="time-summary"><small>Jam Pulang</small><strong id="today-out">—</strong></div>
       </div>
     </div>
+    <button type="button" class="today-note-reveal" id="reveal-today-note">Tampilkan Catatan Hari Ini</button>
     <div class="export-row">
       <button type="button" class="btn secondary" id="btn-export-excel">Export Excel</button>
       <button type="button" class="btn secondary" id="btn-export-pdf">Export PDF</button>
@@ -789,17 +807,37 @@ document.getElementById("btn-export-pdf").addEventListener("click",function(){
 
 const TODAY_NOTE_KEY="absensi_show_today_note";
 function applyTodayNoteVisibility(){
-  const note=document.getElementById("today-note"),btn=document.getElementById("toggle-today-note");
+  const note=document.getElementById("today-note");
+  const btn=document.getElementById("toggle-today-note");
+  const reveal=document.getElementById("reveal-today-note");
   const show=localStorage.getItem(TODAY_NOTE_KEY)!=="0";
   note.style.display=show?"block":"none";
-  btn.textContent=show?"Sembunyikan":"Tampilkan";
+  btn.textContent="Sembunyikan";
+  reveal.classList.toggle("active",!show);
 }
 document.getElementById("toggle-today-note").addEventListener("click",function(){
-  const show=localStorage.getItem(TODAY_NOTE_KEY)!=="0";
-  localStorage.setItem(TODAY_NOTE_KEY,show?"0":"1");
+  localStorage.setItem(TODAY_NOTE_KEY,"0");
+  applyTodayNoteVisibility();
+});
+document.getElementById("reveal-today-note").addEventListener("click",function(){
+  localStorage.setItem(TODAY_NOTE_KEY,"1");
   applyTodayNoteVisibility();
 });
 applyTodayNoteVisibility();
+
+document.querySelectorAll(".password-toggle").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    const input=document.getElementById(btn.dataset.target);
+    if(!input)return;
+    const visible=input.type==="text";
+    input.type=visible?"password":"text";
+    btn.setAttribute("aria-label",visible?"Tampilkan kata sandi":"Sembunyikan kata sandi");
+    btn.setAttribute("title",visible?"Tampilkan kata sandi":"Sembunyikan kata sandi");
+    btn.innerHTML=visible
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l18 18"/><path d="M10.6 6.2A10.8 10.8 0 0 1 12 6c6.5 0 10 6 10 6a18.3 18.3 0 0 1-4.2 4.5M6.3 6.4C3.5 8.3 2 12 2 12s3.5 6 10 6a10.5 10.5 0 0 0 4.1-.8"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
+  });
+});
 
 document.getElementById("input-bulan").addEventListener("change",renderTable);
 
