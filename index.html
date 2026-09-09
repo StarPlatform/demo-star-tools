@@ -226,7 +226,9 @@ tbody tr.disabled{cursor:not-allowed;opacity:0.45;}
 .export-row{display:flex;gap:10px;margin-top:14px;}
 .export-row .btn{font-size:13px;padding:12px;}
 .today-note{margin-top:16px;padding:14px;background:var(--bg);border-radius:12px;}
-.today-note-title{font-weight:700;font-size:14px;margin-bottom:10px;}
+.today-note-title{font-weight:700;font-size:14px;}
+.today-note-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
+.note-toggle{border:1px solid var(--border);background:var(--card);color:var(--muted);border-radius:9px;padding:6px 9px;font-size:11px;font-weight:700;cursor:pointer;}
 .today-times{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .time-summary{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px;}
 .time-summary small{display:block;color:var(--muted);font-size:11px;margin-bottom:4px;}
@@ -379,8 +381,8 @@ tbody tr.disabled{cursor:not-allowed;opacity:0.45;}
         <tbody id="tbody-absensi"></tbody>
       </table>
     </div>
-    <div class="today-note">
-      <div class="today-note-title">📋 Catatan Hari Ini</div>
+    <div class="today-note" id="today-note">
+      <div class="today-note-head"><div class="today-note-title">Catatan Hari Ini</div><button type="button" class="note-toggle" id="toggle-today-note">Sembunyikan</button></div>
       <div class="today-times">
         <div class="time-summary"><small>Jam Masuk</small><strong id="today-in">—</strong></div>
         <div class="time-summary"><small>Jam Pulang</small><strong id="today-out">—</strong></div>
@@ -408,7 +410,7 @@ tbody tr.disabled{cursor:not-allowed;opacity:0.45;}
     <p class="subtitle">Scan QR akun untuk mencatat jam masuk atau jam pulang secara otomatis.</p>
     <div class="scan-area"><div id="reader"></div></div>
     <div class="scan-divider">atau</div>
-    <label class="file-label">📁 Upload Foto Barcode
+    <label class="file-label">Upload Foto Barcode
       <input type="file" id="qr-file" accept="image/*">
     </label>
     <p class="hint">Jika hari ini belum ada jam masuk, scan pertama menjadi jam masuk. Scan berikutnya menjadi jam pulang.</p>
@@ -719,7 +721,7 @@ function renderTable(){
   h1+='<th>Total</th></tr>';
   thead.innerHTML=h1;
   const inRow=document.createElement("tr"),outRow=document.createElement("tr");
-  let inHtml='<td class="row-label">🟢 Jam Masuk</td>',outHtml='<td class="row-label">🔴 Jam Pulang</td>',inTotal=0,outTotal=0;
+  let inHtml='<td class="row-label">Jam Masuk</td>',outHtml='<td class="row-label">Jam Pulang</td>',inTotal=0,outTotal=0;
   for(let day=1;day<=daysInMonth;day++){
     const key=year+"-"+pad2(month)+"-"+pad2(day),rec=normalizeRecord(attendanceCache[key]),future=key>tKey;
     if(rec&&rec.inTime)inTotal++; if(rec&&rec.outTime)outTotal++;
@@ -784,6 +786,20 @@ document.getElementById("btn-export-pdf").addEventListener("click",function(){
   if(typeof window.jspdf==="undefined"){showModal("err","Gagal Export","Library PDF belum termuat.");return;}
   const d=getExportData(),doc=new window.jspdf.jsPDF({orientation:"landscape",unit:"mm",format:"a4"});doc.setFontSize(15);doc.text("Rekap Absensi "+new Date(d.y,d.m-1,1).toLocaleDateString("id-ID",{month:"long",year:"numeric"}),12,13);doc.setFontSize(10);doc.text("Nama: "+d.name,12,19);doc.autoTable({head:[d.header],body:[["Jam Masuk",...d.rowIn.slice(1,-1),d.total],["Jam Pulang",...d.rowOut.slice(1,-1),""]],startY:24,theme:"grid",styles:{fontSize:7,cellPadding:2,halign:"center"},headStyles:{fontSize:7},columnStyles:{0:{halign:"left",cellWidth:28},[d.header.length-1]:{cellWidth:20}}});doc.save("Absensi_"+d.name.replace(/[^a-z0-9]+/gi,"_")+"_"+d.y+"-"+pad2(d.m)+".pdf");
 });
+
+const TODAY_NOTE_KEY="absensi_show_today_note";
+function applyTodayNoteVisibility(){
+  const note=document.getElementById("today-note"),btn=document.getElementById("toggle-today-note");
+  const show=localStorage.getItem(TODAY_NOTE_KEY)!=="0";
+  note.style.display=show?"block":"none";
+  btn.textContent=show?"Sembunyikan":"Tampilkan";
+}
+document.getElementById("toggle-today-note").addEventListener("click",function(){
+  const show=localStorage.getItem(TODAY_NOTE_KEY)!=="0";
+  localStorage.setItem(TODAY_NOTE_KEY,show?"0":"1");
+  applyTodayNoteVisibility();
+});
+applyTodayNoteVisibility();
 
 document.getElementById("input-bulan").addEventListener("change",renderTable);
 
