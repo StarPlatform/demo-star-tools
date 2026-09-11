@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Absensi Digital</title>
+<title>Rekap Digital</title>
 <style>
 :root{
   --bg:#f3f4f8;
@@ -230,6 +230,9 @@ tbody tr.disabled{cursor:not-allowed;opacity:0.45;}
 .attendance-wide .hadir-cell{color:var(--success);font-weight:700;}
 .attendance-wide .time-cell{font-size:11px;color:var(--muted);}
 .attendance-wide .row-label{font-weight:700;color:var(--text);}
+.attendance-wide .amount-cell{color:var(--primary);font-weight:700;cursor:pointer;}
+.attendance-wide .amount-cell.empty{color:var(--muted);font-weight:600;}
+.amount-help{font-size:11px;color:var(--muted);margin-top:6px;}
 .export-row{display:flex;gap:10px;margin-top:14px;}
 .export-row .btn{font-size:13px;padding:12px;}
 .today-note{margin-top:16px;padding:14px;background:var(--bg);border-radius:12px;}
@@ -240,18 +243,7 @@ tbody tr.disabled{cursor:not-allowed;opacity:0.45;}
 .time-summary{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px;}
 .time-summary small{display:block;color:var(--muted);font-size:11px;margin-bottom:4px;}
 .time-summary strong{font-size:15px;}
-.bottom-nav{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);width:min(448px,calc(100% - 24px));background:rgba(255,255,255,.96);border:1px solid var(--border);box-shadow:0 8px 30px rgba(0,0,0,.12);border-radius:18px;padding:6px;display:none;grid-template-columns:repeat(3,1fr);z-index:45;backdrop-filter:blur(10px);}
-.bottom-nav.active{display:grid;}
-.nav-item{border:0;background:transparent;border-radius:13px;padding:9px 5px;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;}
-.nav-item svg{width:19px;height:19px;}
-.nav-item.active{background:var(--bg);color:var(--primary);}
-.barcode-card{text-align:center;}
-.qr-box{width:230px;height:230px;margin:14px auto;background:#fff;border:1px solid var(--border);border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-.qr-box img,.qr-box canvas{max-width:210px;max-height:210px;}
-.barcode-code{font-size:12px;color:var(--muted);word-break:break-all;}
-.scan-area{border:2px dashed var(--border);border-radius:14px;padding:12px;margin-bottom:12px;}
 #reader{width:100%;max-width:360px;margin:auto;}
-.scan-divider{text-align:center;color:var(--muted);font-size:12px;margin:12px 0;}
 .file-label{display:flex;align-items:center;justify-content:center;width:100%;padding:13px;border:1.5px solid var(--primary);border-radius:12px;color:var(--primary);font-weight:700;cursor:pointer;}
 .file-label input{display:none;}
 .dashboard-view{padding-bottom:90px;}
@@ -310,6 +302,182 @@ tbody tr.disabled{cursor:not-allowed;opacity:0.45;}
   animation:spin 0.8s linear infinite;
 }
 @keyframes spin{to{transform:rotate(360deg);}}
+
+/* ===== PRO UI REDESIGN ===== */
+:root{
+  --bg:#f6f7fb;
+  --card:#ffffff;
+  --primary:#2563eb;
+  --primary-dark:#1d4ed8;
+  --text:#111827;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+  --soft:#f3f6fb;
+  --success:#16a34a;
+  --success-bg:#ecfdf3;
+  --radius:20px;
+}
+html{background:#f6f7fb;}
+body{
+  background:
+    radial-gradient(circle at 50% -10%,rgba(37,99,235,.10),transparent 34%),
+    #f6f7fb;
+  color:var(--text);
+  padding:18px 14px 96px;
+  -webkit-font-smoothing:antialiased;
+}
+.topbar{
+  max-width:560px;
+  height:58px;
+  margin-bottom:14px;
+  padding:0 4px;
+}
+.brand{gap:11px;font-size:17px;letter-spacing:-.2px;}
+.brand svg{
+  width:32px;height:32px;padding:7px;
+  color:#fff;background:var(--primary);
+  border-radius:11px;
+  box-shadow:0 6px 16px rgba(37,99,235,.22);
+}
+.btn-icon{
+  width:42px;height:42px;border:1px solid #e8ebf2;border-radius:13px;
+  background:rgba(255,255,255,.92);box-shadow:0 3px 12px rgba(15,23,42,.05);
+  transition:.18s ease;
+}
+.btn-icon:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(15,23,42,.08);}
+.view{max-width:560px;}
+.card{
+  border:1px solid rgba(226,229,236,.9);
+  border-radius:22px;
+  padding:22px;
+  box-shadow:0 10px 30px rgba(15,23,42,.055);
+  margin-bottom:14px;
+}
+#view-auth .card{padding:26px 22px;}
+h1.page-title{font-size:23px;line-height:1.2;letter-spacing:-.45px;}
+p.subtitle{font-size:13.5px;line-height:1.6;color:#737b8c;}
+.tabs{
+  background:#f1f3f7;border:1px solid #e7e9ef;border-radius:14px;
+  padding:4px;margin:0 -1px 22px;
+}
+.tab{padding:11px;border-radius:10px;font-size:13.5px;transition:.18s ease;}
+.tab.active{color:var(--primary);box-shadow:0 2px 7px rgba(15,23,42,.08);}
+.field{margin-bottom:16px;}
+.field label{font-size:12px;letter-spacing:.1px;margin-bottom:7px;color:#4b5563;}
+.field input,.field select{
+  padding:13px 14px;border:1px solid #dfe3ea;border-radius:13px;
+  background:#fbfcfe;color:var(--text);transition:.18s ease;
+}
+.field input:hover{border-color:#cbd3df;}
+.field input:focus,.field select:focus{
+  outline:3px solid rgba(37,99,235,.10);outline-offset:0;border-color:#3b82f6;background:#fff;
+}
+.btn{
+  min-height:46px;padding:12px 16px;border-radius:13px;
+  background:linear-gradient(180deg,#3b82f6,#2563eb);
+  box-shadow:0 7px 16px rgba(37,99,235,.18);
+  transition:.18s ease;font-size:14px;
+}
+.btn:hover{transform:translateY(-1px);box-shadow:0 9px 20px rgba(37,99,235,.22);}
+.btn:active{transform:translateY(0);background:var(--primary-dark);}
+.btn.secondary{
+  background:#fff;color:#334155;border:1px solid #dfe4ec;box-shadow:none;
+}
+.btn.secondary:hover{border-color:#bfccdf;background:#f8fafc;}
+.dashboard-view .card{padding:18px;}
+.user-info{
+  text-align:left;margin-bottom:18px;padding:4px 3px 2px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.user-info .nama{font-size:19px;letter-spacing:-.25px;}
+.stat-box{
+  margin:0;padding:9px 12px;border:1px solid #dbe7ff;
+  background:#eff6ff;border-radius:12px;gap:6px;white-space:nowrap;
+  font-size:11px;color:#475569;
+}
+.stat-box svg{width:16px;height:16px;color:var(--primary);}
+.stat-box .stat-value{color:var(--primary);}
+.dashboard-view .field{margin-bottom:10px;}
+.dashboard-view .field label{font-size:11px;text-transform:uppercase;letter-spacing:.7px;font-weight:700;color:#8a93a3;}
+.dashboard-view .field input{height:44px;background:#f8fafc;font-weight:600;}
+.hint{font-size:11.5px;line-height:1.55;color:#8992a3;}
+.table-scroll{
+  border:1px solid #e5e8ef;border-radius:15px;background:#fff;
+  overflow:auto;box-shadow:inset 0 0 0 1px rgba(255,255,255,.6);
+}
+.attendance-wide{font-size:12px;border-collapse:separate;border-spacing:0;min-width:max-content;}
+.attendance-wide th{
+  background:#f8fafc;color:#64748b;font-size:11px;font-weight:700;
+  height:48px;border-bottom:1px solid #e5e8ef;position:sticky;top:0;z-index:2;
+}
+.attendance-wide td{height:47px;border-bottom:1px solid #edf0f4;color:#334155;background:#fff;}
+.attendance-wide tr:last-child td{border-bottom:0;}
+.attendance-wide th:first-child,.attendance-wide td:first-child{
+  position:sticky;left:0;z-index:3;background:#fff;border-right:1px solid #e5e8ef;
+  min-width:92px;padding-left:13px;padding-right:13px;font-weight:700;
+}
+.attendance-wide th:first-child{z-index:4;background:#f8fafc;}
+.attendance-wide th:last-child,.attendance-wide td:last-child{min-width:82px;background:#f8fafc;font-weight:700;}
+.attendance-wide .row-label{font-size:11px;color:#475569;}
+.hadir-cell{color:#15803d;font-weight:700;}
+.amount-cell{font-weight:700;color:#1d4ed8;}
+.badge.muted{font-size:10px;background:#f1f5f9;color:#94a3b8;padding:4px 7px;border-radius:7px;}
+.today-note{
+  margin-top:13px;border:1px solid #e4e8ef;border-radius:15px;background:#fafbfc;padding:13px;
+}
+.today-note-head{margin-bottom:10px;}
+.today-note-title{font-size:12px;font-weight:700;color:#475569;}
+.note-toggle{font-size:11px;color:#64748b;border:0;background:transparent;padding:3px;cursor:pointer;}
+.today-times{gap:9px;}
+.time-summary{background:#fff;border:1px solid #e8ebf0;border-radius:12px;padding:10px 12px;}
+.time-summary small{font-size:10px;color:#8a93a3;}
+.time-summary strong{font-size:14px;margin-top:3px;}
+.today-note-reveal{border-radius:12px;background:#fff;}
+.export-row{gap:9px;margin-top:14px;}
+.export-row .btn{min-height:42px;font-size:12px;}
+#reader{border:0!important;border-radius:13px;overflow:hidden;}
+.file-label{
+  display:flex;align-items:center;justify-content:center;min-height:45px;padding:12px;
+  border:1px dashed #cbd5e1;border-radius:13px;background:#f8fafc;color:#475569;
+  font-size:13px;font-weight:700;cursor:pointer;transition:.18s ease;
+}
+.file-label:hover{border-color:#93c5fd;background:#eff6ff;color:#2563eb;}
+.file-label input{display:none;}
+.modal-overlay{background:rgba(15,23,42,.45);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);}
+.modal-box{
+  border:1px solid #e4e8ef;border-radius:22px!important;padding:22px!important;
+  box-shadow:0 25px 70px rgba(15,23,42,.22)!important;
+}
+#manual-overlay .modal-box{max-height:calc(100vh - 32px);overflow-y:auto;-webkit-overflow-scrolling:touch;}
+#history-overlay .modal-box{max-height:calc(100vh - 32px);overflow-y:auto;-webkit-overflow-scrolling:touch;}
+@media(max-width:430px){#manual-overlay .modal-box,#history-overlay .modal-box{max-height:calc(100vh - 24px);padding:18px!important;}}
+.modal-box h3{font-size:17px!important;letter-spacing:-.2px;}
+.password-toggle:hover{background:#eef4ff;color:var(--primary);}
+.loading-overlay{background:rgba(255,255,255,.72);backdrop-filter:blur(5px);}
+.spinner{border-color:#dbe4f3;border-top-color:var(--primary);}
+
+.auth-history-btn{
+  width:100%;margin-top:12px;min-height:44px;padding:11px 14px;border:1px solid #dfe4ec;border-radius:13px;
+  background:#fff;color:#475569;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
+  transition:.18s ease;
+}
+.auth-history-btn svg{width:17px;height:17px;}
+.auth-history-btn:hover{background:#f8fafc;border-color:#bfccdf;color:var(--primary);}
+.login-history-item{padding:12px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:12px;font-size:13px;}
+.login-history-item:last-child{border-bottom:0;}
+.login-history-main{min-width:0;}
+.login-history-email{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.login-history-time{color:var(--muted);font-size:12px;margin-top:3px;}
+.empty-history{padding:20px 8px;text-align:center;color:var(--muted);font-size:13px;}
+.schedule-badge{font-size:12px;color:var(--muted);margin-top:8px;}
+
+@media(max-width:430px){
+  body{padding-left:10px;padding-right:10px;}
+  .card{padding:18px;}
+  .user-info{align-items:flex-start;flex-direction:column;gap:9px;}
+  .stat-box{width:100%;justify-content:flex-start;}
+}
+
 </style>
 </head>
 <body>
@@ -317,11 +485,16 @@ tbody tr.disabled{cursor:not-allowed;opacity:0.45;}
 <div class="topbar">
   <div class="brand">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M8 14l2 2 4-4"/></svg>
-    <span>Absensi Digital</span>
+    <span>Rekap Digital</span>
   </div>
   <div style="display:flex;gap:10px;">
-    <div class="btn-icon" id="btn-manual">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <div style="display:flex;gap:8px;">
+      <div class="btn-icon" id="btn-schedule" title="Jadwal Otomatis" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/><path d="M16 3l2 2"/></svg>
+      </div>
+      <div class="btn-icon" id="btn-manual" title="Panduan Penggunaan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </div>
     </div>
     <div class="btn-icon" id="btn-logout" style="display:none;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
@@ -332,7 +505,7 @@ tbody tr.disabled{cursor:not-allowed;opacity:0.45;}
 <div class="view active" id="view-auth">
   <div class="card">
     <h1 class="page-title">Selamat Datang</h1>
-    <p class="subtitle">Absensi Digital adalah pengganti absensi manual di kertas. Daftar sekali pakai nama, email, dan kata sandi, lalu catat kehadiranmu langsung lewat tabel. Sudah punya akun, langsung masuk saja.</p>
+    <p class="subtitle">Rekap Digital membantu mencatat kehadiran, jam, dan uang secara rapi dalam satu aplikasi. Data tersimpan otomatis dan bisa direkap atau diekspor kapan saja.</p>
     <div class="tabs">
       <div class="tab active" data-tab="login">Masuk</div>
       <div class="tab" data-tab="register">Daftar</div>
@@ -375,6 +548,11 @@ tbody tr.disabled{cursor:not-allowed;opacity:0.45;}
       </div>
       <button type="submit" class="btn">Daftar</button>
     </form>
+
+    <button type="button" class="auth-history-btn" id="btn-auth-history">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <span>Riwayat Login</span>
+    </button>
   </div>
 </div>
 
@@ -391,7 +569,7 @@ tbody tr.disabled{cursor:not-allowed;opacity:0.45;}
       <label>Pilih Bulan</label>
       <input type="month" id="input-bulan">
     </div>
-    <p class="hint" style="margin-bottom:14px;">Geser ke samping untuk melihat semua tanggal. Ketuk jam untuk mengisi atau mengubah secara manual.</p>
+    <p class="hint" style="margin-bottom:14px;">Ketuk tanggal untuk mengatur jam. Nominal dapat terisi otomatis berdasarkan jadwal atau diatur manual jika melewati batas waktu.</p>
     <div class="table-scroll">
       <table class="attendance-wide">
         <thead id="thead-absensi"></thead>
@@ -413,39 +591,6 @@ tbody tr.disabled{cursor:not-allowed;opacity:0.45;}
   </div>
 </div>
 
-<div class="view" id="view-barcode">
-  <div class="card barcode-card">
-    <h1 class="page-title">Barcode Saya</h1>
-    <p class="subtitle">Tunjukkan QR ini saat melakukan absensi agar jam masuk atau pulang tercatat otomatis.</p>
-    <div class="qr-box" id="qr-code"></div>
-    <div class="barcode-code" id="barcode-code">Menyiapkan barcode...</div>
-  </div>
-</div>
-
-<div class="view" id="view-scan">
-  <div class="card">
-    <h1 class="page-title">Scan Absensi</h1>
-    <p class="subtitle">Scan QR akun untuk mencatat jam masuk atau jam pulang secara otomatis.</p>
-    <div class="scan-area"><div id="reader"></div></div>
-    <div class="scan-divider">atau</div>
-    <label class="file-label">Upload Foto Barcode
-      <input type="file" id="qr-file" accept="image/*">
-    </label>
-    <p class="hint">Jika hari ini belum ada jam masuk, scan pertama menjadi jam masuk. Scan berikutnya menjadi jam pulang.</p>
-  </div>
-</div>
-
-<div class="bottom-nav" id="bottom-nav">
-  <button class="nav-item active" data-view="view-dashboard">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18"/><path d="M8 3v4"/><path d="M16 3v4"/></svg><span>Absensi</span>
-  </button>
-  <button class="nav-item" data-view="view-barcode">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h3v3H7zM14 7h3v3h-3zM7 14h3v3H7zM14 14h3v3h-3z"/></svg><span>Barcode Saya</span>
-  </button>
-  <button class="nav-item" data-view="view-scan">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2"/><path d="M8 8h8v8H8z"/></svg><span>Scan</span>
-  </button>
-</div>
 
 <div class="modal-overlay" id="time-modal-overlay">
   <div class="modal-box" style="text-align:left;">
@@ -465,6 +610,25 @@ tbody tr.disabled{cursor:not-allowed;opacity:0.45;}
   </div>
 </div>
 
+<div class="modal-overlay" id="amount-modal-overlay">
+  <div class="modal-box" style="text-align:left;">
+    <h3 style="margin-bottom:16px;text-align:center;">Atur Nominal Kehadiran</h3>
+    <div class="field">
+      <label>Tanggal</label>
+      <input type="text" id="amount-modal-date-display" disabled>
+    </div>
+    <div class="field" style="margin-bottom:6px;">
+      <label>Nominal</label>
+      <input type="text" id="amount-modal-input" inputmode="numeric" autocomplete="off" placeholder="Contoh: 10.000">
+      <div class="amount-help">Masukkan nominal yang diterima jika hadir pada tanggal ini.</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn secondary" id="amount-modal-cancel" type="button">Batal</button>
+      <button class="btn" id="amount-modal-save" type="button">Simpan</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="manual-overlay">
   <div class="modal-box" style="max-width:380px;text-align:left;">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
@@ -472,12 +636,45 @@ tbody tr.disabled{cursor:not-allowed;opacity:0.45;}
       <h3 style="margin:0;">Panduan Penggunaan</h3>
     </div>
     <div style="font-size:14px;color:var(--text);line-height:1.6;margin-bottom:18px;">
-      <p style="margin-bottom:10px;"><strong>1. Daftar akun.</strong> Isi nama lengkap, email, dan kata sandi.</p>
-      <p style="margin-bottom:10px;"><strong>2. Catat kehadiran.</strong> Ketuk tanggal hari ini (atau hari sebelumnya) di tabel, lalu atur jam kehadiranmu dan simpan.</p>
-      <p style="margin-bottom:10px;"><strong>3. Jam bisa diubah.</strong> Tanggal yang sudah tercatat hadir bisa diketuk lagi untuk mengubah jamnya, tapi statusnya tidak bisa dikosongkan kembali.</p>
-      <p style="margin-bottom:0;"><strong>4. Ganti bulan.</strong> Pakai Pilih Bulan untuk melihat atau mengisi hari-hari di bulan lain.</p>
+      <p style="margin-bottom:10px;"><strong>1. Daftar akun.</strong> Isi nama lengkap, email, dan kata sandi. Setelah berhasil masuk, sesi akun akan dipertahankan oleh aplikasi selama kamu tidak memilih Keluar.</p>
+      <p style="margin-bottom:10px;"><strong>2. Catat kehadiran.</strong> Ketuk tanggal yang ingin dicatat, lalu atur jam masuk atau jam pulang. Data langsung tersimpan ke akunmu.</p>
+      <p style="margin-bottom:10px;"><strong>3. Jadwal otomatis.</strong> Atur batas waktu dan nominal standar di menu Jadwal. Jika jam masuk berada sebelum atau tepat pada batas waktu, nominal standar akan otomatis masuk.</p>
+      <p style="margin-bottom:10px;"><strong>4. Terlambat.</strong> Jika jam masuk melewati batas waktu, nominal otomatis dikosongkan (0) sehingga kamu perlu mengetuk kolom nominal dan mengisinya secara manual.</p>
+      <p style="margin-bottom:10px;"><strong>5. Ubah data.</strong> Jam dan nominal yang sudah tercatat tetap bisa diubah secara manual dengan mengetuk sel pada tabel.</p>
+      <p style="margin-bottom:10px;"><strong>6. Rekap dan export.</strong> Pilih bulan untuk melihat seluruh tanggal. Export Excel/PDF menghasilkan format nama, tanggal 1–31, dan kolom rekapan hadir serta uang.</p>
+      <p style="margin-bottom:0;"><strong>7. Riwayat login.</strong> Menu Riwayat Login menampilkan beberapa sesi login terakhir pada perangkat ini.</p>
     </div>
     <button id="manual-close">Mengerti</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="schedule-overlay">
+  <div class="modal-box" style="text-align:left;">
+    <h3 style="margin-bottom:8px;text-align:center;">Jadwal Otomatis</h3>
+    <p class="amount-help" style="margin-bottom:18px;text-align:center;">Atur batas waktu kehadiran dan nominal yang akan diberikan otomatis.</p>
+    <div class="field"><label>Batas Waktu</label><input type="time" id="schedule-cutoff" value="07:00"></div>
+    <div class="field"><label>Nominal Standar</label><input type="text" id="schedule-amount" inputmode="numeric" placeholder="Contoh: 10.000" autocomplete="off"><div class="amount-help">Jika jam masuk ≤ batas waktu, nominal ini otomatis terisi.</div></div>
+    <div class="btn-row"><button class="btn secondary" id="schedule-cancel" type="button">Batal</button><button class="btn" id="schedule-save" type="button">Simpan</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="history-overlay">
+  <div class="modal-box" style="text-align:left;max-width:410px;">
+    <h3 style="margin-bottom:6px;text-align:center;">Riwayat Login</h3>
+    <p class="amount-help" style="margin-bottom:16px;text-align:center;">Riwayat tersimpan di perangkat ini.</p>
+    <div id="login-history-list"></div>
+    <button class="btn secondary" id="history-close" type="button" style="margin-top:14px;">Tutup</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="logout-overlay">
+  <div class="modal-box" style="max-width:370px;">
+    <div style="width:48px;height:48px;border-radius:50%;background:#fef2f2;color:#dc2626;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+    </div>
+    <h3>Yakin ingin keluar?</h3>
+    <p>Sesi akun akan ditutup dan kamu perlu masuk kembali untuk membuka Rekap Digital.</p>
+    <div class="btn-row" style="margin-top:16px;"><button class="btn secondary" id="logout-cancel" type="button">Batal</button><button class="btn" id="logout-confirm" type="button">Keluar</button></div>
   </div>
 </div>
 
@@ -497,8 +694,6 @@ tbody tr.disabled{cursor:not-allowed;opacity:0.45;}
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
@@ -619,13 +814,53 @@ if(!auth || !db){
 
 if(auth && db){
 
+const lastEmail=localStorage.getItem("rekap_last_email");
+if(lastEmail) document.getElementById("login-email").value=lastEmail;
 const HARI = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 let currentUserData = null;
 let attendanceCache = {};
 let editingDateKey = null;
 let editingField = "inTime";
-let scanner = null;
-let currentView = "view-dashboard";
+const SCHEDULE_KEY="rekap_digital_schedule";
+const LOGIN_HISTORY_KEY="rekap_digital_login_history";
+
+function getSchedule(){
+  try{return JSON.parse(localStorage.getItem(SCHEDULE_KEY)||'{"cutoff":"07:00","amount":0}');}catch(e){return {cutoff:"07:00",amount:0};}
+}
+function formatNominalInput(value){
+  const n=Number(String(value==null?"":value).replace(/[^0-9]/g,""));
+  return n>0?n.toLocaleString("id-ID"):"";
+}
+function parseNominal(value){return Number(String(value==null?"":value).replace(/[^0-9]/g,""))||0;}
+function timeIsOnTime(time,cutoff){return String(time||"")<=String(cutoff||"07:00");}
+function autoAmountForTime(time){
+  const cfg=getSchedule();
+  if(!timeIsOnTime(time,cfg.cutoff)) return 0;
+  return Number(cfg.amount)||0;
+}
+function saveLoginHistory(user,restored){
+  if(!user)return;
+  let list=[]; try{list=JSON.parse(localStorage.getItem(LOGIN_HISTORY_KEY)||'[]');}catch(e){}
+  const item={email:user.email||"",time:Date.now(),type:restored?"Sesi dipulihkan":"Login berhasil"};
+  list.unshift(item); list=list.slice(0,10); localStorage.setItem(LOGIN_HISTORY_KEY,JSON.stringify(list));
+}
+function renderLoginHistory(){
+  const el=document.getElementById("login-history-list"); let list=[];
+  try{list=JSON.parse(localStorage.getItem(LOGIN_HISTORY_KEY)||'[]');}catch(e){}
+  if(!list.length){el.innerHTML='<div class="empty-history">Belum ada riwayat login.</div>';return;}
+  el.innerHTML=list.map(function(x){
+    const d=new Date(x.time);
+    const waktu=d.toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"})+" • "+d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"});
+    return '<div class="login-history-item"><div class="login-history-main"><div class="login-history-email">'+escapeHtml(x.email)+'</div><div class="login-history-time">'+escapeHtml(waktu)+'</div></div><div style="font-size:11px;color:var(--primary);font-weight:700;white-space:nowrap;">'+escapeHtml(x.type||"Login")+'</div></div>';
+  }).join("");
+}
+function openScheduleModal(){
+  const cfg=getSchedule();
+  document.getElementById("schedule-cutoff").value=cfg.cutoff||"07:00";
+  document.getElementById("schedule-amount").value=cfg.amount?formatNominalInput(cfg.amount):"";
+  document.getElementById("schedule-overlay").classList.add("active");
+}
+
 
 function pad2(n){ return String(n).padStart(2, "0"); }
 
@@ -643,6 +878,7 @@ document.getElementById("form-login").addEventListener("submit", function(e){
   e.preventDefault();
   const email = document.getElementById("login-email").value.trim();
   const password = document.getElementById("login-password").value;
+  localStorage.setItem("rekap_last_email", email);
   setLoading(true);
   withTimeout(auth.signInWithEmailAndPassword(email, password), 15000)
     .catch(function(err){
@@ -656,13 +892,12 @@ document.getElementById("form-register").addEventListener("submit", function(e){
   const nama = document.getElementById("reg-nama").value.trim();
   const email = document.getElementById("reg-email").value.trim();
   const password = document.getElementById("reg-password").value;
+  localStorage.setItem("rekap_last_email", email);
   setLoading(true);
   withTimeout(auth.createUserWithEmailAndPassword(email, password), 15000)
     .then(function(cred){
-      const barcodeToken = "ST-" + cred.user.uid.slice(0,6).toUpperCase() + "-" + Math.random().toString(36).slice(2,10).toUpperCase();
       return withTimeout(db.ref("users/" + cred.user.uid).set({
         nama: nama,
-        barcodeToken: barcodeToken,
         createdAt: Date.now()
       }), 15000);
     })
@@ -673,12 +908,25 @@ document.getElementById("form-register").addEventListener("submit", function(e){
 });
 
 document.getElementById("btn-logout").addEventListener("click", function(){
+  document.getElementById("logout-overlay").classList.add("active");
+});
+document.getElementById("logout-cancel").addEventListener("click", function(){
+  document.getElementById("logout-overlay").classList.remove("active");
+});
+document.getElementById("logout-confirm").addEventListener("click", function(){
+  document.getElementById("logout-overlay").classList.remove("active");
   auth.signOut();
 });
 
 auth.onAuthStateChanged(function(user){
   if(user){
+    const wasKnown = localStorage.getItem("rekap_last_uid") === user.uid;
+    saveLoginHistory(user, wasKnown);
+    localStorage.setItem("rekap_last_uid", user.uid);
+    if(user.email) localStorage.setItem("rekap_last_email", user.email);
+    document.getElementById("login-email").value = user.email || localStorage.getItem("rekap_last_email") || "";
     document.getElementById("btn-logout").style.display = "flex";
+    document.getElementById("btn-schedule").style.display = "flex";
     setLoading(true);
     withTimeout(db.ref("users/" + user.uid).once("value"), 15000).then(function(snap){
       currentUserData = snap.val();
@@ -701,9 +949,9 @@ auth.onAuthStateChanged(function(user){
     });
   } else {
     document.getElementById("btn-logout").style.display = "none";
+    document.getElementById("btn-schedule").style.display = "none";
     currentUserData = null;
     attendanceCache = {};
-    document.getElementById("bottom-nav").classList.remove("active");
      showView("view-auth");
   }
 });
@@ -714,7 +962,7 @@ function loadAttendance(){
   withTimeout(db.ref("attendance/" + auth.currentUser.uid).once("value"), 15000).then(function(snap){
     attendanceCache = snap.val() || {};
     setLoading(false);
-    document.getElementById("dash-total-hadir").textContent = Object.keys(attendanceCache).length;
+    document.getElementById("dash-total-hadir").textContent = recordCount();
     renderTable();
   }).catch(function(err){
     setLoading(false);
@@ -724,10 +972,14 @@ function loadAttendance(){
 
 function normalizeRecord(rec){
   if(!rec) return null;
-  return {inTime: rec.inTime || rec.time || "", outTime: rec.outTime || "", status: rec.status || "hadir", timestamp: rec.timestamp || Date.now()};
+  return {inTime: rec.inTime || rec.time || "", outTime: rec.outTime || "", amount: Number(rec.amount) || 0, status: rec.status || "hadir", timestamp: rec.timestamp || Date.now()};
 }
 function recordCount(){
   return Object.keys(attendanceCache).filter(function(k){return !!attendanceCache[k] && (attendanceCache[k].inTime || attendanceCache[k].time);}).length;
+}
+function formatRupiah(value){
+  const n=Number(value)||0;
+  return n.toLocaleString("id-ID");
 }
 function renderTable(){
   const monthValue=document.getElementById("input-bulan").value; if(!monthValue)return;
@@ -738,18 +990,25 @@ function renderTable(){
   for(let day=1;day<=daysInMonth;day++){const d=new Date(year,month-1,day);h1+='<th class="day-cell">'+day+'<br><small>'+HARI[d.getDay()].slice(0,3)+'</small></th>';}
   h1+='<th>Total</th></tr>';
   thead.innerHTML=h1;
-  const inRow=document.createElement("tr"),outRow=document.createElement("tr");
-  let inHtml='<td class="row-label">Jam Masuk</td>',outHtml='<td class="row-label">Jam Pulang</td>',inTotal=0,outTotal=0;
+  const inRow=document.createElement("tr"),outRow=document.createElement("tr"),amountRow=document.createElement("tr");
+  let inHtml='<td class="row-label">Jam Masuk</td>',outHtml='<td class="row-label">Jam Pulang</td>',amountHtml='<td class="row-label">Nominal</td>';
+  let inTotal=0,outTotal=0,totalAmount=0;
   for(let day=1;day<=daysInMonth;day++){
     const key=year+"-"+pad2(month)+"-"+pad2(day),rec=normalizeRecord(attendanceCache[key]),future=key>tKey;
     if(rec&&rec.inTime)inTotal++; if(rec&&rec.outTime)outTotal++;
-    const inVal=rec&&rec.inTime?'<span class="hadir-cell">'+escapeHtml(rec.inTime)+'</span>':(future?'<span class="badge muted">—</span>':'<span class="badge muted">—</span>');
+    if(rec&&rec.inTime)totalAmount+=Number(rec.amount)||0;
+    const inVal=rec&&rec.inTime?'<span class="hadir-cell">'+escapeHtml(rec.inTime)+'</span>':'<span class="badge muted">—</span>';
     const outVal=rec&&rec.outTime?'<span class="hadir-cell">'+escapeHtml(rec.outTime)+'</span>':(rec&&rec.inTime?'<span class="badge muted">Belum</span>':'<span class="badge muted">—</span>');
+    const amountVal=rec&&rec.inTime&&Number(rec.amount)>0?'<span class="amount-cell">'+escapeHtml(formatRupiah(rec.amount))+'</span>':'<span class="amount-cell empty">—</span>';
     inHtml+='<td data-date="'+key+'" data-field="inTime">'+inVal+'</td>';
     outHtml+='<td data-date="'+key+'" data-field="outTime">'+outVal+'</td>';
+    amountHtml+='<td data-date="'+key+'" data-field="amount">'+amountVal+'</td>';
   }
-  inHtml+='<td><strong>'+inTotal+'</strong> hari</td>';outHtml+='<td><strong>'+outTotal+'</strong> hari</td>';
-  inRow.innerHTML=inHtml;outRow.innerHTML=outHtml;tbody.appendChild(inRow);tbody.appendChild(outRow);
+  inHtml+='<td><strong>'+inTotal+'</strong> hari</td>';
+  outHtml+='<td><strong>'+outTotal+'</strong> hari</td>';
+  amountHtml+='<td><strong>'+formatRupiah(totalAmount)+'</strong></td>';
+  inRow.innerHTML=inHtml;outRow.innerHTML=outHtml;amountRow.innerHTML=amountHtml;
+  tbody.appendChild(inRow);tbody.appendChild(outRow);tbody.appendChild(amountRow);
   document.getElementById("dash-total-hadir").textContent=recordCount();
   updateTodaySummary();
 }
@@ -764,6 +1023,11 @@ document.getElementById("tbody-absensi").addEventListener("click", function(e){
   const cell=e.target.closest("td[data-date]"); if(!cell)return;
   const dateKey=cell.dataset.date; if(dateKey>todayKey())return;
   const record=normalizeRecord(attendanceCache[dateKey]);
+  if(cell.dataset.field==="amount"){
+    if(!record || !record.inTime){showModal("err","Belum Hadir","Isi jam masuk terlebih dahulu sebelum menentukan nominal.");return;}
+    openAmountModal(dateKey,record);
+    return;
+  }
   openTimeModal(dateKey,cell.dataset.field||"inTime",record);
 });
 
@@ -784,25 +1048,70 @@ document.getElementById("time-modal-save").addEventListener("click",function(){
   const time=document.getElementById("time-modal-input").value;if(!time){showModal("err","Jam Belum Diisi","Silakan pilih jam terlebih dahulu.");return;}
   const dateKey=editingDateKey,field=editingField,existing=normalizeRecord(attendanceCache[dateKey])||{};
   existing[field]=time;existing.status="hadir";existing.timestamp=Date.now();
+  if(field==="inTime") existing.amount=autoAmountForTime(time);
   document.getElementById("time-modal-overlay").classList.remove("active");setLoading(true);
   withTimeout(db.ref("attendance/"+auth.currentUser.uid+"/"+dateKey).set(existing),15000).then(function(){editingDateKey=null;loadAttendance();}).catch(function(err){setLoading(false);showModal("err","Gagal Menyimpan",mapAuthError(err));});
 });
 
+function openAmountModal(dateKey,record){
+  editingDateKey=dateKey; editingField="amount";
+  document.getElementById("amount-modal-date-display").value=formatTanggalIndo(dateKey);
+  document.getElementById("amount-modal-input").value=record&&record.amount?formatNominalInput(record.amount):"";
+  document.getElementById("amount-modal-overlay").classList.add("active");
+}
+document.getElementById("amount-modal-cancel").addEventListener("click",function(){editingDateKey=null;document.getElementById("amount-modal-overlay").classList.remove("active");});
+document.getElementById("amount-modal-save").addEventListener("click",function(){
+  const raw=document.getElementById("amount-modal-input").value.trim();
+  const amount=raw===""?0:parseNominal(raw);
+  if(!Number.isFinite(amount)||amount<0){showModal("err","Nominal Tidak Valid","Masukkan nominal 0 atau lebih.");return;}
+  const dateKey=editingDateKey,existing=normalizeRecord(attendanceCache[dateKey])||{};
+  if(!existing.inTime){showModal("err","Belum Hadir","Isi jam masuk terlebih dahulu sebelum menentukan nominal.");return;}
+  existing.amount=Math.round(amount);existing.status="hadir";existing.timestamp=Date.now();
+  document.getElementById("amount-modal-overlay").classList.remove("active");setLoading(true);
+  withTimeout(db.ref("attendance/"+auth.currentUser.uid+"/"+dateKey).set(existing),15000).then(function(){editingDateKey=null;loadAttendance();}).catch(function(err){setLoading(false);showModal("err","Gagal Menyimpan","Nominal gagal disimpan. "+mapAuthError(err));});
+});
+
 function getExportData(){
   const [y,m]=document.getElementById("input-bulan").value.split("-").map(Number),days=new Date(y,m,0).getDate(),name=currentUserData&&currentUserData.nama?currentUserData.nama:"-";
-  const header=["Nama"],rowIn=[name],rowOut=[name];let total=0;
-  for(let d=1;d<=days;d++){const k=y+"-"+pad2(m)+"-"+pad2(d),r=normalizeRecord(attendanceCache[k]);header.push(String(d));rowIn.push(r?r.inTime||"":"");rowOut.push(r?r.outTime||"":"");if(r&&r.inTime)total++;}
-  header.push("Total Hadir");rowIn.push(total);rowOut.push("");return {header,rowIn,rowOut,name,y,m,total};
+  const header=["nama"],rowHadir=["hadir"],rowUang=["uang"];let total=0,totalAmount=0;
+  for(let d=1;d<=days;d++){
+    const k=y+"-"+pad2(m)+"-"+pad2(d),r=normalizeRecord(attendanceCache[k]);
+    header.push(String(d));
+    rowHadir.push(r&&r.inTime?"hadir":"");
+    rowUang.push(r&&r.inTime?(Number(r.amount)||0):"");
+    if(r&&r.inTime){total++;totalAmount+=Number(r.amount)||0;}
+  }
+  header.push("rekapan");rowHadir.push(total);rowUang.push(totalAmount);
+  return {header,rowHadir,rowUang,name,y,m,total,totalAmount};
 }
 document.getElementById("btn-export-excel").addEventListener("click",function(){
   if(typeof XLSX==="undefined"){showModal("err","Gagal Export","Library Excel belum termuat.");return;}
-  const d=getExportData(),ws=XLSX.utils.aoa_to_sheet([["REKAP ABSENSI",...Array(d.header.length-1).fill("")],d.header,d.rowIn,d.rowOut]);
-  ws["!cols"]=d.header.map(function(_,i){return {wch:i===0?24:(i===d.header.length-1?15:9)};});
-  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Absensi");XLSX.writeFile(wb,"Absensi_"+d.name.replace(/[^a-z0-9]+/gi,"_")+"_"+d.y+"-"+pad2(d.m)+".xlsx");
+  const d=getExportData();
+  const rows=[d.header,d.rowHadir,d.rowUang];
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  for(let i=1;i<d.rowUang.length;i++){
+    const ref=XLSX.utils.encode_cell({r:2,c:i});
+    if(ws[ref]&&typeof ws[ref].v==="number") ws[ref].z='#,##0';
+  }
+  ws["A1"]={v:"nama",t:"s"};
+  ws["A2"]={v:"hadir",t:"s"};
+  ws["A3"]={v:"uang",t:"s"};
+  ws[XLSX.utils.encode_cell({r:0,c:d.header.length-1})]={v:"rekapan",t:"s"};
+  ws[XLSX.utils.encode_cell({r:1,c:d.rowHadir.length-1})]={v:d.total,t:"n"};
+  ws[XLSX.utils.encode_cell({r:2,c:d.rowUang.length-1})]={v:d.totalAmount,t:"n",z:'#,##0'};
+  ws["!cols"]=d.header.map(function(_,i){return {wch:i===0?16:12};});
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Absensi");
+  XLSX.writeFile(wb,"Absensi_"+d.name.replace(/[^a-z0-9]+/gi,"_")+"_"+d.y+"-"+pad2(d.m)+".xlsx");
 });
 document.getElementById("btn-export-pdf").addEventListener("click",function(){
   if(typeof window.jspdf==="undefined"){showModal("err","Gagal Export","Library PDF belum termuat.");return;}
-  const d=getExportData(),doc=new window.jspdf.jsPDF({orientation:"landscape",unit:"mm",format:"a4"});doc.setFontSize(15);doc.text("Rekap Absensi "+new Date(d.y,d.m-1,1).toLocaleDateString("id-ID",{month:"long",year:"numeric"}),12,13);doc.setFontSize(10);doc.text("Nama: "+d.name,12,19);doc.autoTable({head:[d.header],body:[["Jam Masuk",...d.rowIn.slice(1,-1),d.total],["Jam Pulang",...d.rowOut.slice(1,-1),""]],startY:24,theme:"grid",styles:{fontSize:7,cellPadding:2,halign:"center"},headStyles:{fontSize:7},columnStyles:{0:{halign:"left",cellWidth:28},[d.header.length-1]:{cellWidth:20}}});doc.save("Absensi_"+d.name.replace(/[^a-z0-9]+/gi,"_")+"_"+d.y+"-"+pad2(d.m)+".pdf");
+  const d=getExportData(),doc=new window.jspdf.jsPDF({orientation:"landscape",unit:"mm",format:"a4"});
+  doc.setFontSize(15);doc.text("Rekap Absensi "+new Date(d.y,d.m-1,1).toLocaleDateString("id-ID",{month:"long",year:"numeric"}),12,13);
+  doc.setFontSize(10);doc.text("Nama: "+d.name,12,19);
+  const attendanceRow=["hadir",...d.rowHadir.slice(1,-1),d.total];
+  const moneyRow=["uang",...d.rowUang.slice(1,-1).map(function(v){return v!==""?Number(v).toLocaleString("id-ID"):""}),d.totalAmount.toLocaleString("id-ID")];
+  doc.autoTable({head:[d.header],body:[attendanceRow,moneyRow],startY:24,theme:"grid",styles:{fontSize:7,cellPadding:1.8,halign:"center"},headStyles:{fontSize:7},columnStyles:{0:{halign:"left",cellWidth:28},[d.header.length-1]:{cellWidth:25}}});
+  doc.save("Absensi_"+d.name.replace(/[^a-z0-9]+/gi,"_")+"_"+d.y+"-"+pad2(d.m)+".pdf");
 });
 
 const TODAY_NOTE_KEY="absensi_show_today_note";
@@ -825,6 +1134,25 @@ document.getElementById("reveal-today-note").addEventListener("click",function()
 });
 applyTodayNoteVisibility();
 
+document.getElementById("btn-schedule").addEventListener("click",openScheduleModal);
+document.getElementById("schedule-cancel").addEventListener("click",function(){document.getElementById("schedule-overlay").classList.remove("active");});
+document.getElementById("schedule-amount").addEventListener("input",function(){
+  const n=parseNominal(this.value); this.value=n?formatNominalInput(n):"";
+});
+document.getElementById("schedule-save").addEventListener("click",function(){
+  const cutoff=document.getElementById("schedule-cutoff").value||"07:00";
+  const amount=parseNominal(document.getElementById("schedule-amount").value);
+  localStorage.setItem(SCHEDULE_KEY,JSON.stringify({cutoff:cutoff,amount:amount}));
+  document.getElementById("schedule-overlay").classList.remove("active");
+  showModal("ok","Jadwal Disimpan","Batas waktu "+cutoff+" dengan nominal standar "+formatNominalInput(amount)+" sudah aktif.");
+});
+function openLoginHistory(){
+  renderLoginHistory();
+  document.getElementById("history-overlay").classList.add("active");
+}
+document.getElementById("btn-auth-history").addEventListener("click",openLoginHistory);
+document.getElementById("history-close").addEventListener("click",function(){document.getElementById("history-overlay").classList.remove("active");});
+
 document.querySelectorAll(".password-toggle").forEach(function(btn){
   btn.addEventListener("click",function(){
     const input=document.getElementById(btn.dataset.target);
@@ -841,59 +1169,6 @@ document.querySelectorAll(".password-toggle").forEach(function(btn){
 
 document.getElementById("input-bulan").addEventListener("change",renderTable);
 
-function ensureBarcode(){
-  if(!auth.currentUser||!currentUserData)return;
-  if(currentUserData.barcodeToken){renderBarcode();return;}
-  const token="ST-"+auth.currentUser.uid.slice(0,6).toUpperCase()+"-"+Math.random().toString(36).slice(2,10).toUpperCase();
-  withTimeout(db.ref("users/"+auth.currentUser.uid+"/barcodeToken").set(token),15000).then(function(){currentUserData.barcodeToken=token;renderBarcode();}).catch(function(){renderBarcode();});
-}
-function renderBarcode(){
-  const box=document.getElementById("qr-code");if(!box)return;box.innerHTML="";
-  const token=currentUserData&&currentUserData.barcodeToken?currentUserData.barcodeToken:(auth.currentUser?auth.currentUser.uid:"");
-  if(window.QRCode&&token){new QRCode(box,{text:JSON.stringify({type:"absensi",token:token}),width:210,height:210});}
-  document.getElementById("barcode-code").textContent=token||"Barcode belum tersedia";
-}
-function switchView(id){
-  document.querySelectorAll(".view").forEach(function(v){v.classList.remove("active");});
-  document.getElementById(id).classList.add("active");currentView=id;
-  document.querySelectorAll(".nav-item").forEach(function(b){b.classList.toggle("active",b.dataset.view===id);});
-  if(id==="view-barcode")ensureBarcode();
-  if(id==="view-scan")startScanner(); else stopScanner();
-}
-document.querySelectorAll(".nav-item").forEach(function(btn){btn.addEventListener("click",function(){switchView(btn.dataset.view);});});
-function startScanner(){
-  if(!window.Html5Qrcode)return;
-  stopScanner();scanner=new Html5Qrcode("reader");
-  scanner.start({facingMode:"environment"},{fps:10,qrbox:{width:220,height:220}},onQrSuccess,function(){}).catch(function(){
-    const r=document.getElementById("reader");r.innerHTML='<p class="hint">Kamera tidak bisa dibuka. Gunakan Upload Foto Barcode.</p>';
-  });
-}
-function stopScanner(){if(scanner){scanner.stop().catch(function(){}).then(function(){try{scanner.clear();}catch(e){}});scanner=null;}}
-function onQrSuccess(decodedText){
-  if(scanner){scanner.stop().catch(function(){});}
-  processQr(decodedText);
-}
-document.getElementById("qr-file").addEventListener("change",function(e){
-  const file=e.target.files&&e.target.files[0];if(!file)return;if(!window.Html5Qrcode){showModal("err","Scanner Tidak Tersedia","Library scanner belum termuat.");return;}
-  const temp=new Html5Qrcode("reader");temp.scanFile(file,true).then(function(text){processQr(text);}).catch(function(){showModal("err","QR Tidak Terbaca","Pastikan foto menampilkan QR dengan jelas.");});
-  e.target.value="";
-});
-function processQr(text){
-  let data;try{data=JSON.parse(text);}catch(e){showModal("err","QR Tidak Valid","QR ini bukan barcode Absensi Digital.");return;}
-  if(!data||data.type!=="absensi"||!data.token){showModal("err","QR Tidak Valid","QR ini bukan barcode Absensi Digital.");return;}
-  setLoading(true);
-  withTimeout(db.ref("users").orderByChild("barcodeToken").equalTo(data.token).once("value"),15000).then(function(snap){
-    const users=snap.val()||{},uids=Object.keys(users);if(!uids.length)throw {code:"invalid-barcode"};
-    const uid=uids[0],date=todayKey(),ref=db.ref("attendance/"+uid+"/"+date);
-    return withTimeout(ref.once("value"),15000).then(function(rs){return {uid:uid,rec:normalizeRecord(rs.val()),ref:ref,nama:users[uid].nama||"Pengguna"};});
-  }).then(function(x){
-    const rec=x.rec||{};let field="inTime";
-    if(rec.inTime&&!rec.outTime)field="outTime";
-    else if(rec.inTime&&rec.outTime){setLoading(false);showModal("ok","Sudah Lengkap","Absensi "+x.nama+" hari ini sudah memiliki jam masuk dan jam pulang.");return;}
-    rec[field]=nowHHMM();rec.status="hadir";rec.timestamp=Date.now();
-    return withTimeout(x.ref.set(rec),15000).then(function(){setLoading(false);showModal("ok",field==="inTime"?"Jam Masuk Tercatat":"Jam Pulang Tercatat",x.nama+" · "+rec[field]);if(x.uid===auth.currentUser.uid)loadAttendance();});
-  }).catch(function(err){setLoading(false);showModal("err","Gagal Scan",err&&err.code==="invalid-barcode"?"Barcode tidak ditemukan.":mapAuthError(err));});
-}
 
 
 }
