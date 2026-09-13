@@ -122,6 +122,22 @@
         .voice-status-text { color:var(--text-main); font-size:15px; font-weight:600; margin-top:28px; }
         .voice-close-btn { position:absolute; top:18px; right:18px; width:40px; height:40px; border-radius:50%; background:var(--bg-soft); display:flex; align-items:center; justify-content:center; cursor:pointer; }
         .voice-close-btn svg { width:18px; height:18px; stroke:var(--text-main); }
+        .action-sheet-overlay { position:fixed; inset:0; background:rgba(20,20,30,0.35); z-index:500; display:none; align-items:flex-end; }
+        .action-sheet-overlay.open { display:flex; }
+        .action-sheet { width:100%; background:#fff; border-radius:18px 18px 0 0; padding:8px 0 max(8px, env(safe-area-inset-bottom)); box-shadow:0 -8px 30px rgba(0,0,0,0.15); }
+        .action-sheet-btn { width:100%; background:transparent; border:none; padding:15px 20px; text-align:left; font-size:14.5px; font-weight:500; cursor:pointer; border-bottom:1px solid var(--border-subtle); color:var(--text-main); }
+        .action-sheet-btn:last-child { border-bottom:none; }
+        .action-sheet-btn:active { background:var(--bg-soft); }
+        .toast { position:fixed; bottom:110px; left:50%; transform:translateX(-50%) translateY(20px); background:rgba(20,20,30,0.9); color:#fff; padding:9px 18px; border-radius:30px; font-size:12.5px; font-weight:500; opacity:0; pointer-events:none; transition:all .25s ease; z-index:600; }
+        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+        @keyframes msgPop { 0% { transform:scale(0.85); opacity:0; } 100% { transform:scale(1); opacity:1; } }
+        .msg-pop { animation: msgPop 0.22s ease; }
+        .scroll-bottom-btn { position:fixed; right:18px; bottom:96px; width:38px; height:38px; border-radius:50%; background:#fff; border:1px solid var(--border-subtle); box-shadow:0 6px 18px rgba(20,20,30,0.15); display:flex; align-items:center; justify-content:center; color:var(--text-main); cursor:pointer; z-index:30; }
+        .scroll-bottom-btn svg { width:17px; height:17px; }
+        .session-item { display:flex; align-items:center; gap:6px; }
+        .session-item-title { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .session-delete-btn { background:transparent; border:none; color:inherit; opacity:0.5; padding:4px; flex-shrink:0; cursor:pointer; display:flex; }
+        .session-delete-btn:active { opacity:1; }
     </style>
 </head>
 <body>
@@ -230,6 +246,18 @@
     <div id="voiceOrb" class="voice-orb voice-orb-listening"></div>
     <div id="voiceStatusText" class="voice-status-text">Mendengarkan...</div>
 </div>
+<div id="messageActionSheet" class="action-sheet-overlay" onclick="closeMessageActions()">
+    <div class="action-sheet" onclick="event.stopPropagation()">
+        <button class="action-sheet-btn" onclick="copyActiveMessage()">📋&nbsp;&nbsp;Salin Teks</button>
+        <button class="action-sheet-btn" id="editResendBtn" onclick="editAndResendActiveMessage()" style="display:none;">✏️&nbsp;&nbsp;Edit &amp; Kirim Ulang</button>
+        <button class="action-sheet-btn" onclick="shareActiveMessage()">🔗&nbsp;&nbsp;Bagikan</button>
+        <button class="action-sheet-btn" style="color:#dc2626;" onclick="closeMessageActions()">Batal</button>
+    </div>
+</div>
+<div id="toast" class="toast"></div>
+<button id="scrollBottomBtn" class="scroll-bottom-btn" onclick="scrollToBottom(true)" style="display:none;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+</button>
 <script>
 const BACKEND_BASE_URL = "https://nita-backend-b52x.vercel.app";
 
@@ -341,8 +369,29 @@ function renderSessionList() {
     // Kosongkan area ini kalau memang belum ada chat sebelumnya.
     container.innerHTML = sorted.slice(0, 30).map(s => {
         const activeClass = s.id === activeSessionId ? " active" : "";
-        return `<div class="session-item${activeClass}" onclick="switchSession('${s.id}')">${escHtml(s.title || "Chat baru")}</div>`;
+        return `<div class="session-item${activeClass}">
+            <span class="session-item-title" onclick="switchSession('${s.id}')">${escHtml(s.title || "Chat baru")}</span>
+            <button class="session-delete-btn" onclick="deleteSession(event, '${s.id}')" title="Hapus chat ini">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>`;
     }).join("");
+}
+function deleteSession(evt, id) {
+    if (evt) evt.stopPropagation();
+    customConfirm("Hapus chat ini dari riwayat? Chat lain gak ikut kehapus.", () => {
+        sessions = sessions.filter(s => s.id !== id);
+        persistSessions();
+        renderSessionList();
+        if (id === activeSessionId) {
+            const fresh = createBlankSession();
+            sessions.push(fresh);
+            activeSessionId = fresh.id;
+            persistSessions();
+            renderSessionMessages(fresh);
+            renderSessionList();
+        }
+    });
 }
 function addMessageToActiveSession(sender, text) {
     const active = getActiveSession();
@@ -505,7 +554,8 @@ async function sendMessage() {
     const w = document.getElementById("welcomeScreen");
     if (w) w.style.display = "none";
 
-    renderBubble(text, "user");
+    if (navigator.vibrate) navigator.vibrate(10);
+    renderBubble(text, "user", false, true);
     inputEl.value = "";
     updateActionButton();
     addMessageToActiveSession("user", text);
@@ -547,16 +597,17 @@ async function callNitaBackend(message) {
     }
 }
 
-function renderBubble(text, sender, animate = false) {
+function renderBubble(text, sender, animate = false, pop = false) {
     const feed = document.getElementById("chatFeed");
     const row = document.createElement("div");
-    row.className = `msg-row ${sender}`;
+    row.className = `msg-row ${sender}` + (pop ? " msg-pop" : "");
     if (sender === "user") {
         row.innerHTML = `<div class="msg-content"><div class="bubble-box">${escHtml(text)}</div></div>`;
     } else {
         row.innerHTML = `${nitaAvatarHtml()}<div class="msg-content"><span class="sender-tag">Nita Chat</span><div class="bubble-box"></div></div>`;
     }
     feed.appendChild(row);
+    attachLongPress(row.querySelector(".bubble-box"), sender, text);
     scrollToBottom();
 
     if (sender === "nita" && animate) {
@@ -564,6 +615,83 @@ function renderBubble(text, sender, animate = false) {
     }
     if (sender === "nita") row.querySelector(".bubble-box").innerHTML = formatMarkdown(text);
     return row;
+}
+
+// ============ TEKAN LAMA BUBBLE: salin / edit & kirim ulang / bagikan ============
+let activeMessageRef = null;
+function attachLongPress(el, sender, text) {
+    let timer = null;
+    let moved = false;
+    const start = () => {
+        moved = false;
+        timer = setTimeout(() => { if (!moved) openMessageActions(sender, text); }, 450);
+    };
+    const cancel = () => clearTimeout(timer);
+    const markMoved = () => { moved = true; clearTimeout(timer); };
+    el.addEventListener("touchstart", start, { passive: true });
+    el.addEventListener("touchend", cancel);
+    el.addEventListener("touchmove", markMoved);
+    el.addEventListener("mousedown", start);
+    el.addEventListener("mouseup", cancel);
+    el.addEventListener("mouseleave", cancel);
+}
+function openMessageActions(sender, text) {
+    activeMessageRef = { sender, text };
+    document.getElementById("editResendBtn").style.display = sender === "user" ? "block" : "none";
+    document.getElementById("messageActionSheet").classList.add("open");
+}
+function closeMessageActions() {
+    document.getElementById("messageActionSheet").classList.remove("open");
+}
+function fallbackCopy(text) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); showToast("Teks disalin"); } catch (e) {}
+    document.body.removeChild(ta);
+}
+function copyActiveMessage() {
+    if (!activeMessageRef) return;
+    const text = activeMessageRef.text;
+    closeMessageActions();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => showToast("Teks disalin")).catch(() => fallbackCopy(text));
+    } else {
+        fallbackCopy(text);
+    }
+}
+function editAndResendActiveMessage() {
+    if (!activeMessageRef) return;
+    const text = activeMessageRef.text;
+    closeMessageActions();
+    const inputEl = document.getElementById("messageInput");
+    inputEl.value = text;
+    updateActionButton();
+    inputEl.focus();
+    inputEl.setSelectionRange(text.length, text.length);
+}
+function shareActiveMessage() {
+    if (!activeMessageRef) return;
+    const text = activeMessageRef.text;
+    closeMessageActions();
+    if (navigator.share) {
+        navigator.share({ text }).catch(() => {});
+    } else {
+        fallbackCopy(text);
+        showToast("Share gak didukung, teks disalin aja");
+    }
+}
+let toastTimer = null;
+function showToast(msg) {
+    const t = document.getElementById("toast");
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("show"), 1800);
 }
 async function typeNitaReply(container, text) {
     const chars = Array.from(text);
@@ -596,10 +724,24 @@ function renderErrorBubble(msg) {
     scrollToBottom();
 }
 function removeEl(el) { if (el && el.parentNode) el.parentNode.removeChild(el); }
-function scrollToBottom() {
+function scrollToBottom(smooth) {
     const feed = document.getElementById("chatFeed");
-    if (feed) feed.scrollTop = feed.scrollHeight;
+    if (!feed) return;
+    if (smooth) feed.scrollTo({ top: feed.scrollHeight, behavior: "smooth" });
+    else feed.scrollTop = feed.scrollHeight;
+    const btn = document.getElementById("scrollBottomBtn");
+    if (btn) btn.style.display = "none";
 }
+document.addEventListener("DOMContentLoaded", function () {
+    const feed = document.getElementById("chatFeed");
+    if (!feed) return;
+    feed.addEventListener("scroll", function () {
+        const btn = document.getElementById("scrollBottomBtn");
+        if (!btn) return;
+        const distanceFromBottom = feed.scrollHeight - feed.scrollTop - feed.clientHeight;
+        btn.style.display = distanceFromBottom > 120 ? "flex" : "none";
+    });
+});
 
 function formatMarkdown(text) {
     let t = escHtml(text);
@@ -769,11 +911,32 @@ function startVoiceListening() {
     recognizer.start();
 }
 
+let cachedVoices = [];
+function loadVoices() {
+    cachedVoices = window.speechSynthesis.getVoices();
+}
+if (window.speechSynthesis) {
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+}
+function pickBestIndonesianVoice() {
+    if (!cachedVoices.length) cachedVoices = window.speechSynthesis.getVoices();
+    const idVoices = cachedVoices.filter(v => v.lang && v.lang.toLowerCase().startsWith("id"));
+    if (idVoices.length === 0) return null;
+    // Prioritaskan voice non-Google (biasanya suara bawaan OS lebih natural),
+    // fallback ke voice id-ID apapun yang ada kalau cuma itu satu-satunya.
+    const nonGoogle = idVoices.find(v => !/google/i.test(v.name));
+    return nonGoogle || idVoices[0];
+}
 function speakReply(text) {
     setVoiceStatus("Nita ngomong...", "speaking");
     const plain = text.replace(/[*`_#]/g, "");
     const utterance = new SpeechSynthesisUtterance(plain);
     utterance.lang = "id-ID";
+    const voice = pickBestIndonesianVoice();
+    if (voice) utterance.voice = voice;
+    utterance.pitch = 1.05;
+    utterance.rate = 1.03;
     utterance.onend = function () {
         if (voiceModeActive) startVoiceListening();
     };
