@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Nita Market - Chart Saham & Crypto</title>
+    <style>
+        :root {
+            --bg-main: #ffffff;
+            --bg-soft: #f5f8f7;
+            --bubble-user: #eef1f0;
+            --accent-a: #0ea5e9;
+            --accent-b: #22c55e;
+            --up: #16a34a;
+            --down: #dc2626;
+            --text-main: #1b1f1e;
+            --text-muted: #6b7570;
+            --border-subtle: #e3e8e6;
+            --border-strong: #d3dad7;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; min-width:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; }
+        html, body { width:100%; height:100%; overflow:hidden; background:var(--bg-main); color:var(--text-main); display:flex; flex-direction:column; }
+        .header-nav { height:58px; background:rgba(255,255,255,0.9); backdrop-filter:blur(10px); border-bottom:1px solid var(--border-subtle); padding:0 18px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; z-index:10; }
+        .logo { display:flex; align-items:center; gap:9px; }
+        .logo-mark { width:30px; height:30px; border-radius:9px; background:linear-gradient(135deg, var(--accent-a), var(--accent-b)); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .logo-mark svg { width:17px; height:17px; }
+        .logo-text { font-size:15px; font-weight:700; line-height:1.15; }
+        .logo-text span { display:block; font-size:10.5px; font-weight:500; color:var(--text-muted); }
+        .menu-btn { width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--text-muted); cursor:pointer; }
+        .menu-btn:active { background:var(--bg-soft); }
+        .menu-btn svg { width:19px; height:19px; }
+        .dropdown-menu { position:absolute; top:44px; right:0; background:#fff; border:1px solid var(--border-subtle); border-radius:12px; display:none; z-index:100; overflow:hidden; box-shadow:0 12px 28px rgba(20,20,30,0.12); min-width:180px; }
+        .dropdown-menu button { width:100%; background:transparent; border:none; padding:13px 16px; text-align:left; cursor:pointer; font-size:13.5px; font-weight:500; }
+        .dropdown-menu button:active { background:var(--bg-soft); }
+        .message-feed { flex:1; overflow-y:auto; padding:18px 16px; display:flex; flex-direction:column; gap:20px; }
+        .welcome-screen { text-align:center; padding:32px 16px; width:100%; max-width:440px; margin:auto; }
+        .ai-avatar { width:60px; height:60px; background:linear-gradient(135deg, var(--accent-a), var(--accent-b)); border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; box-shadow:0 10px 24px rgba(14,165,233,0.28); }
+        .ai-avatar svg { width:28px; height:28px; }
+        .welcome-screen h2 { font-size:20px; font-weight:700; margin-bottom:8px; }
+        .welcome-screen p { color:var(--text-muted); font-size:12.5px; margin-bottom:10px; line-height:1.55; }
+        .welcome-note { font-size:11px; color:var(--text-muted); background:var(--bg-soft); border:1px solid var(--border-subtle); border-radius:12px; padding:10px 12px; margin-bottom:16px; text-align:left; line-height:1.6; }
+        .welcome-note b { color:var(--text-main); }
+        .suggestion-grid { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+        .suggestion-chip { background:#fff; border:1px solid var(--border-subtle); padding:9px 14px; border-radius:30px; font-size:12px; font-weight:500; cursor:pointer; }
+        .suggestion-chip:active { background:var(--bg-soft); transform:scale(0.96); }
+        .msg-row { display:flex; gap:10px; max-width:92%; }
+        .msg-row.user { align-self:flex-end; justify-content:flex-end; }
+        .msg-row.nita { align-self:flex-start; width:92%; }
+        .msg-avatar { width:26px; height:26px; border-radius:8px; background:linear-gradient(135deg, var(--accent-a), var(--accent-b)); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+        .msg-avatar svg { width:14px; height:14px; }
+        .msg-content { display:flex; flex-direction:column; min-width:0; flex:1; }
+        .sender-tag { font-size:11.5px; font-weight:600; margin-bottom:4px; color:var(--text-muted); }
+        .msg-row.user .sender-tag { display:none; }
+        .bubble-box { font-size:14.5px; line-height:1.55; word-wrap:break-word; }
+        .msg-row.user .bubble-box { background:var(--bubble-user); padding:10px 15px; border-radius:18px 18px 4px 18px; }
+        .msg-row.nita .bubble-box { padding:0; }
+        .nita-text { font-size:13.5px; line-height:1.55; }
+        .loading-row { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-muted); }
+        .loading-spinner { width:16px; height:16px; border-radius:50%; border:2px solid rgba(14,165,233,0.2); border-top-color:var(--accent-a); animation:spin 0.7s linear infinite; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .fin-card { border:1px solid var(--border-subtle); border-radius:16px; overflow:hidden; max-width:340px; background:#fff; }
+        .fin-card.error { border-color:#fecaca; background:#fff5f5; }
+        .fin-card.error .fin-error-msg { padding:14px; font-size:13px; color:#b91c1c; }
+        .fin-top { padding:12px 14px 0; }
+        .fin-request { font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--accent-a); }
+        .fin-resolved { font-size:14px; font-weight:700; margin-top:2px; }
+        .fin-sub { font-size:11px; color:var(--text-muted); margin-top:1px; }
+        .fin-price-row { display:flex; align-items:baseline; gap:8px; padding:8px 14px 10px; }
+        .fin-price { font-size:20px; font-weight:800; font-family:'SFMono-Regular',Consolas,monospace; }
+        .fin-change { font-size:12.5px; font-weight:700; padding:2px 8px; border-radius:8px; }
+        .fin-change.up { color:var(--up); background:#dcfce7; }
+        .fin-change.down { color:var(--down); background:#fee2e2; }
+        .fin-chart-wrap { padding:0 10px; }
+        .fin-actions { display:flex; gap:8px; padding:10px 14px 14px; }
+        .fin-actions button { flex:1; padding:9px; border-radius:10px; border:1px solid var(--border-strong); background:var(--bg-soft); font-size:12.5px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; }
+        .fin-actions button svg { width:14px; height:14px; }
+        .fin-actions button:active { transform:scale(0.97); }
+        .alert-panel { display:none; padding:0 14px 14px; }
+        .alert-panel.open { display:block; }
+        .alert-row { display:flex; gap:6px; background:var(--bg-soft); border:1px solid var(--border-subtle); border-radius:12px; padding:10px; }
+        .alert-row select, .alert-row input { border:1px solid var(--border-strong); border-radius:8px; padding:7px 8px; font-size:12px; background:#fff; }
+        .alert-row select { flex:1.1; }
+        .alert-row input { flex:1; min-width:0; }
+        .alert-row button { background:linear-gradient(135deg, var(--accent-a), var(--accent-b)); color:#fff; border:none; border-radius:8px; padding:0 12px; font-size:12px; font-weight:700; cursor:pointer; }
+        .alert-hint { font-size:10px; color:var(--text-muted); margin-top:6px; }
+        .input-area { position:relative; width:100%; padding:12px 16px 20px; background:linear-gradient(transparent, var(--bg-main) 40%); flex-shrink:0; }
+        .input-wrapper { width:100%; display:flex; align-items:center; gap:10px; padding:8px 8px 8px 16px; background:#fff; border:1.5px solid var(--border-strong); border-radius:26px; box-shadow:0 2px 10px rgba(20,20,30,0.05); }
+        .input-wrapper:focus-within { border-color:var(--accent-a); }
+        .input-wrapper input { flex:1; width:100%; height:34px; background:transparent; border:none; outline:none; font-size:14px; }
+        .input-wrapper input::placeholder { color:#a2aca8; }
+        .btn-send { width:34px; height:34px; flex-shrink:0; border-radius:50%; background:linear-gradient(135deg, var(--accent-a), var(--accent-b)); border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+        .btn-send:active { transform:scale(0.93); }
+        .btn-send svg { width:15px; height:15px; fill:white; }
+        .message-feed::-webkit-scrollbar { width:4px; }
+        .message-feed::-webkit-scrollbar-track { background:transparent; }
+        .message-feed::-webkit-scrollbar-thumb { background:var(--border-strong); border-radius:4px; }
+        .drawer { position:fixed; bottom:0; left:0; width:100%; height:60%; background:#fff; border-radius:22px 22px 0 0; z-index:200; transform:translateY(100%); transition:transform 0.3s ease; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 -8px 30px rgba(20,20,30,0.15); }
+        .drawer.open { transform:translateY(0); }
+        .drawer-header { padding:16px 18px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-subtle); }
+        .drawer-header h4 { font-size:15.5px; font-weight:700; }
+        .drawer-close { font-size:20px; color:var(--text-muted); cursor:pointer; padding:0 8px; }
+        .drawer-body { flex:1; overflow-y:auto; padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
+        .alert-item { border:1px solid var(--border-subtle); border-radius:14px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+        .alert-item-info { min-width:0; }
+        .alert-item-symbol { font-size:13.5px; font-weight:700; }
+        .alert-item-cond { font-size:11.5px; color:var(--text-muted); margin-top:2px; }
+        .alert-item-status { font-size:10px; font-weight:700; padding:2px 8px; border-radius:8px; margin-top:4px; display:inline-block; }
+        .alert-item-status.pending { background:#fef3c7; color:#92400e; }
+        .alert-item-status.triggered { background:#dcfce7; color:#166534; }
+        .alert-delete-btn { width:30px; height:30px; border-radius:50%; background:var(--bg-soft); border:1px solid var(--border-strong); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; }
+        .alert-delete-btn svg { width:13px; height:13px; color:#dc2626; }
+        .empty-note { text-align:center; padding:30px 10px; color:var(--text-muted); font-size:12.5px; }
+        .custom-alert-overlay { position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(20,20,30,0.5); backdrop-filter:blur(6px); }
+        .custom-alert-box { width:100%; max-width:380px; padding:24px; text-align:center; background:#fff; border:1px solid var(--border-subtle); border-radius:18px; box-shadow:0 20px 45px rgba(0,0,0,0.18); }
+        .custom-alert-title { font-size:14.5px; font-weight:700; color:var(--accent-a); margin-bottom:12px; }
+        .custom-alert-msg { font-size:13.5px; line-height:1.5; color:var(--text-muted); margin-bottom:20px; }
+        .custom-alert-btn { background:var(--bg-soft); border:1px solid var(--border-subtle); color:var(--text-main); padding:9px 24px; border-radius:10px; font-size:12.5px; font-weight:600; cursor:pointer; }
+        .custom-alert-btn:active { transform:scale(0.97); }
+        #confirmYesBtn { background:#ef4444 !important; color:#fff !important; border-color:#ef4444 !important; }
+    </style>
+</head>
+<body>
+<div class="header-nav">
+    <div class="logo">
+        <div class="logo-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg>
+        </div>
+        <div class="logo-text">Nita Market<span>Chart Saham &amp; Crypto</span></div>
+    </div>
+    <div style="position:relative;">
+        <div class="menu-btn" onclick="toggleMenu()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/></svg>
+        </div>
+        <div id="dropdownMenu" class="dropdown-menu">
+            <button onclick="openAlertDrawer()">Alert Aktif</button>
+            <button onclick="clearHistory()" style="color:#dc2626;">Hapus Riwayat</button>
+        </div>
+    </div>
+</div>
+<div class="message-feed" id="chatFeed">
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="ai-avatar">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg>
+        </div>
+        <h2>Nita Market</h2>
+        <p>Ketik simbol saham atau crypto, Nita tampilin harga &amp; chart-nya.</p>
+        <div class="welcome-note">
+            <b>Crypto:</b> ketik nama/kode-nya langsung, contoh "btc", "eth", "sol".<br>
+            <b>Saham global:</b> pakai kode ticker + akhiran bursa. Tanpa akhiran = US (AAPL, TSLA). Indonesia = .JK (BBCA.JK). London = .L, Tokyo = .T, Hong Kong = .HK, Australia = .AX. Index IHSG = ^JKSE.<br>
+            <b>Alert harga:</b> tiap hasil chart ada tombol Pasang Alert — Nita bakal kirim notifikasi browser kalau harga tembus target (selama tab ini masih kebuka).<br>
+            Data crypto dari CoinGecko, data saham dari Yahoo Finance lewat proxy publik — gratis, tanpa API key, tapi kadang bisa lambat/gagal karena keduanya layanan gratisan.
+        </div>
+        <div class="suggestion-grid">
+            <div class="suggestion-chip" onclick="quickSend('btc')">BTC</div>
+            <div class="suggestion-chip" onclick="quickSend('AAPL')">AAPL</div>
+            <div class="suggestion-chip" onclick="quickSend('BBCA.JK')">BBCA.JK</div>
+            <div class="suggestion-chip" onclick="quickSend('^JKSE')">IHSG</div>
+        </div>
+    </div>
+</div>
+<div class="input-area">
+    <div class="input-wrapper">
+        <input type="text" id="promptInput" placeholder="Ketik simbol: btc, AAPL, BBCA.JK..." onkeypress="if(event.key==='Enter') handleSend()">
+        <button class="btn-send" onclick="handleSend()">
+            <svg viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+    </div>
+</div>
+<div class="drawer" id="alertDrawer">
+    <div class="drawer-header">
+        <h4>Alert Aktif</h4>
+        <div class="drawer-close" onclick="closeAlertDrawer()">&#10005;</div>
+    </div>
+    <div class="drawer-body" id="alertDrawerBody"></div>
+</div>
+<div id="customAlertModal" class="custom-alert-overlay">
+    <div class="custom-alert-box">
+        <div id="customAlertTitle" class="custom-alert-title">INFO</div>
+        <div id="customAlertMessage" class="custom-alert-msg">Pesan.</div>
+        <button class="custom-alert-btn" onclick="closeCustomAlert()">OK</button>
+    </div>
+</div>
+<div id="customConfirmModal" class="custom-alert-overlay" style="display:none;">
+    <div class="custom-alert-box" style="max-width:380px; width:90%;">
+        <div class="custom-alert-title">KONFIRMASI</div>
+        <div id="customConfirmMessage" class="custom-alert-msg">Apakah Anda yakin?</div>
+        <div style="display:flex; gap:12px; justify-content:center; margin-top:8px;">
+            <button id="confirmYesBtn" class="custom-alert-btn">Ya</button>
+            <button id="confirmNoBtn" class="custom-alert-btn">Tidak</button>
+        </div>
+    </div>
+</div>
+<script>
+    const HISTORY_KEY = "nita_market_history_v1";
+    const ALERTS_KEY = "nita_market_alerts_v1";
+    let isFirstMessage = true;
+    let finMsgMeta = {};
+
+    const AVATAR_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg>`;
+    function nitaAvatarHtml() { return `<div class="msg-avatar">${AVATAR_SVG}</div>`; }
+    function escapeHtml(str) { const d = document.createElement("div"); d.textContent = str; return d.innerHTML; }
+
+    const CRYPTO_MAP = {
+        btc:"bitcoin", bitcoin:"bitcoin",
+        eth:"ethereum", ethereum:"ethereum",
+        bnb:"binancecoin", binance:"binancecoin", binancecoin:"binancecoin",
+        sol:"solana", solana:"solana",
+        xrp:"ripple", ripple:"ripple",
+        ada:"cardano", cardano:"cardano",
+        doge:"dogecoin", dogecoin:"dogecoin",
+        dot:"polkadot", polkadot:"polkadot",
+        matic:"matic-network", polygon:"matic-network",
+        ltc:"litecoin", litecoin:"litecoin",
+        trx:"tron", tron:"tron",
+        avax:"avalanche-2", avalanche:"avalanche-2",
+        link:"chainlink", chainlink:"chainlink",
+        shib:"shiba-inu",
+        usdt:"tether", tether:"tether",
+        usdc:"usd-coin"
+    };
+
+    const COMMODITY_MAP = {
+        gold: "GC=F", emas: "GC=F", xau: "GC=F",
+        silver: "SI=F", perak: "SI=F", xag: "SI=F",
+        oil: "CL=F", minyak: "CL=F", crudeoil: "CL=F"
+    };
+
+    /* ---------- TradingView symbol mapping ---------- */
+    const CRYPTO_TV_MAP = {
+        bitcoin: "BINANCE:BTCUSDT", ethereum: "BINANCE:ETHUSDT", binancecoin: "BINANCE:BNBUSDT",
+        solana: "BINANCE:SOLUSDT", ripple: "BINANCE:XRPUSDT", cardano: "BINANCE:ADAUSDT",
+        dogecoin: "BINANCE:DOGEUSDT", polkadot: "BINANCE:DOTUSDT", "matic-network": "BINANCE:MATICUSDT",
+        litecoin: "BINANCE:LTCUSDT", tron: "BINANCE:TRXUSDT", "avalanche-2": "BINANCE:AVAXUSDT",
+        chainlink: "BINANCE:LINKUSDT", "shiba-inu": "BINANCE:SHIBUSDT", tether: "BINANCE:USDTUSD",
+        "usd-coin": "BINANCE:USDCUSDT"
+    };
+    const COMMODITY_TV_MAP = { "GC=F": "TVC:GOLD", "SI=F": "TVC:SILVER", "CL=F": "TVC:USOIL" };
+    function toTradingViewSymbol(type, ref) {
+        if (type === "crypto") return CRYPTO_TV_MAP[ref] || null;
+        if (COMMODITY_TV_MAP[ref]) return COMMODITY_TV_MAP[ref];
+        const s = String(ref).toUpperCase();
+        if (s === "^JKSE") return "IDX:COMPOSITE";
+        if (s.endsWith(".JK")) return "IDX:" + s.slice(0, -3);
+        if (s.endsWith(".L")) return "LSE:" + s.slice(0, -2);
+        if (s.endsWith(".T")) return "TSE:" + s.slice(0, -2);
+        if (s.endsWith(".HK")) return "HKEX:" + s.slice(0, -3).replace(/^0+/, "");
+        if (s.endsWith(".AX")) return "ASX:" + s.slice(0, -3);
+        return s; // ticker US biasa (AAPL, TSLA, dll) - widget TradingView bisa resolve tanpa prefix bursa
+    }
+    function renderTradingViewWidget(containerId, tvSymbol) {
+        const wrap = document.getElementById(containerId);
+        if (!wrap) return;
+        if (!tvSymbol) {
+            wrap.innerHTML = `<div style="height:130px; display:flex; align-items:center; justify-content:center; font-size:11.5px; color:var(--text-muted);">Chart TradingView gak tersedia buat simbol ini</div>`;
+            return;
+        }
+        wrap.innerHTML = `<div class="tradingview-widget-container" style="height:130px;"><div class="tradingview-widget-container__widget"></div></div>`;
+        const script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
+        script.async = true;
+        script.text = JSON.stringify({
+            symbols: [[tvSymbol]],
+            chartOnly: true,
+            width: "100%",
+            height: "130",
+            locale: "id",
+            colorTheme: "light",
+            autosize: false,
+            showVolume: false,
+            showMA: false,
+            hideDateRanges: true,
+            hideMarketStatus: true,
+            hideSymbolLogo: true,
+            scalePosition: "no",
+            scaleMode: "Normal",
+            noTimeScale: true,
+            valuesTracking: "1",
+            chartType: "area",
+            lineWidth: 2,
+            dateRanges: ["1m|30", "3m|60", "12m|1D"]
+        });
+        wrap.querySelector(".tradingview-widget-container__widget").appendChild(script);
+    }
+
+    /* ---------- persistence ---------- */
+    function loadEntries() { try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]"); } catch (e) { return []; } }
+    function saveEntries(entries) { localStorage.setItem(HISTORY_KEY, JSON.stringify(entries.slice(-100))); }
+    function appendEntry(entry) { const entries = loadEntries(); entries.push(entry); saveEntries(entries); }
+    function loadAlerts() { try { return JSON.parse(localStorage.getItem(ALERTS_KEY) || "[]"); } catch (e) { return []; } }
+    function saveAlerts(alerts) { localStorage.setItem(ALERTS_KEY, JSON.stringify(alerts)); }
+
+    /* ---------- resolve query ---------- */
+    function resolveQuery(raw) {
+        let q = raw.trim().toLowerCase().replace(/^(chart|grafik|harga|cek|lihat)\s+/i, "").trim();
+        const firstWord = q.split(/\s+/)[0];
+        if (CRYPTO_MAP[q]) return { type: "crypto", id: CRYPTO_MAP[q], label: q.toUpperCase() };
+        if (CRYPTO_MAP[firstWord]) return { type: "crypto", id: CRYPTO_MAP[firstWord], label: firstWord.toUpperCase() };
+        if (COMMODITY_MAP[q]) return { type: "stock", symbol: COMMODITY_MAP[q], label: q.toUpperCase() };
+        if (COMMODITY_MAP[firstWord]) return { type: "stock", symbol: COMMODITY_MAP[firstWord], label: firstWord.toUpperCase() };
+        let symbol = raw.trim().replace(/^(chart|grafik|harga|cek|lihat)\s+/i, "").trim().split(/\s+/)[0].toUpperCase();
+        return { type: "stock", symbol, label: symbol };
+    }
+    function formatPrice(p) {
+        if (p == null || isNaN(p)) return "-";
+        let decimals = 2;
+        if (Math.abs(p) < 1) decimals = 6;
+        else if (Math.abs(p) < 10) decimals = 4;
+        return Number(p).toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    }
+
+    /* ---------- fetchers ---------- */
+    async function fetchCrypto(id) {
+        const priceRes = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd&include_24hr_change=true`);
+        if (!priceRes.ok) throw new Error("Gagal mengambil harga crypto");
+        const priceData = await priceRes.json();
+        if (!priceData[id]) throw new Error("Koin tidak ditemukan");
+        const chartRes = await fetch(`https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7`);
+        const chartData = chartRes.ok ? await chartRes.json() : { prices: [] };
+        const series = (chartData.prices || []).map(p => ({ x: p[0], y: p[1] }));
+        return {
+            type: "crypto",
+            name: id.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase()),
+            price: priceData[id].usd,
+            change: priceData[id].usd_24h_change,
+            currency: "USD",
+            series,
+            exchange: "Crypto \u00B7 CoinGecko",
+            ref: id
+        };
+    }
+    async function fetchStock(symbol) {
+        const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1mo`;
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(yahooUrl)}`;
+        const res = await fetch(proxyUrl);
+        if (!res.ok) throw new Error("Gagal mengambil data saham (server proxy gratis lagi sibuk)");
+        const data = await res.json();
+        const result = data?.chart?.result?.[0];
+        if (!result) throw new Error("Simbol tidak ditemukan. Cek lagi kode tickernya ya.");
+        const meta = result.meta;
+        const timestamps = result.timestamp || [];
+        const closes = result.indicators?.quote?.[0]?.close || [];
+        const series = timestamps.map((t, i) => ({ x: t * 1000, y: closes[i] })).filter(p => p.y != null);
+        const price = meta.regularMarketPrice;
+        const prevClose = meta.chartPreviousClose || meta.previousClose;
+        const change = (price != null && prevClose) ? ((price - prevClose) / prevClose * 100) : null;
+        return {
+            type: "stock",
+            name: meta.longName || meta.shortName || symbol,
+            price,
+            change,
+            currency: meta.currency || "USD",
+            series,
+            exchange: meta.fullExchangeName || meta.exchangeName || "",
+            ref: symbol
+        };
+    }
+
+    /* ---------- chart render ---------- */
+
+    /* ---------- message rendering ---------- */
+    function addUserMessage(text, opts = {}) {
+        const feed = document.getElementById("chatFeed");
+        const div = document.createElement("div");
+        div.className = "msg-row user";
+        div.innerHTML = `<div class="msg-content"><div class="bubble-box">${escapeHtml(text)}</div></div>`;
+        feed.appendChild(div);
+        feed.scrollTop = feed.scrollHeight;
+        if (!opts.silent) appendEntry({ type: "user", text, timestamp: Date.now() });
+    }
+    function addNitaTextMessage(html, opts = {}) {
+        const feed = document.getElementById("chatFeed");
+        const div = document.createElement("div");
+        div.className = "msg-row nita";
+        div.innerHTML = `${nitaAvatarHtml()}<div class="msg-content"><span class="sender-tag">Nita Market</span><div class="bubble-box"><div class="nita-text">${html}</div></div></div>`;
+        feed.appendChild(div);
+        feed.scrollTop = feed.scrollHeight;
+        if (!opts.silent) appendEntry({ type: "nita-text", html, timestamp: Date.now() });
+    }
+    function addLoadingMessage(label) {
+        const feed = document.getElementById("chatFeed");
+        const id = "loading-" + Date.now();
+        const div = document.createElement("div");
+        div.id = id;
+        div.className = "msg-row nita";
+        div.innerHTML = `${nitaAvatarHtml()}<div class="msg-content"><span class="sender-tag">Nita Market</span><div class="bubble-box"><div class="loading-row"><div class="loading-spinner"></div><span>${escapeHtml(label)}</span></div></div></div>`;
+        feed.appendChild(div);
+        feed.scrollTop = feed.scrollHeight;
+        return id;
+    }
+    function removeMessageById(id) { const el = document.getElementById(id); if (el) el.remove(); }
+
+    function renderFinCardHtml(query, data, uid) {
+        const up = (data.change == null) ? true : data.change >= 0;
+        const changeText = data.change == null ? "-" : `${up ? "\u25B2" : "\u25BC"} ${Math.abs(data.change).toFixed(2)}%`;
+        return `
+            <div class="fin-card">
+                <div class="fin-top">
+                    <div class="fin-request">Kamu minta: ${escapeHtml(query)}</div>
+                    <div class="fin-resolved">${escapeHtml(data.name)}</div>
+                    <div class="fin-sub">${escapeHtml(data.exchange || "")}</div>
+                </div>
+                <div class="fin-price-row">
+                    <div class="fin-price">${escapeHtml(data.currency)} ${formatPrice(data.price)}</div>
+                    <div class="fin-change ${up ? "up" : "down"}">${changeText}</div>
+                </div>
+                <div class="fin-chart-wrap"><div id="tv-${uid}" style="height:130px;"></div></div>
+                <div class="fin-actions">
+                    <button onclick="toggleAlertPanel('${uid}')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        Pasang Alert
+                    </button>
+                </div>
+                <div class="alert-panel" id="alertpanel-${uid}">
+                    <div class="alert-row">
+                        <select id="alertdir-${uid}">
+                            <option value="above">Naik ke atas</option>
+                            <option value="below">Turun ke bawah</option>
+                        </select>
+                        <input type="number" id="alertprice-${uid}" placeholder="Target ${escapeHtml(data.currency)}" step="any">
+                        <button onclick="confirmAlert('${uid}')">Set</button>
+                    </div>
+                    <div class="alert-hint">Notifikasi browser hanya aktif kalau tab/app ini masih kebuka.</div>
+                </div>
+            </div>
+        `;
+    }
+    function addFinAnswerMessage(query, data, opts = {}) {
+        const uid = "f" + Date.now() + "_" + Math.floor(Math.random() * 10000);
+        finMsgMeta[uid] = data;
+        const feed = document.getElementById("chatFeed");
+        const div = document.createElement("div");
+        div.className = "msg-row nita";
+        div.innerHTML = `${nitaAvatarHtml()}<div class="msg-content"><span class="sender-tag">Nita Market</span><div class="bubble-box">${renderFinCardHtml(query, data, uid)}</div></div>`;
+        feed.appendChild(div);
+        feed.scrollTop = feed.scrollHeight;
+        setTimeout(() => renderTradingViewWidget("tv-" + uid, toTradingViewSymbol(data.type, data.ref)), 30);
+        if (!opts.silent) appendEntry({ type: "fin-answer", query, data, timestamp: Date.now() });
+        return uid;
+    }
+    function toggleAlertPanel(uid) {
+        const panel = document.getElementById("alertpanel-" + uid);
+        if (panel) panel.classList.toggle("open");
+    }
+
+    /* ---------- send flow ---------- */
+    async function handleSend() {
+        const input = document.getElementById("promptInput");
+        const text = input.value.trim();
+        if (!text) return;
+        if (isFirstMessage) {
+            const w = document.getElementById("welcomeScreen");
+            if (w) w.style.display = "none";
+            isFirstMessage = false;
+        }
+        addUserMessage(text);
+        input.value = "";
+        const q = resolveQuery(text);
+        const loadingId = addLoadingMessage(q.type === "crypto" ? "Nita ngecek harga crypto..." : "Nita ngecek harga saham...");
+        try {
+            const data = q.type === "crypto" ? await fetchCrypto(q.id) : await fetchStock(q.symbol);
+            removeMessageById(loadingId);
+            addFinAnswerMessage(text, data);
+        } catch (err) {
+            removeMessageById(loadingId);
+            addNitaTextMessage(`Gagal ambil data untuk "${escapeHtml(text)}": ${escapeHtml(err.message || "terjadi kesalahan")}. Coba cek lagi simbolnya, atau tunggu sebentar lalu coba lagi ya.`);
+        }
+    }
+    function quickSend(text) {
+        document.getElementById("promptInput").value = text;
+        handleSend();
+    }
+
+    /* ---------- alerts ---------- */
+    async function confirmAlert(uid) {
+        const data = finMsgMeta[uid];
+        if (!data) return;
+        const dir = document.getElementById("alertdir-" + uid).value;
+        const priceInput = document.getElementById("alertprice-" + uid);
+        const target = parseFloat(priceInput.value);
+        if (isNaN(target) || target <= 0) {
+            showCustomAlert("Masukkan target harga yang valid dulu ya.");
+            return;
+        }
+        if ("Notification" in window && Notification.permission === "default") {
+            try { await Notification.requestPermission(); } catch (e) {}
+        }
+        const alertObj = {
+            id: "al" + Date.now() + "_" + Math.floor(Math.random() * 10000),
+            type: data.type,
+            ref: data.ref,
+            label: data.name,
+            currency: data.currency,
+            direction: dir,
+            targetPrice: target,
+            createdAt: Date.now(),
+            triggered: false
+        };
+        const alerts = loadAlerts();
+        alerts.push(alertObj);
+        saveAlerts(alerts);
+        toggleAlertPanel(uid);
+        addNitaTextMessage(`Oke, Nita bakal kirim notifikasi kalau <b>${escapeHtml(data.name)}</b> ${dir === "above" ? "naik ke atas" : "turun ke bawah"} <b>${escapeHtml(data.currency)} ${formatPrice(target)}</b>.`);
+        if (!("Notification" in window)) {
+            showCustomAlert("Browser ini nggak mendukung notifikasi. Alert tetap kesimpen, tapi nggak akan ada notifikasi pop-up.", "Info");
+        } else if (Notification.permission === "denied") {
+            showCustomAlert("Izin notifikasi ditolak. Aktifkan lewat pengaturan browser kalau mau dapat notif pop-up.", "Info");
+        }
+        startAlertPolling();
+    }
+    function deleteAlert(id) {
+        let alerts = loadAlerts();
+        alerts = alerts.filter(a => a.id !== id);
+        saveAlerts(alerts);
+        renderAlertDrawer();
+    }
+    function renderAlertDrawer() {
+        const body = document.getElementById("alertDrawerBody");
+        const alerts = loadAlerts().sort((a, b) => b.createdAt - a.createdAt);
+        if (alerts.length === 0) {
+            body.innerHTML = `<div class="empty-note">Belum ada alert. Pasang lewat tombol "Pasang Alert" di hasil chart.</div>`;
+            return;
+        }
+        body.innerHTML = alerts.map(a => `
+            <div class="alert-item">
+                <div class="alert-item-info">
+                    <div class="alert-item-symbol">${escapeHtml(a.label)}</div>
+                    <div class="alert-item-cond">${a.direction === "above" ? "Naik ke atas" : "Turun ke bawah"} ${escapeHtml(a.currency)} ${formatPrice(a.targetPrice)}</div>
+                    <span class="alert-item-status ${a.triggered ? "triggered" : "pending"}">${a.triggered ? "Sudah tercapai" : "Menunggu"}</span>
+                </div>
+                <div class="alert-delete-btn" onclick="deleteAlert('${a.id}')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+                </div>
+            </div>
+        `).join("");
+    }
+    function openAlertDrawer() { toggleMenu(); renderAlertDrawer(); document.getElementById("alertDrawer").classList.add("open"); }
+    function closeAlertDrawer() { document.getElementById("alertDrawer").classList.remove("open"); }
+
+    let alertPollTimer = null;
+    function startAlertPolling() {
+        if (alertPollTimer) return;
+        alertPollTimer = setInterval(checkAlerts, 60000);
+        checkAlerts();
+    }
+    async function checkAlerts() {
+        let alerts = loadAlerts();
+        const pending = alerts.filter(a => !a.triggered);
+        if (pending.length === 0) return;
+        const cryptoIds = [...new Set(pending.filter(a => a.type === "crypto").map(a => a.ref))];
+        let cryptoPrices = {};
+        if (cryptoIds.length > 0) {
+            try {
+                const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${cryptoIds.join(",")}&vs_currencies=usd`);
+                if (res.ok) cryptoPrices = await res.json();
+            } catch (e) {}
+        }
+        const stockAlerts = pending.filter(a => a.type === "stock");
+        let stockPrices = {};
+        for (const a of stockAlerts) {
+            try {
+                const d = await fetchStock(a.ref);
+                stockPrices[a.ref] = d.price;
+                await new Promise(r => setTimeout(r, 300));
+            } catch (e) {}
+        }
+        let changed = false;
+        alerts = alerts.map(a => {
+            if (a.triggered) return a;
+            let currentPrice = a.type === "crypto" ? cryptoPrices[a.ref]?.usd : stockPrices[a.ref];
+            if (currentPrice == null) return a;
+            const hit = a.direction === "above" ? currentPrice >= a.targetPrice : currentPrice <= a.targetPrice;
+            if (hit) {
+                changed = true;
+                fireAlertNotification(a, currentPrice);
+                return { ...a, triggered: true };
+            }
+            return a;
+        });
+        if (changed) {
+            saveAlerts(alerts);
+            if (document.getElementById("alertDrawer").classList.contains("open")) renderAlertDrawer();
+        }
+    }
+    function fireAlertNotification(alertObj, currentPrice) {
+        const msg = `${alertObj.label} sudah ${alertObj.direction === "above" ? "naik ke atas" : "turun ke bawah"} ${alertObj.currency} ${formatPrice(alertObj.targetPrice)}. Harga sekarang: ${alertObj.currency} ${formatPrice(currentPrice)}`;
+        addNitaTextMessage(`\u{1F514} <b>Alert!</b> ${escapeHtml(msg)}`);
+        if ("Notification" in window && Notification.permission === "granted") {
+            try { new Notification("Nita Market - Alert Harga", { body: msg }); } catch (e) {}
+        }
+    }
+
+    /* ---------- restore ---------- */
+    function restoreHistory() {
+        const entries = loadEntries();
+        if (entries.length > 0) {
+            const w = document.getElementById("welcomeScreen");
+            if (w) w.style.display = "none";
+            isFirstMessage = false;
+        }
+        entries.forEach(entry => {
+            if (entry.type === "user") addUserMessage(entry.text, { silent: true });
+            else if (entry.type === "nita-text") addNitaTextMessage(entry.html, { silent: true });
+            else if (entry.type === "fin-answer") addFinAnswerMessage(entry.query, entry.data, { silent: true });
+        });
+        if (loadAlerts().some(a => !a.triggered)) startAlertPolling();
+    }
+
+    /* ---------- alerts UI helpers ---------- */
+    function showCustomAlert(message, title) {
+        const modal = document.getElementById("customAlertModal");
+        const titleEl = document.getElementById("customAlertTitle");
+        const msgEl = document.getElementById("customAlertMessage");
+        if (!modal || !msgEl) return;
+        if (titleEl) titleEl.textContent = title || "INFO";
+        msgEl.textContent = message;
+        modal.style.display = "flex";
+    }
+    function closeCustomAlert() { document.getElementById("customAlertModal").style.display = "none"; }
+    function customConfirm(message, onYes) {
+        const modal = document.getElementById("customConfirmModal");
+        const msgEl = document.getElementById("customConfirmMessage");
+        msgEl.textContent = message;
+        modal.style.display = "flex";
+        const handleYes = () => { modal.style.display = "none"; onYes(); cleanup(); };
+        const handleNo = () => { modal.style.display = "none"; cleanup(); };
+        const cleanup = () => {
+            document.getElementById("confirmYesBtn").removeEventListener("click", handleYes);
+            document.getElementById("confirmNoBtn").removeEventListener("click", handleNo);
+        };
+        document.getElementById("confirmYesBtn").addEventListener("click", handleYes);
+        document.getElementById("confirmNoBtn").addEventListener("click", handleNo);
+    }
+    function clearHistory() {
+        toggleMenu();
+        customConfirm("Hapus semua riwayat chat Nita Market? (Alert yang sudah dipasang tidak akan terhapus)", () => {
+            localStorage.removeItem(HISTORY_KEY);
+            finMsgMeta = {};
+            const feed = document.getElementById("chatFeed");
+            feed.innerHTML = `
+                <div class="welcome-screen" id="welcomeScreen">
+                    <div class="ai-avatar">${AVATAR_SVG}</div>
+                    <h2>Nita Market</h2>
+                    <p>Ketik simbol saham atau crypto, Nita tampilin harga &amp; chart-nya.</p>
+                    <div class="welcome-note">
+                        <b>Crypto:</b> ketik nama/kode-nya langsung, contoh "btc", "eth", "sol".<br>
+                        <b>Komoditas:</b> "gold"/"emas", "silver"/"perak", "oil"/"minyak".<br>
+                        <b>Saham global:</b> pakai kode ticker + akhiran bursa. Tanpa akhiran = US (AAPL, TSLA). Indonesia = .JK (BBCA.JK). London = .L, Tokyo = .T, Hong Kong = .HK, Australia = .AX. Index IHSG = ^JKSE.<br>
+                        <b>Alert harga:</b> tiap hasil chart ada tombol Pasang Alert.<br>
+                        Data crypto dari CoinGecko, data saham dari Yahoo Finance lewat proxy publik — gratis, tanpa API key.
+                    </div>
+                    <div class="suggestion-grid">
+                        <div class="suggestion-chip" onclick="quickSend('btc')">BTC</div>
+                        <div class="suggestion-chip" onclick="quickSend('AAPL')">AAPL</div>
+                        <div class="suggestion-chip" onclick="quickSend('BBCA.JK')">BBCA.JK</div>
+                        <div class="suggestion-chip" onclick="quickSend('^JKSE')">IHSG</div>
+                    </div>
+                </div>`;
+            isFirstMessage = true;
+        });
+    }
+    function toggleMenu() {
+        const menu = document.getElementById("dropdownMenu");
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+    document.addEventListener("click", function (e) {
+        const menu = document.getElementById("dropdownMenu");
+        const btn = document.querySelector(".menu-btn");
+        if (menu && !menu.contains(e.target) && !btn?.contains(e.target)) menu.style.display = "none";
+    });
+
+    window.onload = function () { restoreHistory(); };
+</script>
+</body>
+</html>
