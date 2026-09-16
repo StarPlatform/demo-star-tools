@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Class Battle | Pilih Mode Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #f0f2f5; 
+            color: #0f172a; 
+            min-height: 100vh; 
+            padding: 12px;
+            overflow-x: hidden;
+        }
+        
+        .app-container { 
+            max-width: 700px; 
+            margin: 0 auto; 
+        }
+        
+        /* ========== HEADER ========== */
+        .app-header {
+            background: white;
+            border-radius: 20px;
+            padding: 14px 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #e8ecf1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header-left .icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .header-left h1 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        
+        .header-left h1 span {
+            font-weight: 400;
+            color: #94a3b8;
+            font-size: 0.75rem;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-back {
+            background: #f1f5f9;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        
+        .btn-back:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+        
+        /* ========== HERO TEXT ========== */
+        .hero-text {
+            text-align: center;
+            padding: 20px 12px 28px;
+        }
+        
+        .hero-text .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #eef2ff;
+            color: #4f46e5;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            border: 1px solid rgba(79, 70, 229, 0.15);
+        }
+        
+        .hero-text h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+        
+        .hero-text p {
+            font-size: 0.9rem;
+            color: #64748b;
+            max-width: 480px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        /* ========== MODE GRID ========== */
+        .mode-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 520px) {
+            .mode-grid { grid-template-columns: 1fr; }
+        }
+        
+        .mode-card {
+            background: white;
+            border: 2px solid #e8ecf1;
+            border-radius: 24px;
+            padding: 24px 20px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            text-align: left;
+            font-family: inherit;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .mode-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .mode-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .mode-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 32px -12px rgba(0,0,0,0.12);
+        }
+        
+        .mode-card:active {
+            transform: translateY(-1px) scale(0.99);
+        }
+        
+        /* Mode Klasik */
+        .mode-card.klasik::before { background: linear-gradient(90deg, #4f46e5, #7c3aed); }
+        .mode-card.klasik:hover { border-color: #4f46e5; }
+        .mode-card.klasik .mode-icon-bg { background: linear-gradient(135deg, #eef2ff, #e0e7ff); }
+        .mode-card.klasik .mode-icon { color: #4f46e5; }
+        
+        /* Mode Monster */
+        .mode-card.monster::before { background: linear-gradient(90deg, #10b981, #f59e0b); }
+        .mode-card.monster:hover { border-color: #10b981; }
+        .mode-card.monster .mode-icon-bg { background: linear-gradient(135deg, #ecfdf5, #fef3c7); }
+        .mode-card.monster .mode-icon { color: #10b981; }
+        
+        .mode-icon-bg {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .mode-icon {
+            width: 32px;
+            height: 32px;
+        }
+        
+        .mode-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .mode-desc {
+            font-size: 0.85rem;
+            color: #64748b;
+            line-height: 1.5;
+            flex: 1;
+        }
+        
+        .mode-features {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        
+        .mode-feature {
+            font-size: 0.78rem;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .mode-feature i {
+            font-size: 0.7rem;
+            width: 14px;
+            flex-shrink: 0;
+        }
+        
+        .mode-card.klasik .mode-feature i { color: #4f46e5; }
+        .mode-card.monster .mode-feature i { color: #10b981; }
+        
+        .mode-tag {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            animation: pulseTag 2s infinite;
+        }
+        
+        @keyframes pulseTag {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        .btn-choose {
+            margin-top: 8px;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+            border: none;
+            font-family: inherit;
+            cursor: pointer;
+            width: fit-content;
+        }
+        
+        .mode-card.klasik .btn-choose {
+            background: #eef2ff;
+            color: #4f46e5;
+        }
+        
+        .mode-card.klasik:hover .btn-choose {
+            background: #4f46e5;
+            color: white;
+        }
+        
+        .mode-card.monster .btn-choose {
+            background: #ecfdf5;
+            color: #10b981;
+        }
+        
+        .mode-card.monster:hover .btn-choose {
+            background: #10b981;
+            color: white;
+        }
+        
+        /* ========== INFO BOX ========== */
+        .info-box {
+            background: #f8fafc;
+            border: 1px solid #e8ecf1;
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        
+        .info-box .icon-info {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            background: #eef2ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4f46e5;
+            flex-shrink: 0;
+            font-size: 0.85rem;
+        }
+        
+        .info-box .info-text {
+            font-size: 0.8rem;
+            color: #64748b;
+            line-height: 1.5;
+        }
+        
+        .info-box .info-text strong {
+            color: #0f172a;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 2px;
+            font-size: 0.85rem;
+        }
+        
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 500px) {
+            body { padding: 8px; }
+            .app-header { padding: 10px 14px; }
+            .header-left h1 { font-size: 0.9rem; }
+            .header-left .icon { width: 30px; height: 30px; font-size: 0.8rem; }
+            .hero-text h2 { font-size: 1.25rem; }
+            .hero-text p { font-size: 0.85rem; }
+            .mode-card { padding: 20px 16px; }
+            .mode-icon-bg { width: 56px; height: 56px; }
+            .mode-icon { width: 28px; height: 28px; }
+            .mode-title { font-size: 1.05rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+        <div class="header-left">
+            <div class="icon"><i class="fas fa-gamepad"></i></div>
+            <h1>Class Battle <span>| Pilih Mode</span></h1>
+        </div>
+        <div class="header-right">
+            <button class="btn-back" id="btnBackHome"><i class="fas fa-arrow-left"></i> Kembali</button>
+        </div>
+    </header>
+
+    <!-- ===== HERO TEXT ===== -->
+    <div class="hero-text">
+        <h2>Pilih Mode Pertandingan</h2>
+        <p>Tentukan tipe game yang mau kamu mainkan di kelas. Setelah ini, kamu tinggal isi soal dan buka room untuk murid-murid.</p>
+    </div>
+
+    <!-- ===== MODE GRID ===== -->
+    <div class="mode-grid">
+        <!-- Klasik -->
+        <button class="mode-card klasik" id="btnModeKlasik" type="button">
+            <div class="mode-icon-bg">
+                <svg class="mode-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z" fill="currentColor"/>
+                </svg>
+            </div>
+            <div class="mode-title">Mode Klasik</div>
+            <div class="mode-desc">Kuis pilihan ganda biasa. Murid jawab soal, skor langsung masuk ke leaderboard real-time.</div>
+            <div class="mode-features">
+                <div class="mode-feature"><i class="fas fa-check-circle"></i> 4 pilihan jawaban (A/B/C/D)</div>
+                <div class="mode-feature"><i class="fas fa-check-circle"></i> Live leaderboard real-time</div>
+                <div class="mode-feature"><i class="fas fa-check-circle"></i> Cocok untuk ulangan harian</div>
+            </div>
+            <div class="btn-choose">
+                Pilih Mode Ini <i class="fas fa-arrow-right"></i>
+            </div>
+        </button>
+
+        <!-- Monster -->
+        <button class="mode-card monster" id="btnModeMonster" type="button">
+            <span class="mode-tag">New</span>
+            <div class="mode-icon-bg">
+                <svg class="mode-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 1.5.5 2.9 1.3 4.1L3 20h5l1-3h6l1 3h5l-3.3-6.9c.8-1.2 1.3-2.6 1.3-4.1 0-3.87-3.13-7-7-7zm-3 8.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm6 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm-3 3l-1.5 2h3L12 13.5z" fill="currentColor"/>
+                </svg>
+            </div>
+            <div class="mode-title">Monster Battle</div>
+            <div class="mode-desc">Murid punya monster yang bisa naik level. Jawab bener = monster naik level, jawab salah = monster kena damage.</div>
+            <div class="mode-features">
+                <div class="mode-feature"><i class="fas fa-check-circle"></i> Pilih monster favorit</div>
+                <div class="mode-feature"><i class="fas fa-check-circle"></i> Level up & damage system</div>
+                <div class="mode-feature"><i class="fas fa-check-circle"></i> Revive kalau monster mati</div>
+            </div>
+            <div class="btn-choose">
+                Pilih Mode Ini <i class="fas fa-arrow-right"></i>
+            </div>
+        </button>
+    </div>
+
+<script>
+    // ==========================================
+    // HANDLE PILIH MODE
+    // ==========================================
+    document.getElementById('btnModeKlasik').addEventListener('click', () => {
+        // Simpan mode ke localStorage biar soal.html tau
+        localStorage.setItem('star_game_mode', 'klasik');
+        window.location.href = 'soal.html';
+    });
+
+    document.getElementById('btnModeMonster').addEventListener('click', () => {
+        localStorage.setItem('star_game_mode', 'monster');
+        window.location.href = 'soal-monster.html';
+    });
+
+    // ==========================================
+    // BACK BUTTON
+    // ==========================================
+    document.getElementById('btnBackHome').addEventListener('click', () => {
+        window.location.href = 'index.html';
+    });
+
+    console.log('Game Mode Selection loaded');
+</script>
+
+</body>
+</html>

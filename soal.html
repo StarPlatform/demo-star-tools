@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Star Tools | Pembuat Kuis Arena</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: #1e293b; min-height: 100vh; padding: 16px; }
+
+        .creator-container { max-width: 650px; margin: 20px auto; width: 100%; }
+        
+        .header-box { background: white; border: 1px solid #e8ecf1; border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); display: flex; align-items: flex-start; gap: 12px; }
+        .header-box .icon-box { width: 36px; height: 36px; background: linear-gradient(135deg, #4f46e5, #7c3aed); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.95rem; flex-shrink: 0; }
+        .header-box h1 { font-size: 1.2rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px; }
+        .header-box p { font-size: 0.85rem; color: #64748b; margin-top: 4px; }
+        .mode-badge { display: inline-block; background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; margin-top: 10px; }
+
+        .question-card { background: white; border: 1px solid #e8ecf1; border-radius: 20px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); position: relative; }
+        .q-number { background: #f1f5f9; color: #475569; width: 100px; height: 28px; display: inline-flex; align-items: center; justify-content: center;  font-weight: 700; font-size: 0.85rem; margin-bottom: 12px; }
+        
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: #475569; margin-bottom: 6px; text-transform: uppercase; }
+        
+        .input-control, .input-q-text, .select-correct-ans { width: 100%; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.9rem; font-family: inherit; color: #0f172a; outline: none; transition: all 0.2s; }
+        .input-control:focus, .input-q-text:focus, .select-correct-ans:focus { border-color: #4f46e5; background: white; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+        .input-q-text { resize: vertical; min-height: 70px; }
+
+        .q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 8px; }
+        .opt-box { display: flex; align-items: center; gap: 8px; background: #f8fafc; padding: 4px 4px 4px 12px; border-radius: 10px; border: 1px solid #e2e8f0; }
+        .opt-label { font-weight: 700; color: #64748b; width: 20px; text-align: center; font-size: 0.9rem; flex-shrink: 0; }
+        .opt-box input { width: 100%; padding: 10px 14px 10px 0; background: transparent; border: none; font-size: 0.9rem; font-family: inherit; color: #0f172a; outline: none; }
+
+        /* Radio button kostum buat nentuin kunci jawaban */
+        .correct-radio { width: 18px; height: 18px; cursor: pointer; accent-color: #10b981; }
+
+        .btn-add { background: none; border: 2px dashed #cbd5e1; color: #64748b; width: 100%; padding: 14px; border-radius: 14px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-add:hover { background: #f1f5f9; border-color: #94a3b8; color: #334155; }
+        
+        .btn-primary { background: #4f46e5; color: white; border: none; width: 100%; padding: 14px; font-size: 0.95rem; font-weight: 600; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary:hover { background: #4338ca; }
+        .btn-primary:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+
+        .btn-delete-q { background: #fee2e2; color: #ef4444; border: none; width: 28px; height: 28px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+        .btn-delete-q:hover { background: #fca5a5; }
+    </style>
+</head>
+<body>
+
+<div class="creator-container">
+    <div class="header-box">
+        <span class="icon-box"><i class="fas fa-folder-plus"></i></span>
+        <div>
+            <h1>Buat Soal Kompetisi</h1>
+            <p>Tulis pertanyaan kuis manual untuk dimainkan bersama di arena battle kelas.</p>
+        </div>
+    </div>
+
+    <div id="questionsContainer"></div>
+
+    <button class="btn-add" id="btnAddQuestion"><i class="fas fa-plus"></i> Tambah Pertanyaan Baru</button>
+    
+    <button class="btn-primary" id="btnPublishQuiz"><i class="fas fa-cloud-arrow-up"></i> Simpan Kuis & Buka Room Tunggu</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script>
+    // ==========================================
+    // 1. KONFIGURASI DATABASE FIREBASE
+    // ==========================================
+    const firebaseConfig = {
+        apiKey: "AIzaSyCBVjPohvfPZYs8DfGtzEdi5j4Svb3UvLI",
+        authDomain: "class-battle-19f8c.firebaseapp.com",
+        databaseURL: "https://class-battle-19f8c-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "class-battle-19f8c",
+        storageBucket: "class-battle-19f8c.firebasestorage.app",
+        messagingSenderId: "586414902582",
+        appId: "1:586414902582:web:1fb3398c53c8d8e8d0b797"
+    };
+
+    // Nyalakan koneksi Firebase jika belum aktif
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+
+    let questionCount = 0;
+
+    // ==========================================
+    // 2. FUNGSI UI DOM (BAWAAN SOAL.HTML LU)
+    // ==========================================
+    
+    // Fungsi memunculkan kartu input soal baru di layar HP
+    function injectQuestionCard() {
+        questionCount++;
+        const container = document.getElementById('questionsContainer');
+        if (!container) return;
+
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        card.id = `qCard_${questionCount}`;
+        card.style.animation = 'popCard 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
+
+        card.innerHTML = `
+            <div class="q-header">
+                <span class="q-number">Soal No. ${questionCount}</span>
+                ${questionCount > 1 ? `<button type="button" class="btn-delete-q" onclick="removeQuestionCard(${questionCount})"><i class="fas fa-trash-alt"></i></button>` : ''}
+            </div>
+            <div class="form-group">
+                <label>Pertanyaan Soal</label>
+                <textarea class="input-q-text" placeholder="Ketik pertanyaan kuis di sini, bre..." required></textarea>
+            </div>
+            <div class="options-grid">
+                <div class="opt-box option-a">
+                    <span class="opt-label">A</span>
+                    <input type="text" class="input-opt-a" placeholder="Pilihan A" required>
+                </div>
+                <div class="opt-box option-b">
+                    <span class="opt-label">B</span>
+                    <input type="text" class="input-opt-b" placeholder="Pilihan B" required>
+                </div>
+                <div class="opt-box option-c">
+                    <span class="opt-label">C</span>
+                    <input type="text" class="input-opt-c" placeholder="Pilihan C" required>
+                </div>
+                <div class="opt-box option-d">
+                    <span class="opt-label">D</span>
+                    <input type="text" class="input-opt-d" placeholder="Pilihan D" required>
+                </div>
+            </div>
+            <div class="form-group" style="margin-top: 15px; margin-bottom: 0;">
+                <label>Kunci Jawaban Benar</label>
+                <select class="select-correct-ans" required>
+                    <option value="" disabled selected>Pilih Opsi Jawaban Yang Benar</option>
+                    <option value="0">Pilihan A</option>
+                    <option value="1">Pilihan B</option>
+                    <option value="2">Pilihan C</option>
+                    <option value="3">Pilihan D</option>
+                </select>
+            </div>
+        `;
+        container.appendChild(card);
+        updateGlobalStats();
+    }
+
+    // Fungsi hapus kartu soal
+    function removeQuestionCard(id) {
+        const card = document.getElementById(`qCard_${id}`);
+        if (card) {
+            card.remove();
+            reorderQuestionNumbers();
+        }
+    }
+
+    // Susun ulang penomoran soal kalau ada yang dihapus di tengah jalan
+    function reorderQuestionNumbers() {
+        const cards = document.querySelectorAll('.question-card');
+        questionCount = 0;
+        cards.forEach((card) => {
+            questionCount++;
+            card.id = `qCard_${questionCount}`;
+            const numLabel = card.querySelector('.q-number');
+            if (numLabel) numLabel.innerHTML = `Soal No. ${questionCount}`;
+            
+            const deleteBtn = card.querySelector('.btn-delete-q');
+            if (deleteBtn) {
+                deleteBtn.setAttribute('onclick', `removeQuestionCard(${questionCount})`);
+            }
+        });
+        updateGlobalStats();
+    }
+
+    // Update info jumlah soal di bagian atas layout
+    function updateGlobalStats() {
+        const txt = document.getElementById('totalQuestionsText');
+        if (txt) txt.innerText = `${questionCount} Butir`;
+    }
+
+    // Helper sesi local user
+    function checkUserSession() {
+        console.log("Sesi kuis siap dibuat.");
+    }
+
+    // ==========================================
+    // 3. LOGIKA CORE UPLOAD & PUBLISH KE FIREBASE
+    // ==========================================
+    function publishQuizToDatabase() {
+        const questionCards = document.querySelectorAll('.question-card');
+        let quizQuestions = [];
+        let isValid = true;
+
+        questionCards.forEach((card, index) => {
+            const qText = card.querySelector('.input-q-text')?.value.trim();
+            const optA = card.querySelector('.input-opt-a')?.value.trim();
+            const optB = card.querySelector('.input-opt-b')?.value.trim();
+            const optC = card.querySelector('.input-opt-c')?.value.trim();
+            const optD = card.querySelector('.input-opt-d')?.value.trim();
+            const correctAns = card.querySelector('.select-correct-ans')?.value;
+
+            // Validasi input: tidak boleh kosong
+            if (!qText || !optA || !optB || !optC || !optD || correctAns === null || correctAns === "") {
+                isValid = false;
+                card.style.border = "2px solid #ef4444"; // Kasih tanda merah di card yang kosong
+            } else {
+                card.style.border = "1px solid #e2e8f0"; // Kembalikan ke normal
+                quizQuestions.push({
+                    q: qText,
+                    a: parseInt(correctAns), // 0=A, 1=B, 2=C, 3=D
+                    options: [optA, optB, optC, optD]
+                });
+            }
+        });
+
+        if (!isValid) {
+            alert("Ada soal atau pilihan jawaban yang belum lengkap diisi, atau kunci jawaban belum dipilih, bre!");
+            return;
+        }
+
+        if (quizQuestions.length === 0) {
+            alert("Harap isi minimal 1 soal terlebih dahulu!");
+            return;
+        }
+
+        const btn = document.getElementById('btnPublishQuiz');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerText = "Mengupload Soal ke Server...";
+        }
+
+        // Simpan data kuis ke node 'quiz_hub' di Firebase
+        const newQuizRef = db.ref('quiz_hub').push();
+        newQuizRef.set({
+            createdAt: firebase.database.ServerValue.TIMESTAMP,
+            questions: quizQuestions
+        }).then(() => {
+            // Simpan ID kuis ke localStorage biar room.html bisa narik datanya
+            localStorage.setItem('star_active_quiz_id', newQuizRef.key);
+            alert("Bank kuis sukses direkam! Mengalihkan ke ruang tunggu...");
+            window.location.href = "room.html";
+        }).catch(err => {
+            alert("Gagal mengupload kuis, bre: " + err.message);
+            if (btn) {
+                btn.disabled = false;
+                btn.innerText = "Simpan Kuis & Buka Room Tunggu";
+            }
+        });
+    }
+
+    // ==========================================
+    // 4. TRIGGER EVENT LISTENER KETIKA DOM READY
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+        checkUserSession();
+        
+        // Buat satu kartu soal pertama otomatis biar halaman tidak kosong pas dibuka
+        injectQuestionCard();
+
+        // Pasang fungsi klik ke tombol tambah soal
+        const btnAdd = document.getElementById('btnAddQuestion');
+        if (btnAdd) {
+            btnAdd.addEventListener('click', injectQuestionCard);
+        }
+
+        // Pasang fungsi klik ke tombol publish kuis
+        const btnPublish = document.getElementById('btnPublishQuiz');
+        if (btnPublish) {
+            btnPublish.addEventListener('click', publishQuizToDatabase);
+        }
+    });
+</script>
+
+</body>
+</html>
