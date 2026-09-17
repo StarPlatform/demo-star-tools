@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Class Battle | Arena Pertandingan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #f0f2f5; 
+            color: #0f172a; 
+            min-height: 100vh; 
+            padding: 12px;
+            overflow-x: hidden;
+        }
+        
+        .app-container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+        }
+        
+        /* ========== HEADER ========== */
+        .app-header {
+            background: white;
+            border-radius: 20px;
+            padding: 14px 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #e8ecf1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header-left .icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .header-left h1 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        
+        .header-left h1 span {
+            font-weight: 400;
+            color: #94a3b8;
+            font-size: 0.75rem;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-back {
+            background: #f1f5f9;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        
+        .btn-back:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+        
+        /* ========== CARD ========== */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid #e8ecf1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            margin-bottom: 16px;
+        }
+        
+        /* ========== WAITING VIEW ========== */
+        .waiting-view {
+            text-align: center;
+            padding: 10px 0;
+        }
+        
+        .waiting-pulse {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 18px;
+            background: #eef2ff;
+            border: 2px dashed #4f46e5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4f46e5;
+            animation: pulseGlow 2s infinite;
+        }
+        
+        .waiting-pulse svg {
+            width: 36px;
+            height: 36px;
+        }
+        
+        @keyframes pulseGlow {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.35); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 16px rgba(79, 70, 229, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+        }
+        
+        .waiting-pin {
+            background: #eef2ff;
+            color: #4f46e5;
+            font-weight: 700;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+        
+        .waiting-view h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+        
+        .waiting-sub {
+            font-size: 0.85rem;
+            color: #64748b;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 4px;
+        }
+        
+        .loading-dots span {
+            animation: blink 1.4s infinite both;
+            font-size: 1.2rem;
+            line-height: 0;
+        }
+        .loading-dots span:nth-child(2) { animation-delay: .2s; }
+        .loading-dots span:nth-child(3) { animation-delay: .4s; }
+        
+        @keyframes blink {
+            0% { opacity: .2; }
+            20% { opacity: 1; }
+            100% { opacity: .2; }
+        }
+        
+        /* ========== PIN INPUT ========== */
+        .pin-input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .pin-input-group input {
+            padding: 12px 18px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            outline: none;
+            width: 160px;
+            text-align: center;
+            letter-spacing: 4px;
+            background: #f8fafc;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .pin-input-group input:focus {
+            border-color: #4f46e5;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+        
+        .pin-input-group .btn-join {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 14px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+        }
+        
+        .pin-input-group .btn-join:hover {
+            background: #4338ca;
+            transform: translateY(-1px);
+        }
+        
+        .pin-input-group .btn-join:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* ========== REACTION BAR ========== */
+        .reaction-bar {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .reaction-btn {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            font-size: 1.3rem;
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
+        
+        .reaction-btn:hover {
+            background: #eef2ff;
+            border-color: #c7d2fe;
+            transform: translateY(-2px);
+        }
+        
+        .reaction-btn:active {
+            transform: scale(0.9);
+        }
+        
+        /* ========== REACTION FLOATING ========== */
+        .reaction-float-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 9999;
+        }
+        
+        .reaction-bubble {
+            position: absolute;
+            bottom: 40px;
+            text-align: center;
+            animation: floatUp 3s ease-out forwards;
+        }
+        
+        .reaction-bubble .emoji-face {
+            font-size: 2rem;
+            display: block;
+        }
+        
+        .reaction-bubble .emoji-owner {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #4f46e5;
+            background: white;
+            border-radius: 10px;
+            padding: 1px 8px;
+            margin-top: 2px;
+            display: inline-block;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+        
+        @keyframes floatUp {
+            0% { transform: translateY(0) translateX(0) scale(0.6); opacity: 0; }
+            15% { opacity: 1; transform: translateY(-20px) translateX(var(--drift, 0px)) scale(1.1); }
+            100% { transform: translateY(-380px) translateX(var(--drift, 0px)) scale(1); opacity: 0; }
+        }
+        
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 500px) {
+            body { padding: 8px; }
+            .app-header { padding: 10px 14px; }
+            .header-left h1 { font-size: 0.9rem; }
+            .header-left .icon { width: 30px; height: 30px; font-size: 0.8rem; }
+            .card { padding: 18px 16px; }
+            .waiting-pulse { width: 64px; height: 64px; }
+            .waiting-pulse svg { width: 28px; height: 28px; }
+            .reaction-btn { width: 40px; height: 40px; font-size: 1.1rem; }
+            .pin-input-group input { width: 130px; font-size: 1rem; padding: 10px 14px; }
+            .pin-input-group .btn-join { padding: 10px 20px; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+        <div class="header-left">
+            <div class="icon"><i class="fas fa-door-open"></i></div>
+            <h1>Class Battle <span>| Join Arena</span></h1>
+        </div>
+        <div class="header-right">
+            <button class="btn-back" id="btnBackHome"><i class="fas fa-arrow-left"></i> Kembali</button>
+        </div>
+    </header>
+
+    <!-- ===== WAITING VIEW ===== -->
+    <div id="waitingView" class="card waiting-view">
+        <div class="waiting-pulse">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3L1 8l11 5 9-4.09V17h2V8L12 3z" fill="currentColor"/>
+                <path d="M5 10.18v4.32c0 2 3.13 4.5 7 4.5s7-2.5 7-4.5v-4.32l-7 3.18-7-3.18z" fill="currentColor"/>
+            </svg>
+        </div>
+
+        <!-- PIN INPUT -->
+        <div class="pin-input-group">
+            <input type="text" id="pinInputField" placeholder="PIN Arena" maxlength="6" inputmode="numeric">
+            <button class="btn-join" id="btnJoinRoom"><i class="fas fa-arrow-right"></i> Masuk</button>
+        </div>
+
+        <div style="margin-top: 16px; font-size:0.8rem; color:#94a3b8;">
+            <i class="fas fa-info-circle"></i> Masukkan PIN yang diberikan gurumu
+        </div>
+
+        <div id="waitingStatus" style="margin-top: 16px; display:none;">
+            <div style="display:flex; align-items:center; justify-content:center; gap:8px; color:#4f46e5; font-weight:600; font-size:0.9rem;">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Menghubungkan ke arena...</span>
+            </div>
+        </div>
+
+        <div id="waitingForGame" style="margin-top: 16px; display:none;">
+            <div style="background:#eef2ff; border-radius:16px; padding:16px; border:1px solid #c7d2fe;">
+                <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:6px;">
+                    <span style="font-size:1.2rem;">⏳</span>
+                    <span style="font-weight:700; color:#4f46e5; font-size:1rem;">Menunggu Guru Mulai</span>
+                </div>
+                <p style="font-size:0.85rem; color:#64748b;" id="waitingPlayerName">Halo, <strong id="playerNameDisplay">Pemain</strong>!</p>
+                <p class="waiting-sub">
+                    Guru akan memulai pertandingan sebentar lagi 
+                    <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
+                </p>
+            </div>
+        </div>
+
+        <div class="reaction-bar" id="reactionBar"></div>
+    </div>
+</div>
+
+<!-- ===== REACTION FLOATING ===== -->
+<div class="reaction-float-container" id="reactionFloatContainer"></div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script>
+    // ==========================================
+    // FIREBASE CONFIG
+    // ==========================================
+    const firebaseConfig = {
+        apiKey: "AIzaSyCBVjPohvfPZYs8DfGtzEdi5j4Svb3UvLI",
+        authDomain: "class-battle-19f8c.firebaseapp.com",
+        databaseURL: "https://class-battle-19f8c-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "class-battle-19f8c"
+    };
+
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // ==========================================
+    // STATE
+    // ==========================================
+    let activePin = null;
+    let myPlayerKey = null;
+    let myName = '';
+    let roomStatusListener = null;
+    let isJoining = false;
+    let isWaitingForGame = false;
+
+    const DEFAULT_AVATAR_SVG = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L1 8l11 5 9-4.09V17h2V8L12 3z" fill="currentColor"/><path d="M5 10.18v4.32c0 2 3.13 4.5 7 4.5s7-2.5 7-4.5v-4.32l-7 3.18-7-3.18z" fill="currentColor"/></svg>`;
+    const REACTION_EMOJIS = ['😂', '🔥', '👍', '❤️', '🎉', '😮'];
+
+    function escapeHtml(str) {
+        return str ? str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;') : '';
+    }
+
+    // ==========================================
+    // DOM REFS
+    // ==========================================
+    const pinInput = document.getElementById('pinInputField');
+    const btnJoin = document.getElementById('btnJoinRoom');
+    const waitingStatus = document.getElementById('waitingStatus');
+    const waitingForGame = document.getElementById('waitingForGame');
+    const playerNameDisplay = document.getElementById('playerNameDisplay');
+
+    // ==========================================
+    // CEK SESSION TERSIMPAN
+    // ==========================================
+    function checkSavedSession() {
+        const savedPin = localStorage.getItem('star_battle_pin');
+        const savedKey = localStorage.getItem('star_battle_key');
+        const savedName = localStorage.getItem('star_battle_name');
+
+        if (savedPin && savedKey && savedName) {
+            // Cek apakah room masih ada
+            db.ref(`rooms/${savedPin}`).once('value').then((snap) => {
+                if (!snap.exists()) {
+                    localStorage.removeItem('star_battle_pin');
+                    localStorage.removeItem('star_battle_key');
+                    localStorage.removeItem('star_battle_name');
+                    return;
+                }
+
+                const room = snap.val();
+                // Cek apakah player masih ada di room
+                if (room.players && room.players[savedKey]) {
+                    activePin = savedPin;
+                    myPlayerKey = savedKey;
+                    myName = savedName;
+                    playerNameDisplay.innerText = myName;
+
+                    // Cek status room
+                    if (room.status === 'playing') {
+                        // Langsung redirect ke player.html (halaman ngerjain)
+                        window.location.href = 'player.html';
+                    } else if (room.status === 'ended') {
+                        alert('Pertandingan sudah selesai!');
+                        localStorage.removeItem('star_battle_pin');
+                        localStorage.removeItem('star_battle_key');
+                        localStorage.removeItem('star_battle_name');
+                        window.location.href = 'index.html';
+                    } else {
+                        // status waiting - tampilkan tunggu
+                        showWaitingForGame();
+                        listenRoomStatus();
+                    }
+                } else {
+                    localStorage.removeItem('star_battle_pin');
+                    localStorage.removeItem('star_battle_key');
+                    localStorage.removeItem('star_battle_name');
+                }
+            }).catch(() => {
+                localStorage.removeItem('star_battle_pin');
+                localStorage.removeItem('star_battle_key');
+                localStorage.removeItem('star_battle_name');
+            });
+        }
+    }
+
+    // ==========================================
+    // JOIN ROOM
+    // ==========================================
+    function joinRoom(pin, name) {
+        if (isJoining) return;
+        isJoining = true;
+        btnJoin.disabled = true;
+        btnJoin.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Masuk...';
+        waitingStatus.style.display = 'block';
+
+        db.ref(`rooms/${pin}`).once('value').then((snap) => {
+            if (!snap.exists()) {
+                alert('PIN Arena tidak ditemukan! Cek lagi kode dari gurumu.');
+                resetJoinButton();
+                return;
+            }
+
+            const roomData = snap.val();
+
+            if (roomData.status === 'ended') {
+                alert('Pertandingan di arena ini sudah selesai!');
+                resetJoinButton();
+                return;
+            }
+
+            // Push player ke room
+            const playerRef = db.ref(`rooms/${pin}/players`).push();
+            const playerData = {
+                name: name,
+                avatar: DEFAULT_AVATAR_SVG,
+                score: 0,
+                correct: 0,
+                wrong: 0,
+                status: 'Bertanding'
+            };
+
+            playerRef.set(playerData).then(() => {
+                activePin = pin;
+                myPlayerKey = playerRef.key;
+                myName = name;
+
+                localStorage.setItem('star_battle_pin', pin);
+                localStorage.setItem('star_battle_key', myPlayerKey);
+                localStorage.setItem('star_battle_name', name);
+
+                playerNameDisplay.innerText = myName;
+                waitingStatus.style.display = 'none';
+
+                // Cek status room
+                if (roomData.status === 'playing') {
+                    window.location.href = 'player.html';
+                } else {
+                    showWaitingForGame();
+                    listenRoomStatus();
+                }
+            }).catch(err => {
+                alert('Gagal masuk arena: ' + err.message);
+                resetJoinButton();
+            });
+        }).catch(err => {
+            alert('Koneksi gagal: ' + err.message);
+            resetJoinButton();
+        });
+    }
+
+    // ==========================================
+    // LISTEN ROOM STATUS
+    // ==========================================
+    function listenRoomStatus() {
+        if (roomStatusListener) {
+            db.ref(`rooms/${activePin}/status`).off('value', roomStatusListener);
+        }
+
+        roomStatusListener = db.ref(`rooms/${activePin}/status`).on('value', (snap) => {
+            const status = snap.val();
+            if (status === 'playing') {
+                db.ref(`rooms/${activePin}/status`).off('value', roomStatusListener);
+                window.location.href = 'player.html';
+            } else if (status === 'ended') {
+                db.ref(`rooms/${activePin}/status`).off('value', roomStatusListener);
+                alert('Pertandingan telah dihentikan oleh guru!');
+                localStorage.removeItem('star_battle_pin');
+                localStorage.removeItem('star_battle_key');
+                localStorage.removeItem('star_battle_name');
+                window.location.href = 'index.html';
+            }
+        });
+    }
+
+    // ==========================================
+    // SHOW WAITING FOR GAME
+    // ==========================================
+    function showWaitingForGame() {
+        isWaitingForGame = true;
+        waitingForGame.style.display = 'block';
+        btnJoin.style.display = 'none';
+        pinInput.style.display = 'none';
+        document.querySelector('.pin-input-group .fa-info-circle')?.parentElement?.remove();
+    }
+
+    // ==========================================
+    // RESET JOIN BUTTON
+    // ==========================================
+    function resetJoinButton() {
+        isJoining = false;
+        btnJoin.disabled = false;
+        btnJoin.innerHTML = '<i class="fas fa-arrow-right"></i> Masuk';
+        waitingStatus.style.display = 'none';
+    }
+
+    // ==========================================
+    // REACTION
+    // ==========================================
+    function renderReactionBar() {
+        const bar = document.getElementById('reactionBar');
+        if (!bar) return;
+        bar.innerHTML = '';
+        REACTION_EMOJIS.forEach((emoji) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'reaction-btn';
+            btn.innerText = emoji;
+            btn.addEventListener('click', () => sendReaction(emoji));
+            bar.appendChild(btn);
+        });
+    }
+
+    function sendReaction(emoji) {
+        if (!activePin) return;
+        const reactionRef = db.ref(`rooms/${activePin}/reactions`).push();
+        reactionRef.set({
+            emoji: emoji,
+            name: myName || 'Pemain',
+            time: firebase.database.ServerValue.TIMESTAMP
+        }).then(() => {
+            setTimeout(() => reactionRef.remove(), 4000);
+        });
+    }
+
+    function setupReactionListener() {
+        if (!activePin) return;
+        db.ref(`rooms/${activePin}/reactions`).on('child_added', (snap) => {
+            const data = snap.val();
+            if (data && data.emoji) spawnReactionBubble(data.emoji, data.name);
+        });
+    }
+
+    function spawnReactionBubble(emoji, name) {
+        const container = document.getElementById('reactionFloatContainer');
+        if (!container) return;
+
+        const bubble = document.createElement('div');
+        bubble.className = 'reaction-bubble';
+        bubble.style.left = `${10 + Math.random() * 80}%`;
+        bubble.style.setProperty('--drift', `${(Math.random() * 60) - 30}px`);
+        bubble.innerHTML = `
+            <span class="emoji-face">${emoji}</span>
+            ${name ? `<span class="emoji-owner">${escapeHtml(name)}</span>` : ''}
+        `;
+        container.appendChild(bubble);
+        bubble.addEventListener('animationend', () => bubble.remove());
+    }
+
+    // ==========================================
+    // BACK BUTTON
+    // ==========================================
+    document.getElementById('btnBackHome').addEventListener('click', () => {
+        if (isWaitingForGame) {
+            if (confirm('Yakin ingin keluar dari arena? Kamu harus masuk ulang dengan PIN.')) {
+                localStorage.removeItem('star_battle_pin');
+                localStorage.removeItem('star_battle_key');
+                localStorage.removeItem('star_battle_name');
+                window.location.href = 'index.html';
+            }
+        } else {
+            window.location.href = 'index.html';
+        }
+    });
+
+    // ==========================================
+    // JOIN BUTTON
+    // ==========================================
+    btnJoin.addEventListener('click', () => {
+        const pin = pinInput.value.trim();
+        const name = localStorage.getItem('star_battle_name') || prompt('Masukkan nama kamu:');
+
+        if (!name || name.trim() === '') {
+            alert('Nama tidak boleh kosong!');
+            return;
+        }
+
+        if (pin.length < 4) {
+            alert('PIN minimal 4 digit!');
+            return;
+        }
+
+        joinRoom(pin, name.trim());
+    });
+
+    // Enter pada input PIN
+    pinInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            btnJoin.click();
+        }
+    });
+
+    // ==========================================
+    // INIT
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+        renderReactionBar();
+        
+        // Cek session tersimpan
+        checkSavedSession();
+
+        // Setup reaction listener jika sudah ada PIN
+        if (activePin) {
+            setupReactionListener();
+        }
+    });
+
+    console.log('🎮 Class Battle Play (Join) loaded');
+</script>
+
+</body>
+</html>

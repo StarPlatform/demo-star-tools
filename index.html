@@ -1,1177 +1,1303 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Rekap Digital</title>
-<style>
-:root{
-  --bg:#f3f4f8;
-  --card:#ffffff;
-  --primary:#4f46e5;
-  --primary-dark:#4338ca;
-  --text:#1f2430;
-  --muted:#6b7280;
-  --border:#e5e7eb;
-  --danger:#dc2626;
-  --success:#16a34a;
-  --success-bg:#dcfce7;
-  --radius:16px;
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:24px 16px 60px;
-}
-.topbar{
-  width:100%;
-  max-width:480px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:20px;
-}
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-weight:700;
-  font-size:18px;
-}
-.brand svg{width:26px;height:26px;color:var(--primary);}
-.btn-icon{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:12px;
-  width:40px;
-  height:40px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-}
-.btn-icon svg{width:20px;height:20px;color:var(--muted);}
-.view{
-  width:100%;
-  max-width:480px;
-  display:none;
-}
-.view.active{display:block;}
-.card{
-  background:var(--card);
-  border-radius:var(--radius);
-  padding:24px;
-  box-shadow:0 1px 3px rgba(0,0,0,0.06);
-  margin-bottom:16px;
-}
-.tabs{
-  display:flex;
-  background:var(--bg);
-  border-radius:12px;
-  padding:4px;
-  margin-bottom:20px;
-}
-.tab{
-  flex:1;
-  text-align:center;
-  padding:10px;
-  border-radius:9px;
-  font-weight:600;
-  font-size:14px;
-  color:var(--muted);
-  cursor:pointer;
-}
-.tab.active{
-  background:var(--card);
-  color:var(--primary);
-  box-shadow:0 1px 2px rgba(0,0,0,0.08);
-}
-.field{margin-bottom:14px;}
-.field label{
-  display:block;
-  font-size:13px;
-  font-weight:600;
-  color:var(--muted);
-  margin-bottom:6px;
-}
-.field input, .field select{
-  width:100%;
-  padding:13px 14px;
-  border:1px solid var(--border);
-  border-radius:12px;
-  font-size:15px;
-  background:var(--bg);
-}
-.field input:focus, .field select:focus{
-  outline:2px solid var(--primary);
-  outline-offset:-1px;
-}
-.field input:disabled{color:var(--muted);}
-.password-wrap{position:relative;}
-.password-wrap input{padding-right:46px;}
-.password-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;}
-.password-toggle:hover{background:var(--bg);color:var(--text);}
-.password-toggle svg{width:19px;height:19px;}
-.today-note-reveal{display:none;width:100%;margin-top:12px;border:1px solid var(--border);background:var(--card);color:var(--primary);border-radius:10px;padding:10px 12px;font-size:12px;font-weight:700;cursor:pointer;}
-.today-note-reveal.active{display:block;}
-.btn{
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:12px;
-  background:var(--primary);
-  color:#fff;
-  font-size:15px;
-  font-weight:700;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-}
-.btn:active{background:var(--primary-dark);}
-.btn.secondary{
-  background:var(--card);
-  color:var(--primary);
-  border:1.5px solid var(--primary);
-}
-.btn svg{width:18px;height:18px;}
-.btn-row{
-  display:flex;
-  gap:10px;
-}
-.btn-row .btn{flex:1;}
-h1.page-title{
-  font-size:20px;
-  margin-bottom:4px;
-}
-p.subtitle{
-  color:var(--muted);
-  font-size:14px;
-  margin-bottom:20px;
-}
-.user-info{
-  text-align:center;
-  margin-bottom:18px;
-}
-.user-info .nama{font-size:18px;font-weight:700;}
-.stat-box{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  background:var(--bg);
-  border-radius:12px;
-  padding:12px;
-  margin-top:10px;
-}
-.stat-box svg{width:18px;height:18px;color:var(--primary);}
-.stat-box .stat-value{font-weight:700;color:var(--primary);}
-.section-title{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-weight:700;
-  font-size:15px;
-  margin-bottom:14px;
-}
-.section-title svg{width:18px;height:18px;color:var(--primary);}
-.hint{
-  font-size:12px;
-  color:var(--muted);
-  text-align:center;
-  margin-top:8px;
-}
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13.5px;
-}
-th, td{
-  text-align:left;
-  padding:10px 8px;
-  border-bottom:1px solid var(--border);
-}
-th{
-  color:var(--muted);
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:0.03em;
-}
-tbody tr{cursor:pointer;}
-tbody tr:active{background:var(--bg);}
-tbody tr.marked{background:var(--success-bg);}
-tbody tr.disabled{cursor:not-allowed;opacity:0.45;}
-.badge{
-  display:inline-block;
-  padding:3px 10px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:700;
-  background:#dcfce7;
-  color:var(--success);
-}
-.badge.muted{
-  background:var(--bg);
-  color:var(--muted);
-}
- .table-scroll{width:100%;overflow-x:auto;overflow-y:hidden;border:1px solid var(--border);border-radius:12px;}
-.attendance-wide{min-width:900px;}
-.attendance-wide th,.attendance-wide td{text-align:center;white-space:nowrap;padding:9px 10px;border-right:1px solid var(--border);}
-.attendance-wide th:first-child,.attendance-wide td:first-child{text-align:left;position:sticky;left:0;background:var(--card);z-index:2;min-width:120px;}
-.attendance-wide th:first-child{z-index:3;}
-.attendance-wide .day-cell{font-weight:700;font-size:12px;}
-.attendance-wide .hadir-cell{color:var(--success);font-weight:700;}
-.attendance-wide .time-cell{font-size:11px;color:var(--muted);}
-.attendance-wide .row-label{font-weight:700;color:var(--text);}
-.attendance-wide .amount-cell{color:var(--primary);font-weight:700;cursor:pointer;}
-.attendance-wide .amount-cell.empty{color:var(--muted);font-weight:600;}
-.amount-help{font-size:11px;color:var(--muted);margin-top:6px;}
-.export-row{display:flex;gap:10px;margin-top:14px;}
-.export-row .btn{font-size:13px;padding:12px;}
-.today-note{margin-top:16px;padding:14px;background:var(--bg);border-radius:12px;}
-.today-note-title{font-weight:700;font-size:14px;}
-.today-note-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
-.note-toggle{border:1px solid var(--border);background:var(--card);color:var(--muted);border-radius:9px;padding:6px 9px;font-size:11px;font-weight:700;cursor:pointer;}
-.today-times{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.time-summary{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px;}
-.time-summary small{display:block;color:var(--muted);font-size:11px;margin-bottom:4px;}
-.time-summary strong{font-size:15px;}
-#reader{width:100%;max-width:360px;margin:auto;}
-.file-label{display:flex;align-items:center;justify-content:center;width:100%;padding:13px;border:1.5px solid var(--primary);border-radius:12px;color:var(--primary);font-weight:700;cursor:pointer;}
-.file-label input{display:none;}
-.dashboard-view{padding-bottom:90px;}
-@media(max-width:600px){.card{padding:18px;}.attendance-wide{min-width:820px;}.today-times{grid-template-columns:1fr 1fr;}.qr-box{width:210px;height:210px;}}
-.modal-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(15,17,26,0.55);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  z-index:50;
-}
-.modal-overlay.active{display:flex;}
-.modal-box{
-  background:#fff;
-  border-radius:16px;
-  padding:24px;
-  max-width:340px;
-  width:100%;
-  text-align:center;
-}
-.modal-box svg{width:40px;height:40px;margin-bottom:12px;}
-.modal-box.ok svg{color:var(--success);}
-.modal-box.err svg{color:var(--danger);}
-.modal-box h3{font-size:16px;margin-bottom:6px;}
-.modal-box p{font-size:14px;color:var(--muted);margin-bottom:18px;}
-.modal-box button{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:12px;
-  background:var(--primary);
-  color:#fff;
-  font-weight:700;
-  font-size:14px;
-  cursor:pointer;
-}
-.loading-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(255,255,255,0.7);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:60;
-}
-.loading-overlay.active{display:flex;}
-.spinner{
-  width:36px;
-  height:36px;
-  border:4px solid var(--border);
-  border-top-color:var(--primary);
-  border-radius:50%;
-  animation:spin 0.8s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg);}}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Class Battle X Star Tools - Kompetisi Kelas Seru</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* ===== PRO UI REDESIGN ===== */
-:root{
-  --bg:#f6f7fb;
-  --card:#ffffff;
-  --primary:#2563eb;
-  --primary-dark:#1d4ed8;
-  --text:#111827;
-  --muted:#6b7280;
-  --border:#e5e7eb;
-  --soft:#f3f6fb;
-  --success:#16a34a;
-  --success-bg:#ecfdf3;
-  --radius:20px;
-}
-html{background:#f6f7fb;}
-body{
-  background:
-    radial-gradient(circle at 50% -10%,rgba(37,99,235,.10),transparent 34%),
-    #f6f7fb;
-  color:var(--text);
-  padding:18px 14px 96px;
-  -webkit-font-smoothing:antialiased;
-}
-.topbar{
-  max-width:560px;
-  height:58px;
-  margin-bottom:14px;
-  padding:0 4px;
-}
-.brand{gap:11px;font-size:17px;letter-spacing:-.2px;}
-.brand svg{
-  width:32px;height:32px;padding:7px;
-  color:#fff;background:var(--primary);
-  border-radius:11px;
-  box-shadow:0 6px 16px rgba(37,99,235,.22);
-}
-.btn-icon{
-  width:42px;height:42px;border:1px solid #e8ebf2;border-radius:13px;
-  background:rgba(255,255,255,.92);box-shadow:0 3px 12px rgba(15,23,42,.05);
-  transition:.18s ease;
-}
-.btn-icon:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(15,23,42,.08);}
-.view{max-width:560px;}
-.card{
-  border:1px solid rgba(226,229,236,.9);
-  border-radius:22px;
-  padding:22px;
-  box-shadow:0 10px 30px rgba(15,23,42,.055);
-  margin-bottom:14px;
-}
-#view-auth .card{padding:26px 22px;}
-h1.page-title{font-size:23px;line-height:1.2;letter-spacing:-.45px;}
-p.subtitle{font-size:13.5px;line-height:1.6;color:#737b8c;}
-.tabs{
-  background:#f1f3f7;border:1px solid #e7e9ef;border-radius:14px;
-  padding:4px;margin:0 -1px 22px;
-}
-.tab{padding:11px;border-radius:10px;font-size:13.5px;transition:.18s ease;}
-.tab.active{color:var(--primary);box-shadow:0 2px 7px rgba(15,23,42,.08);}
-.field{margin-bottom:16px;}
-.field label{font-size:12px;letter-spacing:.1px;margin-bottom:7px;color:#4b5563;}
-.field input,.field select{
-  padding:13px 14px;border:1px solid #dfe3ea;border-radius:13px;
-  background:#fbfcfe;color:var(--text);transition:.18s ease;
-}
-.field input:hover{border-color:#cbd3df;}
-.field input:focus,.field select:focus{
-  outline:3px solid rgba(37,99,235,.10);outline-offset:0;border-color:#3b82f6;background:#fff;
-}
-.btn{
-  min-height:46px;padding:12px 16px;border-radius:13px;
-  background:linear-gradient(180deg,#3b82f6,#2563eb);
-  box-shadow:0 7px 16px rgba(37,99,235,.18);
-  transition:.18s ease;font-size:14px;
-}
-.btn:hover{transform:translateY(-1px);box-shadow:0 9px 20px rgba(37,99,235,.22);}
-.btn:active{transform:translateY(0);background:var(--primary-dark);}
-.btn.secondary{
-  background:#fff;color:#334155;border:1px solid #dfe4ec;box-shadow:none;
-}
-.btn.secondary:hover{border-color:#bfccdf;background:#f8fafc;}
-.dashboard-view .card{padding:18px;}
-.user-info{
-  text-align:left;margin-bottom:18px;padding:4px 3px 2px;
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-}
-.user-info .nama{font-size:19px;letter-spacing:-.25px;}
-.stat-box{
-  margin:0;padding:9px 12px;border:1px solid #dbe7ff;
-  background:#eff6ff;border-radius:12px;gap:6px;white-space:nowrap;
-  font-size:11px;color:#475569;
-}
-.stat-box svg{width:16px;height:16px;color:var(--primary);}
-.stat-box .stat-value{color:var(--primary);}
-.dashboard-view .field{margin-bottom:10px;}
-.dashboard-view .field label{font-size:11px;text-transform:uppercase;letter-spacing:.7px;font-weight:700;color:#8a93a3;}
-.dashboard-view .field input{height:44px;background:#f8fafc;font-weight:600;}
-.hint{font-size:11.5px;line-height:1.55;color:#8992a3;}
-.table-scroll{
-  border:1px solid #e5e8ef;border-radius:15px;background:#fff;
-  overflow:auto;box-shadow:inset 0 0 0 1px rgba(255,255,255,.6);
-}
-.attendance-wide{font-size:12px;border-collapse:separate;border-spacing:0;min-width:max-content;}
-.attendance-wide th{
-  background:#f8fafc;color:#64748b;font-size:11px;font-weight:700;
-  height:48px;border-bottom:1px solid #e5e8ef;position:sticky;top:0;z-index:2;
-}
-.attendance-wide td{height:47px;border-bottom:1px solid #edf0f4;color:#334155;background:#fff;}
-.attendance-wide tr:last-child td{border-bottom:0;}
-.attendance-wide th:first-child,.attendance-wide td:first-child{
-  position:sticky;left:0;z-index:3;background:#fff;border-right:1px solid #e5e8ef;
-  min-width:92px;padding-left:13px;padding-right:13px;font-weight:700;
-}
-.attendance-wide th:first-child{z-index:4;background:#f8fafc;}
-.attendance-wide th:last-child,.attendance-wide td:last-child{min-width:82px;background:#f8fafc;font-weight:700;}
-.attendance-wide .row-label{font-size:11px;color:#475569;}
-.hadir-cell{color:#15803d;font-weight:700;}
-.amount-cell{font-weight:700;color:#1d4ed8;}
-.badge.muted{font-size:10px;background:#f1f5f9;color:#94a3b8;padding:4px 7px;border-radius:7px;}
-.today-note{
-  margin-top:13px;border:1px solid #e4e8ef;border-radius:15px;background:#fafbfc;padding:13px;
-}
-.today-note-head{margin-bottom:10px;}
-.today-note-title{font-size:12px;font-weight:700;color:#475569;}
-.note-toggle{font-size:11px;color:#64748b;border:0;background:transparent;padding:3px;cursor:pointer;}
-.today-times{gap:9px;}
-.time-summary{background:#fff;border:1px solid #e8ebf0;border-radius:12px;padding:10px 12px;}
-.time-summary small{font-size:10px;color:#8a93a3;}
-.time-summary strong{font-size:14px;margin-top:3px;}
-.today-note-reveal{border-radius:12px;background:#fff;}
-.export-row{gap:9px;margin-top:14px;}
-.export-row .btn{min-height:42px;font-size:12px;}
-#reader{border:0!important;border-radius:13px;overflow:hidden;}
-.file-label{
-  display:flex;align-items:center;justify-content:center;min-height:45px;padding:12px;
-  border:1px dashed #cbd5e1;border-radius:13px;background:#f8fafc;color:#475569;
-  font-size:13px;font-weight:700;cursor:pointer;transition:.18s ease;
-}
-.file-label:hover{border-color:#93c5fd;background:#eff6ff;color:#2563eb;}
-.file-label input{display:none;}
-.modal-overlay{background:rgba(15,23,42,.45);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);}
-.modal-box{
-  border:1px solid #e4e8ef;border-radius:22px!important;padding:22px!important;
-  box-shadow:0 25px 70px rgba(15,23,42,.22)!important;
-}
-#manual-overlay .modal-box{max-height:calc(100vh - 32px);overflow-y:auto;-webkit-overflow-scrolling:touch;}
-#history-overlay .modal-box{max-height:calc(100vh - 32px);overflow-y:auto;-webkit-overflow-scrolling:touch;}
-@media(max-width:430px){#manual-overlay .modal-box,#history-overlay .modal-box{max-height:calc(100vh - 24px);padding:18px!important;}}
-.modal-box h3{font-size:17px!important;letter-spacing:-.2px;}
-.password-toggle:hover{background:#eef4ff;color:var(--primary);}
-.loading-overlay{background:rgba(255,255,255,.72);backdrop-filter:blur(5px);}
-.spinner{border-color:#dbe4f3;border-top-color:var(--primary);}
+        :root {
+            --bg-primary: #f0f2f5;
+            --bg-card: #ffffff;
+            --bg-soft: #f8fafc;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --border-soft: #edf2f7;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --accent-soft: #eef2ff;
+            --success: #10b981;
+            --success-hover: #059669;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
 
-.auth-history-btn{
-  width:100%;margin-top:12px;min-height:44px;padding:11px 14px;border:1px solid #dfe4ec;border-radius:13px;
-  background:#fff;color:#475569;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
-  transition:.18s ease;
-}
-.auth-history-btn svg{width:17px;height:17px;}
-.auth-history-btn:hover{background:#f8fafc;border-color:#bfccdf;color:var(--primary);}
-.login-history-item{padding:12px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:12px;font-size:13px;}
-.login-history-item:last-child{border-bottom:0;}
-.login-history-main{min-width:0;}
-.login-history-email{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.login-history-time{color:var(--muted);font-size:12px;margin-top:3px;}
-.empty-history{padding:20px 8px;text-align:center;color:var(--muted);font-size:13px;}
-.schedule-badge{font-size:12px;color:var(--muted);margin-top:8px;}
+        html { scroll-behavior: smooth; }
 
-@media(max-width:430px){
-  body{padding-left:10px;padding-right:10px;}
-  .card{padding:18px;}
-  .user-info{align-items:flex-start;flex-direction:column;gap:9px;}
-  .stat-box{width:100%;justify-content:flex-start;}
-}
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-</style>
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-soft); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        /* HEADER */
+        header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar {
+            max-width: 1280px; margin: 0 auto;
+            padding: 14px 24px;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 16px;
+        }
+        .logo {
+            font-weight: 700; font-size: 1.2rem;
+            color: var(--text-primary);
+            display: flex; align-items: center; gap: 8px;
+            cursor: pointer; transition: transform 0.2s;
+        }
+        .logo:hover { transform: scale(1.02); }
+        .logo i { color: var(--accent); font-size: 1.3rem; }
+
+        .nav-menu {
+            display: flex; gap: 16px; align-items: center;
+            list-style: none; flex-wrap: wrap;
+        }
+        .nav-menu a {
+            text-decoration: none; font-size: 0.9rem; font-weight: 500;
+            color: var(--text-secondary); transition: color 0.2s;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .nav-menu a:hover { color: var(--accent); }
+
+        .nav-profile-btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px; border-radius: 50%;
+            font-weight: 700; font-size: 0.95rem; color: #fff;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+            overflow: hidden; transition: transform 0.2s;
+            background: var(--accent); cursor: pointer; border: none;
+        }
+        .nav-profile-btn:hover { transform: scale(1.08); }
+        .nav-profile-btn img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        .btn-login-nav {
+            background: var(--text-primary);
+            color: var(--bg-card) !important;
+            padding: 6px 16px; border-radius: 20px;
+            font-size: 0.85rem !important; font-weight: 600 !important;
+        }
+        .btn-login-nav:hover { background: var(--accent); color: #fff !important; }
+
+        .badge-new {
+            background: var(--danger); color: #fff;
+            font-size: 0.6rem; padding: 2px 6px;
+            border-radius: 20px; font-weight: 700;
+            letter-spacing: 0.5px; text-transform: uppercase;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* HERO */
+        .hero {
+            max-width: 1280px; margin: 0 auto;
+            padding: 56px 24px 40px;
+            text-align: center; position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute;
+            top: -50%; left: -10%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(37,99,235,0.08), transparent 70%);
+            border-radius: 50%; pointer-events: none;
+        }
+        .hero::after {
+            content: ''; position: absolute;
+            bottom: -30%; right: -10%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(16,185,129,0.08), transparent 70%);
+            border-radius: 50%; pointer-events: none;
+        }
+        .hero h1 {
+            font-size: 2.3rem; font-weight: 800;
+            color: var(--text-primary);
+            max-width: 720px; margin: 0 auto 16px;
+            line-height: 1.3; position: relative; z-index: 1;
+        }
+        .hero p {
+            font-size: 1rem; color: var(--text-secondary);
+            max-width: 560px; margin: 0 auto 32px;
+            position: relative; z-index: 1;
+        }
+        .hero-actions {
+            display: flex; gap: 12px;
+            justify-content: center; flex-wrap: wrap;
+            position: relative; z-index: 1;
+        }
+
+        .btn-main {
+            background: var(--accent); color: white; border: none;
+            padding: 12px 28px; font-size: 0.95rem; font-weight: 600;
+            border-radius: 40px; cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 10px;
+            font-family: inherit;
+        }
+        .btn-main:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -8px rgba(37,99,235,0.5);
+        }
+        .btn-success { background: var(--success); }
+        .btn-success:hover {
+            background: var(--success-hover);
+            box-shadow: 0 8px 20px -8px rgba(16,185,129,0.5);
+        }
+
+        /* FEATURES */
+        .feature-section {
+            max-width: 1280px; margin: 20px auto 40px;
+            padding: 0 24px;
+        }
+        .section-title {
+            text-align: center; margin-bottom: 32px;
+        }
+        .section-title h2 {
+            font-size: 1.8rem; font-weight: 800;
+            color: var(--text-primary); margin-bottom: 8px;
+        }
+        .section-title p {
+            color: var(--text-secondary); font-size: 0.95rem;
+        }
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+        .card {
+            background: var(--bg-card);
+            border-radius: 20px; padding: 24px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            border: 1px solid var(--border-soft);
+            transition: all 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: ''; position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            transform: scaleX(0); transform-origin: left;
+            transition: transform 0.3s;
+        }
+        .card:hover::before { transform: scaleX(1); }
+        .card:hover {
+            border-color: var(--border-color);
+            box-shadow: 0 12px 28px -10px rgba(0,0,0,0.1);
+            transform: translateY(-4px);
+        }
+        .card-icon {
+            font-size: 2rem; margin-bottom: 16px;
+            width: 56px; height: 56px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 16px; background: var(--bg-soft);
+        }
+        .card h3 {
+            font-size: 1.2rem; font-weight: 700;
+            margin-bottom: 8px; color: var(--text-primary);
+        }
+        .card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem; line-height: 1.5;
+        }
+
+        /* HOW IT WORKS */
+        .how-section {
+            max-width: 1280px; margin: 40px auto;
+            padding: 0 24px;
+        }
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        .step-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-soft);
+            border-radius: 20px;
+            padding: 28px 20px;
+            text-align: center;
+            transition: all 0.25s;
+        }
+        .step-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent);
+            box-shadow: 0 16px 32px -12px rgba(37,99,235,0.2);
+        }
+        .step-number {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: #fff; font-weight: 800;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+        }
+        .step-card h4 {
+            font-size: 1rem; font-weight: 700;
+            margin-bottom: 6px; color: var(--text-primary);
+        }
+        .step-card p {
+            font-size: 0.85rem; color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* CHAT */
+        .chat-section {
+            max-width: 848px; width: 100%;
+            margin: 40px auto;
+            padding: 0 24px;
+        }
+        .chat-section-title {
+            font-size: 1.3rem; font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .chat-section-title i { color: var(--accent); }
+        .chat-section-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .chat-section-subtitle i { color: var(--accent); }
+
+        .chat-filters {
+            display: flex; gap: 8px; margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .chat-filter {
+            background: var(--bg-soft);
+            border: 1px solid var(--border-color);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .chat-filter:hover { border-color: var(--accent); color: var(--accent); }
+        .chat-filter.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        .chat-timeline {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 24px;
+            min-height: 240px; max-height: 480px;
+            overflow-y: auto;
+            display: flex; flex-direction: column; gap: 16px;
+        }
+
+        .empty-chat {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            margin: auto 0;
+        }
+        .empty-chat i {
+            font-size: 2.5rem; color: var(--border-color);
+            margin-bottom: 12px;
+        }
+
+        .chat-node {
+            background: var(--bg-soft);
+            border-radius: 18px;
+            border: 1px solid var(--border-soft);
+            padding: 14px 18px;
+            display: flex; flex-direction: column; gap: 6px;
+            align-self: flex-start;
+            max-width: 85%;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chat-meta {
+            display: flex; justify-content: space-between;
+            gap: 24px; font-size: 0.75rem;
+        }
+        .user-anon {
+            font-weight: 600; color: var(--text-muted);
+            display: flex; align-items: center; gap: 4px;
+        }
+        .chat-time { color: var(--text-muted); }
+        .chat-content {
+            font-size: 0.9rem; color: var(--text-primary);
+            word-break: break-word; white-space: pre-line;
+        }
+
+        .admin-reply-box {
+            background: var(--accent-soft);
+            border-left: 4px solid var(--accent);
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin-top: 4px;
+            display: flex; flex-direction: column; gap: 4px;
+        }
+        .admin-tag {
+            font-size: 0.8rem; font-weight: 700;
+            color: var(--accent);
+            display: flex; align-items: center; gap: 4px;
+        }
+
+        .chat-input-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 12px 16px;
+            margin-top: 14px;
+            display: flex; gap: 12px; align-items: flex-end;
+        }
+        .main-textarea {
+            flex: 1; background: transparent; border: none;
+            outline: none; font-family: inherit;
+            font-size: 0.9rem; resize: none;
+            height: 38px; max-height: 100px;
+            padding-top: 8px; color: var(--text-primary);
+        }
+        .main-textarea::placeholder { color: var(--text-muted); }
+        .char-counter {
+            font-size: 0.7rem; color: var(--text-muted);
+            align-self: flex-end; padding-bottom: 10px;
+            white-space: nowrap;
+        }
+        .char-counter.warning { color: var(--warning); }
+        .char-counter.danger { color: var(--danger); }
+
+        .btn-main-send {
+            background: var(--accent); color: white; border: none;
+            width: 38px; height: 38px; border-radius: 12px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .btn-main-send:hover {
+            background: var(--accent-hover);
+            transform: scale(1.05);
+        }
+
+        /* CTA BANNER */
+        .cta-banner {
+            background: linear-gradient(135deg, var(--accent-soft), #e0e7ff);
+            margin: 40px 24px 32px;
+            border-radius: 32px;
+            padding: 40px 28px;
+            text-align: center;
+            border: 1px solid #c7d2fe;
+            position: relative; overflow: hidden;
+        }
+        .cta-banner::before {
+            content: ''; position: absolute;
+            top: -50%; left: -20%;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(37,99,235,0.15), transparent 70%);
+            border-radius: 50%;
+        }
+        .cta-banner h3 {
+            font-size: 1.4rem; font-weight: 800;
+            color: var(--text-primary);
+            position: relative; z-index: 1;
+        }
+        .cta-banner p {
+            color: var(--text-secondary);
+            margin-top: 4px; font-size: 0.95rem;
+            position: relative; z-index: 1;
+        }
+        .cta-actions {
+            display: flex; gap: 16px;
+            justify-content: center; flex-wrap: wrap;
+            margin-top: 20px;
+            position: relative; z-index: 1;
+        }
+        .cta-actions .btn-main { min-width: 180px; justify-content: center; }
+
+        /* FAQ */
+        .faq-section {
+            max-width: 848px; margin: 40px auto;
+            padding: 0 24px;
+        }
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-soft);
+            border-radius: 16px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        .faq-item:hover { border-color: var(--border-color); }
+        .faq-question {
+            padding: 18px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            gap: 12px;
+        }
+        .faq-question i {
+            color: var(--accent);
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+        .faq-item.open .faq-question i { transform: rotate(180deg); }
+        .faq-answer {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            padding: 0 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .faq-item.open .faq-answer {
+            max-height: 300px;
+            padding: 0 20px 18px;
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 40px 24px 20px;
+            margin-top: auto;
+        }
+        .footer-content {
+            max-width: 1280px; margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+        .footer-col h4 {
+            font-size: 0.95rem; font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+        .footer-col ul {
+            list-style: none;
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .footer-col ul a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+        .footer-col ul a:hover { color: var(--accent); }
+        .footer-bottom {
+            max-width: 1280px; margin: 0 auto;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-soft);
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none; align-items: center; justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.25s ease;
+        }
+        .modal-overlay.show { display: flex; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-card {
+            background: var(--bg-card);
+            border-radius: 28px;
+            max-width: 420px; width: 100%;
+            padding: 32px 28px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+        .modal-card .icon-big {
+            font-size: 3rem; color: var(--accent);
+            margin-bottom: 12px;
+        }
+        .modal-card h2 {
+            font-size: 1.3rem; font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        .modal-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem; margin-bottom: 20px;
+        }
+        .modal-actions {
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .modal-actions .btn-main {
+            width: 100%; justify-content: center;
+        }
+        .modal-close-btn {
+            background: var(--bg-soft);
+            border: none; padding: 12px;
+            border-radius: 14px;
+            font-size: 0.9rem; font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer; transition: all 0.2s;
+            font-family: inherit;
+        }
+        .modal-close-btn:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        /* PIN MODAL */
+        .pin-modal-card { max-width: 380px; }
+        .pin-input-group {
+            background: var(--bg-soft);
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            padding: 4px 16px;
+            margin-bottom: 16px;
+            display: flex; align-items: center; gap: 12px;
+            transition: border-color 0.2s;
+        }
+        .pin-input-group:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+        }
+        .pin-input-group i { color: var(--text-muted); }
+        .pin-input-group input {
+            flex: 1; background: transparent;
+            border: none; outline: none;
+            padding: 14px 0; font-size: 1rem;
+            font-family: inherit;
+            color: var(--text-primary);
+            letter-spacing: 4px;
+            font-weight: 600;
+        }
+
+        /* TOAST */
+        .toast-container {
+            position: fixed;
+            bottom: 24px; right: 24px;
+            z-index: 2000;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent);
+            border-radius: 14px;
+            padding: 14px 18px;
+            box-shadow: 0 12px 32px -8px rgba(0,0,0,0.2);
+            display: flex; align-items: center; gap: 12px;
+            min-width: 260px; max-width: 360px;
+            animation: toastIn 0.3s ease;
+        }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast.warning { border-left-color: var(--warning); }
+        .toast-icon { font-size: 1.2rem; }
+        .toast.success .toast-icon { color: var(--success); }
+        .toast.error .toast-icon { color: var(--danger); }
+        .toast.warning .toast-icon { color: var(--warning); }
+        .toast.info .toast-icon { color: var(--accent); }
+        .toast-message {
+            font-size: 0.85rem; font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* BACK TO TOP */
+        .back-to-top {
+            position: fixed;
+            bottom: 24px; left: 24px;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #fff; border: none;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+            box-shadow: 0 8px 20px -4px rgba(37,99,235,0.4);
+            opacity: 0; visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s;
+            z-index: 900;
+        }
+        .back-to-top.show {
+            opacity: 1; visibility: visible;
+            transform: translateY(0);
+        }
+        .back-to-top:hover {
+            background: var(--accent-hover);
+            transform: translateY(-3px);
+        }
+
+        /* ANIMATIONS */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 680px) {
+            .navbar { flex-direction: column; align-items: center; }
+            .hero h1 { font-size: 1.7rem; }
+            .chat-node { max-width: 95%; }
+            .cta-banner { margin: 20px 12px 24px; padding: 28px 16px; }
+            .cta-actions .btn-main { min-width: 140px; font-size: 0.85rem; padding: 10px 20px; }
+            .section-title h2 { font-size: 1.4rem; }
+            .toast-container { left: 16px; right: 16px; bottom: 16px; }
+            .back-to-top { bottom: 16px; left: 16px; }
+            .footer-content { grid-template-columns: 1fr; gap: 24px; }
+        }
+    </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="brand">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M8 14l2 2 4-4"/></svg>
-    <span>Rekap Digital</span>
-  </div>
-  <div style="display:flex;gap:10px;">
-    <div style="display:flex;gap:8px;">
-      <div class="btn-icon" id="btn-schedule" title="Jadwal Otomatis" style="display:none;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/><path d="M16 3l2 2"/></svg>
-      </div>
-      <div class="btn-icon" id="btn-manual" title="Panduan Penggunaan">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      </div>
-    </div>
-    <div class="btn-icon" id="btn-logout" style="display:none;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
-    </div>
-  </div>
-</div>
-
-<div class="view active" id="view-auth">
-  <div class="card">
-    <h1 class="page-title">Selamat Datang</h1>
-    <p class="subtitle">Rekap Digital membantu mencatat kehadiran, jam, dan uang secara rapi dalam satu aplikasi. Data tersimpan otomatis dan bisa direkap atau diekspor kapan saja.</p>
-    <div class="tabs">
-      <div class="tab active" data-tab="login">Masuk</div>
-      <div class="tab" data-tab="register">Daftar</div>
-    </div>
-
-    <form id="form-login">
-      <div class="field">
-        <label>Email</label>
-        <input type="email" id="login-email" required autocomplete="email">
-      </div>
-      <div class="field">
-        <label>Kata Sandi</label>
-        <div class="password-wrap">
-          <input type="password" id="login-password" required autocomplete="current-password">
-          <button type="button" class="password-toggle" data-target="login-password" aria-label="Tampilkan kata sandi" title="Tampilkan kata sandi">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></svg>
-          </button>
+<header>
+    <nav class="navbar">
+        <div class="logo" onclick="location.href='index.html'">
+            <span style="font-size: 20px; font-weight:900; color:var(--text-primary);">Class Battle X Star Tools</span>
         </div>
-      </div>
-      <button type="submit" class="btn">Masuk</button>
-    </form>
+        <ul class="nav-menu">
+            <li><a href="friend.html"><i class="fas fa-user-group"></i> Teman</a></li>
+            <li><a href="#" id="pinMenuBtn"><i class="fas fa-key"></i> Masukkan PIN</a></li>
+            <li>
+                <a href="#" id="loginMenuBtn" class="btn-login-nav">
+                    <i class="fas fa-right-to-bracket"></i> Login
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
 
-    <form id="form-register" style="display:none;">
-      <div class="field">
-        <label>Nama Lengkap</label>
-        <input type="text" id="reg-nama" required>
-      </div>
-      <div class="field">
-        <label>Email</label>
-        <input type="email" id="reg-email" required autocomplete="email">
-      </div>
-      <div class="field">
-        <label>Kata Sandi</label>
-        <div class="password-wrap">
-          <input type="password" id="reg-password" required autocomplete="new-password" minlength="6">
-          <button type="button" class="password-toggle" data-target="reg-password" aria-label="Tampilkan kata sandi" title="Tampilkan kata sandi">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></svg>
-          </button>
+<main>
+    <!-- HERO -->
+    <div class="hero">
+        <h1>Kompetisi kelas lebih seru dengan <span style="color:#2563eb;">Class Battle</span></h1>
+        <p>Guru siapkan soal, murid bertarung di papan peringkat. Belajar kelompok makin kompetitif dan transparan.</p>
+        
+        <div class="hero-actions">
+            <button class="btn-main" id="btnStartBattle"><i class="fas fa-play"></i> Mulai Battle</button>
+            <button class="btn-main btn-success" id="btnCreateRoom"><i class="fas fa-chalkboard-user"></i> Buat Room</button>
         </div>
-      </div>
-      <button type="submit" class="btn">Daftar</button>
-    </form>
+    </div>
 
-    <button type="button" class="auth-history-btn" id="btn-auth-history">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-      <span>Riwayat Login</span>
-    </button>
-  </div>
+    <!-- FEATURES -->
+    <div class="feature-section fade-up">
+        <div class="section-title">
+            <h2>Fitur Unggulan</h2>
+            <p>Semua yang kamu butuhkan untuk bikin kelas makin kompetitif</p>
+        </div>
+        <div class="grid-cards">
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-trophy" style="color:#eab308;"></i></div>
+                <h3>Live Leaderboard <span class="badge-new">Hot</span></h3>
+                <p>Skor terupdate tiap kali siswa menjawab. Sistem peringkat real-time antar kelas.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-users" style="color:#2563eb;"></i></div>
+                <h3>Mode Grup & Individu</h3>
+                <p>Battle per tim atau duel personal. Cocok untuk kuis harian atau uji coba tryout.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-comments" style="color:#06b6d4;"></i></div>
+                <h3>Chat & Saran</h3>
+                <p>Kirim kritik dan saran langsung ke tim developer untuk perbaikan.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-mobile-screen-button" style="color:#ec4899;"></i></div>
+                <h3>Mobile Friendly</h3>
+                <p>Akses dari HP, tablet, atau laptop. Belajar di mana saja tanpa ribet.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div class="how-section fade-up">
+        <div class="section-title">
+            <h2>Cara Kerja</h2>
+            <p>Mulai battle hanya dalam 4 langkah mudah</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h4>Guru Buat Room</h4>
+                <p>Guru membuat room dengan soal dan durasi yang ditentukan.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h4>Bagikan PIN</h4>
+                <p>Bagikan PIN room ke murid untuk bergabung ke battle.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h4>Murid Bertarung</h4>
+                <p>Murid menjawab soal dan skor terupdate di leaderboard.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">4</div>
+                <h4>Lihat Hasil</h4>
+                <p>Guru dan murid melihat hasil akhir serta analitik performa.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHAT SECTION -->
+    <div class="chat-section fade-up">
+        <div class="chat-section-title">
+            <i class="fas fa-comments"></i>
+            <span>Chat & Saran</span>
+        </div>
+        <div class="chat-section-subtitle">
+            <i class="fas fa-user-secret"></i>
+            <span>Semua pesan otomatis anonim — identitas kamu aman</span>
+        </div>
+
+        <div class="chat-filters">
+            <button class="chat-filter active" data-filter="all">Semua</button>
+            <button class="chat-filter" data-filter="saran">Saran</button>
+            <button class="chat-filter" data-filter="kritik">Kritik</button>
+            <button class="chat-filter" data-filter="pertanyaan">Pertanyaan</button>
+        </div>
+
+        <div class="chat-timeline" id="chatTimeline">
+            <div class="empty-chat" id="emptyState">
+                <i class="fas fa-message-slash"></i>
+                <p>Belum ada saran atau kritik yang masuk</p>
+            </div>
+        </div>
+
+        <div class="chat-input-box">
+            <textarea id="userInputText" class="main-textarea" placeholder="Tulis saran atau kritik di sini..." maxlength="300"></textarea>
+            <span class="char-counter" id="charCounter">0/300</span>
+            <button class="btn-main-send" id="btnSendMain"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq-section fade-up">
+        <div class="section-title">
+            <h2>Pertanyaan Umum</h2>
+            <p>Hal-hal yang sering ditanyakan pengguna</p>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Apakah Class Battle gratis?</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>Ya! Class Battle 100% gratis untuk semua guru dan siswa. Tidak ada biaya tersembunyi.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Berapa jumlah maksimal pemain dalam satu room?</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>Satu room bisa menampung hingga 50 pemain sekaligus. Cocok untuk satu kelas penuh.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Apakah bisa digunakan tanpa internet?</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>Saat ini Class Battle memerlukan koneksi internet untuk sinkronisasi real-time. Namun, kami sedang mengembangkan mode offline.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Bagaimana cara membuat soal sendiri?</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>Guru bisa membuat soal melalui menu "Buat Room". Tersedia berbagai format soal: pilihan ganda, benar/salah, dan isian singkat.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA BANNER -->
+    <div class="cta-banner">
+        <h3>Ingin mencoba battle di kelas kamu?</h3>
+        <p>Pilih salah satu opsi di bawah ini untuk memulai petualangan belajarmu!</p>
+        <div class="cta-actions">
+            <button class="btn-main" id="ctaStartBattle"><i class="fas fa-play"></i> Mulai Battle</button>
+            <button class="btn-main btn-success" id="ctaCreateRoom"><i class="fas fa-chalkboard-user"></i> Buat Room</button>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-col">
+            <h4>Class Battle</h4>
+            <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.6;">
+                Platform kompetisi kelas yang bikin belajar jadi seru dan kompetitif.
+            </p>
+        </div>
+        <div class="footer-col">
+            <h4>Navigasi</h4>
+            <ul>
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="friend.html">Teman</a></li>
+                <li><a href="play.html">Mulai Battle</a></li>
+                <li><a href="game.html">Buat Room</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Bantuan</h4>
+            <ul>
+                <li><a href="#">Panduan Pengguna</a></li>
+                <li><a href="#">Kebijakan Privasi</a></li>
+                <li><a href="#">Syarat & Ketentuan</a></li>
+                <li><a href="#">Hubungi Kami</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Kontak</h4>
+            <ul>
+                <li><a href="mailto:support@classbattle.id"><i class="fas fa-envelope"></i> support@classbattle.id</a></li>
+                <li><a href="#"><i class="fas fa-map-marker-alt"></i> Jakarta, Indonesia</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <span>© 2026 Class Battle Ecosystem. All rights reserved. Made with <i class="fas fa-heart" style="color:#ef4444;"></i> in Indonesia</span>
+    </div>
+</footer>
+
+<!-- MODAL PILIHAN -->
+<div class="modal-overlay" id="choiceModal">
+    <div class="modal-card">
+        <div class="icon-big"><i class="fas fa-rocket"></i></div>
+        <h2>Pilih Aksi Kamu</h2>
+        <p>Mau ikut battle sebagai murid atau menjadi guru yang membuat room?</p>
+        <div class="modal-actions">
+            <button class="btn-main" id="modalStartBattle"><i class="fas fa-play"></i> Ikut Battle (Murid)</button>
+            <button class="btn-main btn-success" id="modalCreateRoom"><i class="fas fa-chalkboard-user"></i> Buat Room (Guru)</button>
+            <button class="modal-close-btn" id="modalCloseBtn"><i class="fas fa-times"></i> Tutup</button>
+        </div>
+    </div>
 </div>
 
-<div class="view dashboard-view" id="view-dashboard">
-  <div class="card">
-    <div class="user-info">
-      <div class="nama" id="dash-nama"></div>
-      <div class="stat-box">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
-        <span>Total Hadir: <span class="stat-value" id="dash-total-hadir">0</span> kali</span>
-      </div>
+<!-- PIN MODAL -->
+<div class="modal-overlay" id="pinModal">
+    <div class="modal-card pin-modal-card">
+        <div class="icon-big"><i class="fas fa-key"></i></div>
+        <h2>Masukkan PIN Arena</h2>
+        <p>Masukkan PIN yang diberikan guru untuk bergabung ke battle</p>
+        <div class="pin-input-group">
+            <i class="fas fa-lock"></i>
+            <input type="text" id="pinInputField" placeholder="PIN" maxlength="8" inputmode="numeric">
+        </div>
+        <div class="modal-actions">
+            <button class="btn-main" id="btnConfirmPin"><i class="fas fa-check"></i> Gabung Arena</button>
+            <button class="modal-close-btn" id="pinModalCloseBtn">Batal</button>
+        </div>
     </div>
-    <div class="field" style="margin-bottom:10px;">
-      <label>Pilih Bulan</label>
-      <input type="month" id="input-bulan">
-    </div>
-    <p class="hint" style="margin-bottom:14px;">Ketuk tanggal untuk mengatur jam. Nominal dapat terisi otomatis berdasarkan jadwal atau diatur manual jika melewati batas waktu.</p>
-    <div class="table-scroll">
-      <table class="attendance-wide">
-        <thead id="thead-absensi"></thead>
-        <tbody id="tbody-absensi"></tbody>
-      </table>
-    </div>
-    <div class="today-note" id="today-note">
-      <div class="today-note-head"><div class="today-note-title">Catatan Hari Ini</div><button type="button" class="note-toggle" id="toggle-today-note">Sembunyikan</button></div>
-      <div class="today-times">
-        <div class="time-summary"><small>Jam Masuk</small><strong id="today-in">—</strong></div>
-        <div class="time-summary"><small>Jam Pulang</small><strong id="today-out">—</strong></div>
-      </div>
-    </div>
-    <button type="button" class="today-note-reveal" id="reveal-today-note">Tampilkan Catatan Hari Ini</button>
-    <div class="export-row">
-      <button type="button" class="btn secondary" id="btn-export-excel">Export Excel</button>
-      <button type="button" class="btn secondary" id="btn-export-pdf">Export PDF</button>
-    </div>
-  </div>
 </div>
 
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
 
-<div class="modal-overlay" id="time-modal-overlay">
-  <div class="modal-box" style="text-align:left;">
-    <h3 id="time-modal-title" style="margin-bottom:16px;text-align:center;">Atur Jam Masuk</h3>
-    <div class="field">
-      <label>Tanggal</label>
-      <input type="text" id="time-modal-date-display" disabled>
-    </div>
-    <div class="field" style="margin-bottom:20px;">
-      <label>Jam Hadir</label>
-      <input type="time" id="time-modal-input">
-    </div>
-    <div class="btn-row">
-      <button class="btn secondary" id="time-modal-cancel" type="button">Batal</button>
-      <button class="btn" id="time-modal-save" type="button">Simpan</button>
-    </div>
-  </div>
-</div>
+<!-- BACK TO TOP -->
+<button class="back-to-top" id="backToTop" title="Kembali ke atas">
+    <i class="fas fa-arrow-up"></i>
+</button>
 
-<div class="modal-overlay" id="amount-modal-overlay">
-  <div class="modal-box" style="text-align:left;">
-    <h3 style="margin-bottom:16px;text-align:center;">Atur Nominal Kehadiran</h3>
-    <div class="field">
-      <label>Tanggal</label>
-      <input type="text" id="amount-modal-date-display" disabled>
-    </div>
-    <div class="field" style="margin-bottom:6px;">
-      <label>Nominal</label>
-      <input type="text" id="amount-modal-input" inputmode="numeric" autocomplete="off" placeholder="Contoh: 10.000">
-      <div class="amount-help">Masukkan nominal yang diterima jika hadir pada tanggal ini.</div>
-    </div>
-    <div class="btn-row">
-      <button class="btn secondary" id="amount-modal-cancel" type="button">Batal</button>
-      <button class="btn" id="amount-modal-save" type="button">Simpan</button>
-    </div>
-  </div>
-</div>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-<div class="modal-overlay" id="manual-overlay">
-  <div class="modal-box" style="max-width:380px;text-align:left;">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:26px;height:26px;color:var(--primary);margin:0;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      <h3 style="margin:0;">Panduan Penggunaan</h3>
-    </div>
-    <div style="font-size:14px;color:var(--text);line-height:1.6;margin-bottom:18px;">
-      <p style="margin-bottom:10px;"><strong>1. Daftar akun.</strong> Isi nama lengkap, email, dan kata sandi. Setelah berhasil masuk, sesi akun akan dipertahankan oleh aplikasi selama kamu tidak memilih Keluar.</p>
-      <p style="margin-bottom:10px;"><strong>2. Catat kehadiran.</strong> Ketuk tanggal yang ingin dicatat, lalu atur jam masuk atau jam pulang. Data langsung tersimpan ke akunmu.</p>
-      <p style="margin-bottom:10px;"><strong>3. Jadwal otomatis.</strong> Atur batas waktu dan nominal standar di menu Jadwal. Jika jam masuk berada sebelum atau tepat pada batas waktu, nominal standar akan otomatis masuk.</p>
-      <p style="margin-bottom:10px;"><strong>4. Terlambat.</strong> Jika jam masuk melewati batas waktu, nominal otomatis dikosongkan (0) sehingga kamu perlu mengetuk kolom nominal dan mengisinya secara manual.</p>
-      <p style="margin-bottom:10px;"><strong>5. Ubah data.</strong> Jam dan nominal yang sudah tercatat tetap bisa diubah secara manual dengan mengetuk sel pada tabel.</p>
-      <p style="margin-bottom:10px;"><strong>6. Rekap dan export.</strong> Pilih bulan untuk melihat seluruh tanggal. Export Excel/PDF menghasilkan format nama, tanggal 1–31, dan kolom rekapan hadir serta uang.</p>
-      <p style="margin-bottom:0;"><strong>7. Riwayat login.</strong> Menu Riwayat Login menampilkan beberapa sesi login terakhir pada perangkat ini.</p>
-    </div>
-    <button id="manual-close">Mengerti</button>
-  </div>
-</div>
-
-<div class="modal-overlay" id="schedule-overlay">
-  <div class="modal-box" style="text-align:left;">
-    <h3 style="margin-bottom:8px;text-align:center;">Jadwal Otomatis</h3>
-    <p class="amount-help" style="margin-bottom:18px;text-align:center;">Atur batas waktu kehadiran dan nominal yang akan diberikan otomatis.</p>
-    <div class="field"><label>Batas Waktu</label><input type="time" id="schedule-cutoff" value="07:00"></div>
-    <div class="field"><label>Nominal Standar</label><input type="text" id="schedule-amount" inputmode="numeric" placeholder="Contoh: 10.000" autocomplete="off"><div class="amount-help">Jika jam masuk ≤ batas waktu, nominal ini otomatis terisi.</div></div>
-    <div class="btn-row"><button class="btn secondary" id="schedule-cancel" type="button">Batal</button><button class="btn" id="schedule-save" type="button">Simpan</button></div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="history-overlay">
-  <div class="modal-box" style="text-align:left;max-width:410px;">
-    <h3 style="margin-bottom:6px;text-align:center;">Riwayat Login</h3>
-    <p class="amount-help" style="margin-bottom:16px;text-align:center;">Riwayat tersimpan di perangkat ini.</p>
-    <div id="login-history-list"></div>
-    <button class="btn secondary" id="history-close" type="button" style="margin-top:14px;">Tutup</button>
-  </div>
-</div>
-
-<div class="modal-overlay" id="logout-overlay">
-  <div class="modal-box" style="max-width:370px;">
-    <div style="width:48px;height:48px;border-radius:50%;background:#fef2f2;color:#dc2626;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
-    </div>
-    <h3>Yakin ingin keluar?</h3>
-    <p>Sesi akun akan ditutup dan kamu perlu masuk kembali untuk membuka Rekap Digital.</p>
-    <div class="btn-row" style="margin-top:16px;"><button class="btn secondary" id="logout-cancel" type="button">Batal</button><button class="btn" id="logout-confirm" type="button">Keluar</button></div>
-  </div>
-</div>
-
-<div class="loading-overlay" id="loading-overlay">
-  <div class="spinner"></div>
-</div>
-
-<div class="modal-overlay" id="modal-overlay">
-  <div class="modal-box" id="modal-box">
-    <svg id="modal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"></svg>
-    <h3 id="modal-title"></h3>
-    <p id="modal-message"></p>
-    <button id="modal-close">Oke</button>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
 <script>
-const ICON_OK = '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>';
-const ICON_ERR = '<circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/>';
+    const firebaseConfig = {
+        apiKey: "AIzaSyCBVjPohvfPZYs8DfGtzEdi5j4Svb3UvLI",
+        authDomain: "class-battle-19f8c.firebaseapp.com",
+        databaseURL: "https://class-battle-19f8c-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "class-battle-19f8c",
+        storageBucket: "class-battle-19f8c.firebasestorage.app",
+        messagingSenderId: "586414902582",
+        appId: "1:586414902582:web:1fb3398c53c8d8e8d0b797",
+        measurementId: "G-ZKTK9S7LVS"
+    };
 
-function showModal(type, title, message){
-  document.getElementById("modal-icon").innerHTML = type === "ok" ? ICON_OK : ICON_ERR;
-  document.getElementById("modal-box").className = "modal-box " + (type === "ok" ? "ok" : "err");
-  document.getElementById("modal-title").textContent = title;
-  document.getElementById("modal-message").textContent = message;
-  document.getElementById("modal-overlay").classList.add("active");
-}
-document.getElementById("modal-close").addEventListener("click", function(){
-  document.getElementById("modal-overlay").classList.remove("active");
-});
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+    const db = firebase.database();
 
-document.getElementById("btn-manual").addEventListener("click", function(){
-  document.getElementById("manual-overlay").classList.add("active");
-});
-document.getElementById("manual-close").addEventListener("click", function(){
-  document.getElementById("manual-overlay").classList.remove("active");
-});
+    let currentUserUID = null;
+    let currentUserName = "Anonim";
+    let myCustomUid = null;
+    let currentFilter = "all";
 
-function setLoading(state){
-  document.getElementById("loading-overlay").classList.toggle("active", state);
-}
+    function escapeHtml(str) {
+        return str ? str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;') : '';
+    }
 
-function showView(id){
-  document.querySelectorAll(".view").forEach(function(v){ v.classList.remove("active"); });
-  document.getElementById(id).classList.add("active");
-}
+    // ========== TOAST ==========
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-circle',
+            warning: 'fa-exclamation-triangle',
+            info: 'fa-info-circle'
+        };
+        toast.innerHTML = `
+            <i class="fas ${icons[type]} toast-icon"></i>
+            <span class="toast-message">${message}</span>
+        `;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(40px)';
+            toast.style.transition = 'all 0.3s';
+            setTimeout(() => toast.remove(), 300);
+        }, 3500);
+    }
 
-function mapAuthError(err){
-  const code = err && err.code;
-  const map = {
-    "auth/email-already-in-use": "Email ini sudah terdaftar.",
-    "auth/invalid-email": "Format email tidak valid.",
-    "auth/weak-password": "Kata sandi minimal 6 karakter.",
-    "auth/user-not-found": "Akun tidak ditemukan.",
-    "auth/wrong-password": "Kata sandi salah.",
-    "auth/invalid-credential": "Email atau kata sandi salah.",
-    "auth/too-many-requests": "Terlalu banyak percobaan, coba lagi nanti.",
-    "auth/operation-not-allowed": "Metode Email/Password belum diaktifkan. Buka Firebase Console > Authentication > Sign-in method, lalu aktifkan Email/Password.",
-    "auth/network-request-failed": "Koneksi internet bermasalah, coba lagi.",
-    "PERMISSION_DENIED": "Akses database ditolak. Pastikan Rules Realtime Database sudah dipasang dan dipublish di Firebase Console.",
-    "timeout": "Permintaan terlalu lama. Cek koneksi internet, cocokkan databaseURL di kode dengan yang ada di Firebase Console, dan pastikan Rules sudah dipublish."
-  };
-  if(map[code]) return map[code];
-  return (code || "error") + ": " + ((err && err.message) || "Terjadi kesalahan, silakan coba lagi.");
-}
+    // ========== AMBIL CUSTOM UID ==========
+    async function getMyCustomUid(firebaseUid) {
+        const mappingSnap = await db.ref('uid_mapping/' + firebaseUid).once('value');
+        let customUid = mappingSnap.val();
+        if (customUid) return customUid;
 
-function withTimeout(promise, ms){
-  return new Promise(function(resolve, reject){
-    let settled = false;
-    const timer = setTimeout(function(){
-      if(settled) return;
-      settled = true;
-      reject({ code: "timeout" });
-    }, ms);
-    promise.then(function(result){
-      if(settled) return;
-      settled = true;
-      clearTimeout(timer);
-      resolve(result);
-    }, function(err){
-      if(settled) return;
-      settled = true;
-      clearTimeout(timer);
-      reject(err);
+        const userSnap = await db.ref('users').orderByChild('firebaseUID').equalTo(firebaseUid).once('value');
+        if (userSnap.exists()) {
+            const entries = Object.entries(userSnap.val());
+            const userData = entries[0][1];
+            if (userData && userData.uid) {
+                await db.ref('uid_mapping/' + firebaseUid).set(userData.uid);
+                return userData.uid;
+            }
+        }
+        return null;
+    }
+
+    // ========== CEK SESI LOGIN (cuma buat navbar) ==========
+    auth.onAuthStateChanged(async (user) => {
+        const loginMenuBtn = document.getElementById("loginMenuBtn");
+        if (!loginMenuBtn) return;
+
+        if (user) {
+            currentUserUID = user.uid;
+            myCustomUid = await getMyCustomUid(currentUserUID);
+
+            if (!myCustomUid) {
+                loginMenuBtn.href = "account.html";
+                loginMenuBtn.innerHTML = '<i class="fas fa-user"></i> Akun';
+                loginMenuBtn.className = 'nav-profile-btn';
+                loginMenuBtn.style.background = '#2563eb';
+                return;
+            }
+
+            loginMenuBtn.href = "account.html";
+
+            db.ref("users/" + myCustomUid).once("value").then((snap) => {
+                const userData = snap.val() || {};
+                // currentUserName cuma dipakai di navbar, BUKAN di chat
+                currentUserName = userData.name || (user.email ? user.email.split('@')[0] : "Anonim");
+
+                loginMenuBtn.className = 'nav-profile-btn';
+
+                if (userData.avatarData) {
+                    loginMenuBtn.innerHTML = `<img src="${userData.avatarData}" alt="PP">`;
+                    loginMenuBtn.style.background = "transparent";
+                } else {
+                    const initial = currentUserName.charAt(0).toUpperCase();
+                    loginMenuBtn.innerHTML = initial;
+                    loginMenuBtn.style.background = "#2563eb";
+                }
+            }).catch(err => console.error("Gagal sinkronisasi nama navbar:", err));
+        } else {
+            currentUserUID = null;
+            currentUserName = "Anonim";
+            myCustomUid = null;
+            loginMenuBtn.href = "login.html";
+            loginMenuBtn.innerHTML = '<i class="fas fa-right-to-bracket"></i> Login';
+            loginMenuBtn.className = 'btn-login-nav';
+            loginMenuBtn.removeAttribute("style");
+        }
     });
-  });
-}
 
-document.querySelectorAll(".tab").forEach(function(tab){
-  tab.addEventListener("click", function(){
-    document.querySelectorAll(".tab").forEach(function(t){ t.classList.remove("active"); });
-    tab.classList.add("active");
-    const isLogin = tab.dataset.tab === "login";
-    document.getElementById("form-login").style.display = isLogin ? "block" : "none";
-    document.getElementById("form-register").style.display = isLogin ? "none" : "block";
-  });
-});
+    // ========== NAVIGASI ==========
+    function goToPlay() {
+        const savedPin = localStorage.getItem('star_battle_pin');
+        const savedKey = localStorage.getItem('star_battle_key');
+        if (savedPin && savedKey) {
+            window.location.href = 'play.html';
+        } else {
+            window.location.href = 'player.html';
+        }
+    }
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDcZ5ETfq-O_8kFahlv-OxymGxfbpDfDbg",
-  authDomain: "absensi-guru-bdfcf.firebaseapp.com",
-  databaseURL: "https://absensi-guru-bdfcf-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "absensi-guru-bdfcf",
-  storageBucket: "absensi-guru-bdfcf.firebasestorage.app",
-  messagingSenderId: "1087703601847",
-  appId: "1:1087703601847:web:68bac546bb1b7355e7f332",
-  measurementId: "G-60Y9GZFY7W"
-};
+    function goToSoal() {
+        window.location.href = 'game.html';
+    }
 
-let auth = null;
-let db = null;
+    // ========== EVENT LISTENERS ==========
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('btnStartBattle')?.addEventListener('click', goToPlay);
+        document.getElementById('ctaStartBattle')?.addEventListener('click', goToPlay);
+        document.getElementById('modalStartBattle')?.addEventListener('click', goToPlay);
 
-try{
-  firebase.initializeApp(firebaseConfig);
-  auth = firebase.auth();
-  db = firebase.database();
-} catch(e){
-  showModal("err", "Firebase Belum Disetel", "Isi dulu databaseURL di dalam kode dengan URL Realtime Database project kamu.");
-}
+        document.getElementById('btnCreateRoom')?.addEventListener('click', goToSoal);
+        document.getElementById('ctaCreateRoom')?.addEventListener('click', goToSoal);
+        document.getElementById('modalCreateRoom')?.addEventListener('click', goToSoal);
 
-if(!auth || !db){
-  document.getElementById("form-login").addEventListener("submit", function(e){
-    e.preventDefault();
-    showModal("err", "Firebase Belum Disetel", "Isi dulu databaseURL di dalam kode dengan URL Realtime Database project kamu.");
-  });
-  document.getElementById("form-register").addEventListener("submit", function(e){
-    e.preventDefault();
-    showModal("err", "Firebase Belum Disetel", "Isi dulu databaseURL di dalam kode dengan URL Realtime Database project kamu.");
-  });
-}
+        // PIN Menu -> buka modal
+        document.getElementById('pinMenuBtn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('pinModal').classList.add('show');
+            setTimeout(() => document.getElementById('pinInputField').focus(), 100);
+        });
 
-if(auth && db){
+        // Konfirmasi PIN
+        document.getElementById('btnConfirmPin')?.addEventListener('click', () => {
+            const pin = document.getElementById('pinInputField').value.trim();
+            if (pin.length >= 4) {
+                localStorage.setItem('star_battle_pin', pin);
+                showToast('PIN tersimpan! Mengarahkan ke arena...', 'success');
+                setTimeout(() => window.location.href = 'play.html', 800);
+            } else {
+                showToast('Masukkan PIN yang valid (minimal 4 karakter)!', 'error');
+            }
+        });
 
-const lastEmail=localStorage.getItem("rekap_last_email");
-if(lastEmail) document.getElementById("login-email").value=lastEmail;
-const HARI = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-let currentUserData = null;
-let attendanceCache = {};
-let editingDateKey = null;
-let editingField = "inTime";
-const SCHEDULE_KEY="rekap_digital_schedule";
-const LOGIN_HISTORY_KEY="rekap_digital_login_history";
+        document.getElementById('pinInputField')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') document.getElementById('btnConfirmPin').click();
+        });
 
-function getSchedule(){
-  try{return JSON.parse(localStorage.getItem(SCHEDULE_KEY)||'{"cutoff":"07:00","amount":0}');}catch(e){return {cutoff:"07:00",amount:0};}
-}
-function formatNominalInput(value){
-  const n=Number(String(value==null?"":value).replace(/[^0-9]/g,""));
-  return n>0?n.toLocaleString("id-ID"):"";
-}
-function parseNominal(value){return Number(String(value==null?"":value).replace(/[^0-9]/g,""))||0;}
-function timeIsOnTime(time,cutoff){return String(time||"")<=String(cutoff||"07:00");}
-function autoAmountForTime(time){
-  const cfg=getSchedule();
-  if(!timeIsOnTime(time,cfg.cutoff)) return 0;
-  return Number(cfg.amount)||0;
-}
-function saveLoginHistory(user,restored){
-  if(!user)return;
-  let list=[]; try{list=JSON.parse(localStorage.getItem(LOGIN_HISTORY_KEY)||'[]');}catch(e){}
-  const item={email:user.email||"",time:Date.now(),type:restored?"Sesi dipulihkan":"Login berhasil"};
-  list.unshift(item); list=list.slice(0,10); localStorage.setItem(LOGIN_HISTORY_KEY,JSON.stringify(list));
-}
-function renderLoginHistory(){
-  const el=document.getElementById("login-history-list"); let list=[];
-  try{list=JSON.parse(localStorage.getItem(LOGIN_HISTORY_KEY)||'[]');}catch(e){}
-  if(!list.length){el.innerHTML='<div class="empty-history">Belum ada riwayat login.</div>';return;}
-  el.innerHTML=list.map(function(x){
-    const d=new Date(x.time);
-    const waktu=d.toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"})+" • "+d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"});
-    return '<div class="login-history-item"><div class="login-history-main"><div class="login-history-email">'+escapeHtml(x.email)+'</div><div class="login-history-time">'+escapeHtml(waktu)+'</div></div><div style="font-size:11px;color:var(--primary);font-weight:700;white-space:nowrap;">'+escapeHtml(x.type||"Login")+'</div></div>';
-  }).join("");
-}
-function openScheduleModal(){
-  const cfg=getSchedule();
-  document.getElementById("schedule-cutoff").value=cfg.cutoff||"07:00";
-  document.getElementById("schedule-amount").value=cfg.amount?formatNominalInput(cfg.amount):"";
-  document.getElementById("schedule-overlay").classList.add("active");
-}
+        document.getElementById('pinModalCloseBtn')?.addEventListener('click', () => {
+            document.getElementById('pinModal').classList.remove('show');
+        });
 
+        document.getElementById('pinModal')?.addEventListener('click', (e) => {
+            if (e.target.id === 'pinModal') e.target.classList.remove('show');
+        });
 
-function pad2(n){ return String(n).padStart(2, "0"); }
+        // MODAL pilihan
+        const modal = document.getElementById('choiceModal');
+        document.getElementById('modalCloseBtn')?.addEventListener('click', () => modal.classList.remove('show'));
+        modal?.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('show');
+        });
+        document.querySelector('.cta-banner')?.addEventListener('click', (e) => {
+            if (e.target.closest('.cta-actions') || e.target.closest('button')) return;
+            modal.classList.add('show');
+        });
 
-function todayKey(){
-  const d = new Date();
-  return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
-}
+        // FAQ
+        document.querySelectorAll('.faq-question').forEach(q => {
+            q.addEventListener('click', () => {
+                q.parentElement.classList.toggle('open');
+            });
+        });
 
-function nowHHMM(){
-  const d = new Date();
-  return pad2(d.getHours()) + ":" + pad2(d.getMinutes());
-}
+        // Filter Chat
+        document.querySelectorAll('.chat-filter').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.chat-filter').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                renderChats();
+            });
+        });
 
-document.getElementById("form-login").addEventListener("submit", function(e){
-  e.preventDefault();
-  const email = document.getElementById("login-email").value.trim();
-  const password = document.getElementById("login-password").value;
-  localStorage.setItem("rekap_last_email", email);
-  setLoading(true);
-  withTimeout(auth.signInWithEmailAndPassword(email, password), 15000)
-    .catch(function(err){
-      setLoading(false);
-      showModal("err", "Gagal Masuk", mapAuthError(err));
+        // Back to top
+        const backTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) backTop.classList.add('show');
+            else backTop.classList.remove('show');
+        });
+        backTop?.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Fade-up animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
     });
-});
 
-document.getElementById("form-register").addEventListener("submit", function(e){
-  e.preventDefault();
-  const nama = document.getElementById("reg-nama").value.trim();
-  const email = document.getElementById("reg-email").value.trim();
-  const password = document.getElementById("reg-password").value;
-  localStorage.setItem("rekap_last_email", email);
-  setLoading(true);
-  withTimeout(auth.createUserWithEmailAndPassword(email, password), 15000)
-    .then(function(cred){
-      return withTimeout(db.ref("users/" + cred.user.uid).set({
-        nama: nama,
-        createdAt: Date.now()
-      }), 15000);
-    })
-    .catch(function(err){
-      setLoading(false);
-      showModal("err", "Gagal Daftar", mapAuthError(err));
-    });
-});
+    // =======================================================
+    // CHAT — SELALU ANONIM (walau user login)
+    // =======================================================
+    const btnSendMain = document.getElementById('btnSendMain');
+    const tx = document.getElementById('userInputText');
+    const charCounter = document.getElementById('charCounter');
 
-document.getElementById("btn-logout").addEventListener("click", function(){
-  document.getElementById("logout-overlay").classList.add("active");
-});
-document.getElementById("logout-cancel").addEventListener("click", function(){
-  document.getElementById("logout-overlay").classList.remove("active");
-});
-document.getElementById("logout-confirm").addEventListener("click", function(){
-  document.getElementById("logout-overlay").classList.remove("active");
-  auth.signOut();
-});
+    if (tx) {
+        tx.addEventListener('input', function() {
+            this.style.height = '38px';
+            this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+            const len = this.value.length;
+            charCounter.textContent = `${len}/300`;
+            charCounter.classList.remove('warning', 'danger');
+            if (len > 250) charCounter.classList.add('danger');
+            else if (len > 200) charCounter.classList.add('warning');
+        });
+    }
 
-auth.onAuthStateChanged(function(user){
-  if(user){
-    const wasKnown = localStorage.getItem("rekap_last_uid") === user.uid;
-    saveLoginHistory(user, wasKnown);
-    localStorage.setItem("rekap_last_uid", user.uid);
-    if(user.email) localStorage.setItem("rekap_last_email", user.email);
-    document.getElementById("login-email").value = user.email || localStorage.getItem("rekap_last_email") || "";
-    document.getElementById("btn-logout").style.display = "flex";
-    document.getElementById("btn-schedule").style.display = "flex";
-    setLoading(true);
-    withTimeout(db.ref("users/" + user.uid).once("value"), 15000).then(function(snap){
-      currentUserData = snap.val();
-      if(!currentUserData){
-        setLoading(false);
-        auth.signOut();
-        return;
-      }
-      document.getElementById("dash-nama").textContent = currentUserData.nama;
-      const now = new Date();
-      const monthInput = document.getElementById("input-bulan");
-      if(!monthInput.value){
-        monthInput.value = now.getFullYear() + "-" + pad2(now.getMonth() + 1);
-      }
-      showView("view-dashboard");
-      loadAttendance();
-    }).catch(function(err){
-      setLoading(false);
-      showModal("err", "Gagal Memuat Akun", mapAuthError(err));
-    });
-  } else {
-    document.getElementById("btn-logout").style.display = "none";
-    document.getElementById("btn-schedule").style.display = "none";
-    currentUserData = null;
-    attendanceCache = {};
-     showView("view-auth");
-  }
-});
+    if (btnSendMain && tx) {
+        btnSendMain.addEventListener('click', () => {
+            const message = tx.value.trim();
+            if (!message) {
+                showToast('Pesan tidak boleh kosong!', 'warning');
+                return;
+            }
 
-function loadAttendance(){
-  if(!auth.currentUser) return;
-  setLoading(true);
-  withTimeout(db.ref("attendance/" + auth.currentUser.uid).once("value"), 15000).then(function(snap){
-    attendanceCache = snap.val() || {};
-    setLoading(false);
-    document.getElementById("dash-total-hadir").textContent = recordCount();
-    renderTable();
-  }).catch(function(err){
-    setLoading(false);
-    showModal("err", "Gagal Memuat Absensi", mapAuthError(err));
-  });
-}
+            const timeNow = new Date();
+            const timestampStr = timeNow.toLocaleDateString('id-ID') + ' ' +
+                timeNow.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
 
-function normalizeRecord(rec){
-  if(!rec) return null;
-  return {inTime: rec.inTime || rec.time || "", outTime: rec.outTime || "", amount: Number(rec.amount) || 0, status: rec.status || "hadir", timestamp: rec.timestamp || Date.now()};
-}
-function recordCount(){
-  return Object.keys(attendanceCache).filter(function(k){return !!attendanceCache[k] && (attendanceCache[k].inTime || attendanceCache[k].time);}).length;
-}
-function formatRupiah(value){
-  const n=Number(value)||0;
-  return n.toLocaleString("id-ID");
-}
-function renderTable(){
-  const monthValue=document.getElementById("input-bulan").value; if(!monthValue)return;
-  const parts=monthValue.split("-"),year=parseInt(parts[0],10),month=parseInt(parts[1],10);
-  const daysInMonth=new Date(year,month,0).getDate(),thead=document.getElementById("thead-absensi"),tbody=document.getElementById("tbody-absensi");
-  thead.innerHTML=""; tbody.innerHTML=""; const tKey=todayKey();
-  let h1='<tr><th>Catatan</th>';
-  for(let day=1;day<=daysInMonth;day++){const d=new Date(year,month-1,day);h1+='<th class="day-cell">'+day+'<br><small>'+HARI[d.getDay()].slice(0,3)+'</small></th>';}
-  h1+='<th>Total</th></tr>';
-  thead.innerHTML=h1;
-  const inRow=document.createElement("tr"),outRow=document.createElement("tr"),amountRow=document.createElement("tr");
-  let inHtml='<td class="row-label">Jam Masuk</td>',outHtml='<td class="row-label">Jam Pulang</td>',amountHtml='<td class="row-label">Nominal</td>';
-  let inTotal=0,outTotal=0,totalAmount=0;
-  for(let day=1;day<=daysInMonth;day++){
-    const key=year+"-"+pad2(month)+"-"+pad2(day),rec=normalizeRecord(attendanceCache[key]),future=key>tKey;
-    if(rec&&rec.inTime)inTotal++; if(rec&&rec.outTime)outTotal++;
-    if(rec&&rec.inTime)totalAmount+=Number(rec.amount)||0;
-    const inVal=rec&&rec.inTime?'<span class="hadir-cell">'+escapeHtml(rec.inTime)+'</span>':'<span class="badge muted">—</span>';
-    const outVal=rec&&rec.outTime?'<span class="hadir-cell">'+escapeHtml(rec.outTime)+'</span>':(rec&&rec.inTime?'<span class="badge muted">Belum</span>':'<span class="badge muted">—</span>');
-    const amountVal=rec&&rec.inTime&&Number(rec.amount)>0?'<span class="amount-cell">'+escapeHtml(formatRupiah(rec.amount))+'</span>':'<span class="amount-cell empty">—</span>';
-    inHtml+='<td data-date="'+key+'" data-field="inTime">'+inVal+'</td>';
-    outHtml+='<td data-date="'+key+'" data-field="outTime">'+outVal+'</td>';
-    amountHtml+='<td data-date="'+key+'" data-field="amount">'+amountVal+'</td>';
-  }
-  inHtml+='<td><strong>'+inTotal+'</strong> hari</td>';
-  outHtml+='<td><strong>'+outTotal+'</strong> hari</td>';
-  amountHtml+='<td><strong>'+formatRupiah(totalAmount)+'</strong></td>';
-  inRow.innerHTML=inHtml;outRow.innerHTML=outHtml;amountRow.innerHTML=amountHtml;
-  tbody.appendChild(inRow);tbody.appendChild(outRow);tbody.appendChild(amountRow);
-  document.getElementById("dash-total-hadir").textContent=recordCount();
-  updateTodaySummary();
-}
-function updateTodaySummary(){
-  const rec=normalizeRecord(attendanceCache[todayKey()]);
-  document.getElementById("today-in").textContent=rec&&rec.inTime?rec.inTime:"—";
-  document.getElementById("today-out").textContent=rec&&rec.outTime?rec.outTime:"—";
-}
-function escapeHtml(v){return String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#039;");}
+            // Deteksi kategori otomatis
+            const lower = message.toLowerCase();
+            let category = "saran";
+            if (lower.includes("?") || lower.includes("gimana") || lower.includes("bagaimana") || lower.includes("kenapa")) category = "pertanyaan";
+            else if (lower.includes("jelek") || lower.includes("buruk") || lower.includes("error") || lower.includes("bug") || lower.includes("lambat")) category = "kritik";
 
-document.getElementById("tbody-absensi").addEventListener("click", function(e){
-  const cell=e.target.closest("td[data-date]"); if(!cell)return;
-  const dateKey=cell.dataset.date; if(dateKey>todayKey())return;
-  const record=normalizeRecord(attendanceCache[dateKey]);
-  if(cell.dataset.field==="amount"){
-    if(!record || !record.inTime){showModal("err","Belum Hadir","Isi jam masuk terlebih dahulu sebelum menentukan nominal.");return;}
-    openAmountModal(dateKey,record);
-    return;
-  }
-  openTimeModal(dateKey,cell.dataset.field||"inTime",record);
-});
+            // =======================================================
+            // PENTING: Sender SELALU "Anonim", tidak peduli login atau tidak.
+            // Tidak ada currentUserName / currentUserUID / myCustomUid yang dikirim.
+            // =======================================================
+            const chatPayload = {
+                senderName: "Anonim",   // <-- selalu anonim
+                message: message,
+                time: timestampStr,
+                timestamp: Date.now(),
+                category: category,
+                reply: ""
+            };
 
-function formatTanggalIndo(dateKey){
-  const parts = dateKey.split("-");
-  const dateObj = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
-  return HARI[dateObj.getDay()] + ", " + parts[2] + "/" + parts[1] + "/" + parts[0];
-}
-function openTimeModal(dateKey,field,record){
-  editingDateKey=dateKey; editingField=field;
-  document.getElementById("time-modal-title").textContent=field==="outTime"?"Atur Jam Pulang":"Atur Jam Masuk";
-  document.getElementById("time-modal-date-display").value=formatTanggalIndo(dateKey);
-  document.getElementById("time-modal-input").value=(record&&record[field])||nowHHMM();
-  document.getElementById("time-modal-overlay").classList.add("active");
-}
-document.getElementById("time-modal-cancel").addEventListener("click",function(){editingDateKey=null;document.getElementById("time-modal-overlay").classList.remove("active");});
-document.getElementById("time-modal-save").addEventListener("click",function(){
-  const time=document.getElementById("time-modal-input").value;if(!time){showModal("err","Jam Belum Diisi","Silakan pilih jam terlebih dahulu.");return;}
-  const dateKey=editingDateKey,field=editingField,existing=normalizeRecord(attendanceCache[dateKey])||{};
-  existing[field]=time;existing.status="hadir";existing.timestamp=Date.now();
-  if(field==="inTime") existing.amount=autoAmountForTime(time);
-  document.getElementById("time-modal-overlay").classList.remove("active");setLoading(true);
-  withTimeout(db.ref("attendance/"+auth.currentUser.uid+"/"+dateKey).set(existing),15000).then(function(){editingDateKey=null;loadAttendance();}).catch(function(err){setLoading(false);showModal("err","Gagal Menyimpan",mapAuthError(err));});
-});
+            db.ref('chat_hub').push(chatPayload).then(() => {
+                tx.value = '';
+                tx.style.height = '38px';
+                charCounter.textContent = '0/300';
+                charCounter.classList.remove('warning', 'danger');
+                showToast('Pesan berhasil terkirim!', 'success');
+            }).catch((err) => {
+                showToast('Gagal kirim pesan: ' + err.message, 'error');
+            });
+        });
+    }
 
-function openAmountModal(dateKey,record){
-  editingDateKey=dateKey; editingField="amount";
-  document.getElementById("amount-modal-date-display").value=formatTanggalIndo(dateKey);
-  document.getElementById("amount-modal-input").value=record&&record.amount?formatNominalInput(record.amount):"";
-  document.getElementById("amount-modal-overlay").classList.add("active");
-}
-document.getElementById("amount-modal-cancel").addEventListener("click",function(){editingDateKey=null;document.getElementById("amount-modal-overlay").classList.remove("active");});
-document.getElementById("amount-modal-save").addEventListener("click",function(){
-  const raw=document.getElementById("amount-modal-input").value.trim();
-  const amount=raw===""?0:parseNominal(raw);
-  if(!Number.isFinite(amount)||amount<0){showModal("err","Nominal Tidak Valid","Masukkan nominal 0 atau lebih.");return;}
-  const dateKey=editingDateKey,existing=normalizeRecord(attendanceCache[dateKey])||{};
-  if(!existing.inTime){showModal("err","Belum Hadir","Isi jam masuk terlebih dahulu sebelum menentukan nominal.");return;}
-  existing.amount=Math.round(amount);existing.status="hadir";existing.timestamp=Date.now();
-  document.getElementById("amount-modal-overlay").classList.remove("active");setLoading(true);
-  withTimeout(db.ref("attendance/"+auth.currentUser.uid+"/"+dateKey).set(existing),15000).then(function(){editingDateKey=null;loadAttendance();}).catch(function(err){setLoading(false);showModal("err","Gagal Menyimpan","Nominal gagal disimpan. "+mapAuthError(err));});
-});
+    // ========== RENDER CHAT ==========
+    const timeline = document.getElementById('chatTimeline');
+    let allChats = [];
 
-function getExportData(){
-  const [y,m]=document.getElementById("input-bulan").value.split("-").map(Number),days=new Date(y,m,0).getDate(),name=currentUserData&&currentUserData.nama?currentUserData.nama:"-";
-  const header=["nama"],rowHadir=["hadir"],rowUang=["uang"];let total=0,totalAmount=0;
-  for(let d=1;d<=days;d++){
-    const k=y+"-"+pad2(m)+"-"+pad2(d),r=normalizeRecord(attendanceCache[k]);
-    header.push(String(d));
-    rowHadir.push(r&&r.inTime?"hadir":"");
-    rowUang.push(r&&r.inTime?(Number(r.amount)||0):"");
-    if(r&&r.inTime){total++;totalAmount+=Number(r.amount)||0;}
-  }
-  header.push("rekapan");rowHadir.push(total);rowUang.push(totalAmount);
-  return {header,rowHadir,rowUang,name,y,m,total,totalAmount};
-}
-document.getElementById("btn-export-excel").addEventListener("click",function(){
-  if(typeof XLSX==="undefined"){showModal("err","Gagal Export","Library Excel belum termuat.");return;}
-  const d=getExportData();
-  const rows=[d.header,d.rowHadir,d.rowUang];
-  const ws=XLSX.utils.aoa_to_sheet(rows);
-  for(let i=1;i<d.rowUang.length;i++){
-    const ref=XLSX.utils.encode_cell({r:2,c:i});
-    if(ws[ref]&&typeof ws[ref].v==="number") ws[ref].z='#,##0';
-  }
-  ws["A1"]={v:"nama",t:"s"};
-  ws["A2"]={v:"hadir",t:"s"};
-  ws["A3"]={v:"uang",t:"s"};
-  ws[XLSX.utils.encode_cell({r:0,c:d.header.length-1})]={v:"rekapan",t:"s"};
-  ws[XLSX.utils.encode_cell({r:1,c:d.rowHadir.length-1})]={v:d.total,t:"n"};
-  ws[XLSX.utils.encode_cell({r:2,c:d.rowUang.length-1})]={v:d.totalAmount,t:"n",z:'#,##0'};
-  ws["!cols"]=d.header.map(function(_,i){return {wch:i===0?16:12};});
-  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Absensi");
-  XLSX.writeFile(wb,"Absensi_"+d.name.replace(/[^a-z0-9]+/gi,"_")+"_"+d.y+"-"+pad2(d.m)+".xlsx");
-});
-document.getElementById("btn-export-pdf").addEventListener("click",function(){
-  if(typeof window.jspdf==="undefined"){showModal("err","Gagal Export","Library PDF belum termuat.");return;}
-  const d=getExportData(),doc=new window.jspdf.jsPDF({orientation:"landscape",unit:"mm",format:"a4"});
-  doc.setFontSize(15);doc.text("Rekap Absensi "+new Date(d.y,d.m-1,1).toLocaleDateString("id-ID",{month:"long",year:"numeric"}),12,13);
-  doc.setFontSize(10);doc.text("Nama: "+d.name,12,19);
-  const attendanceRow=["hadir",...d.rowHadir.slice(1,-1),d.total];
-  const moneyRow=["uang",...d.rowUang.slice(1,-1).map(function(v){return v!==""?Number(v).toLocaleString("id-ID"):""}),d.totalAmount.toLocaleString("id-ID")];
-  doc.autoTable({head:[d.header],body:[attendanceRow,moneyRow],startY:24,theme:"grid",styles:{fontSize:7,cellPadding:1.8,halign:"center"},headStyles:{fontSize:7},columnStyles:{0:{halign:"left",cellWidth:28},[d.header.length-1]:{cellWidth:25}}});
-  doc.save("Absensi_"+d.name.replace(/[^a-z0-9]+/gi,"_")+"_"+d.y+"-"+pad2(d.m)+".pdf");
-});
+    function renderChats() {
+        if (!timeline) return;
+        timeline.innerHTML = '';
 
-const TODAY_NOTE_KEY="absensi_show_today_note";
-function applyTodayNoteVisibility(){
-  const note=document.getElementById("today-note");
-  const btn=document.getElementById("toggle-today-note");
-  const reveal=document.getElementById("reveal-today-note");
-  const show=localStorage.getItem(TODAY_NOTE_KEY)!=="0";
-  note.style.display=show?"block":"none";
-  btn.textContent="Sembunyikan";
-  reveal.classList.toggle("active",!show);
-}
-document.getElementById("toggle-today-note").addEventListener("click",function(){
-  localStorage.setItem(TODAY_NOTE_KEY,"0");
-  applyTodayNoteVisibility();
-});
-document.getElementById("reveal-today-note").addEventListener("click",function(){
-  localStorage.setItem(TODAY_NOTE_KEY,"1");
-  applyTodayNoteVisibility();
-});
-applyTodayNoteVisibility();
+        const filtered = currentFilter === 'all'
+            ? allChats
+            : allChats.filter(c => c.category === currentFilter);
 
-document.getElementById("btn-schedule").addEventListener("click",openScheduleModal);
-document.getElementById("schedule-cancel").addEventListener("click",function(){document.getElementById("schedule-overlay").classList.remove("active");});
-document.getElementById("schedule-amount").addEventListener("input",function(){
-  const n=parseNominal(this.value); this.value=n?formatNominalInput(n):"";
-});
-document.getElementById("schedule-save").addEventListener("click",function(){
-  const cutoff=document.getElementById("schedule-cutoff").value||"07:00";
-  const amount=parseNominal(document.getElementById("schedule-amount").value);
-  localStorage.setItem(SCHEDULE_KEY,JSON.stringify({cutoff:cutoff,amount:amount}));
-  document.getElementById("schedule-overlay").classList.remove("active");
-  showModal("ok","Jadwal Disimpan","Batas waktu "+cutoff+" dengan nominal standar "+formatNominalInput(amount)+" sudah aktif.");
-});
-function openLoginHistory(){
-  renderLoginHistory();
-  document.getElementById("history-overlay").classList.add("active");
-}
-document.getElementById("btn-auth-history").addEventListener("click",openLoginHistory);
-document.getElementById("history-close").addEventListener("click",function(){document.getElementById("history-overlay").classList.remove("active");});
+        if (filtered.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'empty-chat';
+            empty.innerHTML = `
+                <i class="fas fa-message-slash"></i>
+                <p>${currentFilter === 'all' ? 'Belum ada saran atau kritik yang masuk' : 'Tidak ada pesan di kategori ini'}</p>
+            `;
+            timeline.appendChild(empty);
+            return;
+        }
 
-document.querySelectorAll(".password-toggle").forEach(function(btn){
-  btn.addEventListener("click",function(){
-    const input=document.getElementById(btn.dataset.target);
-    if(!input)return;
-    const visible=input.type==="text";
-    input.type=visible?"password":"text";
-    btn.setAttribute("aria-label",visible?"Tampilkan kata sandi":"Sembunyikan kata sandi");
-    btn.setAttribute("title",visible?"Tampilkan kata sandi":"Sembunyikan kata sandi");
-    btn.innerHTML=visible
-      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></svg>'
-      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l18 18"/><path d="M10.6 6.2A10.8 10.8 0 0 1 12 6c6.5 0 10 6 10 6a18.3 18.3 0 0 1-4.2 4.5M6.3 6.4C3.5 8.3 2 12 2 12s3.5 6 10 6a10.5 10.5 0 0 0 4.1-.8"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
-  });
-});
+        filtered.forEach(val => {
+            const node = document.createElement('div');
+            node.className = 'chat-node';
 
-document.getElementById("input-bulan").addEventListener("change",renderTable);
+            // Selalu tampilkan "Anonim" di UI, walau data lama punya senderName lain
+            let nodeInner = `
+                <div class="chat-meta">
+                    <span class="user-anon"><i class="fas fa-user-secret"></i> Anonim</span>
+                    <span class="chat-time">${val.time || ''}</span>
+                </div>
+                <div class="chat-content">${escapeHtml(val.message || '')}</div>
+            `;
 
+            if (val.reply) {
+                nodeInner += `
+                    <div class="admin-reply-box">
+                        <div class="admin-tag">
+                            <span>MinBattle</span>
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="chat-content" style="color: var(--text-primary); font-weight: 500;">${escapeHtml(val.reply)}</div>
+                    </div>
+                `;
+            }
 
+            node.innerHTML = nodeInner;
+            timeline.appendChild(node);
+        });
 
-}
+        timeline.scrollTop = timeline.scrollHeight;
+    }
+
+    // Realtime listener
+    if (timeline) {
+        db.ref('chat_hub').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (!data) {
+                allChats = [];
+            } else {
+                allChats = Object.entries(data).map(([key, val]) => ({ key, ...val }))
+                    .sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+            }
+            renderChats();
+        });
+    }
 </script>
 </body>
 </html>

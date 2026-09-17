@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Class Battle | Live Leaderboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #f0f2f5; 
+            color: #0f172a; 
+            min-height: 100vh; 
+            padding: 12px;
+            overflow-x: hidden;
+        }
+        
+        .app-container { 
+            max-width: 1100px; 
+            margin: 0 auto; 
+        }
+        
+        /* ========== HEADER ========== */
+        .app-header {
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+            border: 1px solid #e8ecf1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: sticky;
+            top: 6px;
+            z-index: 50;
+        }
+        
+        .header-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        
+        .header-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header-left .icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+        
+        .header-left .icon.monster {
+            background: linear-gradient(135deg, #10b981, #f59e0b);
+        }
+        
+        .header-left h1 {
+            font-size: 1.02rem;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.2;
+        }
+        
+        .header-left h1 span {
+            font-weight: 400;
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+        
+        .mode-chip {
+            display: none;
+        }
+        
+        .mode-chip.klasik {
+            background: #eef2ff;
+            color: #4f46e5;
+            border: 1px solid #c7d2fe;
+        }
+        
+        .mode-chip.monster {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #15803d;
+        }
+        
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: pulse-dot 1.5s infinite;
+        }
+        
+        .live-indicator.ended {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #b91c1c;
+        }
+        
+        .live-indicator.ended .live-dot {
+            background: #ef4444;
+            animation: none;
+        }
+        
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+        
+        .pin-badge {
+            background: #f8fafc;
+            color: #334155;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: 1px;
+        }
+        
+        .pin-badge i {
+            font-size: 0.7rem;
+            color: #94a3b8;
+        }
+        
+        .btn-stop {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border: none;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+        }
+        
+        .btn-stop:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 16px rgba(239, 68, 68, 0.35);
+        }
+        
+        .btn-stop:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-close {
+            background: #f1f5f9;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 0.85rem;
+            color: #64748b;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .btn-close:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+        
+        /* ========== OVERVIEW CARD (stats + podium jadi satu) ========== */
+        .overview-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e8ecf1;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        
+        .stats-strip {
+            display: flex;
+            align-items: center;
+            padding: 10px 6px;
+        }
+        
+        .stat-mini {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .stat-mini i { font-size: 0.9rem; flex-shrink: 0; }
+        
+        .stat-mini .stat-num {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1;
+            text-align: center;
+        }
+        
+        .stat-mini .stat-label {
+            font-size: 0.6rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        
+        .stat-divider {
+            width: 1px;
+            height: 24px;
+            background: #eef1f5;
+            flex-shrink: 0;
+        }
+        
+        /* ========== TOP 3 PODIUM (disembunyikan, sudah terwakili di tabel) ========== */
+        .podium-section {
+            display: none;
+        }
+        
+        .podium-title {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .podium-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.15fr 1fr;
+            gap: 8px;
+            align-items: end;
+        }
+        
+        .podium-item {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .podium-item .crown {
+            font-size: 1rem;
+            margin-bottom: 1px;
+        }
+        
+        .podium-avatar-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .podium-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #e2e8f0;
+            position: relative;
+        }
+        
+        .podium-item.rank-1 .podium-avatar {
+            width: 52px;
+            height: 52px;
+            border-color: #fbbf24;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.15);
+        }
+        
+        .podium-item.rank-2 .podium-avatar {
+            border-color: #cbd5e1;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+        }
+        
+        .podium-item.rank-3 .podium-avatar {
+            border-color: #fdba74;
+            background: linear-gradient(135deg, #ffedd5, #fed7aa);
+        }
+        
+        .podium-avatar svg {
+            width: 20px;
+            height: 20px;
+            color: #64748b;
+        }
+        
+        .podium-item.rank-1 .podium-avatar svg { width: 24px; height: 24px; color: #b45309; }
+        
+        .podium-rank-badge {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.62rem;
+            font-weight: 800;
+            border: 2px solid white;
+        }
+        
+        .podium-item.rank-1 .podium-rank-badge { background: #fbbf24; color: white; }
+        .podium-item.rank-2 .podium-rank-badge { background: #94a3b8; color: white; }
+        .podium-item.rank-3 .podium-rank-badge { background: #fb923c; color: white; }
+        
+        .podium-name {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #0f172a;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 0 4px;
+        }
+        
+        .podium-score {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #4f46e5;
+            background: #eef2ff;
+            padding: 2px 9px;
+            border-radius: 20px;
+        }
+        
+        .podium-item.rank-1 .podium-score {
+            background: #fef3c7;
+            color: #b45309;
+        }
+        
+        /* ========== TAB NAV ========== */
+        .tab-nav {
+            display: flex;
+            gap: 4px;
+            background: white;
+            border-radius: 14px;
+            padding: 4px;
+            margin-bottom: 10px;
+            border: 1px solid #e8ecf1;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #94a3b8;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-family: inherit;
+        }
+        
+        .tab-btn.active {
+            background: #4f46e5;
+            color: white;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+        
+        .tab-btn:hover:not(.active) {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        
+        /* ========== TABLE ========== */
+        .table-wrap {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e8ecf1;
+            overflow: hidden;
+        }
+        
+        .table-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.9rem;
+        }
+        
+        .leaderboard-table th {
+            padding: 11px 14px;
+            text-align: left;
+            color: #94a3b8;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            background: #f8fafc;
+            border-bottom: 1px solid #e8ecf1;
+        }
+        
+        .leaderboard-table th:last-child {
+            text-align: right;
+        }
+        
+        .leaderboard-table td {
+            padding: 11px 14px;
+            color: #334155;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+        
+        .leaderboard-table td:last-child {
+            text-align: right;
+            font-weight: 700;
+        }
+        
+        .leaderboard-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .leaderboard-table tbody tr {
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+        
+        .leaderboard-table tbody tr:hover td {
+            background: #fafbfc;
+        }
+        
+        .leaderboard-table tbody tr.rank-1-row td { background: #fffbeb; }
+        .leaderboard-table tbody tr.rank-2-row td { background: #f8fafc; }
+        .leaderboard-table tbody tr.rank-3-row td { background: #fff7ed; }
+        
+        .rank-badge {
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        
+        .rank-1 { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+        .rank-2 { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+        .rank-3 { background: #ffedd5; color: #c2410c; border: 1px solid #fed7aa; }
+        .rank-normal { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; }
+        
+        .player-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .player-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .player-avatar svg {
+            width: 18px;
+            height: 18px;
+            color: #64748b;
+        }
+        
+        .player-name {
+            font-weight: 600;
+            color: #0f172a;
+        }
+        
+        /* Monster info kolom (khusus mode monster) */
+        .monster-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .monster-emoji {
+            font-size: 1.3rem;
+            line-height: 1;
+        }
+        
+        .monster-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        
+        .monster-level-text {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #f59e0b;
+        }
+        
+        .monster-hp-bar {
+            width: 60px;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .monster-hp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        
+        .monster-hp-fill.low {
+            background: linear-gradient(90deg, #ef4444, #f87171);
+        }
+        
+        .monster-dead {
+            opacity: 0.4;
+            filter: grayscale(1);
+        }
+        
+        .status-tag {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+        
+        .status-tag.live {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+        
+        .status-tag.done {
+            background: #e6f7ec;
+            color: #15803d;
+        }
+        
+        .status-tag.waiting {
+            background: #fef3c7;
+            color: #b45309;
+        }
+        
+        .status-tag.dead {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+        
+        .score-text {
+            font-weight: 800;
+            color: #4f46e5;
+            font-size: 1.05rem;
+        }
+        
+        .score-text.negative {
+            color: #ef4444;
+        }
+        
+        /* ========== EMPTY STATE ========== */
+        .empty-state {
+            text-align: center;
+            padding: 36px 20px;
+            color: #94a3b8;
+        }
+        
+        .empty-state i {
+            font-size: 2.2rem;
+            color: #cbd5e1;
+            margin-bottom: 12px;
+        }
+        
+        .empty-state p {
+            font-size: 0.95rem;
+        }
+        
+        /* ========== MODAL ========== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.25s ease;
+        }
+        
+        .modal-overlay.show { display: flex; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .modal-card {
+            background: white;
+            border-radius: 28px;
+            max-width: 420px;
+            width: 100%;
+            padding: 32px 28px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #f1f5f9;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-close:hover { background: #e2e8f0; color: #0f172a; }
+        
+        .modal-profile {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .modal-avatar svg { width: 40px; height: 40px; color: #64748b; }
+        
+        .modal-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        
+        .modal-rank {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        
+        .modal-monster-box {
+            background: linear-gradient(135deg, #ecfdf5, #fef3c7);
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-bottom: 16px;
+            border: 1px solid #a7f3d0;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        
+        .modal-monster-emoji {
+            font-size: 2.2rem;
+            line-height: 1;
+        }
+        
+        .modal-monster-info {
+            flex: 1;
+        }
+        
+        .modal-monster-name {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #065f46;
+        }
+        
+        .modal-monster-meta {
+            font-size: 0.75rem;
+            color: #047857;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        
+        .modal-monster-hp {
+            margin-top: 6px;
+            height: 6px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .modal-monster-hp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            border-radius: 6px;
+        }
+        
+        .modal-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin: 16px 0;
+        }
+        
+        .stat-box {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 14px 8px;
+            text-align: center;
+            border: 1px solid #e8ecf1;
+        }
+        
+        .stat-box .stat-num {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        
+        .stat-box .stat-label {
+            font-size: 0.65rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-top: 2px;
+            letter-spacing: 0.3px;
+        }
+        
+        .stat-box.green .stat-num { color: #22c55e; }
+        .stat-box.red .stat-num { color: #ef4444; }
+        .stat-box.blue .stat-num { color: #4f46e5; }
+        
+        /* ========== STATISTIK TAB ========== */
+        .stats-content {
+            padding: 24px;
+        }
+        
+        .stats-header {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .stats-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-detail-card {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid #e8ecf1;
+        }
+        
+        .stat-detail-label {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            margin-bottom: 6px;
+        }
+        
+        .stat-detail-value {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        
+        .stat-detail-value.blue { color: #4f46e5; }
+        .stat-detail-value.green { color: #10b981; }
+        .stat-detail-value.orange { color: #f59e0b; }
+        
+        .top-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .top-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e8ecf1;
+        }
+        
+        .top-item .rank-badge {
+            width: 26px;
+            height: 26px;
+            font-size: 0.7rem;
+        }
+        
+        .top-item .name {
+            flex: 1;
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 0.85rem;
+        }
+        
+        .top-item .val {
+            font-weight: 800;
+            color: #4f46e5;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 600px) {
+            body { padding: 8px; }
+            
+            .app-header {
+                padding: 8px 12px;
+                top: 4px;
+            }
+            
+            .header-left h1 { font-size: 0.9rem; }
+            .header-left .icon { width: 32px; height: 32px; font-size: 0.85rem; }
+            
+            .header-right { gap: 6px; }
+            .btn-close { width: 28px; height: 28px; font-size: 0.75rem; }
+            .btn-stop { font-size: 0.68rem; padding: 6px 10px; }
+            .pin-badge, .live-indicator { font-size: 0.68rem; padding: 4px 9px; }
+            
+            .stats-strip { padding: 8px 2px; }
+            .stat-mini { gap: 5px; }
+            .stat-mini i { font-size: 0.78rem; }
+            .stat-mini .stat-num { font-size: 0.92rem; }
+            .stat-mini .stat-label { font-size: 0.55rem; }
+            
+            .podium-item.rank-1 .podium-avatar { width: 46px; height: 46px; }
+            .podium-avatar { width: 38px; height: 38px; }
+            .podium-avatar svg { width: 17px; height: 17px; }
+            .podium-item.rank-1 .podium-avatar svg { width: 21px; height: 21px; }
+            .podium-name { font-size: 0.65rem; }
+            .podium-score { font-size: 0.68rem; padding: 2px 7px; }
+            
+            .tab-btn { font-size: 0.68rem; padding: 8px 6px; }
+            .tab-btn i { font-size: 0.68rem; }
+            
+            .leaderboard-table th,
+            .leaderboard-table td { padding: 9px 7px; font-size: 0.76rem; }
+            
+            .player-name { font-size: 0.76rem; }
+            .player-avatar { width: 28px; height: 28px; }
+            .player-avatar svg { width: 14px; height: 14px; }
+            
+            .status-tag { font-size: 0.56rem; padding: 2px 6px; }
+            .score-text { font-size: 0.82rem; }
+            .rank-badge { width: 22px; height: 22px; font-size: 0.68rem; }
+            
+            .monster-emoji { font-size: 1.05rem; }
+            .monster-hp-bar { width: 44px; }
+            
+            .modal-card { padding: 22px 16px; }
+            .modal-stats { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+            .stat-box { padding: 10px 4px; }
+            .stat-box .stat-num { font-size: 1.1rem; }
+            
+            .stats-detail-grid { grid-template-columns: 1fr; }
+        }
+        
+        /* Hide monster column kalau mode klasik */
+        body.mode-klasik .monster-only { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+        <div class="header-top">
+            <div class="header-left">
+                <div class="icon" id="headerIcon"><i class="fas fa-trophy"></i></div>
+                <div>
+                    <h1>Class Battle <span>| Live</span></h1>
+                    <span class="mode-chip klasik" id="modeChip"><i class="fas fa-trophy"></i> Mode Klasik</span>
+                </div>
+            </div>
+            <button class="btn-close" id="btnBackHome"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="header-bottom">
+            <span class="pin-badge"><i class="fas fa-key"></i> <span id="pinDisplay">----</span></span>
+            <div class="header-right">
+                <span class="live-indicator" id="liveIndicator">
+                    <span class="live-dot"></span>
+                    <span id="gameStatusText">LIVE</span>
+                </span>
+                <button class="btn-stop" id="btnStopGame"><i class="fas fa-stop-circle"></i> Stop</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== OVERVIEW: STATS + TOP 3 ===== -->
+    <div class="overview-card">
+        <div class="stats-strip">
+            <div class="stat-mini">
+                <div>
+                    <div class="stat-num" id="totalPlayers">0</div>
+                    <div class="stat-label">Pemain</div>
+                </div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-mini">
+                <div>
+                    <div class="stat-num" id="liveCount">0</div>
+                    <div class="stat-label">Main</div>
+                </div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-mini">
+                <div>
+                    <div class="stat-num" id="doneCount">0</div>
+                    <div class="stat-label">Selesai</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="podium-section" id="podiumSection">
+            <div class="podium-title"><i class="fas fa-crown" style="color:#fbbf24;"></i> Top 3 Sementara</div>
+            <div class="podium-grid" id="podiumGrid">
+                <div style="text-align:center;color:#cbd5e1;font-size:0.8rem;grid-column:1/-1;padding:20px 0;">
+                    Menunggu pemain bergabung...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TAB NAV ===== -->
+    <div class="tab-nav">
+        <button class="tab-btn active" data-tab="ranking"><i class="fas fa-list-ol"></i> Peringkat</button>
+        <button class="tab-btn" data-tab="players"><i class="fas fa-users"></i> Semua Pemain</button>
+        <button class="tab-btn" data-tab="stats"><i class="fas fa-chart-bar"></i> Statistik</button>
+    </div>
+
+    <!-- ===== TABLE ===== -->
+    <div class="table-wrap" id="tableWrap">
+        <div class="table-scroll">
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th style="width:50px;">Rank</th>
+                        <th>Pemain</th>
+                        <th class="monster-only" style="width:130px;">Monster</th>
+                        <th style="width:110px;text-align:center;">Status</th>
+                        <th style="width:90px;text-align:right;">Skor</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardBody">
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <i class="fas fa-user-clock"></i>
+                                <p>Menunggu data pemain masuk...</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== STATISTIK TAB ===== -->
+    <div class="table-wrap" id="statsWrap" style="display:none;">
+        <div class="stats-content" id="statsContent">
+            <div class="empty-state">
+                <i class="fas fa-chart-bar"></i>
+                <p>Belum ada data statistik</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL PLAYER DETAIL ===== -->
+<div class="modal-overlay" id="playerModal">
+    <div class="modal-card">
+        <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+        <div class="modal-profile">
+            <div class="modal-avatar" id="modalAvatar"></div>
+            <div class="modal-name" id="modalName">-</div>
+            <div class="modal-rank" id="modalRank">Peringkat #-</div>
+        </div>
+
+        <!-- Box monster (cuma muncul di mode monster) -->
+        <div class="modal-monster-box monster-only" id="modalMonsterBox" style="display:none;">
+            <div class="modal-monster-emoji" id="modalMonsterEmoji">🐉</div>
+            <div class="modal-monster-info">
+                <div class="modal-monster-name" id="modalMonsterName">Dragon</div>
+                <div class="modal-monster-meta" id="modalMonsterMeta">Level 1 · HP 20/20</div>
+                <div class="modal-monster-hp">
+                    <div class="modal-monster-hp-fill" id="modalMonsterHpFill" style="width:100%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-stats">
+            <div class="stat-box blue">
+                <div class="stat-num" id="modalScore">0</div>
+                <div class="stat-label">Skor</div>
+            </div>
+            <div class="stat-box green">
+                <div class="stat-num" id="modalCorrect">0</div>
+                <div class="stat-label">Benar</div>
+            </div>
+            <div class="stat-box red">
+                <div class="stat-num" id="modalWrong">0</div>
+                <div class="stat-label">Salah</div>
+            </div>
+        </div>
+        <div style="text-align:center;font-size:0.85rem;color:#94a3b8;">
+            Status: <span id="modalStatus" style="font-weight:600;">-</span>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script>
+    // ==========================================
+    // FIREBASE CONFIG
+    // ==========================================
+    const firebaseConfig = {
+        apiKey: "AIzaSyCBVjPohvfPZYs8DfGtzEdi5j4Svb3UvLI",
+        authDomain: "class-battle-19f8c.firebaseapp.com",
+        databaseURL: "https://class-battle-19f8c-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "class-battle-19f8c"
+    };
+
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // ==========================================
+    // STATE
+    // ==========================================
+    const activePin = localStorage.getItem('star_battle_pin');
+    let playersData = [];
+    let roomMode = 'klasik';  // Default klasik, nanti di-update dari Firebase
+    let gameActive = true;
+    let currentTab = 'ranking';
+
+    const DEFAULT_AVATAR_SVG = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L1 8l11 5 9-4.09V17h2V8L12 3z" fill="currentColor"/><path d="M5 10.18v4.32c0 2 3.13 4.5 7 4.5s7-2.5 7-4.5v-4.32l-7 3.18-7-3.18z" fill="currentColor"/></svg>`;
+
+    function escapeHtml(str) {
+        return str ? str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;') : '';
+    }
+
+    function safeAvatarHtml(avatar) {
+        return avatar && avatar.trim().startsWith('<svg') ? avatar : DEFAULT_AVATAR_SVG;
+    }
+
+    // ==========================================
+    // DOM REFS
+    // ==========================================
+    const pinDisplay = document.getElementById('pinDisplay');
+    const tbody = document.getElementById('leaderboardBody');
+    const totalPlayersEl = document.getElementById('totalPlayers');
+    const doneCountEl = document.getElementById('doneCount');
+    const liveCountEl = document.getElementById('liveCount');
+    const liveIndicator = document.getElementById('liveIndicator');
+    const gameStatusText = document.getElementById('gameStatusText');
+    const modeChip = document.getElementById('modeChip');
+    const headerIcon = document.getElementById('headerIcon');
+    const podiumGrid = document.getElementById('podiumGrid');
+    const statsContent = document.getElementById('statsContent');
+    const tableWrap = document.getElementById('tableWrap');
+    const statsWrap = document.getElementById('statsWrap');
+
+    const modal = document.getElementById('playerModal');
+    const modalClose = document.getElementById('modalClose');
+    const modalAvatar = document.getElementById('modalAvatar');
+    const modalName = document.getElementById('modalName');
+    const modalRank = document.getElementById('modalRank');
+    const modalScore = document.getElementById('modalScore');
+    const modalCorrect = document.getElementById('modalCorrect');
+    const modalWrong = document.getElementById('modalWrong');
+    const modalStatus = document.getElementById('modalStatus');
+    const modalMonsterBox = document.getElementById('modalMonsterBox');
+    const modalMonsterEmoji = document.getElementById('modalMonsterEmoji');
+    const modalMonsterName = document.getElementById('modalMonsterName');
+    const modalMonsterMeta = document.getElementById('modalMonsterMeta');
+    const modalMonsterHpFill = document.getElementById('modalMonsterHpFill');
+
+    const btnBack = document.getElementById('btnBackHome');
+    const btnStop = document.getElementById('btnStopGame');
+    const tabBtns = document.querySelectorAll('.tab-btn');
+
+    // ==========================================
+    // INIT
+    // ==========================================
+    if (pinDisplay) pinDisplay.innerText = activePin || '----';
+
+    if (!activePin) {
+        tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>PIN tidak ditemukan. Kembali ke halaman utama.</p></div></td></tr>`;
+    } else {
+        detectRoomMode();
+        listenPlayers();
+        listenRoomStatus();
+    }
+
+    // ==========================================
+    // DETECT MODE (monster / klasik)
+    // ==========================================
+    function detectRoomMode() {
+        db.ref(`rooms/${activePin}/mode`).once('value').then((snap) => {
+            roomMode = snap.val() || 'klasik';
+            applyModeUI();
+        });
+    }
+
+    function applyModeUI() {
+        if (roomMode === 'monster') {
+            document.body.classList.remove('mode-klasik');
+            headerIcon.classList.add('monster');
+            headerIcon.innerHTML = '<i class="fas fa-dragon"></i>';
+            modeChip.className = 'mode-chip monster';
+            modeChip.innerHTML = '<i class="fas fa-dragon"></i> Mode Monster';
+            document.querySelectorAll('.monster-only').forEach(el => el.style.display = '');
+            modalMonsterBox.style.display = 'flex';
+        } else {
+            document.body.classList.add('mode-klasik');
+            headerIcon.classList.remove('monster');
+            headerIcon.innerHTML = '<i class="fas fa-trophy"></i>';
+            modeChip.className = 'mode-chip klasik';
+            modeChip.innerHTML = '<i class="fas fa-trophy"></i> Mode Klasik';
+            document.querySelectorAll('.monster-only').forEach(el => el.style.display = 'none');
+            modalMonsterBox.style.display = 'none';
+        }
+    }
+
+    // ==========================================
+    // LISTEN PLAYERS
+    // ==========================================
+    function listenPlayers() {
+        db.ref(`rooms/${activePin}/players`).on('value', (snapshot) => {
+            if (!snapshot.exists()) {
+                playersData = [];
+                renderTable();
+                updateStats();
+                renderPodium();
+                return;
+            }
+
+            playersData = [];
+            snapshot.forEach((child) => {
+                const val = child.val();
+                playersData.push({
+                    key: child.key,
+                    name: val.name || 'Anonim',
+                    avatar: val.avatar || DEFAULT_AVATAR_SVG,
+                    score: parseInt(val.score) || 0,
+                    status: val.status || 'Bertanding',
+                    correct: parseInt(val.correct) || 0,
+                    wrong: parseInt(val.wrong) || 0,
+                    // Data monster
+                    monster: val.monster || null,
+                    monsterEmoji: val.monsterEmoji || '🐉',
+                    monsterName: val.monsterName || 'Dragon',
+                    monsterLevel: parseInt(val.monsterLevel) || 1,
+                    monsterHp: parseInt(val.monsterHp) || 20,
+                    monsterMaxHp: parseInt(val.monsterMaxHp) || 20,
+                    monsterDead: val.monsterDead === true
+                });
+            });
+
+            renderTable();
+            updateStats();
+            renderPodium();
+            if (currentTab === 'stats') renderStatsTab();
+        });
+    }
+
+    // ==========================================
+    // LISTEN ROOM STATUS
+    // ==========================================
+    function listenRoomStatus() {
+        db.ref(`rooms/${activePin}/status`).on('value', (snap) => {
+            const status = snap.val();
+            if (status === 'ended') {
+                gameActive = false;
+                liveIndicator.classList.add('ended');
+                gameStatusText.innerText = 'SELESAI';
+                btnStop.disabled = true;
+                btnStop.innerHTML = '<i class="fas fa-check-circle"></i> Selesai';
+            } else if (status === 'playing') {
+                gameActive = true;
+                liveIndicator.classList.remove('ended');
+                gameStatusText.innerText = 'LIVE';
+                btnStop.disabled = false;
+                btnStop.innerHTML = '<i class="fas fa-stop-circle"></i> Stop';
+            } else {
+                gameActive = false;
+                liveIndicator.classList.add('ended');
+                gameStatusText.innerText = 'MENUNGGU';
+                btnStop.disabled = true;
+            }
+        });
+    }
+
+    // ==========================================
+    // RENDER TABLE
+    // ==========================================
+    function renderTable() {
+        const sorted = [...playersData].sort((a, b) => b.score - a.score);
+        
+        if (sorted.length === 0) {
+            tbody.innerHTML = `
+                <tr><td colspan="5">
+                    <div class="empty-state">
+                        <i class="fas fa-user-clock"></i>
+                        <p>Belum ada pemain yang bergabung.</p>
+                    </div>
+                </td></tr>
+            `;
+            return;
+        }
+
+        let html = '';
+        sorted.forEach((p, idx) => {
+            // Batasi tab ranking cuma 10 teratas
+            if (currentTab === 'ranking' && idx >= 10) return;
+
+            const rank = idx + 1;
+            let rankClass = 'rank-normal';
+            let rowClass = '';
+            if (rank === 1) { rankClass = 'rank-1'; rowClass = 'rank-1-row'; }
+            else if (rank === 2) { rankClass = 'rank-2'; rowClass = 'rank-2-row'; }
+            else if (rank === 3) { rankClass = 'rank-3'; rowClass = 'rank-3-row'; }
+
+            let statusClass = 'waiting';
+            let statusIcon = '<i class="fas fa-clock"></i>';
+            let statusLabel = 'Menunggu';
+            if (p.monsterDead) {
+                statusClass = 'dead';
+                statusIcon = '<i class="fas fa-skull"></i>';
+                statusLabel = 'Mati';
+            } else if (p.status === 'Bertanding' || p.status === 'Live') {
+                statusClass = 'live';
+                statusIcon = '<i class="fas fa-spinner fa-spin"></i>';
+                statusLabel = 'Live';
+            } else if (p.status === 'Selesai' || p.status === 'Done') {
+                statusClass = 'done';
+                statusIcon = '<i class="fas fa-check"></i>';
+                statusLabel = 'Selesai';
+            }
+
+            // Monster cell (cuma muncul di mode monster)
+            let monsterCell = '';
+            if (roomMode === 'monster') {
+                const hpPercent = Math.max(0, Math.min(100, (p.monsterHp / p.monsterMaxHp) * 100));
+                const hpClass = hpPercent < 30 ? 'low' : '';
+                const deadClass = p.monsterDead ? 'monster-dead' : '';
+                monsterCell = `
+                    <td class="monster-only">
+                        <div class="monster-cell ${deadClass}">
+                            <span class="monster-emoji">${p.monsterEmoji}</span>
+                            <div class="monster-info">
+                                <span class="monster-level-text">Lv ${p.monsterLevel}</span>
+                                <div class="monster-hp-bar">
+                                    <div class="monster-hp-fill ${hpClass}" style="width:${hpPercent}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                `;
+            } else {
+                monsterCell = `<td class="monster-only" style="display:none;"></td>`;
+            }
+
+            const scoreClass = p.score < 0 ? 'negative' : '';
+
+            html += `
+                <tr class="player-row ${rowClass}" data-key="${p.key}">
+                    <td><span class="rank-badge ${rankClass}">${rank}</span></td>
+                    <td>
+                        <div class="player-cell">
+                            <div class="player-avatar">${safeAvatarHtml(p.avatar)}</div>
+                            <span class="player-name">${escapeHtml(p.name)}</span>
+                        </div>
+                    </td>
+                    ${monsterCell}
+                    <td style="text-align:center;">
+                        <span class="status-tag ${statusClass}">${statusIcon} ${statusLabel}</span>
+                    </td>
+                    <td><span class="score-text ${scoreClass}">${p.score.toLocaleString('id-ID')}</span></td>
+                </tr>
+            `;
+        });
+
+        tbody.innerHTML = html;
+
+        document.querySelectorAll('.player-row').forEach(row => {
+            row.addEventListener('click', () => {
+                const key = row.dataset.key;
+                const sorted = [...playersData].sort((a, b) => b.score - a.score);
+                const idx = sorted.findIndex(p => p.key === key);
+                const player = sorted[idx];
+                if (player) showModal(player, idx + 1);
+            });
+        });
+    }
+
+    // ==========================================
+    // UPDATE STATS
+    // ==========================================
+    function updateStats() {
+        const total = playersData.length;
+        const done = playersData.filter(p => p.status === 'Selesai' || p.status === 'Done').length;
+        const live = playersData.filter(p => p.status === 'Bertanding' || p.status === 'Live').length;
+
+        totalPlayersEl.innerText = total;
+        doneCountEl.innerText = done;
+        liveCountEl.innerText = live;
+    }
+
+    // ==========================================
+    // RENDER PODIUM TOP 3
+    // ==========================================
+    function renderPodium() {
+        const sorted = [...playersData].sort((a, b) => b.score - a.score).slice(0, 3);
+        
+        if (sorted.length === 0) {
+            podiumGrid.innerHTML = `
+                <div style="text-align:center;color:#cbd5e1;font-size:0.8rem;grid-column:1/-1;padding:20px 0;">
+                    Menunggu pemain bergabung...
+                </div>
+            `;
+            return;
+        }
+
+        // Urutan tampil: 2 - 1 - 3
+        const order = [1, 0, 2];
+        const medals = ['🥇', '🥈', '🥉'];
+        const rankLabels = [1, 2, 3];
+        
+        let html = '';
+        order.forEach((idx) => {
+            const p = sorted[idx];
+            if (!p) {
+                html += `<div></div>`;
+                return;
+            }
+            const rank = rankLabels[idx];
+            html += `
+                <div class="podium-item rank-${rank}">
+                    <div class="crown">${medals[idx]}</div>
+                    <div class="podium-avatar-wrap">
+                        <div class="podium-avatar">${safeAvatarHtml(p.avatar)}</div>
+                        <div class="podium-rank-badge">${rank}</div>
+                    </div>
+                    <div class="podium-name">${escapeHtml(p.name)}</div>
+                    <div class="podium-score">${p.score.toLocaleString('id-ID')}</div>
+                </div>
+            `;
+        });
+        podiumGrid.innerHTML = html;
+    }
+
+    // ==========================================
+    // RENDER STATISTIK TAB
+    // ==========================================
+    function renderStatsTab() {
+        if (playersData.length === 0) {
+            statsContent.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-chart-bar"></i>
+                    <p>Belum ada data statistik</p>
+                </div>
+            `;
+            return;
+        }
+
+        const totalScore = playersData.reduce((s, p) => s + p.score, 0);
+        const totalCorrect = playersData.reduce((s, p) => s + p.correct, 0);
+        const totalWrong = playersData.reduce((s, p) => s + p.wrong, 0);
+        const totalAnswered = totalCorrect + totalWrong;
+        const avgAccuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
+        const avgScore = Math.round(totalScore / playersData.length);
+
+        const topScorers = [...playersData].sort((a, b) => b.score - a.score).slice(0, 5);
+
+        let statsHtml = `
+            <div class="stats-header"><i class="fas fa-chart-line"></i> Ringkasan Arena</div>
+            <div class="stats-detail-grid">
+                <div class="stat-detail-card">
+                    <div class="stat-detail-label">Rata-rata Skor</div>
+                    <div class="stat-detail-value blue">${avgScore.toLocaleString('id-ID')}</div>
+                </div>
+                <div class="stat-detail-card">
+                    <div class="stat-detail-label">Akurasi Rata-rata</div>
+                    <div class="stat-detail-value green">${avgAccuracy}%</div>
+                </div>
+                <div class="stat-detail-card">
+                    <div class="stat-detail-label">Total Benar</div>
+                    <div class="stat-detail-value green">${totalCorrect.toLocaleString('id-ID')}</div>
+                </div>
+                <div class="stat-detail-card">
+                    <div class="stat-detail-label">Total Salah</div>
+                    <div class="stat-detail-value orange">${totalWrong.toLocaleString('id-ID')}</div>
+                </div>
+            </div>
+            <div class="stats-header"><i class="fas fa-trophy" style="color:#fbbf24;"></i> Top 5 Skor Tertinggi</div>
+            <div class="top-list">
+        `;
+
+        topScorers.forEach((p, idx) => {
+            const rank = idx + 1;
+            let rankClass = 'rank-normal';
+            if (rank === 1) rankClass = 'rank-1';
+            else if (rank === 2) rankClass = 'rank-2';
+            else if (rank === 3) rankClass = 'rank-3';
+
+            statsHtml += `
+                <div class="top-item">
+                    <span class="rank-badge ${rankClass}">${rank}</span>
+                    <span class="name">${escapeHtml(p.name)}</span>
+                    <span class="val">${p.score.toLocaleString('id-ID')}</span>
+                </div>
+            `;
+        });
+
+        statsHtml += `</div>`;
+        statsContent.innerHTML = statsHtml;
+    }
+
+    // ==========================================
+    // MODAL
+    // ==========================================
+    function showModal(player, rank) {
+        modalAvatar.innerHTML = safeAvatarHtml(player.avatar);
+        modalName.innerText = player.name;
+        modalRank.innerText = `Peringkat #${rank}`;
+        modalScore.innerText = player.score;
+        modalCorrect.innerText = player.correct || 0;
+        modalWrong.innerText = player.wrong || 0;
+
+        // Monster info (cuma di mode monster)
+        if (roomMode === 'monster') {
+            modalMonsterBox.style.display = 'flex';
+            modalMonsterEmoji.innerText = player.monsterEmoji || '🐉';
+            modalMonsterName.innerText = player.monsterName || 'Dragon';
+            const hpPercent = Math.max(0, Math.min(100, (player.monsterHp / player.monsterMaxHp) * 100));
+            modalMonsterMeta.innerText = `Level ${player.monsterLevel} · HP ${player.monsterHp}/${player.monsterMaxHp}`;
+            modalMonsterHpFill.style.width = hpPercent + '%';
+        } else {
+            modalMonsterBox.style.display = 'none';
+        }
+
+        let statusText = player.status || 'Bertanding';
+        if (player.monsterDead) statusText = '💀 Monster Mati';
+        else if (statusText === 'Bertanding' || statusText === 'Live') statusText = '🟢 Aktif';
+        else if (statusText === 'Selesai' || statusText === 'Done') statusText = '✅ Selesai';
+        else statusText = '⏳ Menunggu';
+        modalStatus.innerText = statusText;
+
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+
+    // ==========================================
+    // TAB NAVIGATION
+    // ==========================================
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentTab = btn.dataset.tab;
+
+            if (currentTab === 'stats') {
+                tableWrap.style.display = 'none';
+                statsWrap.style.display = 'block';
+                renderStatsTab();
+            } else {
+                tableWrap.style.display = 'block';
+                statsWrap.style.display = 'none';
+                renderTable();
+            }
+        });
+    });
+
+    // ==========================================
+    // BUTTON: BACK
+    // ==========================================
+    btnBack.addEventListener('click', () => {
+        if (confirm('Yakin ingin kembali ke halaman utama?')) {
+            window.location.href = 'index.html';
+        }
+    });
+
+    // ==========================================
+    // BUTTON: STOP GAME
+    // ==========================================
+    btnStop.addEventListener('click', () => {
+        if (!activePin) return;
+        if (!confirm('Yakin ingin mengakhiri pertandingan? Semua pemain akan diarahkan ke halaman hasil.')) return;
+
+        btnStop.disabled = true;
+        btnStop.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menghentikan...';
+
+        db.ref(`rooms/${activePin}`).update({
+            status: 'ended',
+            endedAt: firebase.database.ServerValue.TIMESTAMP
+        }).then(() => {
+            btnStop.innerHTML = '<i class="fas fa-check-circle"></i> Selesai';
+            gameActive = false;
+            liveIndicator.classList.add('ended');
+            gameStatusText.innerText = 'SELESAI';
+            
+            const updates = {};
+            playersData.forEach(p => {
+                updates[`rooms/${activePin}/players/${p.key}/status`] = 'Selesai';
+            });
+            if (Object.keys(updates).length > 0) {
+                db.ref().update(updates);
+            }
+        }).catch(err => {
+            alert('Gagal menghentikan game: ' + err.message);
+            btnStop.disabled = false;
+            btnStop.innerHTML = '<i class="fas fa-stop-circle"></i> Stop';
+        });
+    });
+
+    // ==========================================
+    // KEYBOARD SHORTCUT
+    // ==========================================
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+    });
+
+    // ==========================================
+    // POLLING ROOM
+    // ==========================================
+    if (activePin) {
+        db.ref(`rooms/${activePin}`).on('value', (snap) => {
+            if (!snap.exists()) {
+                alert('Room sudah tidak tersedia. Kembali ke halaman utama.');
+                window.location.href = 'index.html';
+            }
+        });
+    }
+
+    console.log('🏆 Class Battle Leaderboard loaded');
+    console.log(`📌 PIN: ${activePin}`);
+    console.log(`🎮 Mode: ${roomMode}`);
+</script>
+
+</body>
+</html>
