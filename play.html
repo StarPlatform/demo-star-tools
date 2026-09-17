@@ -621,6 +621,123 @@
             .monster-preview-icon svg.monster-svg { width: 58px; height: 58px; }
             .monster-preview-name { font-size: 0.95rem; }
         }
+
+        /* ========== MULTIPLAYER / NOTIFICATION UPGRADES ========== */
+        .saved-indicator{
+            position:fixed !important;
+            top:18px;
+            left:50%;
+            transform:translate(-50%,-14px);
+            width:min(92vw,430px);
+            z-index:10000;
+            box-shadow:0 12px 30px rgba(15,23,42,.16);
+            opacity:0;
+            pointer-events:none;
+            transition:opacity .25s ease, transform .25s ease;
+        }
+        .saved-indicator.toast-show{
+            opacity:1;
+            transform:translate(-50%,0);
+        }
+        .monster-edit-btn{
+            margin-top:8px;
+            width:100%;
+            padding:10px 12px;
+            border-radius:12px;
+            border:1px solid #cbd5e1;
+            background:#fff;
+            color:#334155;
+            font:700 .82rem Inter,sans-serif;
+            cursor:pointer;
+            transition:.2s;
+            display:none;
+        }
+        .monster-edit-btn.show{display:block;}
+        .monster-edit-btn:hover{background:#f8fafc;border-color:#94a3b8;}
+        .arena-players{
+            display:none;
+            margin:0 0 16px;
+            padding:16px;
+            border-radius:18px;
+            background:#fff;
+            border:1px solid #e8ecf1;
+            box-shadow:0 2px 8px rgba(0,0,0,.03);
+            text-align:left;
+        }
+        .arena-players.show{display:block;animation:slideDown .3s ease;}
+        .arena-players-head{
+            display:flex;align-items:center;justify-content:space-between;
+            gap:10px;margin-bottom:12px;
+        }
+        .arena-players-title{font-size:.92rem;font-weight:800;color:#0f172a;}
+        .arena-players-count{
+            font-size:.68rem;font-weight:700;color:#047857;
+            background:#ecfdf5;border:1px solid #a7f3d0;
+            padding:4px 9px;border-radius:20px;
+        }
+        .arena-player-list{display:grid;gap:9px;}
+        .arena-player{
+            display:flex;align-items:center;gap:10px;
+            padding:10px;border-radius:14px;
+            background:#f8fafc;border:1px solid #e2e8f0;
+        }
+        .arena-player.me{border-color:#a7f3d0;background:#f0fdf4;}
+        .arena-player-avatar{
+            width:38px;height:38px;border-radius:12px;
+            display:flex;align-items:center;justify-content:center;
+            background:#eef2ff;color:#4f46e5;flex-shrink:0;overflow:hidden;
+        }
+        .arena-player-avatar svg{width:22px;height:22px;}
+        .arena-player-info{min-width:0;flex:1;}
+        .arena-player-name{
+            font-size:.8rem;font-weight:800;color:#0f172a;
+            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+        }
+        .arena-player-name .you{
+            color:#059669;font-size:.62rem;margin-left:4px;
+        }
+        .arena-player-status{font-size:.66rem;color:#64748b;margin-top:2px;}
+        .arena-player-monster{
+            width:52px;min-width:52px;text-align:center;
+            border-radius:11px;padding:5px;background:#fff;
+            border:1px solid #e2e8f0;
+        }
+        .arena-player-monster svg{width:30px;height:30px;display:block;margin:auto;}
+        .arena-player-monster small{
+            display:block;font-size:.5rem;font-weight:800;
+            color:#475569;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+        }
+        .arena-empty{
+            padding:12px;text-align:center;font-size:.75rem;color:#94a3b8;
+            border:1px dashed #cbd5e1;border-radius:12px;
+        }
+        html[data-theme="dark"] body{background:#0f1115;color:#f3f4f6;}
+        html[data-theme="dark"] .app-header,
+        html[data-theme="dark"] .card,
+        html[data-theme="dark"] .arena-players{background:#171b23;border-color:#2a303c;color:#f3f4f6;}
+        html[data-theme="dark"] .header-left h1,
+        html[data-theme="dark"] .waiting-view h2,
+        html[data-theme="dark"] .monster-preview-name,
+        html[data-theme="dark"] .arena-players-title,
+        html[data-theme="dark"] .arena-player-name{color:#f3f4f6;}
+        html[data-theme="dark"] .btn-back,
+        html[data-theme="dark"] .monster-choice,
+        html[data-theme="dark"] .custom-name-group,
+        html[data-theme="dark"] .reaction-btn,
+        html[data-theme="dark"] .monster-edit-btn,
+        html[data-theme="dark"] .arena-player{background:#202631;border-color:#374151;color:#f3f4f6;}
+        html[data-theme="dark"] .monster-choice-name,
+        html[data-theme="dark"] .waiting-sub,
+        html[data-theme="dark"] .mode-preview-desc,
+        html[data-theme="dark"] .arena-player-status{color:#a7b0bf;}
+        html[data-theme="dark"] .arena-player.me{background:#123027;border-color:#17664f;}
+        html[data-theme="dark"] .arena-player-monster{background:#171b23;border-color:#374151;}
+        html[data-theme="dark"] .arena-player-monster small{color:#cbd5e1;}
+        html[data-theme="dark"] .monster-edit-btn:hover{background:#29303b;}
+        @media (max-width:500px){
+            .arena-players{padding:14px;}
+            .saved-indicator{top:10px;}
+        }
     </style>
 </head>
 <body>
@@ -730,6 +847,19 @@
                 <div class="saved-indicator-text">
                     Monster <strong id="savedMonsterName">Dragon</strong> siap bertarung!
                 </div>
+            </div>
+            <button class="monster-edit-btn" id="btnEditMonster" type="button">
+                ✎ Edit Monster
+            </button>
+        </div>
+
+        <div class="arena-players" id="arenaPlayers">
+            <div class="arena-players-head">
+                <div class="arena-players-title">Pemain di Arena</div>
+                <span class="arena-players-count" id="arenaPlayersCount">0 pemain</span>
+            </div>
+            <div class="arena-player-list" id="arenaPlayerList">
+                <div class="arena-empty">Menunggu pemain lain...</div>
             </div>
         </div>
 
@@ -910,6 +1040,9 @@
     let currentRoomMode = 'klasik';
     let selectedMonsterId = null;
     let monsterSaved = false;
+    let playersListener = null;
+    let reactionsListener = null;
+    let savedToastTimer = null;
 
     const DEFAULT_AVATAR_SVG = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3L1 8l11 5 9-4.09V17h2V8L12 3z" fill="currentColor"/><path d="M5 10.18v4.32c0 2 3.13 4.5 7 4.5s7-2.5 7-4.5v-4.32l-7 3.18-7-3.18z" fill="currentColor"/></svg>`;
 
@@ -944,6 +1077,10 @@
     const savedIndicator = document.getElementById('savedIndicator');
     const savedMonsterName = document.getElementById('savedMonsterName');
     const pinHint = document.getElementById('pinHint');
+    const btnEditMonster = document.getElementById('btnEditMonster');
+    const arenaPlayers = document.getElementById('arenaPlayers');
+    const arenaPlayerList = document.getElementById('arenaPlayerList');
+    const arenaPlayersCount = document.getElementById('arenaPlayersCount');
 
     // ==========================================
     // SVG ICONS untuk mode preview
@@ -1044,13 +1181,37 @@
     // ==========================================
     // SAVE MONSTER
     // ==========================================
+    function showSavedMonsterToast(name) {
+        if (!savedIndicator) return;
+        savedMonsterName.innerText = name || 'Monster';
+        savedIndicator.style.display = 'flex';
+        requestAnimationFrame(() => savedIndicator.classList.add('toast-show'));
+        clearTimeout(savedToastTimer);
+        savedToastTimer = setTimeout(() => {
+            savedIndicator.classList.remove('toast-show');
+            setTimeout(() => { savedIndicator.style.display = 'none'; }, 250);
+        }, 3200);
+    }
+
+    function enableMonsterEditing() {
+        monsterSaved = false;
+        savedIndicator.classList.remove('toast-show');
+        savedIndicator.style.display = 'none';
+        if (btnEditMonster) btnEditMonster.classList.remove('show');
+        btnSaveMonster.disabled = false;
+        btnSaveMonster.innerHTML = `<svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Simpan Perubahan`;
+        customMonsterName.focus();
+    }
+
+    btnEditMonster?.addEventListener('click', enableMonsterEditing);
+
     btnSaveMonster?.addEventListener('click', () => {
         if (!selectedMonsterId) {
-            alert('Pilih monster kamu dulu ya!');
+            alert('Pilih monster kamu terlebih dahulu.');
             return;
         }
         if (!activePin || !myPlayerKey) {
-            alert('Kamu belum join ke arena!');
+            alert('Anda belum bergabung ke arena.');
             return;
         }
 
@@ -1073,14 +1234,14 @@
             monsterReady: true
         }).then(() => {
             monsterSaved = true;
-            savedIndicator.style.display = 'flex';
-            savedMonsterName.innerText = customName;
+            showSavedMonsterToast(customName);
             btnSaveMonster.innerHTML = `<svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Tersimpan!`;
             btnSaveMonster.disabled = true;
+            if (btnEditMonster) btnEditMonster.classList.add('show');
         }).catch(err => {
-            alert('Gagal simpan monster: ' + err.message);
+            alert('Gagal menyimpan monster: ' + err.message);
             btnSaveMonster.disabled = false;
-            btnSaveMonster.innerHTML = `<svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Simpan Monster`;
+            btnSaveMonster.innerHTML = `<svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Simpan Monster`;
         });
     });
 
@@ -1132,6 +1293,8 @@
                     myPlayerKey = savedKey;
                     myName = savedName;
                     playerNameDisplay.innerText = myName;
+                    setupPlayersListener();
+                    setupReactionListener();
 
                     const myPlayerData = room.players[savedKey];
 
@@ -1148,8 +1311,9 @@
                         if (mode === 'monster') {
                             if (myPlayerData.monster && myPlayerData.monsterReady) {
                                 monsterSaved = true;
-                                savedIndicator.style.display = 'flex';
+                                savedIndicator.style.display = 'none';
                                 savedMonsterName.innerText = myPlayerData.monsterName || 'Monster';
+                                if (btnEditMonster) btnEditMonster.classList.add('show');
                                 monsterPicker.classList.add('show');
                                 selectedMonsterId = myPlayerData.monster;
                                 renderMonsterGrid();
@@ -1246,6 +1410,8 @@
                 activePin = pin;
                 myPlayerKey = playerRef.key;
                 myName = name;
+                setupPlayersListener();
+                setupReactionListener();
 
                 localStorage.setItem('star_battle_pin', pin);
                 localStorage.setItem('star_battle_key', myPlayerKey);
@@ -1308,6 +1474,11 @@
     // ==========================================
     function showWaitingForGame() {
         isWaitingForGame = true;
+        // Urutan setelah bergabung: daftar pemain -> status menunggu guru -> pilih/edit monster.
+        if (arenaPlayers && waitingForGame && waitingForGame.parentNode) {
+            waitingForGame.parentNode.insertBefore(waitingForGame, monsterPicker);
+            arenaPlayers.classList.add('show');
+        }
         waitingForGame.style.display = 'block';
         btnJoin.style.display = 'none';
         pinInput.style.display = 'none';
@@ -1320,6 +1491,53 @@
         btnJoin.disabled = false;
         btnJoin.innerHTML = `<svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Masuk`;
         waitingStatus.style.display = 'none';
+    }
+
+    // ==========================================
+    // LIVE PLAYER LIST + MONSTER STATUS
+    // ==========================================
+    function renderPlayers(players) {
+        if (!arenaPlayerList) return;
+        const entries = Object.entries(players || {}).sort((a,b) => {
+            if (a[0] === myPlayerKey) return -1;
+            if (b[0] === myPlayerKey) return 1;
+            return String(a[1]?.name || '').localeCompare(String(b[1]?.name || ''));
+        });
+
+        arenaPlayersCount.innerText = `${entries.length} pemain`;
+        if (!entries.length) {
+            arenaPlayerList.innerHTML = '<div class="arena-empty">Belum ada pemain lain di arena.</div>';
+            return;
+        }
+
+        arenaPlayerList.innerHTML = entries.map(([key, p]) => {
+            const monster = MONSTERS.find(m => m.id === p.monster);
+            const monsterHtml = monster
+                ? `${MONSTER_SVGS[monster.id]}<small>${escapeHtml(p.monsterName || monster.name)}</small>`
+                : `<span style="font-size:1.15rem;">?</span><small>Belum pilih</small>`;
+            const status = p.monsterReady ? `Lv. ${p.monsterLevel || 1} • HP ${p.monsterHp ?? 20}/${p.monsterMaxHp || 20}` : 'Memilih monster...';
+            return `
+                <div class="arena-player ${key === myPlayerKey ? 'me' : ''}">
+                    <div class="arena-player-avatar">${DEFAULT_AVATAR_SVG}</div>
+                    <div class="arena-player-info">
+                        <div class="arena-player-name">${escapeHtml(p.name || 'Pemain')}${key === myPlayerKey ? '<span class="you">(Anda)</span>' : ''}</div>
+                        <div class="arena-player-status">${escapeHtml(status)}</div>
+                    </div>
+                    <div class="arena-player-monster">${monsterHtml}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function setupPlayersListener() {
+        if (!activePin) return;
+        if (playersListener) db.ref(`rooms/${activePin}/players`).off('value', playersListener);
+        playersListener = snap => {
+            const players = snap.val() || {};
+            renderPlayers(players);
+        };
+        db.ref(`rooms/${activePin}/players`).on('value', playersListener);
+        arenaPlayers?.classList.add('show');
     }
 
     // ==========================================
@@ -1353,10 +1571,13 @@
 
     function setupReactionListener() {
         if (!activePin) return;
-        db.ref(`rooms/${activePin}/reactions`).on('child_added', (snap) => {
+        const ref = db.ref(`rooms/${activePin}/reactions`);
+        if (reactionsListener) ref.off('child_added', reactionsListener);
+        reactionsListener = snap => {
             const data = snap.val();
             if (data && data.emoji) spawnReactionBubble(data.emoji, data.name);
-        });
+        };
+        ref.on('child_added', reactionsListener);
     }
 
     function spawnReactionBubble(emoji, name) {
@@ -1423,11 +1644,22 @@
     document.addEventListener('DOMContentLoaded', () => {
         renderReactionBar();
         checkSavedSession();
-        if (activePin) setupReactionListener();
     });
 
     console.log('Class Battle Play (2 modes) loaded');
 </script>
 
+
+<script>
+(function(){
+    const savedTheme = localStorage.getItem('nita-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    window.addEventListener('storage', e => {
+        if (e.key === 'nita-theme') {
+            document.documentElement.setAttribute('data-theme', e.newValue || 'light');
+        }
+    });
+})();
+</script>
 </body>
 </html>
