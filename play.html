@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Class Battle | Arena Pertandingan</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -16,12 +15,10 @@
             min-height: 100vh; 
             padding: 12px;
             overflow-x: hidden;
+            transition: background 0.3s;
         }
         
-        .app-container { 
-            max-width: 600px; 
-            margin: 0 auto; 
-        }
+        .app-container { max-width: 600px; margin: 0 auto; }
         
         /* ========== HEADER ========== */
         .app-header {
@@ -37,62 +34,44 @@
             gap: 12px;
         }
         
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .header-left { display: flex; align-items: center; gap: 10px; }
         
         .header-left .icon {
-            width: 36px;
-            height: 36px;
+            width: 36px; height: 36px;
             background: linear-gradient(135deg, #4f46e5, #7c3aed);
             border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             color: white;
-            font-size: 0.9rem;
+            transition: all 0.3s;
         }
+        .header-left .icon.monster {
+            background: linear-gradient(135deg, #10b981, #f59e0b);
+        }
+        .header-left .icon svg { width: 18px; height: 18px; }
         
         .header-left h1 {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #0f172a;
+            font-size: 1rem; font-weight: 700; color: #0f172a;
         }
-        
         .header-left h1 span {
-            font-weight: 400;
-            color: #94a3b8;
-            font-size: 0.75rem;
+            font-weight: 400; color: #94a3b8; font-size: 0.75rem;
         }
         
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .header-right { display: flex; align-items: center; gap: 8px; }
         
         .btn-back {
             background: #f1f5f9;
             border: none;
             padding: 6px 14px;
             border-radius: 30px;
-            font-size: 0.7rem;
-            font-weight: 600;
+            font-size: 0.7rem; font-weight: 600;
             color: #475569;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
+            display: flex; align-items: center; gap: 4px;
             transition: all 0.2s;
-            text-decoration: none;
+            font-family: inherit;
         }
-        
-        .btn-back:hover {
-            background: #e2e8f0;
-            color: #0f172a;
-        }
+        .btn-back:hover { background: #e2e8f0; color: #0f172a; }
+        .btn-back svg { width: 12px; height: 12px; }
         
         /* ========== CARD ========== */
         .card {
@@ -105,90 +84,68 @@
         }
         
         /* ========== WAITING VIEW ========== */
-        .waiting-view {
-            text-align: center;
-            padding: 10px 0;
-        }
+        .waiting-view { text-align: center; padding: 10px 0; }
         
         .waiting-pulse {
-            width: 80px;
-            height: 80px;
+            width: 80px; height: 80px;
             margin: 0 auto 18px;
             background: #eef2ff;
             border: 2px dashed #4f46e5;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             color: #4f46e5;
             animation: pulseGlow 2s infinite;
+            transition: all 0.3s;
         }
-        
-        .waiting-pulse svg {
-            width: 36px;
-            height: 36px;
+        .waiting-pulse.monster {
+            background: #ecfdf5;
+            border-color: #10b981;
+            color: #10b981;
+            animation: pulseGlowMonster 2s infinite;
         }
+        .waiting-pulse svg { width: 36px; height: 36px; }
         
         @keyframes pulseGlow {
             0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.35); }
             70% { transform: scale(1.05); box-shadow: 0 0 0 16px rgba(79, 70, 229, 0); }
             100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
         }
-        
-        .waiting-pin {
-            background: #eef2ff;
-            color: #4f46e5;
-            font-weight: 700;
-            padding: 4px 16px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            display: inline-block;
-            margin-bottom: 6px;
+        @keyframes pulseGlowMonster {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 16px rgba(16, 185, 129, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
         
         .waiting-view h2 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 4px;
+            font-size: 1.2rem; font-weight: 700;
+            color: #0f172a; margin-bottom: 4px;
         }
-        
         .waiting-sub {
-            font-size: 0.85rem;
-            color: #64748b;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
+            font-size: 0.85rem; color: #64748b;
+            display: inline-flex; align-items: center; gap: 4px;
             margin-top: 4px;
         }
         
         .loading-dots span {
             animation: blink 1.4s infinite both;
-            font-size: 1.2rem;
-            line-height: 0;
+            font-size: 1.2rem; line-height: 0;
         }
         .loading-dots span:nth-child(2) { animation-delay: .2s; }
         .loading-dots span:nth-child(3) { animation-delay: .4s; }
-        
         @keyframes blink {
-            0% { opacity: .2; }
-            20% { opacity: 1; }
-            100% { opacity: .2; }
+            0% { opacity: .2; } 20% { opacity: 1; } 100% { opacity: .2; }
         }
         
         /* ========== PIN INPUT ========== */
         .pin-input-group {
-            display: flex;
-            gap: 10px;
+            display: flex; gap: 10px;
             margin-top: 16px;
             justify-content: center;
             flex-wrap: wrap;
         }
-        
         .pin-input-group input {
             padding: 12px 18px;
-            font-size: 1.1rem;
-            font-weight: 700;
+            font-size: 1.1rem; font-weight: 700;
             border: 2px solid #e2e8f0;
             border-radius: 14px;
             outline: none;
@@ -198,12 +155,16 @@
             background: #f8fafc;
             transition: all 0.2s;
             font-family: 'Inter', sans-serif;
+            color: #0f172a;
         }
-        
         .pin-input-group input:focus {
             border-color: #4f46e5;
             background: white;
             box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+        .pin-input-group input.monster-focus:focus {
+            border-color: #10b981;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
         }
         
         .pin-input-group .btn-join {
@@ -212,85 +173,328 @@
             border: none;
             padding: 12px 28px;
             border-radius: 14px;
-            font-size: 0.9rem;
-            font-weight: 600;
+            font-size: 0.9rem; font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+            font-family: inherit;
+        }
+        .pin-input-group .btn-join:hover { background: #4338ca; transform: translateY(-1px); }
+        .pin-input-group .btn-join.monster-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        }
+        .pin-input-group .btn-join.monster-btn:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+        }
+        .pin-input-group .btn-join:disabled {
+            background: #cbd5e1; cursor: not-allowed;
+            transform: none; box-shadow: none;
+        }
+        .pin-input-group .btn-join svg { width: 14px; height: 14px; }
+        
+        /* ========== MODE PREVIEW ========== */
+        .mode-preview {
+            display: none;
+            margin-top: 18px;
+            padding: 16px;
+            border-radius: 16px;
+            animation: slideDown 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-align: left;
+        }
+        .mode-preview.show { display: block; }
+        .mode-preview.klasik {
+            background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+            border: 1px solid #c7d2fe;
+        }
+        .mode-preview.monster {
+            background: linear-gradient(135deg, #ecfdf5, #fef3c7);
+            border: 1px solid #a7f3d0;
+        }
+        @keyframes slideDown {
+            0% { opacity: 0; transform: translateY(-10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .mode-preview-header {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 8px;
+        }
+        .mode-preview-icon {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+        .mode-preview-icon svg { width: 18px; height: 18px; }
+        .mode-preview.klasik .mode-preview-icon {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        }
+        .mode-preview.monster .mode-preview-icon {
+            background: linear-gradient(135deg, #10b981, #f59e0b);
+        }
+        .mode-preview-title {
+            font-size: 0.9rem; font-weight: 800; color: #0f172a;
+        }
+        .mode-preview-desc {
+            font-size: 0.78rem; color: #475569; line-height: 1.5;
+        }
+        
+        /* ========== MONSTER PICKER ========== */
+        .monster-picker {
+            display: none;
+            margin-top: 16px;
+            text-align: left;
+        }
+        .monster-picker.show {
+            display: block;
+            animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .picker-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 12px;
+            gap: 8px;
+        }
+        .picker-title {
+            font-size: 0.85rem; font-weight: 800;
+            color: #065f46;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .picker-title svg { width: 16px; height: 16px; }
+        
+        .picker-badge {
+            background: #d1fae5;
+            color: #047857;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .monster-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .monster-choice {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 10px 6px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-family: inherit;
+            position: relative;
+        }
+        .monster-choice:hover {
+            border-color: #10b981;
+            background: white;
+            transform: translateY(-3px);
+        }
+        .monster-choice.selected {
+            border-color: #10b981;
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        }
+        .monster-choice.selected::after {
+            content: '';
+            position: absolute;
+            top: 4px; right: 4px;
+            width: 14px; height: 14px;
+            background: #10b981;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        
+        .monster-svg {
+            width: 36px; height: 36px;
+            transition: transform 0.2s;
+        }
+        .monster-choice:hover .monster-svg {
+            transform: scale(1.1);
+        }
+        
+        .monster-choice-name {
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            text-align: center;
+        }
+        
+        .custom-name-group {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 4px 4px 4px 12px;
             display: flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+            transition: border 0.2s;
+        }
+        .custom-name-group:focus-within {
+            border-color: #10b981;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        .custom-name-group svg {
+            width: 14px; height: 14px;
+            color: #94a3b8;
+            flex-shrink: 0;
+        }
+        .custom-name-group input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 10px 12px 10px 0;
+            font-size: 0.85rem;
+            font-family: inherit;
+            color: #0f172a;
+            font-weight: 600;
+        }
+        .custom-name-group input::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
         }
         
-        .pin-input-group .btn-join:hover {
-            background: #4338ca;
+        .save-monster-btn {
+            margin-top: 10px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 11px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .save-monster-btn:hover {
+            background: linear-gradient(135deg, #059669, #047857);
             transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
         }
-        
-        .pin-input-group .btn-join:disabled {
+        .save-monster-btn:disabled {
             background: #cbd5e1;
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
         }
+        .save-monster-btn svg { width: 14px; height: 14px; }
         
-        /* ========== REACTION BAR ========== */
-        .reaction-bar {
+        .saved-indicator {
+            margin-top: 10px;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 12px;
+            padding: 10px 14px;
             display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 20px;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.3s ease;
+        }
+        .saved-indicator svg {
+            width: 18px; height: 18px;
+            color: #10b981;
+            flex-shrink: 0;
+        }
+        .saved-indicator-text {
+            font-size: 0.78rem;
+            color: #065f46;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        .saved-indicator-text strong { font-weight: 800; }
+        
+        /* ========== WAITING GAME BOX ========== */
+        .waiting-game-box {
+            margin-top: 16px;
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid #c7d2fe;
+            background: #eef2ff;
+            text-align: center;
+        }
+        .waiting-game-box.monster {
+            background: #ecfdf5;
+            border-color: #a7f3d0;
+        }
+        .waiting-game-header {
+            display: flex; align-items: center; justify-content: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+        .waiting-game-header svg {
+            width: 20px; height: 20px;
+            color: #4f46e5;
+        }
+        .waiting-game-box.monster .waiting-game-header svg { color: #047857; }
+        .waiting-game-title {
+            font-weight: 700; color: #4f46e5; font-size: 1rem;
+        }
+        .waiting-game-box.monster .waiting-game-title { color: #047857; }
+        
+        /* ========== REACTION BAR (EMOJI BOLEH) ========== */
+        .reaction-bar {
+            display: flex; justify-content: center;
+            gap: 8px; margin-top: 20px;
             flex-wrap: wrap;
         }
-        
         .reaction-btn {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 14px;
-            font-size: 1.3rem;
-            width: 48px;
-            height: 48px;
+            width: 48px; height: 48px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             transition: all 0.15s ease;
+            padding: 0;
+            font-size: 1.3rem;
+            line-height: 1;
         }
-        
         .reaction-btn:hover {
             background: #eef2ff;
             border-color: #c7d2fe;
             transform: translateY(-2px);
         }
-        
-        .reaction-btn:active {
-            transform: scale(0.9);
-        }
+        .reaction-btn:active { transform: scale(0.9); }
         
         /* ========== REACTION FLOATING ========== */
         .reaction-float-container {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            overflow: hidden;
+            position: fixed; inset: 0;
+            pointer-events: none; overflow: hidden;
             z-index: 9999;
         }
-        
         .reaction-bubble {
-            position: absolute;
-            bottom: 40px;
+            position: absolute; bottom: 40px;
             text-align: center;
             animation: floatUp 3s ease-out forwards;
         }
-        
         .reaction-bubble .emoji-face {
             font-size: 2rem;
             display: block;
         }
-        
         .reaction-bubble .emoji-owner {
-            font-size: 0.65rem;
-            font-weight: 600;
+            font-size: 0.65rem; font-weight: 600;
             color: #4f46e5;
             background: white;
             border-radius: 10px;
@@ -299,76 +503,147 @@
             display: inline-block;
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
         }
-        
         @keyframes floatUp {
             0% { transform: translateY(0) translateX(0) scale(0.6); opacity: 0; }
             15% { opacity: 1; transform: translateY(-20px) translateX(var(--drift, 0px)) scale(1.1); }
             100% { transform: translateY(-380px) translateX(var(--drift, 0px)) scale(1); opacity: 0; }
         }
         
+        /* ========== ANIMATIONS ========== */
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
         /* ========== RESPONSIVE ========== */
         @media (max-width: 500px) {
             body { padding: 8px; }
             .app-header { padding: 10px 14px; }
             .header-left h1 { font-size: 0.9rem; }
-            .header-left .icon { width: 30px; height: 30px; font-size: 0.8rem; }
+            .header-left .icon { width: 30px; height: 30px; }
+            .header-left .icon svg { width: 16px; height: 16px; }
             .card { padding: 18px 16px; }
             .waiting-pulse { width: 64px; height: 64px; }
             .waiting-pulse svg { width: 28px; height: 28px; }
             .reaction-btn { width: 40px; height: 40px; font-size: 1.1rem; }
             .pin-input-group input { width: 130px; font-size: 1rem; padding: 10px 14px; }
             .pin-input-group .btn-join { padding: 10px 20px; font-size: 0.85rem; }
+            .mode-preview { padding: 14px; }
+            .monster-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+            .monster-choice { padding: 8px 4px; }
+            .monster-svg { width: 30px; height: 30px; }
+            .monster-choice-name { font-size: 0.55rem; }
         }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <!-- ===== HEADER ===== -->
     <header class="app-header">
         <div class="header-left">
-            <div class="icon"><i class="fas fa-door-open"></i></div>
-            <h1>Class Battle <span>| Join Arena</span></h1>
+            <div class="icon" id="headerIcon">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 3L1 8l11 5 9-4.09V17h2V8L12 3z" fill="currentColor"/>
+                    <path d="M5 10.18v4.32c0 2 3.13 4.5 7 4.5s7-2.5 7-4.5v-4.32l-7 3.18-7-3.18z" fill="currentColor"/>
+                </svg>
+            </div>
+            <h1>Class Battle <span id="headerSubtitle">| Join Arena</span></h1>
         </div>
         <div class="header-right">
-            <button class="btn-back" id="btnBackHome"><i class="fas fa-arrow-left"></i> Kembali</button>
+            <button class="btn-back" id="btnBackHome">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Kembali
+            </button>
         </div>
     </header>
 
-    <!-- ===== WAITING VIEW ===== -->
     <div id="waitingView" class="card waiting-view">
-        <div class="waiting-pulse">
+        <div class="waiting-pulse" id="waitingPulse">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 3L1 8l11 5 9-4.09V17h2V8L12 3z" fill="currentColor"/>
                 <path d="M5 10.18v4.32c0 2 3.13 4.5 7 4.5s7-2.5 7-4.5v-4.32l-7 3.18-7-3.18z" fill="currentColor"/>
             </svg>
         </div>
 
-        <!-- PIN INPUT -->
-        <div class="pin-input-group">
+        <div class="pin-input-group" id="pinInputGroup">
             <input type="text" id="pinInputField" placeholder="PIN Arena" maxlength="6" inputmode="numeric">
-            <button class="btn-join" id="btnJoinRoom"><i class="fas fa-arrow-right"></i> Masuk</button>
+            <button class="btn-join" id="btnJoinRoom">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Masuk
+            </button>
         </div>
 
-        <div style="margin-top: 16px; font-size:0.8rem; color:#94a3b8;">
-            <i class="fas fa-info-circle"></i> Masukkan PIN yang diberikan gurumu
+        <div class="mode-preview" id="modePreview">
+            <div class="mode-preview-header">
+                <div class="mode-preview-icon" id="modePreviewIcon"></div>
+                <div class="mode-preview-title" id="modePreviewTitle">Mode Klasik</div>
+            </div>
+            <div class="mode-preview-desc" id="modePreviewDesc"></div>
+        </div>
+
+        <div style="margin-top: 16px; font-size:0.8rem; color:#94a3b8;" id="pinHint">
+            Masukkan PIN yang diberikan gurumu
         </div>
 
         <div id="waitingStatus" style="margin-top: 16px; display:none;">
             <div style="display:flex; align-items:center; justify-content:center; gap:8px; color:#4f46e5; font-weight:600; font-size:0.9rem;">
-                <i class="fas fa-spinner fa-spin"></i>
+                <svg viewBox="0 0 24 24" fill="none" style="width:16px;height:16px;animation:spin 1s linear infinite;">
+                    <path d="M21 12a9 9 0 1 1-6.219-8.56" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
                 <span>Menghubungkan ke arena...</span>
             </div>
         </div>
 
-        <div id="waitingForGame" style="margin-top: 16px; display:none;">
-            <div style="background:#eef2ff; border-radius:16px; padding:16px; border:1px solid #c7d2fe;">
-                <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:6px;">
-                    <span style="font-size:1.2rem;">⏳</span>
-                    <span style="font-weight:700; color:#4f46e5; font-size:1rem;">Menunggu Guru Mulai</span>
+        <!-- MONSTER PICKER -->
+        <div class="monster-picker" id="monsterPicker">
+            <div class="picker-header">
+                <div class="picker-title">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 1.5.5 2.9 1.3 4.1L3 20h5l1-3h6l1 3h5l-3.3-6.9c.8-1.2 1.3-2.6 1.3-4.1 0-3.87-3.13-7-7-7zm-3 8.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm6 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="currentColor"/>
+                    </svg>
+                    Pilih Monstermu
+                </div>
+                <span class="picker-badge">Wajib</span>
+            </div>
+            <div class="monster-grid" id="monsterGrid"></div>
+
+            <div class="custom-name-group">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <input type="text" id="customMonsterName" placeholder="Kasih nama monster kamu..." maxlength="20">
+            </div>
+
+            <button class="save-monster-btn" id="btnSaveMonster">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Simpan Monster
+            </button>
+
+            <div class="saved-indicator" id="savedIndicator" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M22 4L12 14.01l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="saved-indicator-text">
+                    Monster <strong id="savedMonsterName">Dragon</strong> siap bertarung!
+                </div>
+            </div>
+        </div>
+
+        <div id="waitingForGame" style="display:none;">
+            <div class="waiting-game-box" id="waitingGameBox">
+                <div class="waiting-game-header">
+                    <svg viewBox="0 0 24 24" fill="none" id="waitingIcon">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                        <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span class="waiting-game-title" id="waitingTitleText">Menunggu Guru Mulai</span>
                 </div>
                 <p style="font-size:0.85rem; color:#64748b;" id="waitingPlayerName">Halo, <strong id="playerNameDisplay">Pemain</strong>!</p>
-                <p class="waiting-sub">
+                <p class="waiting-sub" id="waitingSubText">
                     Guru akan memulai pertandingan sebentar lagi 
                     <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
                 </p>
@@ -379,7 +654,6 @@
     </div>
 </div>
 
-<!-- ===== REACTION FLOATING ===== -->
 <div class="reaction-float-container" id="reactionFloatContainer"></div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -400,6 +674,36 @@
     const db = firebase.database();
 
     // ==========================================
+    // SVG MONSTER LIBRARY (WAJIB SVG)
+    // ==========================================
+    const MONSTER_SVGS = {
+        dragon: `<svg class="monster-svg" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 1.5.5 2.9 1.3 4.1L3 20h5l1-3h6l1 3h5l-3.3-6.9c.8-1.2 1.3-2.6 1.3-4.1 0-3.87-3.13-7-7-7zm-3 8.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm6 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="#ef4444"/><path d="M9 15l1.5 2h3L15 15h-6z" fill="#fbbf24"/></svg>`,
+        wolf: `<svg class="monster-svg" viewBox="0 0 24 24" fill="none"><path d="M6 4l3 4-3 2-2-4 2-2zm12 0l-3 4 3 2 2-4-2-2zm-6 4c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6s6-2.69 6-6c0-3.31-2.69-6-6-6zm-2 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm4 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm-2 3l-1.5 1.5L12 19l1.5-1.5L12 16z" fill="#64748b"/></svg>`,
+        phoenix: `<svg class="monster-svg" viewBox="0 0 24 24" fill="none"><path d="M12 2c-1 3-4 5-4 8 0 2 1 3 2 4-2 0-4-1-5-3 0 3 2 6 5 7-1 1-3 2-5 2h14c-2 0-4-1-5-2 3-1 5-4 5-7-1 2-3 3-5 3 1-1 2-2 2-4 0-3-3-5-4-8z" fill="#f59e0b"/><path d="M12 8c-.5 1.5-2 2.5-2 4 0 1 .5 1.5 1 2-.5 0-1.5-.5-2-1.5 0 1.5 1 3 2.5 3.5-.5.5-1.5 1-2.5 1h6c-1 0-2-.5-2.5-1 1.5-.5 2.5-2 2.5-3.5-.5 1-1.5 1.5-2 1.5.5-.5 1-1 1-2 0-1.5-1.5-2.5-2-4z" fill="#fbbf24"/></svg>`,
+        turtle: `<svg class="monster-svg" viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="13" rx="8" ry="6" fill="#10b981"/><path d="M6 13h12M12 7v12M8 9l8 8M16 9l-8 8" stroke="#065f46" stroke-width="1.2"/><circle cx="6" cy="8" r="1.8" fill="#10b981"/><circle cx="18" cy="8" r="1.8" fill="#10b981"/><circle cx="6.5" cy="7.5" r="0.5" fill="#065f46"/><circle cx="17.5" cy="7.5" r="0.5" fill="#065f46"/></svg>`,
+        fox: `<svg class="monster-svg" viewBox="0 0 24 24" fill="none"><path d="M4 4l3 5-1 4 3-3 3 3 3-3 3 3-1-4 3-5-5 2-5-1-5 1-4-2z" fill="#f97316"/><path d="M6 12c0 3 3 6 6 6s6-3 6-6l-3 2-3-1-3 1-3-2z" fill="#fb923c"/><circle cx="10" cy="13" r="0.8" fill="#7c2d12"/><circle cx="14" cy="13" r="0.8" fill="#7c2d12"/><path d="M11 15l1 1 1-1" stroke="#7c2d12" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg>`,
+        tiger: `<svg class="monster-svg" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="13" r="7" fill="#eab308"/><path d="M7 5l2 4M17 5l-2 4" stroke="#eab308" stroke-width="2" stroke-linecap="round"/><path d="M9 10h.01M15 10h.01" stroke="#78350f" stroke-width="2" stroke-linecap="round"/><path d="M10 15l2 1 2-1" stroke="#78350f" stroke-width="1" fill="none" stroke-linecap="round"/><path d="M8 12h1M15 12h1M12 11v2M10 14h4" stroke="#78350f" stroke-width="0.7"/></svg>`,
+        shark: `<svg class="monster-svg" viewBox="0 0 24 24" fill="none"><path d="M2 12c4-5 10-6 14-3l4-2-2 5 3 3-4-1c-3 3-9 3-13-2z" fill="#0891b2"/><circle cx="9" cy="11" r="0.8" fill="white"/><path d="M6 14l1 1M8 15l1 1" stroke="#0e7490" stroke-width="0.8"/></svg>`,
+        owl: `<svg class="monster-svg" viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="13" rx="7" ry="8" fill="#8b5cf6"/><circle cx="9" cy="12" r="2.5" fill="white"/><circle cx="15" cy="12" r="2.5" fill="white"/><circle cx="9" cy="12" r="1" fill="#1e293b"/><circle cx="15" cy="12" r="1" fill="#1e293b"/><path d="M11 16l1 1 1-1" stroke="#f59e0b" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>`
+    };
+
+    const MONSTERS = [
+        { id: 'dragon',  name: 'Dragon'  },
+        { id: 'wolf',    name: 'Wolf'    },
+        { id: 'phoenix', name: 'Phoenix' },
+        { id: 'turtle',  name: 'Turtle'  },
+        { id: 'fox',     name: 'Fox'     },
+        { id: 'tiger',   name: 'Tiger'   },
+        { id: 'shark',   name: 'Shark'   },
+        { id: 'owl',     name: 'Owl'     }
+    ];
+
+    // ==========================================
+    // EMOJI REACTION (BOLEH EMOJI)
+    // ==========================================
+    const REACTION_EMOJIS = ['😂', '🔥', '👍', '❤️', '🎉', '😮'];
+
+    // ==========================================
     // STATE
     // ==========================================
     let activePin = null;
@@ -408,9 +712,11 @@
     let roomStatusListener = null;
     let isJoining = false;
     let isWaitingForGame = false;
+    let currentRoomMode = 'klasik';
+    let selectedMonsterId = null;
+    let monsterSaved = false;
 
-    const DEFAULT_AVATAR_SVG = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L1 8l11 5 9-4.09V17h2V8L12 3z" fill="currentColor"/><path d="M5 10.18v4.32c0 2 3.13 4.5 7 4.5s7-2.5 7-4.5v-4.32l-7 3.18-7-3.18z" fill="currentColor"/></svg>`;
-    const REACTION_EMOJIS = ['😂', '🔥', '👍', '❤️', '🎉', '😮'];
+    const DEFAULT_AVATAR_SVG = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3L1 8l11 5 9-4.09V17h2V8L12 3z" fill="currentColor"/><path d="M5 10.18v4.32c0 2 3.13 4.5 7 4.5s7-2.5 7-4.5v-4.32l-7 3.18-7-3.18z" fill="currentColor"/></svg>`;
 
     function escapeHtml(str) {
         return str ? str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;') : '';
@@ -424,9 +730,161 @@
     const waitingStatus = document.getElementById('waitingStatus');
     const waitingForGame = document.getElementById('waitingForGame');
     const playerNameDisplay = document.getElementById('playerNameDisplay');
+    const headerIcon = document.getElementById('headerIcon');
+    const headerSubtitle = document.getElementById('headerSubtitle');
+    const waitingPulse = document.getElementById('waitingPulse');
+    const waitingGameBox = document.getElementById('waitingGameBox');
+    const modePreview = document.getElementById('modePreview');
+    const modePreviewIcon = document.getElementById('modePreviewIcon');
+    const modePreviewTitle = document.getElementById('modePreviewTitle');
+    const modePreviewDesc = document.getElementById('modePreviewDesc');
+    const monsterPicker = document.getElementById('monsterPicker');
+    const monsterGrid = document.getElementById('monsterGrid');
+    const customMonsterName = document.getElementById('customMonsterName');
+    const btnSaveMonster = document.getElementById('btnSaveMonster');
+    const savedIndicator = document.getElementById('savedIndicator');
+    const savedMonsterName = document.getElementById('savedMonsterName');
+    const pinHint = document.getElementById('pinHint');
 
     // ==========================================
-    // CEK SESSION TERSIMPAN
+    // SVG ICONS untuk mode preview
+    // ==========================================
+    const ICON_KLASIK = `<svg viewBox="0 0 24 24" fill="none"><path d="M5 3v4M3 5h4M6 17v4M4 19h4M13 3l2.5 6.5L22 12l-6.5 2.5L13 21l-2.5-6.5L4 12l6.5-2.5L13 3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    const ICON_MONSTER = `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 1.5.5 2.9 1.3 4.1L3 20h5l1-3h6l1 3h5l-3.3-6.9c.8-1.2 1.3-2.6 1.3-4.1 0-3.87-3.13-7-7-7zm-3 8.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm6 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="currentColor"/></svg>`;
+
+    // ==========================================
+    // APPLY MODE UI
+    // ==========================================
+    function applyModeUI(mode) {
+        currentRoomMode = mode;
+
+        if (mode === 'monster') {
+            headerIcon.classList.add('monster');
+            headerIcon.innerHTML = `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 1.5.5 2.9 1.3 4.1L3 20h5l1-3h6l1 3h5l-3.3-6.9c.8-1.2 1.3-2.6 1.3-4.1 0-3.87-3.13-7-7-7zm-3 8.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm6 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="currentColor"/></svg>`;
+            headerSubtitle.innerText = '| Monster Arena';
+            waitingPulse.classList.add('monster');
+            pinInput.classList.add('monster-focus');
+            btnJoin.classList.add('monster-btn');
+            waitingGameBox.classList.add('monster');
+
+            modePreview.className = 'mode-preview monster show';
+            modePreviewIcon.innerHTML = ICON_MONSTER;
+            modePreviewTitle.innerText = 'Mode Monster Battle';
+            modePreviewDesc.innerText = 'Pilih monster, jawab soal dengan benar buat naikin level, salah jawab = monster kena damage!';
+        } else {
+            headerIcon.classList.remove('monster');
+            headerIcon.innerHTML = `<svg viewBox="0 0 24 24" fill="none"><path d="M12 3L1 8l11 5 9-4.09V17h2V8L12 3z" fill="currentColor"/><path d="M5 10.18v4.32c0 2 3.13 4.5 7 4.5s7-2.5 7-4.5v-4.32l-7 3.18-7-3.18z" fill="currentColor"/></svg>`;
+            headerSubtitle.innerText = '| Join Arena';
+            waitingPulse.classList.remove('monster');
+            pinInput.classList.remove('monster-focus');
+            btnJoin.classList.remove('monster-btn');
+            waitingGameBox.classList.remove('monster');
+
+            modePreview.className = 'mode-preview klasik show';
+            modePreviewIcon.innerHTML = ICON_KLASIK;
+            modePreviewTitle.innerText = 'Mode Klasik';
+            modePreviewDesc.innerText = 'Jawab soal pilihan ganda, skor masuk ke leaderboard real-time.';
+        }
+    }
+
+    // ==========================================
+    // RENDER MONSTER GRID
+    // ==========================================
+    function renderMonsterGrid() {
+        if (!monsterGrid) return;
+        monsterGrid.innerHTML = '';
+        MONSTERS.forEach(m => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'monster-choice';
+            btn.dataset.id = m.id;
+            btn.innerHTML = `
+                ${MONSTER_SVGS[m.id]}
+                <span class="monster-choice-name">${m.name}</span>
+            `;
+            btn.addEventListener('click', () => selectMonster(m.id));
+            monsterGrid.appendChild(btn);
+        });
+    }
+
+    function selectMonster(id) {
+        selectedMonsterId = id;
+        monsterGrid.querySelectorAll('.monster-choice').forEach(btn => {
+            btn.classList.toggle('selected', btn.dataset.id === id);
+        });
+        if (!customMonsterName.value.trim()) {
+            const m = MONSTERS.find(x => x.id === id);
+            if (m) customMonsterName.placeholder = m.name;
+        }
+    }
+
+    // ==========================================
+    // SAVE MONSTER
+    // ==========================================
+    btnSaveMonster?.addEventListener('click', () => {
+        if (!selectedMonsterId) {
+            alert('Pilih monster kamu dulu ya!');
+            return;
+        }
+        if (!activePin || !myPlayerKey) {
+            alert('Kamu belum join ke arena!');
+            return;
+        }
+
+        const monsterData = MONSTERS.find(m => m.id === selectedMonsterId);
+        const customName = customMonsterName.value.trim() || monsterData.name;
+
+        btnSaveMonster.disabled = true;
+        btnSaveMonster.innerHTML = `<svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;animation:spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Menyimpan...`;
+
+        db.ref(`rooms/${activePin}/players/${myPlayerKey}`).update({
+            monster: selectedMonsterId,
+            monsterEmoji: selectedMonsterId,
+            monsterName: customName,
+            monsterSvg: MONSTER_SVGS[selectedMonsterId],
+            monsterLevel: 1,
+            monsterHp: 20,
+            monsterMaxHp: 20,
+            monsterXp: 0,
+            monsterDead: false,
+            monsterReady: true
+        }).then(() => {
+            monsterSaved = true;
+            savedIndicator.style.display = 'flex';
+            savedMonsterName.innerText = customName;
+            btnSaveMonster.innerHTML = `<svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Tersimpan!`;
+            btnSaveMonster.disabled = true;
+        }).catch(err => {
+            alert('Gagal simpan monster: ' + err.message);
+            btnSaveMonster.disabled = false;
+            btnSaveMonster.innerHTML = `<svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Simpan Monster`;
+        });
+    });
+
+    // ==========================================
+    // CHECK PIN MODE
+    // ==========================================
+    let pinCheckTimeout = null;
+    function checkPinMode(pin) {
+        if (!pin || pin.length < 4) {
+            modePreview.classList.remove('show');
+            return;
+        }
+        clearTimeout(pinCheckTimeout);
+        pinCheckTimeout = setTimeout(() => {
+            db.ref(`rooms/${pin}/mode`).once('value').then((snap) => {
+                if (snap.exists()) {
+                    const mode = snap.val() || 'klasik';
+                    applyModeUI(mode);
+                } else {
+                    modePreview.classList.remove('show');
+                }
+            }).catch(() => modePreview.classList.remove('show'));
+        }, 400);
+    }
+
+    // ==========================================
+    // CHECK SAVED SESSION
     // ==========================================
     function checkSavedSession() {
         const savedPin = localStorage.getItem('star_battle_pin');
@@ -434,7 +892,6 @@
         const savedName = localStorage.getItem('star_battle_name');
 
         if (savedPin && savedKey && savedName) {
-            // Cek apakah room masih ada
             db.ref(`rooms/${savedPin}`).once('value').then((snap) => {
                 if (!snap.exists()) {
                     localStorage.removeItem('star_battle_pin');
@@ -444,17 +901,19 @@
                 }
 
                 const room = snap.val();
-                // Cek apakah player masih ada di room
+                const mode = room.mode || 'klasik';
+                applyModeUI(mode);
+
                 if (room.players && room.players[savedKey]) {
                     activePin = savedPin;
                     myPlayerKey = savedKey;
                     myName = savedName;
                     playerNameDisplay.innerText = myName;
 
-                    // Cek status room
+                    const myPlayerData = room.players[savedKey];
+
                     if (room.status === 'playing') {
-                        // Langsung redirect ke player.html (halaman ngerjain)
-                        window.location.href = 'player.html';
+                        redirectToPlayer(mode);
                     } else if (room.status === 'ended') {
                         alert('Pertandingan sudah selesai!');
                         localStorage.removeItem('star_battle_pin');
@@ -462,8 +921,28 @@
                         localStorage.removeItem('star_battle_name');
                         window.location.href = 'index.html';
                     } else {
-                        // status waiting - tampilkan tunggu
                         showWaitingForGame();
+                        if (mode === 'monster') {
+                            if (myPlayerData.monster && myPlayerData.monsterReady) {
+                                monsterSaved = true;
+                                savedIndicator.style.display = 'flex';
+                                savedMonsterName.innerText = myPlayerData.monsterName || 'Monster';
+                                monsterPicker.classList.add('show');
+                                selectedMonsterId = myPlayerData.monster;
+                                renderMonsterGrid();
+                                setTimeout(() => {
+                                    monsterGrid.querySelectorAll('.monster-choice').forEach(btn => {
+                                        btn.classList.toggle('selected', btn.dataset.id === selectedMonsterId);
+                                    });
+                                    customMonsterName.value = myPlayerData.monsterName || '';
+                                    btnSaveMonster.disabled = true;
+                                    btnSaveMonster.innerHTML = `<svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Tersimpan!`;
+                                }, 50);
+                            } else {
+                                monsterPicker.classList.add('show');
+                                renderMonsterGrid();
+                            }
+                        }
                         listenRoomStatus();
                     }
                 } else {
@@ -480,13 +959,24 @@
     }
 
     // ==========================================
+    // REDIRECT
+    // ==========================================
+    function redirectToPlayer(mode) {
+        if (mode === 'monster') {
+            window.location.href = 'player-monster.html';
+        } else {
+            window.location.href = 'player.html';
+        }
+    }
+
+    // ==========================================
     // JOIN ROOM
     // ==========================================
     function joinRoom(pin, name) {
         if (isJoining) return;
         isJoining = true;
         btnJoin.disabled = true;
-        btnJoin.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Masuk...';
+        btnJoin.innerHTML = `<svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;animation:spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Masuk...`;
         waitingStatus.style.display = 'block';
 
         db.ref(`rooms/${pin}`).once('value').then((snap) => {
@@ -497,6 +987,8 @@
             }
 
             const roomData = snap.val();
+            const mode = roomData.mode || 'klasik';
+            applyModeUI(mode);
 
             if (roomData.status === 'ended') {
                 alert('Pertandingan di arena ini sudah selesai!');
@@ -504,7 +996,6 @@
                 return;
             }
 
-            // Push player ke room
             const playerRef = db.ref(`rooms/${pin}/players`).push();
             const playerData = {
                 name: name,
@@ -515,6 +1006,18 @@
                 status: 'Bertanding'
             };
 
+            if (mode === 'monster') {
+                playerData.monster = null;
+                playerData.monsterEmoji = null;
+                playerData.monsterName = null;
+                playerData.monsterLevel = 1;
+                playerData.monsterHp = 20;
+                playerData.monsterMaxHp = 20;
+                playerData.monsterXp = 0;
+                playerData.monsterDead = false;
+                playerData.monsterReady = false;
+            }
+
             playerRef.set(playerData).then(() => {
                 activePin = pin;
                 myPlayerKey = playerRef.key;
@@ -523,15 +1026,19 @@
                 localStorage.setItem('star_battle_pin', pin);
                 localStorage.setItem('star_battle_key', myPlayerKey);
                 localStorage.setItem('star_battle_name', name);
+                localStorage.setItem('star_game_mode', mode);
 
                 playerNameDisplay.innerText = myName;
                 waitingStatus.style.display = 'none';
 
-                // Cek status room
                 if (roomData.status === 'playing') {
-                    window.location.href = 'player.html';
+                    redirectToPlayer(mode);
                 } else {
                     showWaitingForGame();
+                    if (mode === 'monster') {
+                        monsterPicker.classList.add('show');
+                        renderMonsterGrid();
+                    }
                     listenRoomStatus();
                 }
             }).catch(err => {
@@ -551,12 +1058,16 @@
         if (roomStatusListener) {
             db.ref(`rooms/${activePin}/status`).off('value', roomStatusListener);
         }
-
         roomStatusListener = db.ref(`rooms/${activePin}/status`).on('value', (snap) => {
             const status = snap.val();
             if (status === 'playing') {
                 db.ref(`rooms/${activePin}/status`).off('value', roomStatusListener);
-                window.location.href = 'player.html';
+                if (currentRoomMode === 'monster' && !monsterSaved) {
+                    if (!confirm('Kamu belum pilih monster! Tetap lanjut bertarung dengan monster default?')) {
+                        return;
+                    }
+                }
+                redirectToPlayer(currentRoomMode);
             } else if (status === 'ended') {
                 db.ref(`rooms/${activePin}/status`).off('value', roomStatusListener);
                 alert('Pertandingan telah dihentikan oleh guru!');
@@ -569,28 +1080,26 @@
     }
 
     // ==========================================
-    // SHOW WAITING FOR GAME
+    // SHOW WAITING
     // ==========================================
     function showWaitingForGame() {
         isWaitingForGame = true;
         waitingForGame.style.display = 'block';
         btnJoin.style.display = 'none';
         pinInput.style.display = 'none';
-        document.querySelector('.pin-input-group .fa-info-circle')?.parentElement?.remove();
+        modePreview.classList.remove('show');
+        if (pinHint) pinHint.style.display = 'none';
     }
 
-    // ==========================================
-    // RESET JOIN BUTTON
-    // ==========================================
     function resetJoinButton() {
         isJoining = false;
         btnJoin.disabled = false;
-        btnJoin.innerHTML = '<i class="fas fa-arrow-right"></i> Masuk';
+        btnJoin.innerHTML = `<svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Masuk`;
         waitingStatus.style.display = 'none';
     }
 
     // ==========================================
-    // REACTION
+    // REACTION (EMOJI)
     // ==========================================
     function renderReactionBar() {
         const bar = document.getElementById('reactionBar');
@@ -669,20 +1178,19 @@
             alert('Nama tidak boleh kosong!');
             return;
         }
-
         if (pin.length < 4) {
             alert('PIN minimal 4 digit!');
             return;
         }
-
         joinRoom(pin, name.trim());
     });
 
-    // Enter pada input PIN
+    pinInput.addEventListener('input', (e) => {
+        checkPinMode(e.target.value.trim());
+    });
+
     pinInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            btnJoin.click();
-        }
+        if (e.key === 'Enter') btnJoin.click();
     });
 
     // ==========================================
@@ -690,17 +1198,11 @@
     // ==========================================
     document.addEventListener('DOMContentLoaded', () => {
         renderReactionBar();
-        
-        // Cek session tersimpan
         checkSavedSession();
-
-        // Setup reaction listener jika sudah ada PIN
-        if (activePin) {
-            setupReactionListener();
-        }
+        if (activePin) setupReactionListener();
     });
 
-    console.log('🎮 Class Battle Play (Join) loaded');
+    console.log('Class Battle Play (2 modes) loaded');
 </script>
 
 </body>
