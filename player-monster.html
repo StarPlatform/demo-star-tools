@@ -736,7 +736,7 @@
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 1.5.5 2.9 1.3 4.1L3 20h5l1-3h6l1 3h5l-3.3-6.9c.8-1.2 1.3-2.6 1.3-4.1 0-3.87-3.13-7-7-7zm-3 8.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm6 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="currentColor"/>
                 </svg>
             </div>
-            <h1>Monster Arena <span id="headerSubtitle">| Bertanding</span></h1>
+            <h1>Monster Arena</h1>
         </div>
         <div class="header-right">
             <span class="pin-badge" id="pinBadge">PIN: ----</span>
@@ -771,13 +771,8 @@
                 </div>
                 <div class="battle-info">
                     <div class="monster-name">
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="currentColor"/>
-                        </svg>
                         <span id="monsterNameText">Monster</span>
                     </div>
-                    <div class="tier-badge t1" id="tierBadge">Wujud Awal</div>
-                    <div class="monster-status-text" id="monsterStatusText">Siap bertarung!</div>
                     
                     <!-- XP -->
                     <div class="xp-wrap">
@@ -1189,7 +1184,6 @@
     const monsterSvgContainer = document.getElementById('monsterSvgContainer');
     const monsterLvlBadge = document.getElementById('monsterLvlBadge');
     const monsterNameText = document.getElementById('monsterNameText');
-    const monsterStatusText = document.getElementById('monsterStatusText');
     const hpText = document.getElementById('hpText');
     const hpBarFill = document.getElementById('hpBarFill');
     const xpText = document.getElementById('xpText');
@@ -1204,7 +1198,6 @@
     const fbSub = document.getElementById('fbSub');
     const deadOverlay = document.getElementById('deadOverlay');
     const btnRevive = document.getElementById('btnRevive');
-    const tierBadge = document.getElementById('tierBadge');
     const evoCrown = document.getElementById('evoCrown');
     const evolveBanner = document.getElementById('evolveBanner');
     const evoTitle = document.getElementById('evoTitle');
@@ -1633,30 +1626,10 @@
             monsterShowcase.classList.remove('tier-1', 'tier-2', 'tier-3', 'tier-4');
             monsterShowcase.classList.add(`tier-${Math.min(tIdx + 1, 4)}`);
         }
-        
-        // Tier badge
-        if (tierBadge) {
-            const tIdx = getTierIndex(level);
-            const tier = TIER_CONFIG[tIdx] || TIER_CONFIG[0];
-            tierBadge.innerText = tier.label;
-            tierBadge.className = `tier-badge ${tier.cls}`;
-        }
-        if (evoCrown) evoCrown.classList.toggle('show', getTierIndex(level) === TIER_CONFIG.length - 1);
-        
-        // Status text
-        if (monsterStatusText) {
-            if (isDead) {
-                monsterStatusText.innerText = 'Monster tumbang!';
-                monsterStatusText.classList.add('danger');
-            } else if (hp < maxHp * 0.3) {
-                monsterStatusText.innerText = 'HP kritis!';
-                monsterStatusText.classList.add('danger');
-            } else {
-                monsterStatusText.innerText = 'Siap bertarung!';
-                monsterStatusText.classList.remove('danger');
-            }
-        }
-    }
+
+        // Tier aura (evolusi visual)
+         if (evoCrown) evoCrown.classList.toggle('show', getTierIndex(level) === TIER_CONFIG.length - 1);
+       }
 
     // ==========================================
     // UPDATE PLAYER DATA
