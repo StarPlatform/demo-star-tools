@@ -22,62 +22,69 @@
         /* ========== HEADER ========== */
         .app-header {
             background: white;
-            border-radius: 20px;
-            padding: 14px 18px;
-            margin-bottom: 16px;
+            border-radius: 18px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             border: 1px solid #e8ecf1;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
+            gap: 8px;
         }
         
-        .header-left { display: flex; align-items: center; gap: 10px; }
+        .header-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
         
         .header-left .icon {
-            width: 36px; height: 36px;
+            width: 30px; height: 30px;
             background: linear-gradient(135deg, #10b981, #f59e0b);
-            border-radius: 10px;
+            border-radius: 9px;
             display: flex; align-items: center; justify-content: center;
             color: white;
+            flex-shrink: 0;
         }
-        .header-left .icon svg { width: 18px; height: 18px; }
+        .header-left .icon svg { width: 15px; height: 15px; }
         
         .header-left h1 {
-            font-size: 1rem; font-weight: 700; color: #0f172a;
+            font-size: 0.88rem; font-weight: 700; color: #0f172a;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .header-left h1 span {
-            font-weight: 400; color: #94a3b8; font-size: 0.75rem;
+            font-weight: 400; color: #94a3b8; font-size: 0.7rem;
         }
         
-        .header-right { display: flex; align-items: center; gap: 8px; }
+        .header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
         
         .pin-badge {
             background: #ecfdf5;
             color: #047857;
-            padding: 5px 12px;
+            padding: 4px 10px;
             border-radius: 30px;
             font-weight: 700;
-            font-size: 0.7rem;
+            font-size: 0.66rem;
             border: 1px solid #a7f3d0;
             display: flex;
             align-items: center;
             gap: 4px;
+            white-space: nowrap;
         }
         
         .btn-back {
             background: #f1f5f9;
             border: none;
-            padding: 6px 14px;
-            border-radius: 30px;
+            width: 30px; height: 30px;
+            border-radius: 50%;
             font-size: 0.7rem; font-weight: 600;
             color: #475569;
             cursor: pointer;
-            display: flex; align-items: center; gap: 4px;
+            display: flex; align-items: center; justify-content: center;
             font-family: inherit;
+            flex-shrink: 0;
         }
         .btn-back:hover { background: #e2e8f0; }
+        .btn-back svg { width: 14px; height: 14px; }
         
         /* ========== CARD ========== */
         .card {
@@ -105,10 +112,10 @@
             background: linear-gradient(160deg, #f8fafc, #eef2f7);
             border: 2px solid #e2e8f0;
             transition: all 0.3s;
-            overflow: hidden;
+            overflow: visible;
         }
         .monster-showcase.alive {
-            animation: monsterBreath 2.5s ease-in-out infinite;
+            animation: monsterHop 2s ease-in-out infinite;
         }
         .monster-showcase.hurt {
             animation: monsterHurt 0.4s ease;
@@ -123,6 +130,7 @@
         .monster-showcase svg {
             width: 90px; height: 90px;
             filter: drop-shadow(0 6px 8px rgba(0,0,0,0.15));
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .monster-showcase .lvl-badge {
             position: absolute;
@@ -135,11 +143,16 @@
             border-radius: 20px;
             border: 2px solid white;
             box-shadow: 0 2px 6px rgba(245,158,11,0.4);
+            z-index: 2;
         }
         
-        @keyframes monsterBreath {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.03); }
+        @keyframes monsterHop {
+            0%, 100% { transform: translateY(0) scale(1, 1); }
+            10% { transform: translateY(0) scale(1.06, 0.92); }
+            30% { transform: translateY(-16px) scale(0.96, 1.05); }
+            50% { transform: translateY(0) scale(1.06, 0.92); }
+            62% { transform: translateY(0) scale(1, 1); }
+            100% { transform: translateY(0) scale(1, 1); }
         }
         @keyframes monsterHurt {
             0%, 100% { transform: translateX(0); }
@@ -176,6 +189,11 @@
         
         /* HP Bar */
         .hp-wrap { display: flex; flex-direction: column; gap: 4px; }
+        .hp-wrap-bottom {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px dashed #e2e8f0;
+        }
         .hp-label {
             display: flex; justify-content: space-between;
             font-size: 0.7rem; font-weight: 700;
@@ -328,25 +346,6 @@
             color: white;
             border-color: #ef4444;
         }
-        
-        /* ========== BATTLE LOG ========== */
-        .battle-log {
-            background: #f8fafc;
-            border-radius: 14px;
-            padding: 12px 14px;
-            max-height: 120px;
-            overflow-y: auto;
-            font-size: 0.72rem;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            border: 1px solid #e2e8f0;
-        }
-        .log-item { display: flex; gap: 8px; color: #64748b; }
-        .log-item .time { color: #4f46e5; font-weight: 700; flex-shrink: 0; }
-        .log-item.success { color: #10b981; font-weight: 600; }
-        .log-item.danger { color: #ef4444; font-weight: 600; }
-        .log-item.warning { color: #f59e0b; font-weight: 600; }
         
         /* ========== FEEDBACK POPUP ========== */
         .feedback-popup {
@@ -703,8 +702,13 @@
         /* ========== RESPONSIVE ========== */
         @media (max-width: 500px) {
             body { padding: 8px; }
-            .app-header { padding: 10px 14px; }
-            .header-left h1 { font-size: 0.9rem; }
+            .app-header { padding: 8px 12px; }
+            .header-left .icon { width: 26px; height: 26px; }
+            .header-left .icon svg { width: 13px; height: 13px; }
+            .header-left h1 { font-size: 0.78rem; }
+            .header-left h1 span { font-size: 0.62rem; }
+            .pin-badge { font-size: 0.6rem; padding: 3px 8px; }
+            .btn-back, .btn-sound { width: 26px; height: 26px; }
             .battle-top { grid-template-columns: 110px 1fr; gap: 12px; }
             .monster-showcase { width: 110px; height: 110px; }
             .monster-showcase svg { width: 72px; height: 72px; }
@@ -726,18 +730,17 @@
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 1.5.5 2.9 1.3 4.1L3 20h5l1-3h6l1 3h5l-3.3-6.9c.8-1.2 1.3-2.6 1.3-4.1 0-3.87-3.13-7-7-7zm-3 8.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm6 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="currentColor"/>
                 </svg>
             </div>
-            <h1>Monster Arena <span id="headerSubtitle">| Battle</span></h1>
+            <h1>Monster Arena <span id="headerSubtitle">| Bertanding</span></h1>
         </div>
         <div class="header-right">
             <span class="pin-badge" id="pinBadge">PIN: ----</span>
             <button class="btn-sound" id="btnSound" title="Suara">
                 <svg viewBox="0 0 24 24" fill="none"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
             </button>
-            <button class="btn-back" id="btnBackHome">
-                <svg viewBox="0 0 24 24" fill="none" style="width:12px;height:12px;">
+            <button class="btn-back" id="btnBackHome" title="Keluar">
+                <svg viewBox="0 0 24 24" fill="none">
                     <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                Keluar
             </button>
         </div>
     </header>
@@ -768,17 +771,6 @@
                     <div class="tier-badge t1" id="tierBadge">Wujud Awal</div>
                     <div class="monster-status-text" id="monsterStatusText">Siap bertarung!</div>
                     
-                    <!-- HP -->
-                    <div class="hp-wrap">
-                        <div class="hp-label">
-                            <span>HP</span>
-                            <span id="hpText">20/20</span>
-                        </div>
-                        <div class="hp-bar-bg">
-                            <div class="hp-bar-fill" id="hpBarFill" style="width:100%"></div>
-                        </div>
-                    </div>
-                    
                     <!-- XP -->
                     <div class="xp-wrap">
                         <div class="hp-label">
@@ -797,10 +789,21 @@
                             <div class="mini-stat-value score" id="scoreText">0</div>
                         </div>
                         <div class="mini-stat">
-                            <div class="mini-stat-label">Combo</div>
+                            <div class="mini-stat-label">Beruntun</div>
                             <div class="mini-stat-value combo" id="comboText">0</div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- HP dipindah ke bawah, memanjang penuh -->
+            <div class="hp-wrap hp-wrap-bottom">
+                <div class="hp-label">
+                    <span>HP</span>
+                    <span id="hpText">20/20</span>
+                </div>
+                <div class="hp-bar-bg">
+                    <div class="hp-bar-fill" id="hpBarFill" style="width:100%"></div>
                 </div>
             </div>
         </div>
@@ -811,11 +814,6 @@
             <div class="q-text" id="qText">Memuat soal...</div>
             <div class="options-grid" id="optionsGrid"></div>
         </div>
-
-        <!-- Battle Log -->
-        <div class="battle-log" id="battleLog">
-            <div class="log-item"><span class="time">[SYS]</span> Battle monster dimulai!</div>
-        </div>
     </div>
 
     <!-- ===== FINISH VIEW ===== -->
@@ -823,8 +821,8 @@
         <svg class="big" viewBox="0 0 24 24" fill="none">
             <path d="M12 2l2.4 7.4H22l-6 4.4 2.3 7.2L12 16.6 5.7 21l2.3-7.2-6-4.4h7.6L12 2z" fill="#f59e0b"/>
         </svg>
-        <h2 id="finishTitle">Battle Selesai!</h2>
-        <p class="sub" id="finishSub">Kerja bagus! Monster kamu sudah bertarung dengan hebat.</p>
+        <h2 id="finishTitle">Pertandingan Selesai!</h2>
+        <p class="sub" id="finishSub">Kerja yang bagus! Monstermu telah bertarung dengan sangat baik.</p>
 
         <div class="finish-score">
             <div class="label">Skor Akhir</div>
@@ -870,26 +868,26 @@
             <circle cx="12" cy="12" r="10" stroke="#ef4444" stroke-width="2"/>
             <path d="M9 9l6 6M15 9l-6 6" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
         </svg>
-        <h2>Monster Kamu Mati!</h2>
-        <p>Nyawa monstermu habis. Tapi tenang — kamu masih bisa revive dan lanjut bertarung!</p>
+        <h2>Monstermu Telah Kalah!</h2>
+        <p>Nyawa monstermu telah habis. Namun jangan khawatir, kamu masih dapat menghidupkan kembali monster dan melanjutkan pertandingan!</p>
         <button class="btn-revive" id="btnRevive">
             <svg viewBox="0 0 24 24" fill="none">
                 <path d="M12 21s-7-4.5-7-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-7 11-7 11z" fill="currentColor"/>
             </svg>
-            Revive Monster
+            Hidupkan Kembali Monster
         </button>
     </div>
 </div>
 
 <!-- ===== EVOLVE BANNER ===== -->
 <div class="evolve-banner" id="evolveBanner">
-    <div class="evo-title" id="evoTitle">EVOLVE!</div>
+    <div class="evo-title" id="evoTitle">EVOLUSI!</div>
     <div class="evo-sub" id="evoSub">Monster naik wujud baru</div>
 </div>
 
 <!-- ===== COMBO BLAST ===== -->
 <div class="combo-blast" id="comboBlast">
-    <span>🔥</span><span id="comboBlastText">COMBO x2!</span>
+    <span>🔥</span><span id="comboBlastText">BERUNTUN x2!</span>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -1034,10 +1032,10 @@
     // Tahapan evolusi monster berdasarkan level
     const TIER_CONFIG = [
         { min: 1, max: 2,  cls: 't1', label: 'Wujud Awal' },
-        { min: 3, max: 4,  cls: 't2', label: 'Growth' },
-        { min: 5, max: 6,  cls: 't2', label: 'Power' },
-        { min: 7, max: 8,  cls: 't3', label: 'Elite' },
-        { min: 9, max: 10, cls: 't4', label: 'Ascended' }
+        { min: 3, max: 4,  cls: 't2', label: 'Berkembang' },
+        { min: 5, max: 6,  cls: 't2', label: 'Perkasa' },
+        { min: 7, max: 8,  cls: 't3', label: 'Istimewa' },
+        { min: 9, max: 10, cls: 't4', label: 'Puncak' }
     ];
     function getTierIndex(lvl) {
         return TIER_CONFIG.findIndex(t => lvl >= t.min && lvl <= t.max);
@@ -1072,6 +1070,8 @@
     let playerDataListener = null;
     let lastKnownHp = 20;
     let currentTierIdx = 0;
+    let growthFactor = 1;
+    const MAX_GROWTH = 1.6;
 
     function escapeHtml(str) {
         return str ? str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;') : '';
@@ -1156,7 +1156,6 @@
     const qNumber = document.getElementById('qNumber');
     const qText = document.getElementById('qText');
     const optionsGrid = document.getElementById('optionsGrid');
-    const battleLog = document.getElementById('battleLog');
     const feedbackPopup = document.getElementById('feedbackPopup');
     const fbTitle = document.getElementById('fbTitle');
     const fbSub = document.getElementById('fbSub');
@@ -1185,7 +1184,7 @@
     // ==========================================
     db.ref(`rooms/${activePin}`).once('value').then((snap) => {
         if (!snap.exists()) {
-            alert('Room tidak tersedia.');
+            alert('Ruang pertandingan tidak tersedia.');
             window.location.href = 'index.html';
             return;
         }
@@ -1225,6 +1224,7 @@
                 wrongCount = pData.wrong || 0;
                 lastKnownHp = hp;
                 currentTierIdx = getTierIndex(level);
+                growthFactor = Math.min(MAX_GROWTH, 1 + (correctCount * 0.04));
                 
                 updateUI();
                 loadQuiz();
@@ -1309,6 +1309,9 @@
             correctCount++;
             combo++;
             
+            // Monster membesar sedikit tiap jawaban benar (maksimal 60% lebih besar)
+            growthFactor = Math.min(MAX_GROWTH, growthFactor + 0.04);
+            
             // Combo streak multiplier: 3-4 = x1.5, 5-7 = x2, 8+ = x3
             const basePoint = 10;
             let multiplier = 1;
@@ -1389,7 +1392,7 @@
     let comboBlastTimer = null;
     function showComboBlast(multiplier) {
         if (!comboBlast) return;
-        comboBlastText.innerText = `COMBO x${multiplier}!`;
+        comboBlastText.innerText = `BERUNTUN x${multiplier}!`;
         comboBlast.classList.add('show');
         clearTimeout(comboBlastTimer);
         comboBlastTimer = setTimeout(() => comboBlast.classList.remove('show'), 1100);
@@ -1479,12 +1482,12 @@
         
         if (tierChanged) {
             const tier = TIER_CONFIG[newTierIdx];
-            addLog(`EVOLVE! Monster naik ke Level ${level} — wujud ${tier.label}!`, 'warning');
+            addLog(`EVOLUSI! Monster naik ke Level ${level} — wujud ${tier.label}!`, 'warning');
             animateMonster('evolving');
             SFX.evolve();
             showEvolveBanner(tier.label, level);
         } else {
-            addLog(`LEVEL UP! Monster naik ke Level ${level}`, 'warning');
+            addLog(`NAIK LEVEL! Monster naik ke Level ${level}`, 'warning');
             animateMonster('levelup');
             SFX.levelup();
         }
@@ -1497,10 +1500,10 @@
     let evolveBannerTimer = null;
     function showEvolveBanner(tierLabel, lvl) {
         if (!evolveBanner) return;
-        evoTitle.innerText = 'EVOLVE!';
+        evoTitle.innerText = 'EVOLUSI!';
         evoSub.innerText = `Level ${lvl} — Wujud ${tierLabel}`;
         evolveBanner.classList.add('show');
-        if (evoCrown && tierLabel === 'Ascended') evoCrown.classList.add('show');
+        if (evoCrown && tierLabel === 'Puncak') evoCrown.classList.add('show');
         clearTimeout(evolveBannerTimer);
         evolveBannerTimer = setTimeout(() => evolveBanner.classList.remove('show'), 1800);
     }
@@ -1536,21 +1539,19 @@
     // ADD LOG
     // ==========================================
     function addLog(msg, type) {
-        if (!battleLog) return;
-        const now = new Date();
-        const time = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-        const item = document.createElement('div');
-        item.className = `log-item ${type || ''}`;
-        item.innerHTML = `<span class="time">[${time}]</span> ${msg}`;
-        battleLog.appendChild(item);
-        battleLog.scrollTop = battleLog.scrollHeight;
+        // Histori jawaban sudah tidak ditampilkan lagi
+        return;
     }
 
     // ==========================================
     // UPDATE UI
     // ==========================================
     function updateUI() {
-        if (monsterSvgContainer) monsterSvgContainer.innerHTML = monsterSvg;
+        if (monsterSvgContainer) {
+            monsterSvgContainer.innerHTML = monsterSvg;
+            monsterSvgContainer.style.transform = `scale(${growthFactor})`;
+            monsterSvgContainer.style.transition = 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        }
         if (monsterLvlBadge) monsterLvlBadge.innerText = `Lv ${level}`;
         if (monsterNameText) monsterNameText.innerText = monsterName;
         
@@ -1708,7 +1709,7 @@
         hp = Math.floor(maxHp / 2);
         combo = 0;
         deadOverlay.classList.remove('show');
-        addLog('Monster di-revive dengan setengah HP!', 'warning');
+        addLog('Monster dihidupkan kembali dengan setengah HP!', 'warning');
         updateUI();
         updatePlayerData();
         currentQuestionIdx++;
