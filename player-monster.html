@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Class Battle | Monster Arena</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #f0f2f5; 
+            color: #0f172a; 
+            min-height: 100vh; 
+            padding: 12px;
+            overflow-x: hidden;
+        }
+        
+        .app-container { max-width: 600px; margin: 0 auto; }
+        
+        /* ========== HEADER ========== */
+        .app-header {
+            background: white;
+            border-radius: 20px;
+            padding: 14px 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #e8ecf1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        
+        .header-left .icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, #10b981, #f59e0b);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: white;
+        }
+        .header-left .icon svg { width: 18px; height: 18px; }
+        
+        .header-left h1 {
+            font-size: 1rem; font-weight: 700; color: #0f172a;
+        }
+        .header-left h1 span {
+            font-weight: 400; color: #94a3b8; font-size: 0.75rem;
+        }
+        
+        .header-right { display: flex; align-items: center; gap: 8px; }
+        
+        .pin-badge {
+            background: #ecfdf5;
+            color: #047857;
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            border: 1px solid #a7f3d0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .btn-back {
+            background: #f1f5f9;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.7rem; font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 4px;
+            font-family: inherit;
+        }
+        .btn-back:hover { background: #e2e8f0; }
+        
+        /* ========== CARD ========== */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #e8ecf1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            margin-bottom: 14px;
+        }
+        
+        /* ========== BATTLE TOP (Monster + Stats) ========== */
+        .battle-top {
+            display: grid;
+            grid-template-columns: 130px 1fr;
+            gap: 16px;
+            align-items: center;
+        }
+        
+        .monster-showcase {
+            position: relative;
+            width: 130px; height: 130px;
+            border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(160deg, #f8fafc, #eef2f7);
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+        .monster-showcase.alive {
+            animation: monsterBreath 2.5s ease-in-out infinite;
+        }
+        .monster-showcase.hurt {
+            animation: monsterHurt 0.4s ease;
+        }
+        .monster-showcase.dead {
+            filter: grayscale(1) brightness(0.5);
+            animation: none;
+        }
+        .monster-showcase.levelup {
+            animation: monsterLevelup 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .monster-showcase svg {
+            width: 90px; height: 90px;
+            filter: drop-shadow(0 6px 8px rgba(0,0,0,0.15));
+        }
+        .monster-showcase .lvl-badge {
+            position: absolute;
+            top: 6px; right: 6px;
+            background: #f59e0b;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 20px;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(245,158,11,0.4);
+        }
+        
+        @keyframes monsterBreath {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        @keyframes monsterHurt {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px) rotate(-3deg); }
+            40% { transform: translateX(10px) rotate(3deg); }
+            60% { transform: translateX(-6px) rotate(-2deg); }
+            80% { transform: translateX(6px) rotate(2deg); }
+        }
+        @keyframes monsterLevelup {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.15); }
+            70% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+        
+        .battle-info { display: flex; flex-direction: column; gap: 8px; }
+        
+        .monster-name {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .monster-name svg { width: 14px; height: 14px; color: #10b981; }
+        
+        .monster-status-text {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #047857;
+        }
+        .monster-status-text.danger { color: #ef4444; }
+        
+        /* HP Bar */
+        .hp-wrap { display: flex; flex-direction: column; gap: 4px; }
+        .hp-label {
+            display: flex; justify-content: space-between;
+            font-size: 0.7rem; font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .hp-bar-bg {
+            background: #f1f5f9;
+            height: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .hp-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            border-radius: 10px;
+            transition: width 0.4s ease, background 0.4s;
+        }
+        .hp-bar-fill.low { background: linear-gradient(90deg, #ef4444, #f87171); }
+        .hp-bar-fill.mid { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        
+        /* XP Bar */
+        .xp-wrap { display: flex; flex-direction: column; gap: 4px; }
+        .xp-bar-bg {
+            background: #f1f5f9;
+            height: 6px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .xp-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+            border-radius: 10px;
+            transition: width 0.4s;
+        }
+        
+        /* Score + Combo */
+        .top-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .mini-stat {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 6px 10px;
+            border: 1px solid #e2e8f0;
+        }
+        .mini-stat-label {
+            font-size: 0.6rem;
+            color: #94a3b8;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .mini-stat-value {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-top: 2px;
+        }
+        .mini-stat-value.score { color: #4f46e5; }
+        .mini-stat-value.score.negative { color: #ef4444; }
+        .mini-stat-value.combo { color: #f59e0b; }
+        
+        /* ========== QUESTION CARD ========== */
+        .q-number {
+            background: #ecfdf5;
+            color: #047857;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            display: inline-block;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+        
+        .q-text {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+        
+        .option-btn {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #334155;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .option-btn:hover:not(:disabled) {
+            border-color: #10b981;
+            background: #ecfdf5;
+            transform: translateY(-2px);
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.75;
+        }
+        .option-btn .key {
+            width: 26px; height: 26px;
+            border-radius: 8px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+            color: #64748b;
+        }
+        .option-btn.correct {
+            background: #ecfdf5;
+            border-color: #10b981;
+            color: #047857;
+        }
+        .option-btn.correct .key {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+        .option-btn.wrong {
+            background: #fef2f2;
+            border-color: #ef4444;
+            color: #b91c1c;
+        }
+        .option-btn.wrong .key {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+        
+        /* ========== BATTLE LOG ========== */
+        .battle-log {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 12px 14px;
+            max-height: 120px;
+            overflow-y: auto;
+            font-size: 0.72rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            border: 1px solid #e2e8f0;
+        }
+        .log-item { display: flex; gap: 8px; color: #64748b; }
+        .log-item .time { color: #4f46e5; font-weight: 700; flex-shrink: 0; }
+        .log-item.success { color: #10b981; font-weight: 600; }
+        .log-item.danger { color: #ef4444; font-weight: 600; }
+        .log-item.warning { color: #f59e0b; font-weight: 600; }
+        
+        /* ========== FEEDBACK POPUP ========== */
+        .feedback-popup {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.5);
+            background: white;
+            border-radius: 24px;
+            padding: 24px 36px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            border: 3px solid #10b981;
+            text-align: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .feedback-popup.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .feedback-popup.wrong { border-color: #ef4444; }
+        .feedback-popup .fb-title {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: #10b981;
+            margin-bottom: 6px;
+        }
+        .feedback-popup.wrong .fb-title { color: #ef4444; }
+        .feedback-popup .fb-sub {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+        
+        /* ========== DEAD OVERLAY ========== */
+        .dead-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15,23,42,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .dead-overlay.show { display: flex; }
+        .dead-card {
+            background: white;
+            border-radius: 24px;
+            padding: 32px 28px;
+            text-align: center;
+            max-width: 380px;
+            width: 100%;
+            border: 2px solid #ef4444;
+            animation: deadIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes deadIn {
+            0% { transform: scale(0.85); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .dead-card svg { width: 64px; height: 64px; margin-bottom: 12px; }
+        .dead-card h2 {
+            font-size: 1.3rem; font-weight: 800;
+            color: #ef4444; margin-bottom: 6px;
+        }
+        .dead-card p {
+            font-size: 0.85rem; color: #64748b;
+            margin-bottom: 20px; line-height: 1.5;
+        }
+        .btn-revive {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 14px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+            transition: all 0.2s;
+        }
+        .btn-revive:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-1px);
+        }
+        .btn-revive svg { width: 16px; height: 16px; }
+        
+        /* ========== FINISH VIEW ========== */
+        .finish-view {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .finish-view svg.big {
+            width: 72px; height: 72px;
+            margin-bottom: 12px;
+        }
+        .finish-view h2 {
+            font-size: 1.4rem; font-weight: 800;
+            color: #0f172a; margin-bottom: 6px;
+        }
+        .finish-view .sub {
+            font-size: 0.9rem; color: #64748b;
+            margin-bottom: 20px;
+        }
+        .finish-score {
+            background: linear-gradient(160deg, #ecfdf5, #fef3c7);
+            border: 1px solid #a7f3d0;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .finish-score .label {
+            font-size: 0.72rem; font-weight: 700;
+            color: #047857;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .finish-score .value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #059669;
+            margin-top: 4px;
+        }
+        .finish-score .value.negative { color: #ef4444; }
+        
+        .finish-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .finish-stat {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 12px 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .finish-stat .num {
+            font-size: 1.2rem; font-weight: 800;
+            color: #0f172a;
+        }
+        .finish-stat .lbl {
+            font-size: 0.6rem;
+            color: #94a3b8;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+        .finish-stat.green .num { color: #10b981; }
+        .finish-stat.red .num { color: #ef4444; }
+        .finish-stat.blue .num { color: #4f46e5; }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(16,185,129,0.25);
+            transition: all 0.2s;
+            margin: 0 6px;
+        }
+        .btn-primary:hover { transform: translateY(-1px); }
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 6px;
+        }
+        
+        /* ========== REACTION BAR ========== */
+        .reaction-bar {
+            display: flex; justify-content: center;
+            gap: 8px; margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .reaction-btn {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            width: 44px; height: 44px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s ease;
+            padding: 0;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+        .reaction-btn:hover {
+            background: #ecfdf5;
+            border-color: #a7f3d0;
+            transform: translateY(-2px);
+        }
+        .reaction-btn:active { transform: scale(0.9); }
+        
+        .reaction-float-container {
+            position: fixed; inset: 0;
+            pointer-events: none; overflow: hidden;
+            z-index: 9998;
+        }
+        .reaction-bubble {
+            position: absolute; bottom: 40px;
+            text-align: center;
+            animation: floatUp 3s ease-out forwards;
+        }
+        .reaction-bubble .emoji-face {
+            font-size: 2rem;
+            display: block;
+        }
+        .reaction-bubble .emoji-owner {
+            font-size: 0.65rem; font-weight: 600;
+            color: #047857;
+            background: white;
+            border-radius: 10px;
+            padding: 1px 8px;
+            margin-top: 2px;
+            display: inline-block;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) translateX(0) scale(0.6); opacity: 0; }
+            15% { opacity: 1; transform: translateY(-20px) translateX(var(--drift, 0px)) scale(1.1); }
+            100% { transform: translateY(-380px) translateX(var(--drift, 0px)) scale(1); opacity: 0; }
+        }
+        
+        /* ========== LOADING ========== */
+        .loading-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+        .loading-state .spinner {
+            display: inline-block;
+            width: 40px; height: 40px;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #10b981;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 12px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 500px) {
+            body { padding: 8px; }
+            .app-header { padding: 10px 14px; }
+            .header-left h1 { font-size: 0.9rem; }
+            .battle-top { grid-template-columns: 110px 1fr; gap: 12px; }
+            .monster-showcase { width: 110px; height: 110px; }
+            .monster-showcase svg { width: 72px; height: 72px; }
+            .q-text { font-size: 0.95rem; }
+            .option-btn { padding: 10px 14px; font-size: 0.85rem; }
+            .reaction-btn { width: 38px; height: 38px; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+        <div class="header-left">
+            <div class="icon">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 1.5.5 2.9 1.3 4.1L3 20h5l1-3h6l1 3h5l-3.3-6.9c.8-1.2 1.3-2.6 1.3-4.1 0-3.87-3.13-7-7-7zm-3 8.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm6 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="currentColor"/>
+                </svg>
+            </div>
+            <h1>Monster Arena <span id="headerSubtitle">| Battle</span></h1>
+        </div>
+        <div class="header-right">
+            <span class="pin-badge" id="pinBadge">PIN: ----</span>
+            <button class="btn-back" id="btnBackHome">
+                <svg viewBox="0 0 24 24" fill="none" style="width:12px;height:12px;">
+                    <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Keluar
+            </button>
+        </div>
+    </header>
+
+    <!-- ===== LOADING ===== -->
+    <div id="loadingView" class="card loading-state">
+        <div class="spinner"></div>
+        <p>Menyiapkan arena monster...</p>
+    </div>
+
+    <!-- ===== BATTLE VIEW ===== -->
+    <div id="battleView" style="display:none;">
+        <!-- Monster Stats Card -->
+        <div class="card">
+            <div class="battle-top">
+                <div class="monster-showcase alive" id="monsterShowcase">
+                    <div class="lvl-badge" id="monsterLvlBadge">Lv 1</div>
+                    <div id="monsterSvgContainer"></div>
+                </div>
+                <div class="battle-info">
+                    <div class="monster-name">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="currentColor"/>
+                        </svg>
+                        <span id="monsterNameText">Monster</span>
+                    </div>
+                    <div class="monster-status-text" id="monsterStatusText">Siap bertarung!</div>
+                    
+                    <!-- HP -->
+                    <div class="hp-wrap">
+                        <div class="hp-label">
+                            <span>HP</span>
+                            <span id="hpText">20/20</span>
+                        </div>
+                        <div class="hp-bar-bg">
+                            <div class="hp-bar-fill" id="hpBarFill" style="width:100%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- XP -->
+                    <div class="xp-wrap">
+                        <div class="hp-label">
+                            <span>XP</span>
+                            <span id="xpText">0/10</span>
+                        </div>
+                        <div class="xp-bar-bg">
+                            <div class="xp-bar-fill" id="xpBarFill" style="width:0%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Score + Combo -->
+                    <div class="top-stats">
+                        <div class="mini-stat">
+                            <div class="mini-stat-label">Skor</div>
+                            <div class="mini-stat-value score" id="scoreText">0</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-label">Combo</div>
+                            <div class="mini-stat-value combo" id="comboText">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question Card -->
+        <div class="card">
+            <span class="q-number" id="qNumber">SOAL #1</span>
+            <div class="q-text" id="qText">Memuat soal...</div>
+            <div class="options-grid" id="optionsGrid"></div>
+        </div>
+
+        <!-- Battle Log -->
+        <div class="battle-log" id="battleLog">
+            <div class="log-item"><span class="time">[SYS]</span> Battle monster dimulai!</div>
+        </div>
+
+        <!-- Reactions -->
+        <div class="reaction-bar" id="reactionBar"></div>
+    </div>
+
+    <!-- ===== FINISH VIEW ===== -->
+    <div id="finishView" class="card finish-view" style="display:none;">
+        <svg class="big" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2l2.4 7.4H22l-6 4.4 2.3 7.2L12 16.6 5.7 21l2.3-7.2-6-4.4h7.6L12 2z" fill="#f59e0b"/>
+        </svg>
+        <h2 id="finishTitle">Battle Selesai!</h2>
+        <p class="sub" id="finishSub">Kerja bagus! Monster kamu sudah bertarung dengan hebat.</p>
+
+        <div class="finish-score">
+            <div class="label">Skor Akhir</div>
+            <div class="value" id="finalScore">0</div>
+        </div>
+
+        <div class="finish-stats">
+            <div class="finish-stat blue">
+                <div class="num" id="finalLevel">1</div>
+                <div class="lbl">Level</div>
+            </div>
+            <div class="finish-stat green">
+                <div class="num" id="finalCorrect">0</div>
+                <div class="lbl">Benar</div>
+            </div>
+            <div class="finish-stat red">
+                <div class="num" id="finalWrong">0</div>
+                <div class="lbl">Salah</div>
+            </div>
+        </div>
+
+        <div style="margin-top:16px;">
+            <button class="btn-secondary" id="btnBackHome2">
+                <svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;">
+                    <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Keluar Arena
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== FEEDBACK POPUP ===== -->
+<div class="feedback-popup" id="feedbackPopup">
+    <div class="fb-title" id="fbTitle">BENAR!</div>
+    <div class="fb-sub" id="fbSub">+10 poin</div>
+</div>
+
+<!-- ===== DEAD OVERLAY ===== -->
+<div class="dead-overlay" id="deadOverlay">
+    <div class="dead-card">
+        <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="#ef4444" stroke-width="2"/>
+            <path d="M9 9l6 6M15 9l-6 6" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <h2>Monster Kamu Mati!</h2>
+        <p>Nyawa monstermu habis. Tapi tenang — kamu masih bisa revive dan lanjut bertarung!</p>
+        <button class="btn-revive" id="btnRevive">
+            <svg viewBox="0 0 24 24" fill="none">
+                <path d="M12 21s-7-4.5-7-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-7 11-7 11z" fill="currentColor"/>
+            </svg>
+            Revive Monster
+        </button>
+    </div>
+</div>
+
+<div class="reaction-float-container" id="reactionFloatContainer"></div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script>
+    // ==========================================
+    // FIREBASE CONFIG
+    // ==========================================
+    const firebaseConfig = {
+        apiKey: "AIzaSyCBVjPohvfPZYs8DfGtzEdi5j4Svb3UvLI",
+        authDomain: "class-battle-19f8c.firebaseapp.com",
+        databaseURL: "https://class-battle-19f8c-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "class-battle-19f8c"
+    };
+
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // ==========================================
+    // SVG MONSTER LIBRARY (SAMA DENGAN play.html)
+    // ==========================================
+    const MONSTER_SVGS = {
+        dragon: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs><linearGradient id="gradDragon" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f87171"/><stop offset="100%" stop-color="#b91c1c"/></linearGradient></defs>
+            <path d="M20 14 L14 4 L24 10 Z" fill="#fbbf24"/>
+            <path d="M44 14 L50 4 L40 10 Z" fill="#fbbf24"/>
+            <path d="M14 26 L4 22 L13 34 Z" fill="#dc2626"/>
+            <path d="M50 26 L60 22 L51 34 Z" fill="#dc2626"/>
+            <ellipse cx="32" cy="34" rx="18" ry="17" fill="url(#gradDragon)"/>
+            <path d="M28 6 L32 14 L36 6 L32 2 Z" fill="#fbbf24"/>
+            <ellipse cx="26" cy="26" rx="6" ry="4" fill="#fff" opacity="0.22"/>
+            <circle cx="25" cy="32" r="3.6" fill="#fef08a"/>
+            <circle cx="39" cy="32" r="3.6" fill="#fef08a"/>
+            <ellipse cx="25" cy="32" rx="1.2" ry="2.4" fill="#1e293b"/>
+            <ellipse cx="39" cy="32" rx="1.2" ry="2.4" fill="#1e293b"/>
+            <path d="M22 44c3 4 7 6 10 6s7-2 10-6c-2 3-6 4-10 4s-8-1-10-4z" fill="#7f1d1d"/>
+            <path d="M27 44l1 3 2-3M34 44l1 3 2-3" fill="#fff"/>
+        </svg>`,
+        wolf: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs><linearGradient id="gradWolf" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#cbd5e1"/><stop offset="100%" stop-color="#475569"/></linearGradient></defs>
+            <path d="M16 10 L26 22 L18 28 Z" fill="#334155"/>
+            <path d="M48 10 L38 22 L46 28 Z" fill="#334155"/>
+            <ellipse cx="32" cy="34" rx="18" ry="17" fill="url(#gradWolf)"/>
+            <path d="M22 40 Q32 52 42 40 Q38 48 32 48 Q26 48 22 40Z" fill="#f1f5f9"/>
+            <ellipse cx="26" cy="26" rx="6" ry="4" fill="#fff" opacity="0.2"/>
+            <circle cx="25" cy="32" r="3.2" fill="#f87171"/>
+            <circle cx="39" cy="32" r="3.2" fill="#f87171"/>
+            <circle cx="25" cy="32" r="1.3" fill="#1e293b"/>
+            <circle cx="39" cy="32" r="1.3" fill="#1e293b"/>
+            <path d="M32 40 L34 44 L30 44 Z" fill="#1e293b"/>
+        </svg>`,
+        phoenix: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs><linearGradient id="gradPhoenix" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fde047"/><stop offset="55%" stop-color="#f97316"/><stop offset="100%" stop-color="#dc2626"/></linearGradient></defs>
+            <path d="M32 2 C30 10 26 12 20 12 C26 14 30 18 30 24 C24 22 18 24 14 30 C22 28 27 32 28 38 L36 38 C37 32 42 28 50 30 C46 24 40 22 34 24 C34 18 38 14 44 12 C38 12 34 10 32 2Z" fill="url(#gradPhoenix)"/>
+            <ellipse cx="32" cy="34" rx="13" ry="13" fill="url(#gradPhoenix)"/>
+            <ellipse cx="27" cy="29" rx="4" ry="3" fill="#fff" opacity="0.25"/>
+            <circle cx="32" cy="33" r="2.6" fill="#7c2d12"/>
+            <path d="M32 37 L28 42 L36 42 Z" fill="#facc15"/>
+        </svg>`,
+        turtle: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs><linearGradient id="gradTurtle" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6ee7b7"/><stop offset="100%" stop-color="#059669"/></linearGradient></defs>
+            <ellipse cx="32" cy="34" rx="19" ry="17" fill="url(#gradTurtle)"/>
+            <path d="M32 17 L38 24 L32 30 L26 24 Z" fill="#047857"/>
+            <path d="M18 30 L24 24 L26 34 L20 40Z" fill="#047857" opacity="0.85"/>
+            <path d="M46 30 L40 24 L38 34 L44 40Z" fill="#047857" opacity="0.85"/>
+            <path d="M32 38 L38 32 L44 38 L38 46Z" fill="#047857" opacity="0.85"/>
+            <path d="M32 38 L26 32 L20 38 L26 46Z" fill="#047857" opacity="0.85"/>
+            <circle cx="24" cy="14" r="4.5" fill="url(#gradTurtle)"/>
+            <circle cx="40" cy="14" r="4.5" fill="url(#gradTurtle)"/>
+            <circle cx="24" cy="14" r="1" fill="#064e3b"/>
+            <circle cx="40" cy="14" r="1" fill="#064e3b"/>
+        </svg>`,
+        fox: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs><linearGradient id="gradFox" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fdba74"/><stop offset="100%" stop-color="#ea580c"/></linearGradient></defs>
+            <path d="M14 8 L26 20 L16 24 Z" fill="#1e293b"/>
+            <path d="M50 8 L38 20 L48 24 Z" fill="#1e293b"/>
+            <path d="M16 14 L26 22 L18 26 Z" fill="url(#gradFox)"/>
+            <path d="M48 14 L38 22 L46 26 Z" fill="url(#gradFox)"/>
+            <ellipse cx="32" cy="34" rx="18" ry="16" fill="url(#gradFox)"/>
+            <path d="M24 38 Q32 50 40 38 Q36 44 32 44 Q28 44 24 38Z" fill="#fff7ed"/>
+            <ellipse cx="26" cy="27" rx="6" ry="4" fill="#fff" opacity="0.22"/>
+            <path d="M20 32l6 1-2 3z" fill="#1e293b"/>
+            <path d="M44 32l-6 1 2 3z" fill="#1e293b"/>
+            <path d="M32 40 L29 44 L35 44 Z" fill="#1e293b"/>
+        </svg>`,
+        tiger: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs><linearGradient id="gradTiger" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fde047"/><stop offset="100%" stop-color="#ca8a04"/></linearGradient></defs>
+            <circle cx="16" cy="16" r="7" fill="url(#gradTiger)"/>
+            <circle cx="48" cy="16" r="7" fill="url(#gradTiger)"/>
+            <circle cx="16" cy="17" r="3.4" fill="#7c2d12"/>
+            <circle cx="48" cy="17" r="3.4" fill="#7c2d12"/>
+            <ellipse cx="32" cy="34" rx="19" ry="17" fill="url(#gradTiger)"/>
+            <path d="M18 24l6 4M46 24l-6 4M16 34l7 1M48 34l-7 1M20 43l6-2M44 43l-6-2" stroke="#1e293b" stroke-width="2.4" stroke-linecap="round"/>
+            <circle cx="25" cy="31" r="3.2" fill="#fff7ed"/>
+            <circle cx="39" cy="31" r="3.2" fill="#fff7ed"/>
+            <circle cx="25" cy="31" r="1.4" fill="#1e293b"/>
+            <circle cx="39" cy="31" r="1.4" fill="#1e293b"/>
+            <path d="M30 40h4v3l-2 2-2-2z" fill="#fca5a5"/>
+        </svg>`,
+        shark: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs><linearGradient id="gradShark" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#67e8f9"/><stop offset="100%" stop-color="#0e7490"/></linearGradient></defs>
+            <path d="M32 4 L40 20 L24 20 Z" fill="#0e7490"/>
+            <path d="M12 30 Q32 12 52 30 Q46 44 32 48 Q18 44 12 30Z" fill="url(#gradShark)"/>
+            <path d="M20 42 L26 46 L22 50Z" fill="#0e7490"/>
+            <path d="M44 42 L38 46 L42 50Z" fill="#0e7490"/>
+            <circle cx="24" cy="28" r="2.6" fill="#fff"/>
+            <circle cx="24" cy="28" r="1.1" fill="#0c4a6e"/>
+            <path d="M18 40 L46 40 L42 46 L22 46Z" fill="#f0fdff"/>
+            <path d="M22 40l2 5M28 40l0 5M34 40l0 5M40 40l-2 5" stroke="#0c4a6e" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>`,
+        owl: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs><linearGradient id="gradOwl" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c4b5fd"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs>
+            <path d="M20 12 L26 22 L16 22Z" fill="#6d28d9"/>
+            <path d="M44 12 L38 22 L48 22Z" fill="#6d28d9"/>
+            <ellipse cx="32" cy="35" rx="19" ry="18" fill="url(#gradOwl)"/>
+            <circle cx="24" cy="32" r="8" fill="#fff"/>
+            <circle cx="40" cy="32" r="8" fill="#fff"/>
+            <circle cx="24" cy="32" r="3.6" fill="#fbbf24"/>
+            <circle cx="40" cy="32" r="3.6" fill="#fbbf24"/>
+            <circle cx="24" cy="32" r="1.6" fill="#1e293b"/>
+            <circle cx="40" cy="32" r="1.6" fill="#1e293b"/>
+            <path d="M32 38l-3 5h6z" fill="#fbbf24"/>
+            <path d="M20 46q12 8 24 0" stroke="#4c1d95" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        </svg>`
+    };
+
+    // Config level (XP needed buat naik level)
+    const LEVEL_CONFIG = {
+        1:  { maxHp: 20, xpNeeded: 10  },
+        2:  { maxHp: 25, xpNeeded: 20  },
+        3:  { maxHp: 30, xpNeeded: 35  },
+        4:  { maxHp: 35, xpNeeded: 50  },
+        5:  { maxHp: 40, xpNeeded: 70  },
+        6:  { maxHp: 45, xpNeeded: 95  },
+        7:  { maxHp: 50, xpNeeded: 125 },
+        8:  { maxHp: 55, xpNeeded: 160 },
+        9:  { maxHp: 60, xpNeeded: 200 },
+        10: { maxHp: 65, xpNeeded: 999 }
+    };
+
+    const REACTION_EMOJIS = ['😂', '🔥', '👍', '❤️', '🎉', '😮'];
+
+    // ==========================================
+    // STATE
+    // ==========================================
+    const activePin = localStorage.getItem('star_battle_pin');
+    const myPlayerKey = localStorage.getItem('star_battle_key');
+    const myName = localStorage.getItem('star_battle_name') || 'Pemain';
+
+    let quizData = [];
+    let currentQuestionIdx = 0;
+    let score = 0;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let combo = 0;
+    let level = 1;
+    let hp = 20;
+    let maxHp = 20;
+    let xp = 0;
+    let xpNeeded = 10;
+    let monsterSvg = null;
+    let monsterName = 'Monster';
+    let monsterId = null;
+    let isDead = false;
+    let isFinished = false;
+    let isGameEnded = false;
+    let answering = false;
+    let roomStatusListener = null;
+    let playerDataListener = null;
+
+    function escapeHtml(str) {
+        return str ? str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;') : '';
+    }
+
+    // ==========================================
+    // DOM REFS
+    // ==========================================
+    const loadingView = document.getElementById('loadingView');
+    const battleView = document.getElementById('battleView');
+    const finishView = document.getElementById('finishView');
+    const pinBadge = document.getElementById('pinBadge');
+    const monsterShowcase = document.getElementById('monsterShowcase');
+    const monsterSvgContainer = document.getElementById('monsterSvgContainer');
+    const monsterLvlBadge = document.getElementById('monsterLvlBadge');
+    const monsterNameText = document.getElementById('monsterNameText');
+    const monsterStatusText = document.getElementById('monsterStatusText');
+    const hpText = document.getElementById('hpText');
+    const hpBarFill = document.getElementById('hpBarFill');
+    const xpText = document.getElementById('xpText');
+    const xpBarFill = document.getElementById('xpBarFill');
+    const scoreText = document.getElementById('scoreText');
+    const comboText = document.getElementById('comboText');
+    const qNumber = document.getElementById('qNumber');
+    const qText = document.getElementById('qText');
+    const optionsGrid = document.getElementById('optionsGrid');
+    const battleLog = document.getElementById('battleLog');
+    const feedbackPopup = document.getElementById('feedbackPopup');
+    const fbTitle = document.getElementById('fbTitle');
+    const fbSub = document.getElementById('fbSub');
+    const deadOverlay = document.getElementById('deadOverlay');
+    const btnRevive = document.getElementById('btnRevive');
+
+    if (pinBadge) pinBadge.innerText = `PIN: ${activePin || '----'}`;
+
+    // ==========================================
+    // CEK SESSION
+    // ==========================================
+    if (!activePin || !myPlayerKey) {
+        alert('Sesi hilang! Kembali ke halaman masuk.');
+        window.location.href = 'play.html';
+    }
+
+    // ==========================================
+    // INIT
+    // ==========================================
+    db.ref(`rooms/${activePin}`).once('value').then((snap) => {
+        if (!snap.exists()) {
+            alert('Room tidak tersedia.');
+            window.location.href = 'index.html';
+            return;
+        }
+        const room = snap.val();
+        
+        if (room.status === 'ended') {
+            isGameEnded = true;
+            showFinishView(true);
+            fetchFinalScore();
+            return;
+        }
+        
+        if (room.status === 'playing') {
+            // Ambil data monster player dulu
+            db.ref(`rooms/${activePin}/players/${myPlayerKey}`).once('value').then((pSnap) => {
+                const pData = pSnap.val() || {};
+                
+                if (pData.monster && pData.monsterSvg) {
+                    monsterSvg = pData.monsterSvg;
+                    monsterName = pData.monsterName || 'Monster';
+                    monsterId = pData.monster;
+                    level = pData.monsterLevel || 1;
+                    hp = pData.monsterHp || 20;
+                    maxHp = pData.monsterMaxHp || 20;
+                    xp = pData.monsterXp || 0;
+                    xpNeeded = LEVEL_CONFIG[level]?.xpNeeded || 10;
+                } else {
+                    // Fallback: pakai dragon default
+                    monsterId = 'dragon';
+                    monsterSvg = MONSTER_SVGS.dragon;
+                    monsterName = pData.monsterName || 'Dragon';
+                    hp = 20; maxHp = 20; level = 1; xp = 0; xpNeeded = 10;
+                }
+                
+                score = pData.score || 0;
+                correctCount = pData.correct || 0;
+                wrongCount = pData.wrong || 0;
+                
+                updateUI();
+                loadQuiz();
+                listenRoomStatus();
+                setupReactionListener();
+            });
+        } else {
+            alert('Guru belum memulai pertandingan!');
+            window.location.href = 'play.html';
+        }
+    });
+
+    // ==========================================
+    // LOAD QUIZ
+    // ==========================================
+    function loadQuiz() {
+        db.ref(`rooms/${activePin}`).once('value').then((roomSnap) => {
+            if (!roomSnap.exists()) return;
+            const quizId = roomSnap.val().quizId;
+            db.ref(`quiz_hub/${quizId}/questions`).once('value').then((qSnap) => {
+                if (qSnap.exists()) {
+                    quizData = qSnap.val();
+                    showBattleView();
+                    showQuestion();
+                } else {
+                    alert('Soal tidak ditemukan!');
+                }
+            });
+        });
+    }
+
+    function showBattleView() {
+        loadingView.style.display = 'none';
+        battleView.style.display = 'block';
+        finishView.style.display = 'none';
+        renderReactionBar();
+    }
+
+    // ==========================================
+    // SHOW QUESTION
+    // ==========================================
+    function showQuestion() {
+        if (isDead || isFinished || isGameEnded) return;
+        
+        if (currentQuestionIdx >= quizData.length) {
+            finishQuiz();
+            return;
+        }
+        
+        const q = quizData[currentQuestionIdx];
+        qNumber.innerText = `SOAL #${currentQuestionIdx + 1}/${quizData.length}`;
+        qText.innerText = q.q;
+        
+        const labels = ['A', 'B', 'C', 'D'];
+        optionsGrid.innerHTML = '';
+        q.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span class="key">${labels[i]}</span><span>${escapeHtml(opt)}</span>`;
+            btn.addEventListener('click', () => handleAnswer(i, btn));
+            optionsGrid.appendChild(btn);
+        });
+        
+        answering = false;
+    }
+
+    // ==========================================
+    // HANDLE ANSWER
+    // ==========================================
+    function handleAnswer(chosen, btn) {
+        if (answering || isDead || isFinished) return;
+        answering = true;
+        
+        const q = quizData[currentQuestionIdx];
+        const isCorrect = chosen === q.a;
+        
+        const allBtns = optionsGrid.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true);
+        
+        if (isCorrect) {
+            btn.classList.add('correct');
+            correctCount++;
+            combo++;
+            
+            // Base point + combo bonus
+            const basePoint = 10;
+            const comboBonus = combo >= 3 ? (combo - 2) * 5 : 0;
+            const totalPoint = basePoint + comboBonus;
+            score += totalPoint;
+            
+            // XP
+            const xpGain = 10 + (combo >= 3 ? 5 : 0);
+            xp += xpGain;
+            
+            // Heal 2 HP
+            if (hp < maxHp) hp = Math.min(maxHp, hp + 2);
+            
+            // Level up check
+            if (xp >= xpNeeded && level < 10) {
+                levelUp();
+            }
+            
+            addLog(`BENAR! +${totalPoint} poin${comboBonus ? ` (combo +${comboBonus})` : ''}`, 'success');
+            showFeedback('BENAR!', `+${totalPoint} poin`, false);
+            animateMonster('levelup');
+            
+        } else {
+            btn.classList.add('wrong');
+            allBtns.forEach((b, idx) => {
+                if (idx === q.a) b.classList.add('correct');
+            });
+            wrongCount++;
+            combo = 0;
+            
+            // Damage monster
+            hp -= 5;
+            score -= 5;
+            
+            addLog(`SALAH! Monster -5 HP, poin -5`, 'danger');
+            showFeedback('SALAH!', `Monster -5 HP`, true);
+            animateMonster('hurt');
+            
+            if (hp <= 0) {
+                hp = 0;
+                isDead = true;
+                updateUI();
+                updatePlayerData();
+                setTimeout(() => {
+                    deadOverlay.classList.add('show');
+                }, 600);
+                return;
+            }
+        }
+        
+        updateUI();
+        updatePlayerData();
+        
+        setTimeout(() => {
+            currentQuestionIdx++;
+            showQuestion();
+        }, 1400);
+    }
+
+    // ==========================================
+    // LEVEL UP
+    // ==========================================
+    function levelUp() {
+        level++;
+        const conf = LEVEL_CONFIG[level];
+        maxHp = conf.maxHp;
+        xp = 0;
+        xpNeeded = conf.xpNeeded;
+        hp = maxHp; // Full heal
+        
+        addLog(`LEVEL UP! Monster naik ke Level ${level}`, 'warning');
+    }
+
+    // ==========================================
+    // ANIMATE MONSTER
+    // ==========================================
+    function animateMonster(type) {
+        if (!monsterShowcase) return;
+        monsterShowcase.classList.remove('hurt', 'levelup');
+        void monsterShowcase.offsetWidth;
+        monsterShowcase.classList.add(type);
+        setTimeout(() => monsterShowcase.classList.remove(type), 700);
+    }
+
+    // ==========================================
+    // SHOW FEEDBACK
+    // ==========================================
+    let feedbackTimer = null;
+    function showFeedback(title, sub, isWrong) {
+        fbTitle.innerText = title;
+        fbSub.innerText = sub;
+        feedbackPopup.classList.toggle('wrong', isWrong);
+        feedbackPopup.classList.add('show');
+        clearTimeout(feedbackTimer);
+        feedbackTimer = setTimeout(() => {
+            feedbackPopup.classList.remove('show');
+        }, 1200);
+    }
+
+    // ==========================================
+    // ADD LOG
+    // ==========================================
+    function addLog(msg, type) {
+        if (!battleLog) return;
+        const now = new Date();
+        const time = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        const item = document.createElement('div');
+        item.className = `log-item ${type || ''}`;
+        item.innerHTML = `<span class="time">[${time}]</span> ${msg}`;
+        battleLog.appendChild(item);
+        battleLog.scrollTop = battleLog.scrollHeight;
+    }
+
+    // ==========================================
+    // UPDATE UI
+    // ==========================================
+    function updateUI() {
+        if (monsterSvgContainer) monsterSvgContainer.innerHTML = monsterSvg;
+        if (monsterLvlBadge) monsterLvlBadge.innerText = `Lv ${level}`;
+        if (monsterNameText) monsterNameText.innerText = monsterName;
+        
+        // HP
+        const hpPct = Math.max(0, Math.min(100, (hp / maxHp) * 100));
+        if (hpText) hpText.innerText = `${hp}/${maxHp}`;
+        if (hpBarFill) {
+            hpBarFill.style.width = hpPct + '%';
+            hpBarFill.classList.remove('low', 'mid');
+            if (hpPct < 30) hpBarFill.classList.add('low');
+            else if (hpPct < 60) hpBarFill.classList.add('mid');
+        }
+        
+        // XP
+        const xpPct = Math.max(0, Math.min(100, (xp / xpNeeded) * 100));
+        if (xpText) xpText.innerText = `${xp}/${xpNeeded}`;
+        if (xpBarFill) xpBarFill.style.width = xpPct + '%';
+        
+        // Score
+        if (scoreText) {
+            scoreText.innerText = score;
+            scoreText.classList.toggle('negative', score < 0);
+        }
+        if (comboText) comboText.innerText = combo;
+        
+        // Monster state
+        if (monsterShowcase) {
+            monsterShowcase.classList.toggle('alive', !isDead);
+            monsterShowcase.classList.toggle('dead', isDead);
+        }
+        
+        // Status text
+        if (monsterStatusText) {
+            if (isDead) {
+                monsterStatusText.innerText = 'Monster tumbang!';
+                monsterStatusText.classList.add('danger');
+            } else if (hp < maxHp * 0.3) {
+                monsterStatusText.innerText = 'HP kritis!';
+                monsterStatusText.classList.add('danger');
+            } else {
+                monsterStatusText.innerText = 'Siap bertarung!';
+                monsterStatusText.classList.remove('danger');
+            }
+        }
+    }
+
+    // ==========================================
+    // UPDATE PLAYER DATA
+    // ==========================================
+    function updatePlayerData() {
+        if (!activePin || !myPlayerKey) return;
+        db.ref(`rooms/${activePin}/players/${myPlayerKey}`).update({
+            score: score,
+            correct: correctCount,
+            wrong: wrongCount,
+            monsterLevel: level,
+            monsterHp: hp,
+            monsterMaxHp: maxHp,
+            monsterXp: xp,
+            monsterDead: isDead
+        }).catch(err => console.error('Update player error:', err));
+    }
+
+    // ==========================================
+    // FINISH
+    // ==========================================
+    function finishQuiz() {
+        if (isFinished) return;
+        isFinished = true;
+        showFinishView(false);
+        updatePlayerData();
+        db.ref(`rooms/${activePin}/players/${myPlayerKey}`).update({ status: 'Selesai' });
+    }
+
+    function showFinishView(isEndedByTeacher) {
+        loadingView.style.display = 'none';
+        battleView.style.display = 'none';
+        finishView.style.display = 'block';
+        
+        const finalScoreEl = document.getElementById('finalScore');
+        const finalLevelEl = document.getElementById('finalLevel');
+        const finalCorrectEl = document.getElementById('finalCorrect');
+        const finalWrongEl = document.getElementById('finalWrong');
+        const finishTitle = document.getElementById('finishTitle');
+        const finishSub = document.getElementById('finishSub');
+        
+        finalScoreEl.innerText = score;
+        finalScoreEl.classList.toggle('negative', score < 0);
+        finalLevelEl.innerText = level;
+        finalCorrectEl.innerText = correctCount;
+        finalWrongEl.innerText = wrongCount;
+        
+        if (isEndedByTeacher) {
+            finishTitle.innerText = 'Pertandingan Dihentikan!';
+            finishSub.innerText = 'Guru telah mengakhiri pertandingan.';
+        }
+    }
+
+    function fetchFinalScore() {
+        db.ref(`rooms/${activePin}/players/${myPlayerKey}`).once('value').then((snap) => {
+            if (snap.exists()) {
+                const d = snap.val();
+                score = d.score || 0;
+                correctCount = d.correct || 0;
+                wrongCount = d.wrong || 0;
+                level = d.monsterLevel || 1;
+                showFinishView(true);
+            }
+        });
+    }
+
+    // ==========================================
+    // LISTEN ROOM STATUS
+    // ==========================================
+    function listenRoomStatus() {
+        if (roomStatusListener) {
+            db.ref(`rooms/${activePin}/status`).off('value', roomStatusListener);
+        }
+        roomStatusListener = db.ref(`rooms/${activePin}/status`).on('value', (snap) => {
+            const status = snap.val();
+            if (status === 'ended' && !isFinished) {
+                isGameEnded = true;
+                db.ref(`rooms/${activePin}/status`).off('value', roomStatusListener);
+                showFinishView(true);
+                fetchFinalScore();
+            }
+        });
+    }
+
+    // ==========================================
+    // REVIVE
+    // ==========================================
+    btnRevive?.addEventListener('click', () => {
+        isDead = false;
+        hp = Math.floor(maxHp / 2);
+        combo = 0;
+        deadOverlay.classList.remove('show');
+        addLog('Monster di-revive dengan setengah HP!', 'warning');
+        updateUI();
+        updatePlayerData();
+        currentQuestionIdx++;
+        showQuestion();
+    });
+
+    // ==========================================
+    // REACTION
+    // ==========================================
+    function renderReactionBar() {
+        const bar = document.getElementById('reactionBar');
+        if (!bar) return;
+        bar.innerHTML = '';
+        REACTION_EMOJIS.forEach(emoji => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'reaction-btn';
+            btn.innerText = emoji;
+            btn.addEventListener('click', () => sendReaction(emoji));
+            bar.appendChild(btn);
+        });
+    }
+
+    function sendReaction(emoji) {
+        if (!activePin) return;
+        const ref = db.ref(`rooms/${activePin}/reactions`).push();
+        ref.set({
+            emoji: emoji,
+            name: myName,
+            time: firebase.database.ServerValue.TIMESTAMP
+        }).then(() => {
+            setTimeout(() => ref.remove(), 4000);
+        });
+    }
+
+    function setupReactionListener() {
+        db.ref(`rooms/${activePin}/reactions`).on('child_added', (snap) => {
+            const data = snap.val();
+            if (data && data.emoji) spawnReactionBubble(data.emoji, data.name);
+        });
+    }
+
+    function spawnReactionBubble(emoji, name) {
+        const container = document.getElementById('reactionFloatContainer');
+        if (!container) return;
+        const bubble = document.createElement('div');
+        bubble.className = 'reaction-bubble';
+        bubble.style.left = `${10 + Math.random() * 80}%`;
+        bubble.style.setProperty('--drift', `${(Math.random() * 60) - 30}px`);
+        bubble.innerHTML = `
+            <span class="emoji-face">${emoji}</span>
+            ${name ? `<span class="emoji-owner">${escapeHtml(name)}</span>` : ''}
+        `;
+        container.appendChild(bubble);
+        bubble.addEventListener('animationend', () => bubble.remove());
+    }
+
+    // ==========================================
+    // BACK BUTTON
+    // ==========================================
+    function goHome() {
+        if (confirm('Yakin ingin keluar dari arena?')) {
+            localStorage.removeItem('star_battle_pin');
+            localStorage.removeItem('star_battle_key');
+            window.location.href = 'index.html';
+        }
+    }
+    document.getElementById('btnBackHome').addEventListener('click', goHome);
+    document.getElementById('btnBackHome2').addEventListener('click', goHome);
+
+    console.log('🎮 Monster Arena loaded');
+    console.log(`📌 PIN: ${activePin}`);
+    console.log(`👤 Player: ${myName}`);
+</script>
+
+</body>
+</html>
