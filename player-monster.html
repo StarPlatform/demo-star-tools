@@ -539,61 +539,150 @@
             margin: 0 6px;
         }
         
-        /* ========== REACTION BAR ========== */
-        .reaction-bar {
-            display: flex; justify-content: center;
-            gap: 8px; margin-top: 16px;
-            flex-wrap: wrap;
-        }
-        .reaction-btn {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            width: 44px; height: 44px;
-            cursor: pointer;
+        /* ========== SOUND TOGGLE ========== */
+        .btn-sound {
+            background: #f1f5f9;
+            border: none;
+            width: 30px; height: 30px;
+            border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            transition: all 0.15s ease;
-            padding: 0;
+            cursor: pointer;
+            color: #64748b;
+            flex-shrink: 0;
+        }
+        .btn-sound:hover { background: #e2e8f0; }
+        .btn-sound svg { width: 14px; height: 14px; }
+        .btn-sound.muted { color: #ef4444; }
+
+        /* ========== MONSTER EVOLUTION TIERS ========== */
+        .monster-showcase { position: relative; z-index: 1; }
+        .monster-showcase::before {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border-radius: 26px;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.4s;
+        }
+        .monster-showcase.tier-1::before {
+            opacity: 1;
+            background: radial-gradient(circle, rgba(16,185,129,0.25), transparent 70%);
+            animation: tierPulse 2.4s infinite;
+        }
+        .monster-showcase.tier-2::before {
+            opacity: 1;
+            background: radial-gradient(circle, rgba(139,92,246,0.3), transparent 70%);
+            animation: tierPulse 2s infinite;
+        }
+        .monster-showcase.tier-3::before {
+            opacity: 1;
+            background: radial-gradient(circle, rgba(6,182,212,0.32), transparent 70%);
+            animation: tierPulse 1.7s infinite;
+        }
+        .monster-showcase.tier-4::before {
+            opacity: 1;
+            background: radial-gradient(circle, rgba(245,158,11,0.4), transparent 70%);
+            animation: tierPulse 1.3s infinite;
+        }
+        @keyframes tierPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+        }
+        .monster-showcase.tier-2, .monster-showcase.tier-3 { border-color: #c4b5fd; }
+        .monster-showcase.tier-4 { border-color: #fbbf24; box-shadow: 0 0 0 3px rgba(245,158,11,0.15); }
+
+        .evo-crown {
+            position: absolute;
+            top: -10px; left: 50%;
+            transform: translateX(-50%) scale(0);
             font-size: 1.2rem;
-            line-height: 1;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 2;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25));
         }
-        .reaction-btn:hover {
-            background: #ecfdf5;
-            border-color: #a7f3d0;
-            transform: translateY(-2px);
+        .evo-crown.show { transform: translateX(-50%) scale(1); }
+
+        .tier-badge {
+            font-size: 0.62rem;
+            font-weight: 800;
+            padding: 2px 9px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            width: fit-content;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
-        .reaction-btn:active { transform: scale(0.9); }
-        
-        .reaction-float-container {
-            position: fixed; inset: 0;
-            pointer-events: none; overflow: hidden;
-            z-index: 9998;
+        .tier-badge.t1 { background: #ecfdf5; color: #047857; }
+        .tier-badge.t2 { background: #ede9fe; color: #6d28d9; }
+        .tier-badge.t3 { background: #cffafe; color: #0e7490; }
+        .tier-badge.t4 { background: #fef3c7; color: #b45309; }
+
+        @keyframes monsterEvolve {
+            0% { transform: scale(1); filter: brightness(1); }
+            30% { transform: scale(0.85) rotate(-4deg); filter: brightness(1.8); }
+            55% { transform: scale(1.25) rotate(3deg); filter: brightness(2.2); }
+            80% { transform: scale(0.95) rotate(-1deg); filter: brightness(1.2); }
+            100% { transform: scale(1) rotate(0); filter: brightness(1); }
         }
-        .reaction-bubble {
-            position: absolute; bottom: 40px;
+        .monster-showcase.evolving { animation: monsterEvolve 0.9s ease; }
+        .monster-showcase.attacking { animation: monsterAttack 0.4s ease; }
+        @keyframes monsterAttack {
+            0%, 100% { transform: translateX(0); }
+            40% { transform: translateX(10px) scale(1.05); }
+            70% { transform: translateX(-4px); }
+        }
+
+        .evolve-banner {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.4);
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+            padding: 20px 32px;
+            border-radius: 20px;
             text-align: center;
-            animation: floatUp 3s ease-out forwards;
+            box-shadow: 0 20px 60px rgba(245,158,11,0.4);
+            z-index: 10001;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .reaction-bubble .emoji-face {
-            font-size: 2rem;
-            display: block;
+        .evolve-banner.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        .evolve-banner .evo-title { font-size: 1.4rem; font-weight: 900; margin-bottom: 4px; }
+        .evolve-banner .evo-sub { font-size: 0.8rem; font-weight: 700; opacity: 0.9; }
+
+        /* ========== COMBO BLAST ========== */
+        .combo-blast {
+            position: fixed;
+            top: 30%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.4) rotate(-6deg);
+            background: linear-gradient(135deg, #f97316, #ef4444);
+            color: white;
+            padding: 10px 22px;
+            border-radius: 16px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            box-shadow: 0 12px 30px rgba(239,68,68,0.35);
+            z-index: 10001;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex; align-items: center; gap: 6px;
         }
-        .reaction-bubble .emoji-owner {
-            font-size: 0.65rem; font-weight: 600;
-            color: #047857;
-            background: white;
-            border-radius: 10px;
-            padding: 1px 8px;
-            margin-top: 2px;
-            display: inline-block;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        .combo-blast.show { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(-3deg); }
+
+        .mini-stat-value.combo.hot {
+            color: #f97316;
+            animation: comboGlow 0.6s infinite alternate;
         }
-        @keyframes floatUp {
-            0% { transform: translateY(0) translateX(0) scale(0.6); opacity: 0; }
-            15% { opacity: 1; transform: translateY(-20px) translateX(var(--drift, 0px)) scale(1.1); }
-            100% { transform: translateY(-380px) translateX(var(--drift, 0px)) scale(1); opacity: 0; }
+        @keyframes comboGlow {
+            from { text-shadow: 0 0 0 rgba(249,115,22,0); }
+            to { text-shadow: 0 0 8px rgba(249,115,22,0.6); }
         }
-        
+
         /* ========== LOADING ========== */
         .loading-state {
             text-align: center;
@@ -621,7 +710,8 @@
             .monster-showcase svg { width: 72px; height: 72px; }
             .q-text { font-size: 0.95rem; }
             .option-btn { padding: 10px 14px; font-size: 0.85rem; }
-            .reaction-btn { width: 38px; height: 38px; font-size: 1rem; }
+            .evolve-banner { padding: 16px 22px; }
+            .combo-blast { font-size: 1.05rem; padding: 8px 16px; }
         }
     </style>
 </head>
@@ -640,6 +730,9 @@
         </div>
         <div class="header-right">
             <span class="pin-badge" id="pinBadge">PIN: ----</span>
+            <button class="btn-sound" id="btnSound" title="Suara">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
             <button class="btn-back" id="btnBackHome">
                 <svg viewBox="0 0 24 24" fill="none" style="width:12px;height:12px;">
                     <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -661,6 +754,7 @@
         <div class="card">
             <div class="battle-top">
                 <div class="monster-showcase alive" id="monsterShowcase">
+                    <div class="evo-crown" id="evoCrown">👑</div>
                     <div class="lvl-badge" id="monsterLvlBadge">Lv 1</div>
                     <div id="monsterSvgContainer"></div>
                 </div>
@@ -671,6 +765,7 @@
                         </svg>
                         <span id="monsterNameText">Monster</span>
                     </div>
+                    <div class="tier-badge t1" id="tierBadge">Wujud Awal</div>
                     <div class="monster-status-text" id="monsterStatusText">Siap bertarung!</div>
                     
                     <!-- HP -->
@@ -721,9 +816,6 @@
         <div class="battle-log" id="battleLog">
             <div class="log-item"><span class="time">[SYS]</span> Battle monster dimulai!</div>
         </div>
-
-        <!-- Reactions -->
-        <div class="reaction-bar" id="reactionBar"></div>
     </div>
 
     <!-- ===== FINISH VIEW ===== -->
@@ -789,7 +881,16 @@
     </div>
 </div>
 
-<div class="reaction-float-container" id="reactionFloatContainer"></div>
+<!-- ===== EVOLVE BANNER ===== -->
+<div class="evolve-banner" id="evolveBanner">
+    <div class="evo-title" id="evoTitle">EVOLVE!</div>
+    <div class="evo-sub" id="evoSub">Monster naik wujud baru</div>
+</div>
+
+<!-- ===== COMBO BLAST ===== -->
+<div class="combo-blast" id="comboBlast">
+    <span>🔥</span><span id="comboBlastText">COMBO x2!</span>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -930,7 +1031,17 @@
         10: { maxHp: 65, xpNeeded: 999 }
     };
 
-    const REACTION_EMOJIS = ['😂', '🔥', '👍', '❤️', '🎉', '😮'];
+    // Tahapan evolusi monster berdasarkan level
+    const TIER_CONFIG = [
+        { min: 1, max: 2,  cls: 't1', label: 'Wujud Awal' },
+        { min: 3, max: 4,  cls: 't2', label: 'Growth' },
+        { min: 5, max: 6,  cls: 't2', label: 'Power' },
+        { min: 7, max: 8,  cls: 't3', label: 'Elite' },
+        { min: 9, max: 10, cls: 't4', label: 'Ascended' }
+    ];
+    function getTierIndex(lvl) {
+        return TIER_CONFIG.findIndex(t => lvl >= t.min && lvl <= t.max);
+    }
 
     // ==========================================
     // STATE
@@ -959,10 +1070,70 @@
     let answering = false;
     let roomStatusListener = null;
     let playerDataListener = null;
+    let lastKnownHp = 20;
+    let currentTierIdx = 0;
 
     function escapeHtml(str) {
         return str ? str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;') : '';
     }
+
+    // ==========================================
+    // SOUND FX (Web Audio API, tanpa file eksternal)
+    // ==========================================
+    let audioCtx = null;
+    let soundEnabled = localStorage.getItem('star_sound_enabled') !== 'off';
+
+    function getAudioCtx() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        return audioCtx;
+    }
+    function playTone(freqs, duration = 0.14, type = 'sine', gap = 0.03) {
+        if (!soundEnabled) return;
+        try {
+            const ctx = getAudioCtx();
+            if (ctx.state === 'suspended') ctx.resume();
+            let t = ctx.currentTime;
+            freqs.forEach(f => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = type;
+                osc.frequency.value = f;
+                gain.gain.setValueAtTime(0.0001, t);
+                gain.gain.exponentialRampToValueAtTime(0.22, t + 0.01);
+                gain.gain.exponentialRampToValueAtTime(0.0001, t + duration);
+                osc.connect(gain).connect(ctx.destination);
+                osc.start(t);
+                osc.stop(t + duration + 0.02);
+                t += duration + gap;
+            });
+        } catch (e) { /* audio tidak tersedia, abaikan */ }
+    }
+    const SFX = {
+        correct: () => playTone([660, 880], 0.1, 'triangle', 0.02),
+        wrong: () => playTone([220, 160], 0.16, 'sawtooth', 0.02),
+        levelup: () => playTone([523, 659, 784, 1046], 0.11, 'triangle', 0.01),
+        evolve: () => playTone([392, 523, 659, 784, 1046, 1318], 0.1, 'triangle', 0.01),
+        dead: () => playTone([300, 200, 120], 0.22, 'sawtooth', 0.03),
+        hit: () => playTone([150], 0.12, 'square', 0),
+        attack: () => playTone([500, 300], 0.08, 'square', 0.01),
+        finish: () => playTone([523, 659, 784, 1046, 1318], 0.13, 'triangle', 0.01)
+    };
+
+    const btnSound = document.getElementById('btnSound');
+    function renderSoundBtn() {
+        if (!btnSound) return;
+        btnSound.classList.toggle('muted', !soundEnabled);
+        btnSound.innerHTML = soundEnabled
+            ? `<svg viewBox="0 0 24 24" fill="none"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`
+            : `<svg viewBox="0 0 24 24" fill="none"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/><path d="M23 9l-6 6M17 9l6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+    }
+    renderSoundBtn();
+    btnSound?.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        localStorage.setItem('star_sound_enabled', soundEnabled ? 'on' : 'off');
+        renderSoundBtn();
+        if (soundEnabled) SFX.correct();
+    });
 
     // ==========================================
     // DOM REFS
@@ -991,6 +1162,13 @@
     const fbSub = document.getElementById('fbSub');
     const deadOverlay = document.getElementById('deadOverlay');
     const btnRevive = document.getElementById('btnRevive');
+    const tierBadge = document.getElementById('tierBadge');
+    const evoCrown = document.getElementById('evoCrown');
+    const evolveBanner = document.getElementById('evolveBanner');
+    const evoTitle = document.getElementById('evoTitle');
+    const evoSub = document.getElementById('evoSub');
+    const comboBlast = document.getElementById('comboBlast');
+    const comboBlastText = document.getElementById('comboBlastText');
 
     if (pinBadge) pinBadge.innerText = `PIN: ${activePin || '----'}`;
 
@@ -1045,11 +1223,13 @@
                 score = pData.score || 0;
                 correctCount = pData.correct || 0;
                 wrongCount = pData.wrong || 0;
+                lastKnownHp = hp;
+                currentTierIdx = getTierIndex(level);
                 
                 updateUI();
                 loadQuiz();
                 listenRoomStatus();
-                setupReactionListener();
+                setupPlayerDataListener();
             });
         } else {
             alert('Guru belum memulai pertandingan!');
@@ -1080,7 +1260,6 @@
         loadingView.style.display = 'none';
         battleView.style.display = 'block';
         finishView.style.display = 'none';
-        renderReactionBar();
     }
 
     // ==========================================
@@ -1130,27 +1309,40 @@
             correctCount++;
             combo++;
             
-            // Base point + combo bonus
+            // Combo streak multiplier: 3-4 = x1.5, 5-7 = x2, 8+ = x3
             const basePoint = 10;
-            const comboBonus = combo >= 3 ? (combo - 2) * 5 : 0;
-            const totalPoint = basePoint + comboBonus;
+            let multiplier = 1;
+            if (combo >= 8) multiplier = 3;
+            else if (combo >= 5) multiplier = 2;
+            else if (combo >= 3) multiplier = 1.5;
+            const totalPoint = Math.round(basePoint * multiplier);
             score += totalPoint;
             
-            // XP
-            const xpGain = 10 + (combo >= 3 ? 5 : 0);
+            // XP ikut naik seiring multiplier
+            const xpGain = Math.round(10 * (multiplier > 1 ? multiplier * 0.6 : 1));
             xp += xpGain;
             
             // Heal 2 HP
             if (hp < maxHp) hp = Math.min(maxHp, hp + 2);
             
-            // Level up check
+            const comboMilestone = combo === 3 || combo === 5 || combo === 8 || (combo > 8 && combo % 4 === 0);
+            
+            // Level up check (levelUp() sendiri yang urus animasi evolusi)
+            let leveledUp = false;
             if (xp >= xpNeeded && level < 10) {
-                levelUp();
+                leveledUp = levelUp();
             }
             
-            addLog(`BENAR! +${totalPoint} poin${comboBonus ? ` (combo +${comboBonus})` : ''}`, 'success');
+            addLog(`BENAR! +${totalPoint} poin${multiplier > 1 ? ` (combo x${multiplier})` : ''}`, 'success');
             showFeedback('BENAR!', `+${totalPoint} poin`, false);
-            animateMonster('levelup');
+            SFX.correct();
+            
+            if (!leveledUp) animateMonster('attacking');
+            if (comboMilestone) showComboBlast(multiplier);
+            
+            // Serang monster lawan secara acak (PvP)
+            const atkDmg = 3 + Math.floor(combo / 3) + Math.floor(level / 3);
+            attackRandomOpponent(Math.min(atkDmg, 12));
             
         } else {
             btn.classList.add('wrong');
@@ -1166,6 +1358,7 @@
             
             addLog(`SALAH! Monster -5 HP, poin -5`, 'danger');
             showFeedback('SALAH!', `Monster -5 HP`, true);
+            SFX.wrong();
             animateMonster('hurt');
             
             if (hp <= 0) {
@@ -1173,6 +1366,7 @@
                 isDead = true;
                 updateUI();
                 updatePlayerData();
+                SFX.dead();
                 setTimeout(() => {
                     deadOverlay.classList.add('show');
                 }, 600);
@@ -1190,6 +1384,85 @@
     }
 
     // ==========================================
+    // COMBO BLAST POPUP
+    // ==========================================
+    let comboBlastTimer = null;
+    function showComboBlast(multiplier) {
+        if (!comboBlast) return;
+        comboBlastText.innerText = `COMBO x${multiplier}!`;
+        comboBlast.classList.add('show');
+        clearTimeout(comboBlastTimer);
+        comboBlastTimer = setTimeout(() => comboBlast.classList.remove('show'), 1100);
+    }
+
+    // ==========================================
+    // DAMAGE TRADE (PvP) — serang monster lawan secara acak
+    // ==========================================
+    function attackRandomOpponent(damage) {
+        if (!activePin || !myPlayerKey) return;
+        db.ref(`rooms/${activePin}/players`).once('value').then(snap => {
+            const players = snap.val() || {};
+            const targetKeys = Object.keys(players).filter(k => {
+                const p = players[k];
+                return k !== myPlayerKey && p.monster && !p.monsterDead && (p.monsterHp === undefined || p.monsterHp > 0);
+            });
+            if (targetKeys.length === 0) return;
+            
+            const targetKey = targetKeys[Math.floor(Math.random() * targetKeys.length)];
+            const targetName = players[targetKey].name || 'Lawan';
+            const targetRef = db.ref(`rooms/${activePin}/players/${targetKey}`);
+            
+            targetRef.child('monsterHp').transaction(current => {
+                const cur = (typeof current === 'number') ? current : 0;
+                return Math.max(0, cur - damage);
+            }).then(result => {
+                if (!result.committed) return;
+                const newHp = result.snapshot.val();
+                const updates = {
+                    lastHit: { by: myName, dmg: damage, time: firebase.database.ServerValue.TIMESTAMP }
+                };
+                if (newHp <= 0) updates.monsterDead = true;
+                targetRef.update(updates);
+                addLog(`Monster kamu menyerang ${escapeHtml(targetName)} sebesar ${damage} HP!`, 'success');
+            }).catch(() => {});
+        });
+    }
+
+    // ==========================================
+    // LISTENER SERANGAN MASUK DARI PEMAIN LAIN
+    // ==========================================
+    function setupPlayerDataListener() {
+        if (!activePin || !myPlayerKey) return;
+        const ref = db.ref(`rooms/${activePin}/players/${myPlayerKey}`);
+        if (playerDataListener) ref.off('value', playerDataListener);
+        playerDataListener = ref.on('value', snap => {
+            const d = snap.val();
+            if (!d || typeof d.monsterHp !== 'number') return;
+            
+            if (d.monsterHp !== lastKnownHp) {
+                if (d.monsterHp < lastKnownHp && !isDead) {
+                    const dmg = lastKnownHp - d.monsterHp;
+                    const attackerName = (d.lastHit && d.lastHit.by) ? d.lastHit.by : 'Lawan';
+                    hp = d.monsterHp;
+                    lastKnownHp = hp;
+                    addLog(`Diserang ${escapeHtml(attackerName)}! Monster -${dmg} HP`, 'danger');
+                    SFX.hit();
+                    animateMonster('hurt');
+                    updateUI();
+                    if (hp <= 0 && !isDead) {
+                        isDead = true;
+                        updateUI();
+                        SFX.dead();
+                        setTimeout(() => deadOverlay.classList.add('show'), 400);
+                    }
+                } else {
+                    lastKnownHp = d.monsterHp;
+                }
+            }
+        });
+    }
+
+    // ==========================================
     // LEVEL UP
     // ==========================================
     function levelUp() {
@@ -1200,7 +1473,36 @@
         xpNeeded = conf.xpNeeded;
         hp = maxHp; // Full heal
         
-        addLog(`LEVEL UP! Monster naik ke Level ${level}`, 'warning');
+        const newTierIdx = getTierIndex(level);
+        const tierChanged = newTierIdx !== currentTierIdx;
+        currentTierIdx = newTierIdx;
+        
+        if (tierChanged) {
+            const tier = TIER_CONFIG[newTierIdx];
+            addLog(`EVOLVE! Monster naik ke Level ${level} — wujud ${tier.label}!`, 'warning');
+            animateMonster('evolving');
+            SFX.evolve();
+            showEvolveBanner(tier.label, level);
+        } else {
+            addLog(`LEVEL UP! Monster naik ke Level ${level}`, 'warning');
+            animateMonster('levelup');
+            SFX.levelup();
+        }
+        return tierChanged;
+    }
+
+    // ==========================================
+    // EVOLVE BANNER
+    // ==========================================
+    let evolveBannerTimer = null;
+    function showEvolveBanner(tierLabel, lvl) {
+        if (!evolveBanner) return;
+        evoTitle.innerText = 'EVOLVE!';
+        evoSub.innerText = `Level ${lvl} — Wujud ${tierLabel}`;
+        evolveBanner.classList.add('show');
+        if (evoCrown && tierLabel === 'Ascended') evoCrown.classList.add('show');
+        clearTimeout(evolveBannerTimer);
+        evolveBannerTimer = setTimeout(() => evolveBanner.classList.remove('show'), 1800);
     }
 
     // ==========================================
@@ -1208,10 +1510,11 @@
     // ==========================================
     function animateMonster(type) {
         if (!monsterShowcase) return;
-        monsterShowcase.classList.remove('hurt', 'levelup');
+        monsterShowcase.classList.remove('hurt', 'levelup', 'evolving', 'attacking');
         void monsterShowcase.offsetWidth;
         monsterShowcase.classList.add(type);
-        setTimeout(() => monsterShowcase.classList.remove(type), 700);
+        const dur = type === 'evolving' ? 950 : 700;
+        setTimeout(() => monsterShowcase.classList.remove(type), dur);
     }
 
     // ==========================================
@@ -1271,13 +1574,30 @@
             scoreText.innerText = score;
             scoreText.classList.toggle('negative', score < 0);
         }
-        if (comboText) comboText.innerText = combo;
+        if (comboText) {
+            comboText.innerText = combo;
+            comboText.classList.toggle('hot', combo >= 3);
+        }
         
         // Monster state
         if (monsterShowcase) {
             monsterShowcase.classList.toggle('alive', !isDead);
             monsterShowcase.classList.toggle('dead', isDead);
+            
+            // Tier aura (evolusi visual)
+            const tIdx = getTierIndex(level);
+            monsterShowcase.classList.remove('tier-1', 'tier-2', 'tier-3', 'tier-4');
+            monsterShowcase.classList.add(`tier-${Math.min(tIdx + 1, 4)}`);
         }
+        
+        // Tier badge
+        if (tierBadge) {
+            const tIdx = getTierIndex(level);
+            const tier = TIER_CONFIG[tIdx] || TIER_CONFIG[0];
+            tierBadge.innerText = tier.label;
+            tierBadge.className = `tier-badge ${tier.cls}`;
+        }
+        if (evoCrown) evoCrown.classList.toggle('show', getTierIndex(level) === TIER_CONFIG.length - 1);
         
         // Status text
         if (monsterStatusText) {
@@ -1299,6 +1619,7 @@
     // ==========================================
     function updatePlayerData() {
         if (!activePin || !myPlayerKey) return;
+        lastKnownHp = hp; // supaya listener serangan tidak salah baca tulisan kita sendiri
         db.ref(`rooms/${activePin}/players/${myPlayerKey}`).update({
             score: score,
             correct: correctCount,
@@ -1344,6 +1665,8 @@
             finishTitle.innerText = 'Pertandingan Dihentikan!';
             finishSub.innerText = 'Guru telah mengakhiri pertandingan.';
         }
+        
+        SFX.finish();
     }
 
     function fetchFinalScore() {
@@ -1391,57 +1714,6 @@
         currentQuestionIdx++;
         showQuestion();
     });
-
-    // ==========================================
-    // REACTION
-    // ==========================================
-    function renderReactionBar() {
-        const bar = document.getElementById('reactionBar');
-        if (!bar) return;
-        bar.innerHTML = '';
-        REACTION_EMOJIS.forEach(emoji => {
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'reaction-btn';
-            btn.innerText = emoji;
-            btn.addEventListener('click', () => sendReaction(emoji));
-            bar.appendChild(btn);
-        });
-    }
-
-    function sendReaction(emoji) {
-        if (!activePin) return;
-        const ref = db.ref(`rooms/${activePin}/reactions`).push();
-        ref.set({
-            emoji: emoji,
-            name: myName,
-            time: firebase.database.ServerValue.TIMESTAMP
-        }).then(() => {
-            setTimeout(() => ref.remove(), 4000);
-        });
-    }
-
-    function setupReactionListener() {
-        db.ref(`rooms/${activePin}/reactions`).on('child_added', (snap) => {
-            const data = snap.val();
-            if (data && data.emoji) spawnReactionBubble(data.emoji, data.name);
-        });
-    }
-
-    function spawnReactionBubble(emoji, name) {
-        const container = document.getElementById('reactionFloatContainer');
-        if (!container) return;
-        const bubble = document.createElement('div');
-        bubble.className = 'reaction-bubble';
-        bubble.style.left = `${10 + Math.random() * 80}%`;
-        bubble.style.setProperty('--drift', `${(Math.random() * 60) - 30}px`);
-        bubble.innerHTML = `
-            <span class="emoji-face">${emoji}</span>
-            ${name ? `<span class="emoji-owner">${escapeHtml(name)}</span>` : ''}
-        `;
-        container.appendChild(bubble);
-        bubble.addEventListener('animationend', () => bubble.remove());
-    }
 
     // ==========================================
     // BACK BUTTON
