@@ -539,62 +539,6 @@
         }
         .waiting-game-box.monster .waiting-game-title { color: #047857; }
         
-        /* ========== REACTION BAR (EMOJI BOLEH) ========== */
-        .reaction-bar {
-            display: flex; justify-content: center;
-            gap: 8px; margin-top: 20px;
-            flex-wrap: wrap;
-        }
-        .reaction-btn {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            width: 48px; height: 48px;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.15s ease;
-            padding: 0;
-            font-size: 1.3rem;
-            line-height: 1;
-        }
-        .reaction-btn:hover {
-            background: #eef2ff;
-            border-color: #c7d2fe;
-            transform: translateY(-2px);
-        }
-        .reaction-btn:active { transform: scale(0.9); }
-        
-        /* ========== REACTION FLOATING ========== */
-        .reaction-float-container {
-            position: fixed; inset: 0;
-            pointer-events: none; overflow: hidden;
-            z-index: 9999;
-        }
-        .reaction-bubble {
-            position: absolute; bottom: 40px;
-            text-align: center;
-            animation: floatUp 3s ease-out forwards;
-        }
-        .reaction-bubble .emoji-face {
-            font-size: 2rem;
-            display: block;
-        }
-        .reaction-bubble .emoji-owner {
-            font-size: 0.65rem; font-weight: 600;
-            color: #4f46e5;
-            background: white;
-            border-radius: 10px;
-            padding: 1px 8px;
-            margin-top: 2px;
-            display: inline-block;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-        }
-        @keyframes floatUp {
-            0% { transform: translateY(0) translateX(0) scale(0.6); opacity: 0; }
-            15% { opacity: 1; transform: translateY(-20px) translateX(var(--drift, 0px)) scale(1.1); }
-            100% { transform: translateY(-380px) translateX(var(--drift, 0px)) scale(1); opacity: 0; }
-        }
-        
         /* ========== ANIMATIONS ========== */
         @keyframes spin { to { transform: rotate(360deg); } }
         
@@ -608,7 +552,6 @@
             .card { padding: 18px 16px; }
             .waiting-pulse { width: 64px; height: 64px; }
             .waiting-pulse svg { width: 28px; height: 28px; }
-            .reaction-btn { width: 40px; height: 40px; font-size: 1.1rem; }
             .pin-input-group input { width: 130px; font-size: 1rem; padding: 10px 14px; }
             .pin-input-group .btn-join { padding: 10px 20px; font-size: 0.85rem; }
             .mode-preview { padding: 14px; }
@@ -702,7 +645,6 @@
         html[data-theme="dark"] .btn-back,
         html[data-theme="dark"] .monster-choice,
         html[data-theme="dark"] .custom-name-group,
-        html[data-theme="dark"] .reaction-btn,
         html[data-theme="dark"] .arena-player{background:#202631;border-color:#374151;color:#f3f4f6;}
         html[data-theme="dark"] .monster-choice-name,
         html[data-theme="dark"] .waiting-sub,
@@ -867,12 +809,8 @@
                 </p>
             </div>
         </div>
-
-        <div class="reaction-bar" id="reactionBar"></div>
     </div>
 </div>
-
-<div class="reaction-float-container" id="reactionFloatContainer"></div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -1010,12 +948,6 @@
         { id: 'owl',     name: 'Nori',     solid: '#6d28d9', soft: '#ede9fe' }
     ];
 
-
-    // ==========================================
-    // EMOJI REACTION (BOLEH EMOJI)
-    // ==========================================
-    const REACTION_EMOJIS = ['😂', '🔥', '👍', '❤️', '🎉', '😮'];
-
     // ==========================================
     // STATE
     // ==========================================
@@ -1029,7 +961,6 @@
     let selectedMonsterId = null;
     let monsterSaved = false;
     let playersListener = null;
-    let reactionsListener = null;
     let savedToastTimer = null;
 
     const DEFAULT_AVATAR_SVG = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3L1 8l11 5 9-4.09V17h2V8L12 3z" fill="currentColor"/><path d="M5 10.18v4.32c0 2 3.13 4.5 7 4.5s7-2.5 7-4.5v-4.32l-7 3.18-7-3.18z" fill="currentColor"/></svg>`;
@@ -1265,7 +1196,6 @@
                     myName = savedName;
                     playerNameDisplay.innerText = myName;
                     setupPlayersListener();
-                    setupReactionListener();
 
                     const myPlayerData = room.players[savedKey];
 
@@ -1382,7 +1312,6 @@
                 myPlayerKey = playerRef.key;
                 myName = name;
                 setupPlayersListener();
-                setupReactionListener();
 
                 localStorage.setItem('star_battle_pin', pin);
                 localStorage.setItem('star_battle_key', myPlayerKey);
@@ -1455,6 +1384,7 @@
         pinInput.style.display = 'none';
         modePreview.classList.remove('show');
         if (pinHint) pinHint.style.display = 'none';
+        if (waitingPulse) waitingPulse.style.display = 'none';
     }
 
     function resetJoinButton() {
@@ -1511,62 +1441,6 @@
     }
 
     // ==========================================
-    // REACTION (EMOJI)
-    // ==========================================
-    function renderReactionBar() {
-        const bar = document.getElementById('reactionBar');
-        if (!bar) return;
-        bar.innerHTML = '';
-        REACTION_EMOJIS.forEach((emoji) => {
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'reaction-btn';
-            btn.innerText = emoji;
-            btn.addEventListener('click', () => sendReaction(emoji));
-            bar.appendChild(btn);
-        });
-    }
-
-    function sendReaction(emoji) {
-        if (!activePin) return;
-        const reactionRef = db.ref(`rooms/${activePin}/reactions`).push();
-        reactionRef.set({
-            emoji: emoji,
-            name: myName || 'Pemain',
-            time: firebase.database.ServerValue.TIMESTAMP
-        }).then(() => {
-            setTimeout(() => reactionRef.remove(), 4000);
-        });
-    }
-
-    function setupReactionListener() {
-        if (!activePin) return;
-        const ref = db.ref(`rooms/${activePin}/reactions`);
-        if (reactionsListener) ref.off('child_added', reactionsListener);
-        reactionsListener = snap => {
-            const data = snap.val();
-            if (data && data.emoji) spawnReactionBubble(data.emoji, data.name);
-        };
-        ref.on('child_added', reactionsListener);
-    }
-
-    function spawnReactionBubble(emoji, name) {
-        const container = document.getElementById('reactionFloatContainer');
-        if (!container) return;
-
-        const bubble = document.createElement('div');
-        bubble.className = 'reaction-bubble';
-        bubble.style.left = `${10 + Math.random() * 80}%`;
-        bubble.style.setProperty('--drift', `${(Math.random() * 60) - 30}px`);
-        bubble.innerHTML = `
-            <span class="emoji-face">${emoji}</span>
-            ${name ? `<span class="emoji-owner">${escapeHtml(name)}</span>` : ''}
-        `;
-        container.appendChild(bubble);
-        bubble.addEventListener('animationend', () => bubble.remove());
-    }
-
-    // ==========================================
     // BACK BUTTON
     // ==========================================
     document.getElementById('btnBackHome').addEventListener('click', () => {
@@ -1612,7 +1486,6 @@
     // INIT
     // ==========================================
     document.addEventListener('DOMContentLoaded', () => {
-        renderReactionBar();
         checkSavedSession();
     });
 
