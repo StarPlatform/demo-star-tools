@@ -114,23 +114,29 @@
             transition: all 0.3s;
             overflow: visible;
         }
-        .monster-showcase.alive {
-            animation: monsterHop 2s ease-in-out infinite;
-        }
-        .monster-showcase.hurt {
-            animation: monsterHurt 0.4s ease;
-        }
         .monster-showcase.dead {
             filter: grayscale(1) brightness(0.5);
-            animation: none;
         }
-        .monster-showcase.levelup {
+        /* Wrapper untuk pertumbuhan ukuran (persisten, tidak ikut animasi lompat) */
+        .monster-grow-wrap {
+            display: flex; align-items: center; justify-content: center;
+        }
+        /* Karakter monster — hanya ini yang beranimasi, card tetap diam */
+        .monster-char {
+            display: flex; align-items: center; justify-content: center;
+        }
+        .monster-char.alive {
+            animation: monsterHop 2s ease-in-out infinite;
+        }
+        .monster-char.hurt {
+            animation: monsterHurt 0.4s ease;
+        }
+        .monster-char.levelup {
             animation: monsterLevelup 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .monster-showcase svg {
             width: 90px; height: 90px;
             filter: drop-shadow(0 6px 8px rgba(0,0,0,0.15));
-            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .monster-showcase .lvl-badge {
             position: absolute;
@@ -626,8 +632,8 @@
             80% { transform: scale(0.95) rotate(-1deg); filter: brightness(1.2); }
             100% { transform: scale(1) rotate(0); filter: brightness(1); }
         }
-        .monster-showcase.evolving { animation: monsterEvolve 0.9s ease; }
-        .monster-showcase.attacking { animation: monsterAttack 0.4s ease; }
+        .monster-char.evolving { animation: monsterEvolve 0.9s ease; }
+        .monster-char.attacking { animation: monsterAttack 0.4s ease; }
         @keyframes monsterAttack {
             0%, 100% { transform: translateX(0); }
             40% { transform: translateX(10px) scale(1.05); }
@@ -756,10 +762,12 @@
         <!-- Monster Stats Card -->
         <div class="card">
             <div class="battle-top">
-                <div class="monster-showcase alive" id="monsterShowcase">
+                <div class="monster-showcase" id="monsterShowcase">
                     <div class="evo-crown" id="evoCrown">👑</div>
                     <div class="lvl-badge" id="monsterLvlBadge">Lv 1</div>
-                    <div id="monsterSvgContainer"></div>
+                    <div class="monster-grow-wrap" id="monsterGrowWrap">
+                        <div class="monster-char alive" id="monsterSvgContainer"></div>
+                    </div>
                 </div>
                 <div class="battle-info">
                     <div class="monster-name">
@@ -911,106 +919,140 @@
     // SVG MONSTER LIBRARY (SAMA DENGAN play.html)
     // ==========================================
     const MONSTER_SVGS = {
-        dragon: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs><linearGradient id="gradDragon" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f87171"/><stop offset="100%" stop-color="#b91c1c"/></linearGradient></defs>
-            <path d="M20 14 L14 4 L24 10 Z" fill="#fbbf24"/>
-            <path d="M44 14 L50 4 L40 10 Z" fill="#fbbf24"/>
-            <path d="M14 26 L4 22 L13 34 Z" fill="#dc2626"/>
-            <path d="M50 26 L60 22 L51 34 Z" fill="#dc2626"/>
-            <ellipse cx="32" cy="34" rx="18" ry="17" fill="url(#gradDragon)"/>
-            <path d="M28 6 L32 14 L36 6 L32 2 Z" fill="#fbbf24"/>
-            <ellipse cx="26" cy="26" rx="6" ry="4" fill="#fff" opacity="0.22"/>
+        dragon: `<svg class="monster-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="gradDragon" cx="35%" cy="28%" r="75%"><stop offset="0%" stop-color="#fca5a5"/><stop offset="55%" stop-color="#ef4444"/><stop offset="100%" stop-color="#a91c1c"/></radialGradient></defs>
+            <ellipse cx="32" cy="57" rx="15" ry="3" fill="#000" opacity="0.15"/>
+            <path d="M20 14 L14 4 L24 10 Z" fill="#fbbf24" stroke="#b45309" stroke-width="0.6"/>
+            <path d="M44 14 L50 4 L40 10 Z" fill="#fbbf24" stroke="#b45309" stroke-width="0.6"/>
+            <path d="M14 26 L4 22 L13 34 Z" fill="#c2410c"/>
+            <path d="M50 26 L60 22 L51 34 Z" fill="#c2410c"/>
+            <ellipse cx="32" cy="34" rx="18" ry="17" fill="url(#gradDragon)" stroke="#7f1d1d" stroke-width="1" stroke-opacity="0.4"/>
+            <path d="M20 42a14 10 0 0 0 24 0 15 8 0 0 1 -24 0z" fill="#7f1d1d" opacity="0.28"/>
+            <path d="M28 6 L32 14 L36 6 L32 2 Z" fill="#fbbf24" stroke="#b45309" stroke-width="0.6"/>
+            <ellipse cx="25" cy="25" rx="7" ry="4.5" fill="#fff" opacity="0.25"/>
             <circle cx="25" cy="32" r="3.6" fill="#fef08a"/>
             <circle cx="39" cy="32" r="3.6" fill="#fef08a"/>
             <ellipse cx="25" cy="32" rx="1.2" ry="2.4" fill="#1e293b"/>
             <ellipse cx="39" cy="32" rx="1.2" ry="2.4" fill="#1e293b"/>
+            <circle cx="24.3" cy="30.5" r="0.7" fill="#fff" opacity="0.9"/>
+            <circle cx="38.3" cy="30.5" r="0.7" fill="#fff" opacity="0.9"/>
             <path d="M22 44c3 4 7 6 10 6s7-2 10-6c-2 3-6 4-10 4s-8-1-10-4z" fill="#7f1d1d"/>
             <path d="M27 44l1 3 2-3M34 44l1 3 2-3" fill="#fff"/>
         </svg>`,
-        wolf: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs><linearGradient id="gradWolf" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#cbd5e1"/><stop offset="100%" stop-color="#475569"/></linearGradient></defs>
+        wolf: `<svg class="monster-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="gradWolf" cx="35%" cy="28%" r="75%"><stop offset="0%" stop-color="#f1f5f9"/><stop offset="55%" stop-color="#94a3b8"/><stop offset="100%" stop-color="#3f4c5f"/></radialGradient></defs>
+            <ellipse cx="32" cy="57" rx="15" ry="3" fill="#000" opacity="0.15"/>
             <path d="M16 10 L26 22 L18 28 Z" fill="#334155"/>
             <path d="M48 10 L38 22 L46 28 Z" fill="#334155"/>
-            <ellipse cx="32" cy="34" rx="18" ry="17" fill="url(#gradWolf)"/>
-            <path d="M22 40 Q32 52 42 40 Q38 48 32 48 Q26 48 22 40Z" fill="#f1f5f9"/>
-            <ellipse cx="26" cy="26" rx="6" ry="4" fill="#fff" opacity="0.2"/>
+            <path d="M18 13 L25 22 L20 26 Z" fill="#64748b"/>
+            <path d="M46 13 L39 22 L44 26 Z" fill="#64748b"/>
+            <ellipse cx="32" cy="34" rx="18" ry="17" fill="url(#gradWolf)" stroke="#334155" stroke-width="1" stroke-opacity="0.35"/>
+            <path d="M20 30l4 1.5-2 2zM44 30l-4 1.5 2 2z" fill="#e2e8f0" opacity="0.6"/>
+            <path d="M22 40 Q32 52 42 40 Q38 48 32 48 Q26 48 22 40Z" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="0.5"/>
+            <ellipse cx="26" cy="25" rx="7" ry="4.5" fill="#fff" opacity="0.28"/>
             <circle cx="25" cy="32" r="3.2" fill="#f87171"/>
             <circle cx="39" cy="32" r="3.2" fill="#f87171"/>
             <circle cx="25" cy="32" r="1.3" fill="#1e293b"/>
             <circle cx="39" cy="32" r="1.3" fill="#1e293b"/>
+            <circle cx="24.4" cy="30.8" r="0.6" fill="#fff" opacity="0.9"/>
+            <circle cx="38.4" cy="30.8" r="0.6" fill="#fff" opacity="0.9"/>
             <path d="M32 40 L34 44 L30 44 Z" fill="#1e293b"/>
         </svg>`,
-        phoenix: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs><linearGradient id="gradPhoenix" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fde047"/><stop offset="55%" stop-color="#f97316"/><stop offset="100%" stop-color="#dc2626"/></linearGradient></defs>
-            <path d="M32 2 C30 10 26 12 20 12 C26 14 30 18 30 24 C24 22 18 24 14 30 C22 28 27 32 28 38 L36 38 C37 32 42 28 50 30 C46 24 40 22 34 24 C34 18 38 14 44 12 C38 12 34 10 32 2Z" fill="url(#gradPhoenix)"/>
-            <ellipse cx="32" cy="34" rx="13" ry="13" fill="url(#gradPhoenix)"/>
-            <ellipse cx="27" cy="29" rx="4" ry="3" fill="#fff" opacity="0.25"/>
+        phoenix: `<svg class="monster-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="gradPhoenix" cx="40%" cy="30%" r="80%"><stop offset="0%" stop-color="#fef08a"/><stop offset="45%" stop-color="#f97316"/><stop offset="100%" stop-color="#b91c1c"/></radialGradient></defs>
+            <ellipse cx="32" cy="57" rx="15" ry="3" fill="#000" opacity="0.15"/>
+            <path d="M32 2 C30 10 26 12 20 12 C26 14 30 18 30 24 C24 22 18 24 14 30 C22 28 27 32 28 38 L36 38 C37 32 42 28 50 30 C46 24 40 22 34 24 C34 18 38 14 44 12 C38 12 34 10 32 2Z" fill="url(#gradPhoenix)" stroke="#9a3412" stroke-width="0.6" stroke-opacity="0.4"/>
+            <ellipse cx="32" cy="34" rx="13" ry="13" fill="url(#gradPhoenix)" stroke="#9a3412" stroke-width="1" stroke-opacity="0.35"/>
+            <path d="M22 40a10 7 0 0 0 20 0 11 5 0 0 1 -20 0z" fill="#9a3412" opacity="0.25"/>
+            <ellipse cx="27" cy="28" rx="5" ry="3.5" fill="#fff" opacity="0.3"/>
             <circle cx="32" cy="33" r="2.6" fill="#7c2d12"/>
-            <path d="M32 37 L28 42 L36 42 Z" fill="#facc15"/>
+            <circle cx="31.5" cy="32.3" r="0.6" fill="#fff" opacity="0.9"/>
+            <path d="M32 37 L28 42 L36 42 Z" fill="#facc15" stroke="#b45309" stroke-width="0.4"/>
         </svg>`,
-        turtle: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs><linearGradient id="gradTurtle" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6ee7b7"/><stop offset="100%" stop-color="#059669"/></linearGradient></defs>
-            <ellipse cx="32" cy="34" rx="19" ry="17" fill="url(#gradTurtle)"/>
-            <path d="M32 17 L38 24 L32 30 L26 24 Z" fill="#047857"/>
-            <path d="M18 30 L24 24 L26 34 L20 40Z" fill="#047857" opacity="0.85"/>
-            <path d="M46 30 L40 24 L38 34 L44 40Z" fill="#047857" opacity="0.85"/>
-            <path d="M32 38 L38 32 L44 38 L38 46Z" fill="#047857" opacity="0.85"/>
-            <path d="M32 38 L26 32 L20 38 L26 46Z" fill="#047857" opacity="0.85"/>
-            <circle cx="24" cy="14" r="4.5" fill="url(#gradTurtle)"/>
-            <circle cx="40" cy="14" r="4.5" fill="url(#gradTurtle)"/>
+        turtle: `<svg class="monster-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="gradTurtle" cx="35%" cy="28%" r="80%"><stop offset="0%" stop-color="#a7f3d0"/><stop offset="55%" stop-color="#10b981"/><stop offset="100%" stop-color="#065f46"/></radialGradient></defs>
+            <ellipse cx="32" cy="57" rx="15" ry="3" fill="#000" opacity="0.15"/>
+            <ellipse cx="32" cy="34" rx="19" ry="17" fill="url(#gradTurtle)" stroke="#064e3b" stroke-width="1" stroke-opacity="0.4"/>
+            <path d="M32 17 L38 24 L32 30 L26 24 Z" fill="#047857" stroke="#064e3b" stroke-width="0.5"/>
+            <path d="M18 30 L24 24 L26 34 L20 40Z" fill="#047857" opacity="0.85" stroke="#064e3b" stroke-width="0.4"/>
+            <path d="M46 30 L40 24 L38 34 L44 40Z" fill="#047857" opacity="0.85" stroke="#064e3b" stroke-width="0.4"/>
+            <path d="M32 38 L38 32 L44 38 L38 46Z" fill="#047857" opacity="0.85" stroke="#064e3b" stroke-width="0.4"/>
+            <path d="M32 38 L26 32 L20 38 L26 46Z" fill="#047857" opacity="0.85" stroke="#064e3b" stroke-width="0.4"/>
+            <ellipse cx="26" cy="24" rx="5" ry="3.2" fill="#fff" opacity="0.2"/>
+            <circle cx="24" cy="14" r="4.5" fill="url(#gradTurtle)" stroke="#064e3b" stroke-width="0.6"/>
+            <circle cx="40" cy="14" r="4.5" fill="url(#gradTurtle)" stroke="#064e3b" stroke-width="0.6"/>
             <circle cx="24" cy="14" r="1" fill="#064e3b"/>
             <circle cx="40" cy="14" r="1" fill="#064e3b"/>
+            <circle cx="23.6" cy="13.5" r="0.4" fill="#fff" opacity="0.8"/>
+            <circle cx="39.6" cy="13.5" r="0.4" fill="#fff" opacity="0.8"/>
         </svg>`,
-        fox: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs><linearGradient id="gradFox" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fdba74"/><stop offset="100%" stop-color="#ea580c"/></linearGradient></defs>
+        fox: `<svg class="monster-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="gradFox" cx="35%" cy="28%" r="78%"><stop offset="0%" stop-color="#fed7aa"/><stop offset="55%" stop-color="#f97316"/><stop offset="100%" stop-color="#9a3412"/></radialGradient></defs>
+            <ellipse cx="32" cy="57" rx="15" ry="3" fill="#000" opacity="0.15"/>
             <path d="M14 8 L26 20 L16 24 Z" fill="#1e293b"/>
             <path d="M50 8 L38 20 L48 24 Z" fill="#1e293b"/>
             <path d="M16 14 L26 22 L18 26 Z" fill="url(#gradFox)"/>
             <path d="M48 14 L38 22 L46 26 Z" fill="url(#gradFox)"/>
-            <ellipse cx="32" cy="34" rx="18" ry="16" fill="url(#gradFox)"/>
-            <path d="M24 38 Q32 50 40 38 Q36 44 32 44 Q28 44 24 38Z" fill="#fff7ed"/>
-            <ellipse cx="26" cy="27" rx="6" ry="4" fill="#fff" opacity="0.22"/>
-            <path d="M20 32l6 1-2 3z" fill="#1e293b"/>
-            <path d="M44 32l-6 1 2 3z" fill="#1e293b"/>
+            <ellipse cx="32" cy="34" rx="18" ry="16" fill="url(#gradFox)" stroke="#7c2d12" stroke-width="1" stroke-opacity="0.35"/>
+            <path d="M20 38a12 9 0 0 0 24 0 13 6 0 0 1 -24 0z" fill="#7c2d12" opacity="0.22"/>
+            <path d="M24 38 Q32 50 40 38 Q36 44 32 44 Q28 44 24 38Z" fill="#fff7ed" stroke="#fdba74" stroke-width="0.4"/>
+            <ellipse cx="26" cy="27" rx="6.5" ry="4.2" fill="#fff" opacity="0.26"/>
+            <path d="M18 31l7 1.5-2.5 3.2z" fill="#1e293b"/>
+            <path d="M46 31l-7 1.5 2.5 3.2z" fill="#1e293b"/>
             <path d="M32 40 L29 44 L35 44 Z" fill="#1e293b"/>
         </svg>`,
-        tiger: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs><linearGradient id="gradTiger" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fde047"/><stop offset="100%" stop-color="#ca8a04"/></linearGradient></defs>
-            <circle cx="16" cy="16" r="7" fill="url(#gradTiger)"/>
-            <circle cx="48" cy="16" r="7" fill="url(#gradTiger)"/>
+        tiger: `<svg class="monster-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="gradTiger" cx="35%" cy="28%" r="78%"><stop offset="0%" stop-color="#fef08a"/><stop offset="55%" stop-color="#eab308"/><stop offset="100%" stop-color="#854d0e"/></radialGradient></defs>
+            <ellipse cx="32" cy="57" rx="15" ry="3" fill="#000" opacity="0.15"/>
+            <circle cx="16" cy="16" r="7" fill="url(#gradTiger)" stroke="#78350f" stroke-width="0.6" stroke-opacity="0.4"/>
+            <circle cx="48" cy="16" r="7" fill="url(#gradTiger)" stroke="#78350f" stroke-width="0.6" stroke-opacity="0.4"/>
             <circle cx="16" cy="17" r="3.4" fill="#7c2d12"/>
             <circle cx="48" cy="17" r="3.4" fill="#7c2d12"/>
-            <ellipse cx="32" cy="34" rx="19" ry="17" fill="url(#gradTiger)"/>
+            <ellipse cx="32" cy="34" rx="19" ry="17" fill="url(#gradTiger)" stroke="#78350f" stroke-width="1" stroke-opacity="0.4"/>
+            <path d="M20 40a12 8 0 0 0 24 0 13 5 0 0 1 -24 0z" fill="#78350f" opacity="0.2"/>
             <path d="M18 24l6 4M46 24l-6 4M16 34l7 1M48 34l-7 1M20 43l6-2M44 43l-6-2" stroke="#1e293b" stroke-width="2.4" stroke-linecap="round"/>
+            <ellipse cx="25" cy="27" rx="5.5" ry="3.5" fill="#fff" opacity="0.25"/>
             <circle cx="25" cy="31" r="3.2" fill="#fff7ed"/>
             <circle cx="39" cy="31" r="3.2" fill="#fff7ed"/>
             <circle cx="25" cy="31" r="1.4" fill="#1e293b"/>
             <circle cx="39" cy="31" r="1.4" fill="#1e293b"/>
-            <path d="M30 40h4v3l-2 2-2-2z" fill="#fca5a5"/>
+            <circle cx="24.4" cy="30.2" r="0.6" fill="#fff" opacity="0.9"/>
+            <circle cx="38.4" cy="30.2" r="0.6" fill="#fff" opacity="0.9"/>
+            <path d="M30 40h4v3l-2 2-2-2z" fill="#fca5a5" stroke="#78350f" stroke-width="0.4"/>
         </svg>`,
-        shark: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs><linearGradient id="gradShark" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#67e8f9"/><stop offset="100%" stop-color="#0e7490"/></linearGradient></defs>
-            <path d="M32 4 L40 20 L24 20 Z" fill="#0e7490"/>
-            <path d="M12 30 Q32 12 52 30 Q46 44 32 48 Q18 44 12 30Z" fill="url(#gradShark)"/>
+        shark: `<svg class="monster-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="gradShark" cx="35%" cy="25%" r="80%"><stop offset="0%" stop-color="#cffafe"/><stop offset="55%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#0e7490"/></radialGradient></defs>
+            <ellipse cx="32" cy="57" rx="15" ry="3" fill="#000" opacity="0.15"/>
+            <path d="M32 4 L40 20 L24 20 Z" fill="#0e7490" stroke="#0c4a6e" stroke-width="0.5"/>
+            <path d="M12 30 Q32 12 52 30 Q46 44 32 48 Q18 44 12 30Z" fill="url(#gradShark)" stroke="#0c4a6e" stroke-width="1" stroke-opacity="0.4"/>
+            <path d="M18 34a16 8 0 0 0 28 0 17 5 0 0 1 -28 0z" fill="#0c4a6e" opacity="0.18"/>
             <path d="M20 42 L26 46 L22 50Z" fill="#0e7490"/>
             <path d="M44 42 L38 46 L42 50Z" fill="#0e7490"/>
+            <ellipse cx="22" cy="26" rx="5" ry="3.2" fill="#fff" opacity="0.3"/>
+            <path d="M16 32c1 2 1 4 0 6M18 31c1 2.4 1 4.8 0 7" stroke="#0c4a6e" stroke-width="0.8" stroke-linecap="round" opacity="0.5"/>
             <circle cx="24" cy="28" r="2.6" fill="#fff"/>
             <circle cx="24" cy="28" r="1.1" fill="#0c4a6e"/>
+            <circle cx="23.5" cy="27.4" r="0.4" fill="#fff"/>
             <path d="M18 40 L46 40 L42 46 L22 46Z" fill="#f0fdff"/>
             <path d="M22 40l2 5M28 40l0 5M34 40l0 5M40 40l-2 5" stroke="#0c4a6e" stroke-width="1.6" stroke-linecap="round"/>
         </svg>`,
-        owl: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs><linearGradient id="gradOwl" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c4b5fd"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs>
-            <path d="M20 12 L26 22 L16 22Z" fill="#6d28d9"/>
-            <path d="M44 12 L38 22 L48 22Z" fill="#6d28d9"/>
-            <ellipse cx="32" cy="35" rx="19" ry="18" fill="url(#gradOwl)"/>
+        owl: `<svg class="monster-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="gradOwl" cx="35%" cy="28%" r="80%"><stop offset="0%" stop-color="#ddd6fe"/><stop offset="55%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#4c1d95"/></radialGradient></defs>
+            <ellipse cx="32" cy="57" rx="15" ry="3" fill="#000" opacity="0.15"/>
+            <path d="M20 12 L26 22 L16 22Z" fill="#6d28d9" stroke="#4c1d95" stroke-width="0.5"/>
+            <path d="M44 12 L38 22 L48 22Z" fill="#6d28d9" stroke="#4c1d95" stroke-width="0.5"/>
+            <ellipse cx="32" cy="35" rx="19" ry="18" fill="url(#gradOwl)" stroke="#4c1d95" stroke-width="1" stroke-opacity="0.4"/>
+            <path d="M20 42a12 8 0 0 0 24 0 13 5 0 0 1 -24 0z" fill="#4c1d95" opacity="0.22"/>
+            <path d="M18 48l3-3 3 3-3 3zM26 50l3-3 3 3-3 3zM34 50l3-3 3 3-3 3zM42 48l3-3 3 3-3 3z" fill="#5b21b6" opacity="0.5"/>
             <circle cx="24" cy="32" r="8" fill="#fff"/>
             <circle cx="40" cy="32" r="8" fill="#fff"/>
             <circle cx="24" cy="32" r="3.6" fill="#fbbf24"/>
             <circle cx="40" cy="32" r="3.6" fill="#fbbf24"/>
             <circle cx="24" cy="32" r="1.6" fill="#1e293b"/>
             <circle cx="40" cy="32" r="1.6" fill="#1e293b"/>
-            <path d="M32 38l-3 5h6z" fill="#fbbf24"/>
+            <circle cx="23.2" cy="30.8" r="0.6" fill="#fff" opacity="0.9"/>
+            <circle cx="39.2" cy="30.8" r="0.6" fill="#fff" opacity="0.9"/>
+            <path d="M32 38l-3 5h6z" fill="#fbbf24" stroke="#b45309" stroke-width="0.3"/>
             <path d="M20 46q12 8 24 0" stroke="#4c1d95" stroke-width="2.2" fill="none" stroke-linecap="round"/>
         </svg>`
     };
@@ -1143,6 +1185,7 @@
     const finishView = document.getElementById('finishView');
     const pinBadge = document.getElementById('pinBadge');
     const monsterShowcase = document.getElementById('monsterShowcase');
+    const monsterGrowWrap = document.getElementById('monsterGrowWrap');
     const monsterSvgContainer = document.getElementById('monsterSvgContainer');
     const monsterLvlBadge = document.getElementById('monsterLvlBadge');
     const monsterNameText = document.getElementById('monsterNameText');
@@ -1512,12 +1555,12 @@
     // ANIMATE MONSTER
     // ==========================================
     function animateMonster(type) {
-        if (!monsterShowcase) return;
-        monsterShowcase.classList.remove('hurt', 'levelup', 'evolving', 'attacking');
-        void monsterShowcase.offsetWidth;
-        monsterShowcase.classList.add(type);
+        if (!monsterSvgContainer) return;
+        monsterSvgContainer.classList.remove('hurt', 'levelup', 'evolving', 'attacking');
+        void monsterSvgContainer.offsetWidth;
+        monsterSvgContainer.classList.add(type);
         const dur = type === 'evolving' ? 950 : 700;
-        setTimeout(() => monsterShowcase.classList.remove(type), dur);
+        setTimeout(() => monsterSvgContainer.classList.remove(type), dur);
     }
 
     // ==========================================
@@ -1547,10 +1590,10 @@
     // UPDATE UI
     // ==========================================
     function updateUI() {
-        if (monsterSvgContainer) {
-            monsterSvgContainer.innerHTML = monsterSvg;
-            monsterSvgContainer.style.transform = `scale(${growthFactor})`;
-            monsterSvgContainer.style.transition = 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        if (monsterSvgContainer) monsterSvgContainer.innerHTML = monsterSvg;
+        if (monsterGrowWrap) {
+            monsterGrowWrap.style.transform = `scale(${growthFactor})`;
+            monsterGrowWrap.style.transition = 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)';
         }
         if (monsterLvlBadge) monsterLvlBadge.innerText = `Lv ${level}`;
         if (monsterNameText) monsterNameText.innerText = monsterName;
@@ -1581,8 +1624,8 @@
         }
         
         // Monster state
+        if (monsterSvgContainer) monsterSvgContainer.classList.toggle('alive', !isDead);
         if (monsterShowcase) {
-            monsterShowcase.classList.toggle('alive', !isDead);
             monsterShowcase.classList.toggle('dead', isDead);
             
             // Tier aura (evolusi visual)
