@@ -278,7 +278,6 @@
             font-size: 0.7rem;
             font-weight: 800;
             display: inline-block;
-            margin-bottom: 10px;
             letter-spacing: 0.5px;
         }
         
@@ -688,6 +687,61 @@
             to { text-shadow: 0 0 8px rgba(249,115,22,0.6); }
         }
 
+        /* ========== SERANGAN SPESIAL BANNER ========== */
+        .attack-banner {
+            position: fixed;
+            top: 40%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.4);
+            background: linear-gradient(135deg, #dc2626, #7c2d12);
+            color: white;
+            padding: 16px 26px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 16px 40px rgba(220,38,38,0.4);
+            z-index: 10001;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .attack-banner.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        .attack-banner .atk-title { font-size: 1.15rem; font-weight: 900; margin-bottom: 4px; }
+        .attack-banner .atk-sub { font-size: 0.78rem; font-weight: 700; opacity: 0.92; }
+
+        /* ========== TIMER SOAL & COOLDOWN ========== */
+        .q-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .game-timer {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: #4f46e5;
+            background: #eef2ff;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+        .game-timer.urgent {
+            color: #dc2626;
+            background: #fee2e2;
+            animation: comboGlow 0.6s infinite alternate;
+        }
+        .cooldown-banner {
+            margin-top: 12px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
         /* ========== LOADING ========== */
         .loading-state {
             text-align: center;
@@ -722,6 +776,11 @@
             .option-btn { padding: 10px 14px; font-size: 0.85rem; }
             .evolve-banner { padding: 16px 22px; }
             .combo-blast { font-size: 1.05rem; padding: 8px 16px; }
+            .attack-banner { padding: 12px 18px; }
+            .attack-banner .atk-title { font-size: 0.95rem; }
+            .attack-banner .atk-sub { font-size: 0.68rem; }
+            .game-timer { font-size: 0.62rem; padding: 2px 8px; }
+            .cooldown-banner { font-size: 0.72rem; padding: 8px 10px; }
         }
     </style>
 </head>
@@ -736,7 +795,7 @@
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 1.5.5 2.9 1.3 4.1L3 20h5l1-3h6l1 3h5l-3.3-6.9c.8-1.2 1.3-2.6 1.3-4.1 0-3.87-3.13-7-7-7zm-3 8.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm6 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="currentColor"/>
                 </svg>
             </div>
-            <h1>Monster Arena</h1>
+            <h1>Monster Arena <span id="headerSubtitle">| Bertanding</span></h1>
         </div>
         <div class="header-right">
             <span class="pin-badge" id="pinBadge">PIN: ----</span>
@@ -771,8 +830,13 @@
                 </div>
                 <div class="battle-info">
                     <div class="monster-name">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="currentColor"/>
+                        </svg>
                         <span id="monsterNameText">Monster</span>
                     </div>
+                    <div class="tier-badge t1" id="tierBadge">Wujud Awal</div>
+                    <div class="monster-status-text" id="monsterStatusText">Siap bertarung!</div>
                     
                     <!-- XP -->
                     <div class="xp-wrap">
@@ -813,9 +877,15 @@
 
         <!-- Question Card -->
         <div class="card">
-            <span class="q-number" id="qNumber">SOAL #1</span>
+            <div class="q-header-row">
+                <span class="q-number" id="qNumber">SOAL #1</span>
+                <span class="game-timer" id="gameTimerText">⏱ 5:00</span>
+            </div>
             <div class="q-text" id="qText">Memuat soal...</div>
             <div class="options-grid" id="optionsGrid"></div>
+            <div class="cooldown-banner" id="cooldownBanner" style="display:none;">
+                ⏳ Tunggu <span id="cooldownNum">3</span> detik sebelum lanjut...
+            </div>
         </div>
     </div>
 
@@ -891,6 +961,12 @@
 <!-- ===== COMBO BLAST ===== -->
 <div class="combo-blast" id="comboBlast">
     <span>🔥</span><span id="comboBlastText">BERUNTUN x2!</span>
+</div>
+
+<!-- ===== SERANGAN SPESIAL BANNER ===== -->
+<div class="attack-banner" id="attackBanner">
+    <div class="atk-title">⚔️ SERANGAN KOMBO 5x!</div>
+    <div class="atk-sub" id="attackBannerText">Menyerang lawan!</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -1106,6 +1182,14 @@
     let roomStatusListener = null;
     let playerDataListener = null;
     let lastKnownHp = 20;
+    
+    // Batas waktu total permainan (detik) — diambil dari durasi yang diset guru saat
+    // membuat soal (soal-monster.html). Kalau gurunya tidak menyetel, pakai default ini.
+    const DEFAULT_TIME_LIMIT = 5 * 60; // 5 menit
+    let GAME_TIME_LIMIT = DEFAULT_TIME_LIMIT;
+    let timeLeft = GAME_TIME_LIMIT;
+    let gameTimerInterval = null;
+    let cooldownInterval = null;
     let currentTierIdx = 0;
     let growthFactor = 1;
     const MAX_GROWTH = 1.6;
@@ -1184,6 +1268,7 @@
     const monsterSvgContainer = document.getElementById('monsterSvgContainer');
     const monsterLvlBadge = document.getElementById('monsterLvlBadge');
     const monsterNameText = document.getElementById('monsterNameText');
+    const monsterStatusText = document.getElementById('monsterStatusText');
     const hpText = document.getElementById('hpText');
     const hpBarFill = document.getElementById('hpBarFill');
     const xpText = document.getElementById('xpText');
@@ -1198,12 +1283,18 @@
     const fbSub = document.getElementById('fbSub');
     const deadOverlay = document.getElementById('deadOverlay');
     const btnRevive = document.getElementById('btnRevive');
+    const tierBadge = document.getElementById('tierBadge');
     const evoCrown = document.getElementById('evoCrown');
     const evolveBanner = document.getElementById('evolveBanner');
     const evoTitle = document.getElementById('evoTitle');
     const evoSub = document.getElementById('evoSub');
     const comboBlast = document.getElementById('comboBlast');
     const comboBlastText = document.getElementById('comboBlastText');
+    const attackBanner = document.getElementById('attackBanner');
+    const attackBannerText = document.getElementById('attackBannerText');
+    const cooldownBanner = document.getElementById('cooldownBanner');
+    const cooldownNum = document.getElementById('cooldownNum');
+    const gameTimerText = document.getElementById('gameTimerText');
 
     if (pinBadge) pinBadge.innerText = `PIN: ${activePin || '----'}`;
 
@@ -1280,14 +1371,28 @@
         db.ref(`rooms/${activePin}`).once('value').then((roomSnap) => {
             if (!roomSnap.exists()) return;
             const quizId = roomSnap.val().quizId;
-            db.ref(`quiz_hub/${quizId}/questions`).once('value').then((qSnap) => {
-                if (qSnap.exists()) {
-                    quizData = qSnap.val();
+            db.ref(`quiz_hub/${quizId}`).once('value').then((qSnap) => {
+                if (!qSnap.exists() || !qSnap.val().questions) {
+                    alert('Soal tidak ditemukan!');
+                    return;
+                }
+                const quiz = qSnap.val();
+                quizData = quiz.questions;
+                GAME_TIME_LIMIT = quiz.duration || DEFAULT_TIME_LIMIT;
+                
+                // Batas waktu total game — dipatok sekali per pemain biar gak reset kalau di-refresh
+                const pRef = db.ref(`rooms/${activePin}/players/${myPlayerKey}`);
+                pRef.child('quizLoopEndsAt').once('value').then(endsSnap => {
+                    if (endsSnap.exists()) {
+                        timeLeft = Math.max(0, Math.round((endsSnap.val() - Date.now()) / 1000));
+                    } else {
+                        const endsAt = Date.now() + GAME_TIME_LIMIT * 1000;
+                        pRef.update({ quizLoopEndsAt: endsAt }).catch(() => {});
+                        timeLeft = GAME_TIME_LIMIT;
+                    }
                     showBattleView();
                     showQuestion();
-                } else {
-                    alert('Soal tidak ditemukan!');
-                }
+                });
             });
         });
     }
@@ -1296,6 +1401,43 @@
         loadingView.style.display = 'none';
         battleView.style.display = 'block';
         finishView.style.display = 'none';
+        startGameTimer();
+    }
+
+    // ==========================================
+    // TIMER KESELURUHAN GAME (biar soal yang diulang tidak tanpa batas)
+    // ==========================================
+    function startGameTimer() {
+        if (gameTimerInterval) return; // sudah jalan
+        updateGameTimerText();
+        if (timeLeft <= 0) {
+            if (!isFinished && !isGameEnded) finishQuiz();
+            return;
+        }
+        gameTimerInterval = setInterval(() => {
+            timeLeft--;
+            updateGameTimerText();
+            if (timeLeft <= 0) {
+                clearInterval(gameTimerInterval);
+                gameTimerInterval = null;
+                if (!isFinished && !isGameEnded) {
+                    finishQuiz();
+                }
+            }
+        }, 1000);
+    }
+    function stopGameTimer() {
+        if (gameTimerInterval) {
+            clearInterval(gameTimerInterval);
+            gameTimerInterval = null;
+        }
+    }
+    function updateGameTimerText() {
+        if (!gameTimerText) return;
+        const m = Math.floor(Math.max(0, timeLeft) / 60);
+        const s = Math.max(0, timeLeft) % 60;
+        gameTimerText.innerText = `⏱ ${m}:${String(s).padStart(2, '0')}`;
+        gameTimerText.classList.toggle('urgent', timeLeft <= 30);
     }
 
     // ==========================================
@@ -1304,9 +1446,9 @@
     function showQuestion() {
         if (isDead || isFinished || isGameEnded) return;
         
+        // Soal diulang dari awal kalau sudah habis — dibatasi oleh timer total game
         if (currentQuestionIdx >= quizData.length) {
-            finishQuiz();
-            return;
+            currentQuestionIdx = 0;
         }
         
         const q = quizData[currentQuestionIdx];
@@ -1365,6 +1507,7 @@
             if (hp < maxHp) hp = Math.min(maxHp, hp + 2);
             
             const comboMilestone = combo === 3 || combo === 5 || combo === 8 || (combo > 8 && combo % 4 === 0);
+            const isSpecialAttack = combo > 0 && combo % 5 === 0;
             
             // Level up check (levelUp() sendiri yang urus animasi evolusi)
             let leveledUp = false;
@@ -1372,16 +1515,19 @@
                 leveledUp = levelUp();
             }
             
-            addLog(`BENAR! +${totalPoint} poin${multiplier > 1 ? ` (combo x${multiplier})` : ''}`, 'success');
             showFeedback('BENAR!', `+${totalPoint} poin`, false);
             SFX.correct();
             
-            if (!leveledUp) animateMonster('attacking');
+            if (!leveledUp && !isSpecialAttack) animateMonster('attacking');
             if (comboMilestone) showComboBlast(multiplier);
             
-            // Serang monster lawan secara acak (PvP)
-            const atkDmg = 3 + Math.floor(combo / 3) + Math.floor(level / 3);
-            attackRandomOpponent(Math.min(atkDmg, 12));
+            // Setiap kelipatan 5 combo beruntun: serangan spesial ke lawan acak + HP sendiri naik
+            if (isSpecialAttack) specialComboAttack();
+            
+            updateUI();
+            updatePlayerData();
+            
+            setTimeout(advanceToNextQuestion, 1400);
             
         } else {
             btn.classList.add('wrong');
@@ -1395,7 +1541,6 @@
             hp -= 5;
             score -= 5;
             
-            addLog(`SALAH! Monster -5 HP, poin -5`, 'danger');
             showFeedback('SALAH!', `Monster -5 HP`, true);
             SFX.wrong();
             animateMonster('hurt');
@@ -1411,15 +1556,43 @@
                 }, 600);
                 return;
             }
+            
+            updateUI();
+            updatePlayerData();
+            
+            // Cooldown sebelum lanjut ke soal berikutnya, sebagai "hukuman" jawaban salah
+            startWrongCooldown(3, advanceToNextQuestion);
         }
-        
-        updateUI();
-        updatePlayerData();
-        
-        setTimeout(() => {
-            currentQuestionIdx++;
-            showQuestion();
-        }, 1400);
+    }
+
+    // ==========================================
+    // LANJUT KE SOAL BERIKUTNYA (bisa mengulang dari awal)
+    // ==========================================
+    function advanceToNextQuestion() {
+        currentQuestionIdx++;
+        showQuestion();
+    }
+
+    // ==========================================
+    // COOLDOWN JAWABAN SALAH
+    // ==========================================
+    function startWrongCooldown(seconds, callback) {
+        if (!cooldownBanner) { setTimeout(callback, seconds * 1000); return; }
+        let remaining = seconds;
+        cooldownBanner.style.display = 'flex';
+        cooldownNum.innerText = remaining;
+        clearInterval(cooldownInterval);
+        cooldownInterval = setInterval(() => {
+            remaining--;
+            if (remaining <= 0) {
+                clearInterval(cooldownInterval);
+                cooldownInterval = null;
+                cooldownBanner.style.display = 'none';
+                callback();
+            } else {
+                cooldownNum.innerText = remaining;
+            }
+        }, 1000);
     }
 
     // ==========================================
@@ -1462,9 +1635,35 @@
                 };
                 if (newHp <= 0) updates.monsterDead = true;
                 targetRef.update(updates);
-                addLog(`Monster kamu menyerang ${escapeHtml(targetName)} sebesar ${damage} HP!`, 'success');
+                showAttackBanner(targetName, damage);
             }).catch(() => {});
         });
+    }
+
+    // ==========================================
+    // SERANGAN SPESIAL — dipicu tiap kelipatan 5 combo beruntun
+    // ==========================================
+    function specialComboAttack() {
+        const dmg = 12 + Math.floor(level / 2);
+        animateMonster('attacking');
+        SFX.attack();
+        attackRandomOpponent(dmg);
+        
+        // Hadiah buat penyerang: HP-nya sendiri ikut naik
+        // (updateUI/updatePlayerData ditangani di alur pemanggil setelah ini)
+        hp = Math.min(maxHp, hp + 6);
+    }
+
+    // ==========================================
+    // BANNER SERANGAN
+    // ==========================================
+    let attackBannerTimer = null;
+    function showAttackBanner(targetName, dmg) {
+        if (!attackBanner) return;
+        attackBannerText.innerText = `Menyerang ${targetName} sebesar ${dmg} HP!`;
+        attackBanner.classList.add('show');
+        clearTimeout(attackBannerTimer);
+        attackBannerTimer = setTimeout(() => attackBanner.classList.remove('show'), 1800);
     }
 
     // ==========================================
@@ -1626,10 +1825,30 @@
             monsterShowcase.classList.remove('tier-1', 'tier-2', 'tier-3', 'tier-4');
             monsterShowcase.classList.add(`tier-${Math.min(tIdx + 1, 4)}`);
         }
-
-        // Tier aura (evolusi visual)
-         if (evoCrown) evoCrown.classList.toggle('show', getTierIndex(level) === TIER_CONFIG.length - 1);
-       }
+        
+        // Tier badge
+        if (tierBadge) {
+            const tIdx = getTierIndex(level);
+            const tier = TIER_CONFIG[tIdx] || TIER_CONFIG[0];
+            tierBadge.innerText = tier.label;
+            tierBadge.className = `tier-badge ${tier.cls}`;
+        }
+        if (evoCrown) evoCrown.classList.toggle('show', getTierIndex(level) === TIER_CONFIG.length - 1);
+        
+        // Status text
+        if (monsterStatusText) {
+            if (isDead) {
+                monsterStatusText.innerText = 'Monster tumbang!';
+                monsterStatusText.classList.add('danger');
+            } else if (hp < maxHp * 0.3) {
+                monsterStatusText.innerText = 'HP kritis!';
+                monsterStatusText.classList.add('danger');
+            } else {
+                monsterStatusText.innerText = 'Siap bertarung!';
+                monsterStatusText.classList.remove('danger');
+            }
+        }
+    }
 
     // ==========================================
     // UPDATE PLAYER DATA
@@ -1655,6 +1874,7 @@
     function finishQuiz() {
         if (isFinished) return;
         isFinished = true;
+        stopGameTimer();
         showFinishView(false);
         updatePlayerData();
         db.ref(`rooms/${activePin}/players/${myPlayerKey}`).update({ status: 'Selesai' });
@@ -1710,6 +1930,7 @@
             const status = snap.val();
             if (status === 'ended' && !isFinished) {
                 isGameEnded = true;
+                stopGameTimer();
                 db.ref(`rooms/${activePin}/status`).off('value', roomStatusListener);
                 showFinishView(true);
                 fetchFinalScore();

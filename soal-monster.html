@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Star Tools | Pembuat Soal Monster Battle</title>
+    <title>Star Tools | Pembuat Soal Arena Monster</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -12,265 +12,41 @@
 
         .creator-container { max-width: 650px; margin: 20px auto; width: 100%; }
         
-        .header-box { 
-            background: white; 
-            border: 1px solid #e8ecf1; 
-            border-radius: 20px; 
-            padding: 20px; 
-            margin-bottom: 20px; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03); 
-            display: flex; 
-            align-items: flex-start; 
-            gap: 12px; 
-        }
-        
-        .header-box .icon-box { 
-            width: 36px; 
-            height: 36px; 
-            background: linear-gradient(135deg, #10b981, #f59e0b); 
-            border-radius: 10px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: white; 
-            font-size: 0.95rem; 
-            flex-shrink: 0; 
-        }
-        
-        .header-box h1 { 
-            font-size: 1.2rem; 
-            font-weight: 700; 
-            color: #0f172a; 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            flex-wrap: wrap;
-        }
-        
-        .header-box p { 
-            font-size: 0.85rem; 
-            color: #64748b; 
-            margin-top: 4px; 
-        }
-        
-        .mode-badge { 
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: #ecfdf5; 
-            color: #047857; 
-            border: 1px solid #a7f3d0; 
-            padding: 4px 10px; 
-            border-radius: 8px; 
-            font-size: 0.7rem; 
-            font-weight: 700; 
-            margin-top: 10px; 
-        }
+        .header-box { background: white; border: 1px solid #e8ecf1; border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); display: flex; align-items: flex-start; gap: 12px; }
+        .header-box .icon-box { width: 36px; height: 36px; background: linear-gradient(135deg, #10b981, #f59e0b); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.95rem; flex-shrink: 0; }
+        .header-box h1 { font-size: 1.2rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px; }
+        .header-box p { font-size: 0.85rem; color: #64748b; margin-top: 4px; }
+        .mode-badge { display: inline-block; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; margin-top: 10px; }
 
-        .question-card { 
-            background: white; 
-            border: 1px solid #e8ecf1; 
-            border-radius: 20px; 
-            padding: 20px; 
-            margin-bottom: 16px; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03); 
-            position: relative; 
-            transition: border 0.2s;
-        }
-        
-        .q-number { 
-            background: #f1f5f9; 
-            color: #475569; 
-            height: 28px;
-            padding: 0 14px;
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-weight: 700; 
-            font-size: 0.8rem; 
-            border-radius: 8px;
-            margin-bottom: 12px; 
-        }
+        .question-card { background: white; border: 1px solid #e8ecf1; border-radius: 20px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); position: relative; }
+        .q-number { background: #f1f5f9; color: #475569; width: 100px; height: 28px; display: inline-flex; align-items: center; justify-content: center;  font-weight: 700; font-size: 0.85rem; margin-bottom: 12px; }
         
         .form-group { margin-bottom: 14px; }
-        .form-group label { 
-            display: block; 
-            font-size: 0.8rem; 
-            font-weight: 600; 
-            color: #475569; 
-            margin-bottom: 6px; 
-            text-transform: uppercase; 
-            letter-spacing: 0.3px;
-        }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: #475569; margin-bottom: 6px; text-transform: uppercase; }
         
-        .input-control, 
-        .input-q-text, 
-        .select-correct-ans { 
-            width: 100%; 
-            padding: 10px 14px; 
-            background: #f8fafc; 
-            border: 1px solid #e2e8f0; 
-            border-radius: 10px; 
-            font-size: 0.9rem; 
-            font-family: inherit; 
-            color: #0f172a; 
-            outline: none; 
-            transition: all 0.2s; 
-        }
-        
-        .input-control:focus, 
-        .input-q-text:focus, 
-        .select-correct-ans:focus { 
-            border-color: #10b981; 
-            background: white; 
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); 
-        }
-        
-        .input-q-text { 
-            resize: vertical; 
-            min-height: 70px; 
-        }
+        .input-control, .input-q-text, .select-correct-ans { width: 100%; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.9rem; font-family: inherit; color: #0f172a; outline: none; transition: all 0.2s; }
+        .input-control:focus, .input-q-text:focus, .select-correct-ans:focus { border-color: #10b981; background: white; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
+        .input-q-text { resize: vertical; min-height: 70px; }
 
-        .q-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 12px; 
-        }
+        .q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 
-        .options-grid { 
-            display: grid; 
-            grid-template-columns: 1fr; 
-            gap: 10px; 
-            margin-top: 8px; 
-        }
-        
-        .opt-box { 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            background: #f8fafc; 
-            padding: 4px 4px 4px 12px; 
-            border-radius: 10px; 
-            border: 1px solid #e2e8f0; 
-            transition: border 0.2s;
-        }
-        
-        .opt-box:focus-within {
-            border-color: #10b981;
-            background: white;
-        }
-        
-        .opt-label { 
-            font-weight: 700; 
-            color: #64748b; 
-            width: 20px; 
-            text-align: center; 
-            font-size: 0.9rem; 
-            flex-shrink: 0; 
-        }
-        
-        .opt-box input { 
-            width: 100%; 
-            padding: 10px 14px 10px 0; 
-            background: transparent; 
-            border: none; 
-            font-size: 0.9rem; 
-            font-family: inherit; 
-            color: #0f172a; 
-            outline: none; 
-        }
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 8px; }
+        .opt-box { display: flex; align-items: center; gap: 8px; background: #f8fafc; padding: 4px 4px 4px 12px; border-radius: 10px; border: 1px solid #e2e8f0; }
+        .opt-label { font-weight: 700; color: #64748b; width: 20px; text-align: center; font-size: 0.9rem; flex-shrink: 0; }
+        .opt-box input { width: 100%; padding: 10px 14px 10px 0; background: transparent; border: none; font-size: 0.9rem; font-family: inherit; color: #0f172a; outline: none; }
 
-        .btn-add { 
-            background: none; 
-            border: 2px dashed #cbd5e1; 
-            color: #64748b; 
-            width: 100%; 
-            padding: 14px; 
-            border-radius: 14px; 
-            font-size: 0.9rem; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: all 0.2s; 
-            margin-bottom: 24px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 6px; 
-            font-family: inherit;
-        }
-        
-        .btn-add:hover { 
-            background: #ecfdf5; 
-            border-color: #10b981; 
-            color: #047857; 
-        }
-        
-        .btn-primary { 
-            background: linear-gradient(135deg, #10b981, #059669); 
-            color: white; 
-            border: none; 
-            width: 100%; 
-            padding: 14px; 
-            font-size: 0.95rem; 
-            font-weight: 700; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 8px; 
-            font-family: inherit;
-            transition: all 0.2s;
-        }
-        
-        .btn-primary:hover { 
-            background: linear-gradient(135deg, #059669, #047857);
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
-        }
-        
-        .btn-primary:disabled { 
-            background: #cbd5e1; 
-            cursor: not-allowed; 
-            box-shadow: none; 
-            transform: none;
-        }
+        /* Radio button kostum buat nentuin kunci jawaban */
+        .correct-radio { width: 18px; height: 18px; cursor: pointer; accent-color: #10b981; }
 
-        .btn-delete-q { 
-            background: #fee2e2; 
-            color: #ef4444; 
-            border: none; 
-            width: 28px; 
-            height: 28px; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 0.85rem; 
-            flex-shrink: 0; 
-            transition: background 0.2s;
-        }
+        .btn-add { background: none; border: 2px dashed #cbd5e1; color: #64748b; width: 100%; padding: 14px; border-radius: 14px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-add:hover { background: #ecfdf5; border-color: #10b981; color: #047857; }
         
-        .btn-delete-q:hover { 
-            background: #fca5a5; 
-        }
-        
-        /* ========== ANIMASI ========== */
-        @keyframes popCard {
-            0% { transform: scale(0.95); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        
-        @media (max-width: 500px) {
-            body { padding: 10px; }
-            .header-box { padding: 16px; }
-            .header-box h1 { font-size: 1rem; }
-            .question-card { padding: 16px; }
-            .q-number { font-size: 0.75rem; height: 24px; }
-        }
+        .btn-primary { background: #10b981; color: white; border: none; width: 100%; padding: 14px; font-size: 0.95rem; font-weight: 600; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary:hover { background: #059669; }
+        .btn-primary:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+
+        .btn-delete-q { background: #fee2e2; color: #ef4444; border: none; width: 28px; height: 28px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+        .btn-delete-q:hover { background: #fca5a5; }
     </style>
 </head>
 <body>
@@ -279,8 +55,24 @@
     <div class="header-box">
         <span class="icon-box"><i class="fas fa-dragon"></i></span>
         <div>
-            <h1>Buat Soal Monster Battle</h1>
-            <p>Tulis pertanyaan kuis untuk mode Monster Battle. Murid bakal jawab soal ini sambil naikin level monsternya.</p>
+            <h1>Buat Soal Arena Monster</h1>
+            <p>Tulis pertanyaan kuis manual untuk dimainkan bersama di arena battle kelas.</p>
+        </div>
+    </div>
+
+    <div class="header-box" id="durationBox">
+        <span class="icon-box" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);"><i class="fas fa-clock"></i></span>
+        <div style="flex:1;">
+            <h1 style="font-size: 1rem;">Durasi Pertandingan</h1>
+            <p>Soal akan diulang otomatis dari awal sampai waktu ini habis, biar murid tidak berhenti terlalu cepat kalau soalnya sedikit.</p>
+            <select class="select-correct-ans" id="quizDuration" style="max-width: 220px; margin-top: 10px;">
+                <option value="120">2 Menit</option>
+                <option value="180">3 Menit</option>
+                <option value="300" selected>5 Menit</option>
+                <option value="600">10 Menit</option>
+                <option value="900">15 Menit</option>
+                <option value="1200">20 Menit</option>
+            </select>
         </div>
     </div>
 
@@ -288,7 +80,7 @@
 
     <button class="btn-add" id="btnAddQuestion"><i class="fas fa-plus"></i> Tambah Pertanyaan Baru</button>
     
-    <button class="btn-primary" id="btnPublishQuiz"><i class="fas fa-cloud-arrow-up"></i> Simpan Soal & Buka Room</button>
+    <button class="btn-primary" id="btnPublishQuiz"><i class="fas fa-cloud-arrow-up"></i> Simpan Kuis & Buka Room Tunggu</button>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -320,7 +112,7 @@
     // 2. FUNGSI UI DOM
     // ==========================================
     
-    // Fungsi memunculkan kartu input soal baru
+    // Fungsi memunculkan kartu input soal baru di layar HP
     function injectQuestionCard() {
         questionCount++;
         const container = document.getElementById('questionsContainer');
@@ -454,26 +246,30 @@
         const btn = document.getElementById('btnPublishQuiz');
         if (btn) {
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengupload Soal...';
+            btn.innerText = "Mengupload Soal ke Server...";
         }
 
         // Simpan data kuis ke node 'quiz_hub' di Firebase
+        const durationSelect = document.getElementById('quizDuration');
+        const duration = durationSelect ? parseInt(durationSelect.value, 10) : 300;
+        
         const newQuizRef = db.ref('quiz_hub').push();
         newQuizRef.set({
             mode: 'monster',  // <-- Penanda mode monster
             createdAt: firebase.database.ServerValue.TIMESTAMP,
+            duration: duration, // Durasi pertandingan dalam detik (soal diulang sampai waktu ini habis)
             questions: quizQuestions
         }).then(() => {
-            // Simpan ID kuis & mode ke localStorage biar room-monster.html bisa narik datanya
+            // Simpan ID kuis ke localStorage biar room-monster.html bisa narik datanya
             localStorage.setItem('star_active_quiz_id', newQuizRef.key);
             localStorage.setItem('star_game_mode', 'monster');
-            alert("Soal monster battle sukses direkam! Mengalihkan ke ruang tunggu...");
+            alert("Bank kuis monster sukses direkam! Mengalihkan ke ruang tunggu...");
             window.location.href = "room-monster.html";
         }).catch(err => {
-            alert("Gagal mengupload soal, bre: " + err.message);
+            alert("Gagal mengupload kuis, bre: " + err.message);
             if (btn) {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-cloud-arrow-up"></i> Simpan Soal & Buka Room';
+                btn.innerText = "Simpan Kuis & Buka Room Tunggu";
             }
         });
     }
