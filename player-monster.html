@@ -184,14 +184,6 @@
             align-items: center;
             gap: 6px;
         }
-        .monster-name svg { width: 14px; height: 14px; color: #10b981; }
-        
-        .monster-status-text {
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: #047857;
-        }
-        .monster-status-text.danger { color: #ef4444; }
         
         /* HP Bar */
         .hp-wrap { display: flex; flex-direction: column; gap: 4px; }
@@ -598,14 +590,22 @@
 
         .evo-crown {
             position: absolute;
-            top: -10px; left: 50%;
-            transform: translateX(-50%) scale(0);
-            font-size: 1.2rem;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            top: -16px; left: 50%;
+            transform: translateX(-50%) scale(0) rotate(-8deg);
+            width: 30px; height: 30px;
+            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
             z-index: 2;
-            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25));
+            filter: drop-shadow(0 3px 4px rgba(180,83,9,0.4));
         }
-        .evo-crown.show { transform: translateX(-50%) scale(1); }
+        .evo-crown svg { width: 100%; height: 100%; }
+        .evo-crown.show {
+            transform: translateX(-50%) scale(1) rotate(0deg);
+            animation: crownFloat 2.4s ease-in-out infinite;
+        }
+        @keyframes crownFloat {
+            0%, 100% { transform: translateX(-50%) translateY(0) rotate(0deg); }
+            50% { transform: translateX(-50%) translateY(-4px) rotate(-4deg); }
+        }
 
         .tier-badge {
             font-size: 0.62rem;
@@ -707,6 +707,83 @@
         .attack-banner .atk-title { font-size: 1.15rem; font-weight: 900; margin-bottom: 4px; }
         .attack-banner .atk-sub { font-size: 0.78rem; font-weight: 700; opacity: 0.92; }
 
+        /* ========== BANNER DISERANG ========== */
+        .hit-banner {
+            position: fixed;
+            top: 58%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.4);
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 16px 40px rgba(15,23,42,0.4);
+            z-index: 10001;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid rgba(239,68,68,0.4);
+        }
+        .hit-banner.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        .hit-banner .hit-title { font-size: 1.05rem; font-weight: 900; margin-bottom: 4px; color: #f87171; }
+        .hit-banner .hit-sub { font-size: 0.76rem; font-weight: 700; opacity: 0.92; }
+
+        /* ========== CUSTOM MODAL (pengganti alert/confirm bawaan browser) ========== */
+        .modal-overlay-custom {
+            position: fixed; inset: 0;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(4px);
+            z-index: 20000;
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s;
+        }
+        .modal-overlay-custom.show { opacity: 1; pointer-events: auto; }
+        .modal-card-custom {
+            background: white;
+            border-radius: 22px;
+            padding: 26px 22px 22px;
+            max-width: 320px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+            transform: scale(0.85) translateY(10px);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-overlay-custom.show .modal-card-custom { transform: scale(1) translateY(0); }
+        .modal-icon-custom {
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            margin: 0 auto 14px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .modal-icon-custom svg { width: 26px; height: 26px; }
+        .modal-icon-custom.info { background: #eef2ff; color: #4f46e5; }
+        .modal-icon-custom.warning { background: #fef3c7; color: #d97706; }
+        .modal-icon-custom.danger { background: #fee2e2; color: #dc2626; }
+        .modal-title-custom { font-size: 1.05rem; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
+        .modal-msg-custom { font-size: 0.85rem; color: #64748b; line-height: 1.5; margin-bottom: 20px; }
+        .modal-actions-custom { display: flex; gap: 10px; }
+        .modal-btn-custom {
+            flex: 1;
+            border: none;
+            padding: 11px 14px;
+            border-radius: 14px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .modal-btn-custom.primary { background: #4f46e5; color: white; }
+        .modal-btn-custom.primary:hover { background: #4338ca; }
+        .modal-btn-custom.danger { background: #dc2626; color: white; }
+        .modal-btn-custom.danger:hover { background: #b91c1c; }
+        .modal-btn-custom.secondary { background: #f1f5f9; color: #475569; }
+        .modal-btn-custom.secondary:hover { background: #e2e8f0; }
+
         /* ========== TIMER SOAL & COOLDOWN ========== */
         .q-header-row {
             display: flex;
@@ -781,6 +858,10 @@
             .attack-banner .atk-sub { font-size: 0.68rem; }
             .game-timer { font-size: 0.62rem; padding: 2px 8px; }
             .cooldown-banner { font-size: 0.72rem; padding: 8px 10px; }
+            .hit-banner { padding: 10px 16px; }
+            .hit-banner .hit-title { font-size: 0.9rem; }
+            .hit-banner .hit-sub { font-size: 0.66rem; }
+            .modal-card-custom { padding: 22px 18px 18px; }
         }
     </style>
 </head>
@@ -822,7 +903,15 @@
         <div class="card">
             <div class="battle-top">
                 <div class="monster-showcase" id="monsterShowcase">
-                    <div class="evo-crown" id="evoCrown">👑</div>
+                    <div class="evo-crown" id="evoCrown">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M3 8l3.5 3L12 5l5.5 6L21 8l-2 10H5L3 8z" fill="#fbbf24" stroke="#b45309" stroke-width="1" stroke-linejoin="round"/>
+                            <circle cx="3" cy="7" r="1.4" fill="#fbbf24" stroke="#b45309" stroke-width="0.8"/>
+                            <circle cx="21" cy="7" r="1.4" fill="#fbbf24" stroke="#b45309" stroke-width="0.8"/>
+                            <circle cx="12" cy="4" r="1.4" fill="#fbbf24" stroke="#b45309" stroke-width="0.8"/>
+                            <rect x="5" y="17" width="14" height="2.5" rx="1" fill="#f59e0b" stroke="#b45309" stroke-width="0.6"/>
+                        </svg>
+                    </div>
                     <div class="lvl-badge" id="monsterLvlBadge">Lv 1</div>
                     <div class="monster-grow-wrap" id="monsterGrowWrap">
                         <div class="monster-char alive" id="monsterSvgContainer"></div>
@@ -830,13 +919,9 @@
                 </div>
                 <div class="battle-info">
                     <div class="monster-name">
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="currentColor"/>
-                        </svg>
                         <span id="monsterNameText">Monster</span>
                     </div>
                     <div class="tier-badge t1" id="tierBadge">Wujud Awal</div>
-                    <div class="monster-status-text" id="monsterStatusText">Siap bertarung!</div>
                     
                     <!-- XP -->
                     <div class="xp-wrap">
@@ -967,6 +1052,22 @@
 <div class="attack-banner" id="attackBanner">
     <div class="atk-title">⚔️ SERANGAN KOMBO 5x!</div>
     <div class="atk-sub" id="attackBannerText">Menyerang lawan!</div>
+</div>
+
+<!-- ===== DISERANG BANNER ===== -->
+<div class="hit-banner" id="hitBanner">
+    <div class="hit-title">🛡️ DISERANG!</div>
+    <div class="hit-sub" id="hitBannerText">Monster -10 HP</div>
+</div>
+
+<!-- ===== CUSTOM MODAL (alert & confirm) ===== -->
+<div class="modal-overlay-custom" id="customModalOverlay">
+    <div class="modal-card-custom">
+        <div class="modal-icon-custom" id="customModalIcon"></div>
+        <div class="modal-title-custom" id="customModalTitle">Judul</div>
+        <div class="modal-msg-custom" id="customModalMsg">Pesan.</div>
+        <div class="modal-actions-custom" id="customModalActions"></div>
+    </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -1199,6 +1300,77 @@
     }
 
     // ==========================================
+    // CUSTOM ALERT & CONFIRM (pengganti alert()/confirm() bawaan browser)
+    // ==========================================
+    const customModalOverlay = document.getElementById('customModalOverlay');
+    const customModalIcon = document.getElementById('customModalIcon');
+    const customModalTitle = document.getElementById('customModalTitle');
+    const customModalMsg = document.getElementById('customModalMsg');
+    const customModalActions = document.getElementById('customModalActions');
+
+    const MODAL_ICONS = {
+        info: `<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 16v-4M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
+        warning: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+        danger: `<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`
+    };
+
+    function showCustomAlert(message, opts = {}) {
+        return new Promise(resolve => {
+            if (!customModalOverlay) { resolve(); return; }
+            const type = opts.type || 'info';
+            customModalIcon.className = `modal-icon-custom ${type}`;
+            customModalIcon.innerHTML = MODAL_ICONS[type] || MODAL_ICONS.info;
+            customModalTitle.innerText = opts.title || 'Pemberitahuan';
+            customModalMsg.innerText = message;
+            customModalActions.innerHTML = '';
+
+            const okBtn = document.createElement('button');
+            okBtn.type = 'button';
+            okBtn.className = 'modal-btn-custom primary';
+            okBtn.innerText = opts.okText || 'OK';
+            okBtn.onclick = () => {
+                customModalOverlay.classList.remove('show');
+                resolve();
+            };
+            customModalActions.appendChild(okBtn);
+            customModalOverlay.classList.add('show');
+        });
+    }
+
+    function showCustomConfirm(message, opts = {}) {
+        return new Promise(resolve => {
+            if (!customModalOverlay) { resolve(true); return; }
+            customModalIcon.className = 'modal-icon-custom warning';
+            customModalIcon.innerHTML = MODAL_ICONS.warning;
+            customModalTitle.innerText = opts.title || 'Konfirmasi';
+            customModalMsg.innerText = message;
+            customModalActions.innerHTML = '';
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.type = 'button';
+            cancelBtn.className = 'modal-btn-custom secondary';
+            cancelBtn.innerText = opts.cancelText || 'Batal';
+            cancelBtn.onclick = () => {
+                customModalOverlay.classList.remove('show');
+                resolve(false);
+            };
+
+            const okBtn = document.createElement('button');
+            okBtn.type = 'button';
+            okBtn.className = `modal-btn-custom ${opts.danger === false ? 'primary' : 'danger'}`;
+            okBtn.innerText = opts.okText || 'Ya';
+            okBtn.onclick = () => {
+                customModalOverlay.classList.remove('show');
+                resolve(true);
+            };
+
+            customModalActions.appendChild(cancelBtn);
+            customModalActions.appendChild(okBtn);
+            customModalOverlay.classList.add('show');
+        });
+    }
+
+    // ==========================================
     // SOUND FX (Web Audio API, tanpa file eksternal)
     // ==========================================
     let audioCtx = null;
@@ -1268,7 +1440,6 @@
     const monsterSvgContainer = document.getElementById('monsterSvgContainer');
     const monsterLvlBadge = document.getElementById('monsterLvlBadge');
     const monsterNameText = document.getElementById('monsterNameText');
-    const monsterStatusText = document.getElementById('monsterStatusText');
     const hpText = document.getElementById('hpText');
     const hpBarFill = document.getElementById('hpBarFill');
     const xpText = document.getElementById('xpText');
@@ -1292,6 +1463,8 @@
     const comboBlastText = document.getElementById('comboBlastText');
     const attackBanner = document.getElementById('attackBanner');
     const attackBannerText = document.getElementById('attackBannerText');
+    const hitBanner = document.getElementById('hitBanner');
+    const hitBannerText = document.getElementById('hitBannerText');
     const cooldownBanner = document.getElementById('cooldownBanner');
     const cooldownNum = document.getElementById('cooldownNum');
     const gameTimerText = document.getElementById('gameTimerText');
@@ -1302,8 +1475,9 @@
     // CEK SESSION
     // ==========================================
     if (!activePin || !myPlayerKey) {
-        alert('Sesi hilang! Kembali ke halaman masuk.');
-        window.location.href = 'play.html';
+        showCustomAlert('Sesi hilang! Kembali ke halaman masuk.', { title: 'Sesi Berakhir' }).then(() => {
+            window.location.href = 'play.html';
+        });
     }
 
     // ==========================================
@@ -1311,8 +1485,9 @@
     // ==========================================
     db.ref(`rooms/${activePin}`).once('value').then((snap) => {
         if (!snap.exists()) {
-            alert('Ruang pertandingan tidak tersedia.');
-            window.location.href = 'index.html';
+            showCustomAlert('Ruang pertandingan tidak tersedia.', { title: 'Tidak Ditemukan', type: 'warning' }).then(() => {
+                window.location.href = 'index.html';
+            });
             return;
         }
         const room = snap.val();
@@ -1359,8 +1534,9 @@
                 setupPlayerDataListener();
             });
         } else {
-            alert('Guru belum memulai pertandingan!');
-            window.location.href = 'play.html';
+            showCustomAlert('Guru belum memulai pertandingan!', { title: 'Belum Dimulai', type: 'warning' }).then(() => {
+                window.location.href = 'play.html';
+            });
         }
     });
 
@@ -1373,7 +1549,7 @@
             const quizId = roomSnap.val().quizId;
             db.ref(`quiz_hub/${quizId}`).once('value').then((qSnap) => {
                 if (!qSnap.exists() || !qSnap.val().questions) {
-                    alert('Soal tidak ditemukan!');
+                    showCustomAlert('Soal tidak ditemukan!', { title: 'Gagal Memuat', type: 'warning' });
                     return;
                 }
                 const quiz = qSnap.val();
@@ -1683,7 +1859,7 @@
                     const attackerName = (d.lastHit && d.lastHit.by) ? d.lastHit.by : 'Lawan';
                     hp = d.monsterHp;
                     lastKnownHp = hp;
-                    addLog(`Diserang ${escapeHtml(attackerName)}! Monster -${dmg} HP`, 'danger');
+                    showHitBanner(attackerName, dmg);
                     SFX.hit();
                     animateMonster('hurt');
                     updateUI();
@@ -1698,6 +1874,18 @@
                 }
             }
         });
+    }
+
+    // ==========================================
+    // BANNER DISERANG (sisi yang kena serang)
+    // ==========================================
+    let hitBannerTimer = null;
+    function showHitBanner(attackerName, dmg) {
+        if (!hitBanner) return;
+        hitBannerText.innerText = `${escapeHtml(attackerName)} menyerang! Monster -${dmg} HP`;
+        hitBanner.classList.add('show');
+        clearTimeout(hitBannerTimer);
+        hitBannerTimer = setTimeout(() => hitBanner.classList.remove('show'), 1800);
     }
 
     // ==========================================
@@ -1834,20 +2022,6 @@
             tierBadge.className = `tier-badge ${tier.cls}`;
         }
         if (evoCrown) evoCrown.classList.toggle('show', getTierIndex(level) === TIER_CONFIG.length - 1);
-        
-        // Status text
-        if (monsterStatusText) {
-            if (isDead) {
-                monsterStatusText.innerText = 'Monster tumbang!';
-                monsterStatusText.classList.add('danger');
-            } else if (hp < maxHp * 0.3) {
-                monsterStatusText.innerText = 'HP kritis!';
-                monsterStatusText.classList.add('danger');
-            } else {
-                monsterStatusText.innerText = 'Siap bertarung!';
-                monsterStatusText.classList.remove('danger');
-            }
-        }
     }
 
     // ==========================================
@@ -1957,11 +2131,17 @@
     // BACK BUTTON
     // ==========================================
     function goHome() {
-        if (confirm('Yakin ingin keluar dari arena?')) {
-            localStorage.removeItem('star_battle_pin');
-            localStorage.removeItem('star_battle_key');
-            window.location.href = 'index.html';
-        }
+        showCustomConfirm('Yakin ingin keluar dari arena?', {
+            title: 'Keluar Arena',
+            okText: 'Ya, Keluar',
+            cancelText: 'Batal'
+        }).then(confirmed => {
+            if (confirmed) {
+                localStorage.removeItem('star_battle_pin');
+                localStorage.removeItem('star_battle_key');
+                window.location.href = 'index.html';
+            }
+        });
     }
     document.getElementById('btnBackHome').addEventListener('click', goHome);
     document.getElementById('btnBackHome2').addEventListener('click', goHome);
