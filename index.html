@@ -448,37 +448,39 @@ p.subtitle{font-size:13.5px;line-height:1.6;color:#737b8c;}
   border:1px solid #e4e8ef;border-radius:22px!important;padding:22px!important;
   box-shadow:0 25px 70px rgba(15,23,42,.22)!important;
 }
-#manual-overlay .modal-box{max-height:calc(100vh - 32px);overflow-y:auto;-webkit-overflow-scrolling:touch;max-width:420px;}
-#history-overlay .modal-box{max-height:calc(100vh - 32px);overflow-y:auto;-webkit-overflow-scrolling:touch;}
-@media(max-width:430px){#manual-overlay .modal-box,#history-overlay .modal-box{max-height:calc(100vh - 24px);padding:18px!important;}}
+#manual-overlay .modal-box{
+  display:flex;flex-direction:column;
+  max-height:82vh;max-height:82dvh;
+  overflow:hidden;
+}
+.modal-scroll-body{
+  overflow-y:auto;
+  flex:1 1 auto;
+  min-height:0;
+  -webkit-overflow-scrolling:touch;
+}
+.modal-fixed-header{flex:0 0 auto;}
+#manual-overlay .modal-box>button{flex:0 0 auto;margin-top:16px;}
+@media(max-width:430px){#manual-overlay .modal-box{max-height:88vh;max-height:88dvh;padding:18px!important;}}
 .modal-box h3{font-size:17px!important;letter-spacing:-.2px;}
 .password-toggle:hover{background:#eef4ff;color:var(--primary);}
 .loading-overlay{background:rgba(255,255,255,.72);backdrop-filter:blur(5px);}
 .spinner{border-color:#dbe4f3;border-top-color:var(--primary);}
 
-.login-history-item{padding:12px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:12px;font-size:13px;}
-.login-history-item:last-child{border-bottom:0;}
-.login-history-main{min-width:0;}
-.login-history-email{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.login-history-time{color:var(--muted);font-size:12px;margin-top:3px;}
+.session-item{display:flex;align-items:center;gap:12px;padding:10px 6px;border-radius:13px;cursor:pointer;transition:.15s ease;}
+.session-item:hover{background:#f8fafc;}
+.session-item:active{background:#f1f5f9;}
+.session-avatar{width:38px;height:38px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex:0 0 auto;}
+.session-info{flex:1;min-width:0;}
+.session-name{font-weight:700;font-size:13.5px;color:var(--text);}
+.session-email{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.session-remove{flex:0 0 auto;width:32px;height:32px;border:none;background:transparent;color:#c3cad6;border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.session-remove:hover{background:#fef2f2;color:var(--danger);}
+.session-remove svg{width:16px;height:16px;}
+.saved-sessions-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#9aa3b2;margin:20px 0 6px;padding:0 6px;}
 .empty-history{padding:20px 8px;text-align:center;color:var(--muted);font-size:13px;}
-
-/* ===== FORGOT LINK ===== */
-.forgot-row{text-align:right;margin-top:8px;}
-.forgot-link{background:none;border:none;color:var(--primary);font-size:12px;font-weight:700;cursor:pointer;padding:4px 0;}
-.forgot-link:hover{text-decoration:underline;}
-
-/* ===== SESSION LIST ===== */
-.session-list{margin-top:18px;border-top:1px solid var(--border);padding-top:16px;}
-.session-list-title{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.7px;}
-.session-item{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;background:#f8fafc;border:1px solid #e5e8ef;border-radius:12px;margin-bottom:8px;cursor:pointer;transition:.18s ease;gap:10px;}
-.session-item:hover{border-color:#93c5fd;background:#eff6ff;}
-.session-item:last-child{margin-bottom:0;}
-.session-info{min-width:0;flex:1;}
-.session-email{font-weight:700;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);}
-.session-name{font-size:11px;color:var(--muted);margin-top:2px;}
-.session-login-btn{background:var(--primary);color:#fff;border:none;border-radius:9px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
-.session-login-btn:hover{background:var(--primary-dark);}
+.forgot-link{background:none;border:none;color:var(--primary);font-size:12.5px;font-weight:700;cursor:pointer;display:block;margin:-8px 0 16px auto;padding:2px;}
+.schedule-badge{font-size:12px;color:var(--muted);margin-top:8px;}
 
 @media(max-width:430px){
   body{padding-left:10px;padding-right:10px;}
@@ -486,6 +488,7 @@ p.subtitle{font-size:13.5px;line-height:1.6;color:#737b8c;}
   .user-info{align-items:flex-start;flex-direction:column;gap:9px;}
   .stat-box{width:100%;justify-content:flex-start;}
 }
+
 </style>
 </head>
 <body>
@@ -533,10 +536,8 @@ p.subtitle{font-size:13.5px;line-height:1.6;color:#737b8c;}
           </button>
         </div>
       </div>
+      <button type="button" class="forgot-link" id="btn-forgot-password">Lupa Kata Sandi?</button>
       <button type="submit" class="btn">Masuk</button>
-      <div class="forgot-row">
-        <button type="button" class="forgot-link" id="btn-forgot-password">Lupa Kata Sandi?</button>
-      </div>
     </form>
 
     <form id="form-register" style="display:none;">
@@ -560,10 +561,9 @@ p.subtitle{font-size:13.5px;line-height:1.6;color:#737b8c;}
       <button type="submit" class="btn">Daftar</button>
     </form>
 
-    <!-- Sesi Login Tersimpan (langsung tampil kalau ada) -->
-    <div class="session-list" id="session-list-container" style="display:none;">
-      <div class="session-list-title">Sesi Login Tersimpan</div>
-      <div id="session-list"></div>
+    <div id="saved-sessions-wrap" style="display:none;">
+      <div class="saved-sessions-label">Sesi Tersimpan</div>
+      <div id="saved-sessions-list"></div>
     </div>
   </div>
 </div>
@@ -642,19 +642,20 @@ p.subtitle{font-size:13.5px;line-height:1.6;color:#737b8c;}
 </div>
 
 <div class="modal-overlay" id="manual-overlay">
-  <div class="modal-box" style="max-width:400px;text-align:left;">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+  <div class="modal-box" style="max-width:380px;text-align:left;">
+    <div class="modal-fixed-header" style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:26px;height:26px;color:var(--primary);margin:0;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
       <h3 style="margin:0;">Panduan Penggunaan</h3>
     </div>
-    <div style="font-size:13.5px;color:var(--text);line-height:1.65;margin-bottom:18px;">
+    <div class="modal-scroll-body" style="font-size:14px;color:var(--text);line-height:1.6;">
       <p style="margin-bottom:10px;"><strong>1. Daftar akun.</strong> Isi nama lengkap, email, dan kata sandi. Setelah berhasil masuk, sesi akun akan dipertahankan oleh aplikasi selama kamu tidak memilih Keluar.</p>
       <p style="margin-bottom:10px;"><strong>2. Catat kehadiran.</strong> Ketuk tanggal yang ingin dicatat, lalu atur jam masuk atau jam pulang. Data langsung tersimpan ke akunmu.</p>
       <p style="margin-bottom:10px;"><strong>3. Jadwal otomatis.</strong> Atur batas waktu dan nominal standar di menu Jadwal. Jika jam masuk berada sebelum atau tepat pada batas waktu, nominal standar akan otomatis masuk.</p>
       <p style="margin-bottom:10px;"><strong>4. Terlambat.</strong> Jika jam masuk melewati batas waktu, nominal otomatis dikosongkan (0) sehingga kamu perlu mengetuk kolom nominal dan mengisinya secara manual.</p>
       <p style="margin-bottom:10px;"><strong>5. Ubah data.</strong> Jam dan nominal yang sudah tercatat tetap bisa diubah secara manual dengan mengetuk sel pada tabel.</p>
       <p style="margin-bottom:10px;"><strong>6. Rekap dan export.</strong> Pilih bulan untuk melihat seluruh tanggal. Export Excel/PDF menghasilkan format nama, tanggal 1–31, dan kolom rekapan hadir serta uang.</p>
-      <p style="margin-bottom:0;"><strong>7. Sesi login tersimpan.</strong> Akun yang pernah login di perangkat ini akan muncul otomatis di halaman masuk. Tinggal klik "Masuk" untuk pakai akun tersebut tanpa ketik email &amp; kata sandi lagi.</p>
+      <p style="margin-bottom:10px;"><strong>7. Sesi tersimpan.</strong> Setiap akun yang pernah masuk di perangkat ini muncul di bagian Sesi Tersimpan pada halaman Masuk. Ketuk salah satunya untuk langsung masuk tanpa mengetik ulang kata sandi. Ketuk ikon silang untuk menghapusnya dari daftar.</p>
+      <p style="margin-bottom:0;"><strong>8. Lupa kata sandi.</strong> Ketuk Lupa Kata Sandi di halaman Masuk, kami akan mengirim link reset ke email kamu.</p>
     </div>
     <button id="manual-close">Mengerti</button>
   </div>
@@ -670,30 +671,41 @@ p.subtitle{font-size:13.5px;line-height:1.6;color:#737b8c;}
   </div>
 </div>
 
+<div class="modal-overlay" id="relink-overlay">
+  <div class="modal-box" style="text-align:left;">
+    <h3 style="margin-bottom:8px;text-align:center;">Masuk Lagi</h3>
+    <p class="amount-help" style="margin-bottom:16px;text-align:center;">Sesi tersimpan untuk akun ini sudah tidak aktif. Masukkan kata sandi untuk melanjutkan.</p>
+    <div class="field"><label>Email</label><input type="email" id="relink-email" disabled></div>
+    <div class="field" style="margin-bottom:20px;">
+      <label>Kata Sandi</label>
+      <div class="password-wrap">
+        <input type="password" id="relink-password" autocomplete="current-password">
+        <button type="button" class="password-toggle" data-target="relink-password" aria-label="Tampilkan kata sandi" title="Tampilkan kata sandi">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="btn-row"><button class="btn secondary" id="relink-cancel" type="button">Batal</button><button class="btn" id="relink-submit" type="button">Masuk</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="forgot-overlay">
+  <div class="modal-box" style="text-align:left;">
+    <h3 style="margin-bottom:8px;text-align:center;">Lupa Kata Sandi</h3>
+    <p class="amount-help" style="margin-bottom:16px;text-align:center;">Kami akan mengirim link reset kata sandi ke email kamu.</p>
+    <div class="field" style="margin-bottom:20px;"><label>Email</label><input type="email" id="forgot-email" autocomplete="email"></div>
+    <div class="btn-row"><button class="btn secondary" id="forgot-cancel" type="button">Batal</button><button class="btn" id="forgot-submit" type="button">Kirim</button></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="logout-overlay">
   <div class="modal-box" style="max-width:370px;">
     <div style="width:48px;height:48px;border-radius:50%;background:#fef2f2;color:#dc2626;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
     </div>
-    <h3>Yakin ingin keluar?</h3>
-    <p>Sesi akun akan ditutup. Kamu bisa masuk kembali lewat daftar "Sesi Login Tersimpan" tanpa perlu ketik email &amp; kata sandi.</p>
+    <h3>Keluar dari akun ini?</h3>
+    <p>Kamu akan kembali ke halaman Masuk. Akun ini tetap muncul di Sesi Tersimpan dan bisa dibuka lagi kapan saja tanpa mengetik ulang kata sandi.</p>
     <div class="btn-row" style="margin-top:16px;"><button class="btn secondary" id="logout-cancel" type="button">Batal</button><button class="btn" id="logout-confirm" type="button">Keluar</button></div>
-  </div>
-</div>
-
-<!-- Modal Lupa Password -->
-<div class="modal-overlay" id="forgot-overlay">
-  <div class="modal-box" style="text-align:left;">
-    <h3 style="margin-bottom:8px;text-align:center;">Lupa Kata Sandi</h3>
-    <p class="amount-help" style="margin-bottom:16px;text-align:center;">Masukkan email terdaftar. Kami akan mengirimkan link reset kata sandi ke email tersebut.</p>
-    <div class="field">
-      <label>Email</label>
-      <input type="email" id="forgot-email" placeholder="nama@email.com" autocomplete="email">
-    </div>
-    <div class="btn-row">
-      <button class="btn secondary" id="forgot-cancel" type="button">Batal</button>
-      <button class="btn" id="forgot-send" type="button">Kirim</button>
-    </div>
   </div>
 </div>
 
@@ -757,11 +769,10 @@ function mapAuthError(err){
     "auth/wrong-password": "Kata sandi salah.",
     "auth/invalid-credential": "Email atau kata sandi salah.",
     "auth/too-many-requests": "Terlalu banyak percobaan, coba lagi nanti.",
-    "auth/operation-not-allowed": "Metode Email/Password belum diaktifkan di Firebase Console.",
+    "auth/operation-not-allowed": "Metode Email/Password belum diaktifkan. Buka Firebase Console > Authentication > Sign-in method, lalu aktifkan Email/Password.",
     "auth/network-request-failed": "Koneksi internet bermasalah, coba lagi.",
-    "auth/missing-email": "Email belum diisi.",
     "PERMISSION_DENIED": "Akses database ditolak. Pastikan Rules Realtime Database sudah dipasang dan dipublish di Firebase Console.",
-    "timeout": "Permintaan terlalu lama. Cek koneksi internet dan pastikan Rules sudah dipublish."
+    "timeout": "Permintaan terlalu lama. Cek koneksi internet, cocokkan databaseURL di kode dengan yang ada di Firebase Console, dan pastikan Rules sudah dipublish."
   };
   if(map[code]) return map[code];
   return (code || "error") + ": " + ((err && err.message) || "Terjadi kesalahan, silakan coba lagi.");
@@ -796,7 +807,6 @@ document.querySelectorAll(".tab").forEach(function(tab){
     const isLogin = tab.dataset.tab === "login";
     document.getElementById("form-login").style.display = isLogin ? "block" : "none";
     document.getElementById("form-register").style.display = isLogin ? "none" : "block";
-    document.getElementById("session-list-container").style.display = isLogin ? "block" : "none";
   });
 });
 
@@ -811,18 +821,19 @@ const firebaseConfig = {
   measurementId: "G-60Y9GZFY7W"
 };
 
+let utilityAuth = null;
 let auth = null;
 let db = null;
 
 try{
-  firebase.initializeApp(firebaseConfig);
-  auth = firebase.auth();
-  db = firebase.database();
+  const defaultApp = firebase.initializeApp(firebaseConfig);
+  utilityAuth = defaultApp.auth();
+  defaultApp.database();
 } catch(e){
   showModal("err", "Firebase Belum Disetel", "Isi dulu databaseURL di dalam kode dengan URL Realtime Database project kamu.");
 }
 
-if(!auth || !db){
+if(!utilityAuth){
   document.getElementById("form-login").addEventListener("submit", function(e){
     e.preventDefault();
     showModal("err", "Firebase Belum Disetel", "Isi dulu databaseURL di dalam kode dengan URL Realtime Database project kamu.");
@@ -833,7 +844,7 @@ if(!auth || !db){
   });
 }
 
-if(auth && db){
+if(utilityAuth){
 
 const lastEmail=localStorage.getItem("rekap_last_email");
 if(lastEmail) document.getElementById("login-email").value=lastEmail;
@@ -842,8 +853,11 @@ let currentUserData = null;
 let attendanceCache = {};
 let editingDateKey = null;
 let editingField = "inTime";
+let currentAppKey = null;
+const appCache = {};
 const SCHEDULE_KEY="rekap_digital_schedule";
-const SESSION_KEY="rekap_digital_saved_sessions";
+const SAVED_ACCOUNTS_KEY="rekap_saved_accounts";
+const LAST_ACTIVE_KEY="rekap_last_active_email";
 
 function getSchedule(){
   try{return JSON.parse(localStorage.getItem(SCHEDULE_KEY)||'{"cutoff":"07:00","amount":0}');}catch(e){return {cutoff:"07:00",amount:0};}
@@ -866,56 +880,6 @@ function openScheduleModal(){
   document.getElementById("schedule-overlay").classList.add("active");
 }
 
-/* ============ SESSION MANAGEMENT ============ */
-function getSavedSessions(){
-  try{return JSON.parse(localStorage.getItem(SESSION_KEY)||'[]');}catch(e){return [];}
-}
-function saveSession(email, nama){
-  if(!email) return;
-  let sessions = getSavedSessions();
-  sessions = sessions.filter(function(s){return s.email !== email;});
-  sessions.unshift({email:email, nama:nama||email.split("@")[0], lastUsed:Date.now()});
-  sessions = sessions.slice(0,5);
-  localStorage.setItem(SESSION_KEY, JSON.stringify(sessions));
-  renderSessions();
-}
-function renderSessions(){
-  const container = document.getElementById("session-list-container");
-  const listEl = document.getElementById("session-list");
-  const sessions = getSavedSessions();
-  if(sessions.length === 0){
-    container.style.display = "none";
-    return;
-  }
-  container.style.display = "block";
-  listEl.innerHTML = sessions.map(function(s){
-    return '<div class="session-item" data-email="'+escapeHtml(s.email)+'">'+
-      '<div class="session-info">'+
-        '<div class="session-email">'+escapeHtml(s.email)+'</div>'+
-        '<div class="session-name">'+escapeHtml(s.nama||"")+'</div>'+
-      '</div>'+
-      '<button class="session-login-btn" data-email="'+escapeHtml(s.email)+'">Masuk</button>'+
-    '</div>';
-  }).join("");
-  listEl.querySelectorAll(".session-login-btn").forEach(function(btn){
-    btn.addEventListener("click", function(e){
-      e.stopPropagation();
-      const email = this.dataset.email;
-      document.getElementById("login-email").value = email;
-      document.getElementById("login-password").value = "";
-      document.getElementById("login-password").focus();
-    });
-  });
-  listEl.querySelectorAll(".session-item").forEach(function(item){
-    item.addEventListener("click", function(){
-      const email = this.dataset.email;
-      document.getElementById("login-email").value = email;
-      document.getElementById("login-password").value = "";
-      document.getElementById("login-password").focus();
-    });
-  });
-}
-
 function pad2(n){ return String(n).padStart(2, "0"); }
 
 function todayKey(){
@@ -928,18 +892,175 @@ function nowHHMM(){
   return pad2(d.getHours()) + ":" + pad2(d.getMinutes());
 }
 
+function getSavedAccounts(){
+  try{ return JSON.parse(localStorage.getItem(SAVED_ACCOUNTS_KEY) || "[]"); }catch(e){ return []; }
+}
+function setSavedAccounts(list){ localStorage.setItem(SAVED_ACCOUNTS_KEY, JSON.stringify(list)); }
+function upsertSavedAccount(email, nama){
+  const list = getSavedAccounts();
+  const idx = list.findIndex(function(a){ return a.email === email; });
+  const item = { email: email, nama: nama || email };
+  if(idx>=0) list[idx] = item; else list.unshift(item);
+  setSavedAccounts(list.slice(0,8));
+  renderSavedSessions();
+}
+function removeSavedAccount(email){
+  setSavedAccounts(getSavedAccounts().filter(function(a){return a.email!==email;}));
+  renderSavedSessions();
+}
+function initialOf(text){
+  const t=String(text||"").trim();
+  return t?t.charAt(0).toUpperCase():"?";
+}
+function renderSavedSessions(){
+  const wrap = document.getElementById("saved-sessions-wrap");
+  const list = document.getElementById("saved-sessions-list");
+  const accounts = getSavedAccounts();
+  if(!accounts.length){ wrap.style.display="none"; list.innerHTML=""; return; }
+  wrap.style.display="block";
+  list.innerHTML = accounts.map(function(a){
+    return '<div class="session-item" data-email="'+escapeHtml(a.email)+'">'
+      + '<div class="session-avatar">'+escapeHtml(initialOf(a.nama))+'</div>'
+      + '<div class="session-info"><div class="session-name">'+escapeHtml(a.nama)+'</div><div class="session-email">'+escapeHtml(a.email)+'</div></div>'
+      + '<button type="button" class="session-remove" data-email="'+escapeHtml(a.email)+'" aria-label="Hapus sesi" title="Hapus sesi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg></button>'
+      + '</div>';
+  }).join("");
+}
+document.getElementById("saved-sessions-list").addEventListener("click", function(e){
+  const removeBtn = e.target.closest(".session-remove");
+  if(removeBtn){
+    const email = removeBtn.dataset.email;
+    const inst = appCache[sanitizeKey(email)];
+    if(inst && inst.authInst.currentUser){ inst.authInst.signOut(); }
+    removeSavedAccount(email);
+    if(currentAppKey === sanitizeKey(email)){
+      auth = null; db = null; currentAppKey = null;
+      localStorage.removeItem(LAST_ACTIVE_KEY);
+    }
+    return;
+  }
+  const item = e.target.closest(".session-item");
+  if(item){ tryQuickLogin(item.dataset.email, false); }
+});
+
+function sanitizeKey(email){ return "acc_" + String(email).trim().toLowerCase().replace(/[^a-z0-9]/g,"_").slice(0,60); }
+
+function getAppFor(email){
+  const key = sanitizeKey(email);
+  if(appCache[key]) return appCache[key];
+  const existing = firebase.apps.find(function(a){ return a.name === key; });
+  const app = existing || firebase.initializeApp(firebaseConfig, key);
+  const inst = { key: key, email: email, authInst: app.auth(), dbInst: app.database() };
+  appCache[key] = inst;
+  return inst;
+}
+
+function activateAndShow(inst, user){
+  auth = inst.authInst;
+  db = inst.dbInst;
+  currentAppKey = inst.key;
+  localStorage.setItem(LAST_ACTIVE_KEY, inst.email);
+  localStorage.setItem("rekap_last_email", inst.email);
+  document.getElementById("btn-logout").style.display = "flex";
+  document.getElementById("btn-schedule").style.display = "flex";
+  setLoading(true);
+  withTimeout(db.ref("users/" + user.uid).once("value"), 15000).then(function(snap){
+    currentUserData = snap.val();
+    if(!currentUserData){
+      setLoading(false);
+      showModal("err", "Akun Tidak Lengkap", "Profil akun ini belum tersimpan di database.");
+      return;
+    }
+    upsertSavedAccount(inst.email, currentUserData.nama);
+    document.getElementById("dash-nama").textContent = currentUserData.nama;
+    const now = new Date();
+    const monthInput = document.getElementById("input-bulan");
+    if(!monthInput.value){
+      monthInput.value = now.getFullYear() + "-" + pad2(now.getMonth() + 1);
+    }
+    showView("view-dashboard");
+    loadAttendance();
+  }).catch(function(err){
+    setLoading(false);
+    showModal("err", "Gagal Memuat Akun", mapAuthError(err));
+  });
+}
+
+function tryQuickLogin(email, silentFail){
+  setLoading(true);
+  const inst = getAppFor(email);
+  if(inst.authInst.currentUser){
+    activateAndShow(inst, inst.authInst.currentUser);
+    return;
+  }
+  const unsub = inst.authInst.onAuthStateChanged(function(user){
+    unsub();
+    if(user){
+      activateAndShow(inst, user);
+    } else {
+      setLoading(false);
+      if(!silentFail) openRelinkModal(email);
+    }
+  });
+}
+
+function openRelinkModal(email){
+  document.getElementById("relink-email").value = email;
+  document.getElementById("relink-password").value = "";
+  document.getElementById("relink-overlay").classList.add("active");
+}
+document.getElementById("relink-cancel").addEventListener("click", function(){
+  document.getElementById("relink-overlay").classList.remove("active");
+});
+document.getElementById("relink-submit").addEventListener("click", function(){
+  const email = document.getElementById("relink-email").value;
+  const password = document.getElementById("relink-password").value;
+  if(!password){ showModal("err","Kata Sandi Kosong","Masukkan kata sandi terlebih dahulu."); return; }
+  const inst = getAppFor(email);
+  setLoading(true);
+  withTimeout(inst.authInst.signInWithEmailAndPassword(email, password), 15000)
+    .then(function(cred){
+      document.getElementById("relink-overlay").classList.remove("active");
+      activateAndShow(inst, cred.user);
+    })
+    .catch(function(err){
+      setLoading(false);
+      showModal("err", "Gagal Masuk", mapAuthError(err));
+    });
+});
+
+document.getElementById("btn-forgot-password").addEventListener("click", function(){
+  document.getElementById("forgot-email").value = document.getElementById("login-email").value.trim();
+  document.getElementById("forgot-overlay").classList.add("active");
+});
+document.getElementById("forgot-cancel").addEventListener("click", function(){
+  document.getElementById("forgot-overlay").classList.remove("active");
+});
+document.getElementById("forgot-submit").addEventListener("click", function(){
+  const email = document.getElementById("forgot-email").value.trim();
+  if(!email){ showModal("err","Email Kosong","Masukkan email akun kamu terlebih dahulu."); return; }
+  setLoading(true);
+  withTimeout(utilityAuth.sendPasswordResetEmail(email), 15000)
+    .then(function(){
+      document.getElementById("forgot-overlay").classList.remove("active");
+      setLoading(false);
+      showModal("ok", "Email Terkirim", "Kami sudah mengirim link reset kata sandi ke " + email + ". Buka email tersebut lalu ikuti langkahnya untuk membuat kata sandi baru.");
+    })
+    .catch(function(err){
+      setLoading(false);
+      showModal("err", "Gagal Mengirim", mapAuthError(err));
+    });
+});
+
 document.getElementById("form-login").addEventListener("submit", function(e){
   e.preventDefault();
   const email = document.getElementById("login-email").value.trim();
   const password = document.getElementById("login-password").value;
   localStorage.setItem("rekap_last_email", email);
   setLoading(true);
-  withTimeout(auth.signInWithEmailAndPassword(email, password), 15000)
-    .then(function(cred){
-      if(cred && cred.user){
-        saveSession(cred.user.email, null);
-      }
-    })
+  const inst = getAppFor(email);
+  withTimeout(inst.authInst.signInWithEmailAndPassword(email, password), 15000)
+    .then(function(cred){ activateAndShow(inst, cred.user); })
     .catch(function(err){
       setLoading(false);
       showModal("err", "Gagal Masuk", mapAuthError(err));
@@ -953,15 +1074,15 @@ document.getElementById("form-register").addEventListener("submit", function(e){
   const password = document.getElementById("reg-password").value;
   localStorage.setItem("rekap_last_email", email);
   setLoading(true);
-  withTimeout(auth.createUserWithEmailAndPassword(email, password), 15000)
+  const inst = getAppFor(email);
+  withTimeout(inst.authInst.createUserWithEmailAndPassword(email, password), 15000)
     .then(function(cred){
-      return withTimeout(db.ref("users/" + cred.user.uid).set({
+      return withTimeout(inst.dbInst.ref("users/" + cred.user.uid).set({
         nama: nama,
         createdAt: Date.now()
-      }), 15000).then(function(){
-        saveSession(email, nama);
-      });
+      }), 15000).then(function(){ return cred; });
     })
+    .then(function(cred){ activateAndShow(inst, cred.user); })
     .catch(function(err){
       setLoading(false);
       showModal("err", "Gagal Daftar", mapAuthError(err));
@@ -976,74 +1097,21 @@ document.getElementById("logout-cancel").addEventListener("click", function(){
 });
 document.getElementById("logout-confirm").addEventListener("click", function(){
   document.getElementById("logout-overlay").classList.remove("active");
-  auth.signOut();
+  document.getElementById("btn-logout").style.display = "none";
+  document.getElementById("btn-schedule").style.display = "none";
+  currentUserData = null;
+  attendanceCache = {};
+  auth = null;
+  db = null;
+  currentAppKey = null;
+  localStorage.removeItem(LAST_ACTIVE_KEY);
+  showView("view-auth");
+  renderSavedSessions();
 });
 
-/* ============ LUPA PASSWORD ============ */
-document.getElementById("btn-forgot-password").addEventListener("click", function(){
-  const savedEmail = document.getElementById("login-email").value.trim();
-  document.getElementById("forgot-email").value = savedEmail;
-  document.getElementById("forgot-overlay").classList.add("active");
-});
-document.getElementById("forgot-cancel").addEventListener("click", function(){
-  document.getElementById("forgot-overlay").classList.remove("active");
-});
-document.getElementById("forgot-send").addEventListener("click", function(){
-  const email = document.getElementById("forgot-email").value.trim();
-  if(!email){
-    showModal("err", "Email Kosong", "Masukkan email terdaftar terlebih dahulu.");
-    return;
-  }
-  document.getElementById("forgot-overlay").classList.remove("active");
-  setLoading(true);
-  withTimeout(auth.sendPasswordResetEmail(email), 15000)
-    .then(function(){
-      setLoading(false);
-      showModal("ok", "Email Terkirim", "Link reset kata sandi sudah dikirim ke " + email + ". Cek inbox atau folder spam.");
-    })
-    .catch(function(err){
-      setLoading(false);
-      showModal("err", "Gagal Kirim", mapAuthError(err));
-    });
-});
-
-auth.onAuthStateChanged(function(user){
-  if(user){
-    if(user.email) localStorage.setItem("rekap_last_email", user.email);
-    document.getElementById("login-email").value = user.email || localStorage.getItem("rekap_last_email") || "";
-    document.getElementById("btn-logout").style.display = "flex";
-    document.getElementById("btn-schedule").style.display = "flex";
-    setLoading(true);
-    withTimeout(db.ref("users/" + user.uid).once("value"), 15000).then(function(snap){
-      currentUserData = snap.val();
-      if(!currentUserData){
-        setLoading(false);
-        auth.signOut();
-        return;
-      }
-      saveSession(user.email, currentUserData.nama);
-      document.getElementById("dash-nama").textContent = currentUserData.nama;
-      const now = new Date();
-      const monthInput = document.getElementById("input-bulan");
-      if(!monthInput.value){
-        monthInput.value = now.getFullYear() + "-" + pad2(now.getMonth() + 1);
-      }
-      showView("view-dashboard");
-      loadAttendance();
-    }).catch(function(err){
-      setLoading(false);
-      showModal("err", "Gagal Memuat Akun", mapAuthError(err));
-    });
-  } else {
-    document.getElementById("btn-logout").style.display = "none";
-    document.getElementById("btn-schedule").style.display = "none";
-    currentUserData = null;
-    attendanceCache = {};
-    document.getElementById("login-password").value = "";
-    renderSessions();
-    showView("view-auth");
-  }
-});
+renderSavedSessions();
+const lastActiveEmail = localStorage.getItem(LAST_ACTIVE_KEY);
+if(lastActiveEmail){ tryQuickLogin(lastActiveEmail, true); }
 
 function loadAttendance(){
   if(!auth.currentUser) return;
@@ -1083,7 +1151,7 @@ function renderTable(){
   let inHtml='<td class="row-label">Jam Masuk</td>',outHtml='<td class="row-label">Jam Pulang</td>',amountHtml='<td class="row-label">Nominal</td>';
   let inTotal=0,outTotal=0,totalAmount=0;
   for(let day=1;day<=daysInMonth;day++){
-    const key=year+"-"+pad2(month)+"-"+pad2(day),rec=normalizeRecord(attendanceCache[key]);
+    const key=year+"-"+pad2(month)+"-"+pad2(day),rec=normalizeRecord(attendanceCache[key]),future=key>tKey;
     if(rec&&rec.inTime)inTotal++; if(rec&&rec.outTime)outTotal++;
     if(rec&&rec.inTime)totalAmount+=Number(rec.amount)||0;
     const inVal=rec&&rec.inTime?'<span class="hadir-cell">'+escapeHtml(rec.inTime)+'</span>':'<span class="badge muted">—</span>';
@@ -1106,7 +1174,7 @@ function updateTodaySummary(){
   document.getElementById("today-in").textContent=rec&&rec.inTime?rec.inTime:"—";
   document.getElementById("today-out").textContent=rec&&rec.outTime?rec.outTime:"—";
 }
-function escapeHtml(v){return String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
+function escapeHtml(v){return String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#039;");}
 
 document.getElementById("tbody-absensi").addEventListener("click", function(e){
   const cell=e.target.closest("td[data-date]"); if(!cell)return;
@@ -1161,10 +1229,7 @@ document.getElementById("amount-modal-save").addEventListener("click",function()
 });
 
 function getExportData(){
-  const ym=document.getElementById("input-bulan").value.split("-");
-  const y=Number(ym[0]), m=Number(ym[1]);
-  const days=new Date(y,m,0).getDate();
-  const name=currentUserData&&currentUserData.nama?currentUserData.nama:"-";
+  const [y,m]=document.getElementById("input-bulan").value.split("-").map(Number),days=new Date(y,m,0).getDate(),name=currentUserData&&currentUserData.nama?currentUserData.nama:"-";
   const header=["nama"],rowHadir=["hadir"],rowUang=["uang"];let total=0,totalAmount=0;
   for(let d=1;d<=days;d++){
     const k=y+"-"+pad2(m)+"-"+pad2(d),r=normalizeRecord(attendanceCache[k]);
@@ -1174,7 +1239,7 @@ function getExportData(){
     if(r&&r.inTime){total++;totalAmount+=Number(r.amount)||0;}
   }
   header.push("rekapan");rowHadir.push(total);rowUang.push(totalAmount);
-  return {header:header,rowHadir:rowHadir,rowUang:rowUang,name:name,y:y,m:m,total:total,totalAmount:totalAmount};
+  return {header,rowHadir,rowUang,name,y,m,total,totalAmount};
 }
 document.getElementById("btn-export-excel").addEventListener("click",function(){
   if(typeof XLSX==="undefined"){showModal("err","Gagal Export","Library Excel belum termuat.");return;}
@@ -1200,8 +1265,8 @@ document.getElementById("btn-export-pdf").addEventListener("click",function(){
   const d=getExportData(),doc=new window.jspdf.jsPDF({orientation:"landscape",unit:"mm",format:"a4"});
   doc.setFontSize(15);doc.text("Rekap Absensi "+new Date(d.y,d.m-1,1).toLocaleDateString("id-ID",{month:"long",year:"numeric"}),12,13);
   doc.setFontSize(10);doc.text("Nama: "+d.name,12,19);
-  const attendanceRow=["hadir"].concat(d.rowHadir.slice(1,-1)).concat([d.total]);
-  const moneyRow=["uang"].concat(d.rowUang.slice(1,-1).map(function(v){return v!==""?Number(v).toLocaleString("id-ID"):"";})).concat([d.totalAmount.toLocaleString("id-ID")]);
+  const attendanceRow=["hadir",...d.rowHadir.slice(1,-1),d.total];
+  const moneyRow=["uang",...d.rowUang.slice(1,-1).map(function(v){return v!==""?Number(v).toLocaleString("id-ID"):""}),d.totalAmount.toLocaleString("id-ID")];
   doc.autoTable({head:[d.header],body:[attendanceRow,moneyRow],startY:24,theme:"grid",styles:{fontSize:7,cellPadding:1.8,halign:"center"},headStyles:{fontSize:7},columnStyles:{0:{halign:"left",cellWidth:28},[d.header.length-1]:{cellWidth:25}}});
   doc.save("Absensi_"+d.name.replace(/[^a-z0-9]+/gi,"_")+"_"+d.y+"-"+pad2(d.m)+".pdf");
 });
@@ -1209,9 +1274,11 @@ document.getElementById("btn-export-pdf").addEventListener("click",function(){
 const TODAY_NOTE_KEY="absensi_show_today_note";
 function applyTodayNoteVisibility(){
   const note=document.getElementById("today-note");
+  const btn=document.getElementById("toggle-today-note");
   const reveal=document.getElementById("reveal-today-note");
   const show=localStorage.getItem(TODAY_NOTE_KEY)!=="0";
   note.style.display=show?"block":"none";
+  btn.textContent="Sembunyikan";
   reveal.classList.toggle("active",!show);
 }
 document.getElementById("toggle-today-note").addEventListener("click",function(){
@@ -1253,8 +1320,7 @@ document.querySelectorAll(".password-toggle").forEach(function(btn){
 
 document.getElementById("input-bulan").addEventListener("change",renderTable);
 
-// Render sessions saat halaman pertama kali dibuka
-renderSessions();
+
 
 }
 </script>
