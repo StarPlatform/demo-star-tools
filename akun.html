@@ -3144,58 +3144,160 @@ function pilihTabQR(tab) {
   }
 }
 
+var scanBusy = false;
+var scanDetector = null;
+var scanLastInvalid = '';
+
 function startScan() {
   if (scanStream) return;
   var hint = document.getElementById('scanHint');
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    hint.innerText = 'Peramban ini tidak mendukung kamera.'; return;
+    hint.innerText = 'Peramban ini tidak mendukung kamera. Coba buka halaman melalui HTTPS di Chrome.';
+    return;
   }
-  hint.innerText = 'Arahkan kamera ke kode QR milik teman Anda.';
-  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }).then(function(stream) {
+  hint.innerText = 'Arahkan kamera ke QR pertemanan dan pastikan seluruh QR masuk ke area kamera.';
 
+  var videoOptions = {
+    audio: false,
+    video: {
+      facingMode: { ideal: 'environment' },
+      width: { ideal: 1280 },
+      height: { ideal: 720 }
+    }
+  };
+
+  navigator.mediaDevices.getUserMedia(videoOptions).catch(function() {
+    // Perangkat tertentu tidak menerima permintaan resolusi ideal; coba mode kamera sederhana.
+    return navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: 'environment' } });
+  }).then(function(stream) {
     if (document.getElementById('paneScan').classList.contains('hidden')) {
-      stream.getTracks().forEach(function(t) { t.stop() }); return;
+      stream.getTracks().forEach(function(t) { t.stop(); });
+      return;
     }
     scanStream = stream;
     var v = document.getElementById('scanVideo');
+    v.setAttribute('playsinline', '');
+    v.muted = true;
     v.srcObject = stream;
-    v.play();
-    scanTimer = setInterval(bacaFrame, 250);
+    var playPromise = v.play();
+    if (playPromise && playPromise.catch) playPromise.catch(function() {});
+
+    if ('BarcodeDetector' in window) {
+      try { scanDetector = new BarcodeDetector({ formats: ['qr_code'] }); }
+      catch (e) { scanDetector = null; }
+    }
+    // Mulai membaca setelah metadata kamera tersedia.
+    if (v.readyState >= 2) {
+      clearInterval(scanTimer);
+      scanTimer = setInterval(bacaFrame, 220);
+    } else {
+      v.onloadedmetadata = function() {
+        if (!scanStream) return;
+        var p = v.play();
+        if (p && p.catch) p.catch(function() {});
+        clearInterval(scanTimer);
+        scanTimer = setInterval(bacaFrame, 220);
+      };
+    }
   }).catch(function() {
-    hint.innerText = 'Izin kamera ditolak. Aktifkan izin kamera pada pengaturan peramban.';
+    hint.innerText = 'Kamera tidak bisa dibuka. Izinkan akses kamera di browser, lalu coba lagi.';
   });
 }
 
 function stopScan() {
   clearInterval(scanTimer);
-  if (scanStream) { scanStream.getTracks().forEach(function(t) { t.stop(); }); scanStream = null; }
+  scanTimer = null;
+  scanBusy = false;
+  scanDetector = null;
+  var v = document.getElementById('scanVideo');
+  if (v) {
+    v.onloadedmetadata = null;
+    try { v.pause(); } catch (e) {}
+    v.srcObject = null;
+  }
+  if (scanStream) {
+    scanStream.getTracks().forEach(function(t) { t.stop(); });
+    scanStream = null;
+  }
 }
 
-function bacaFrame() {
-  var v = document.getElementById('scanVideo');
-  if (!v.videoWidth) return;
-  var c = document.getElementById('scanCanvas');
-  c.width = v.videoWidth; c.height = v.videoHeight;
-  var ctx = c.getContext('2d');
-  ctx.drawImage(v, 0, 0, c.width, c.height);
-  var img = ctx.getImageData(0, 0, c.width, c.height);
-  var hasil = jsQR(img.data, img.width, img.height);
-  if (!hasil) return;
-
+function tanganiHasilScan(teks) {
+  if (!teks) return false;
   try {
-    var u = new URL(hasil.data);
+    var u = new URL(teks);
     var uid = u.searchParams.get('add');
-    if (uid && u.pathname.split('/').pop() === 'teman.html') {
+    var namaPath = (u.pathname.split('/').pop() || '').toLowerCase();
+    if (uid && namaPath === 'teman.html') {
       if (uid === currentUser) {
+        stopScan();
         showToast('Itu adalah kode QR Anda sendiri', 'error');
-        return;
+        return true;
       }
       stopScan();
       window.location.href = 'teman.html?add=' + encodeURIComponent(uid);
-      return;
+      return true;
     }
-  } catch (e) {}
-  document.getElementById('scanHint').innerText = 'Kode QR ini bukan kode QR pertemanan STools. Silakan coba kode QR lain.';
+    // Hindari memperbarui teks petunjuk berulang kali untuk QR yang sama.
+    if (scanLastInvalid !== teks) {
+      scanLastInvalid = teks;
+      document.getElementById('scanHint').innerText = 'QR terbaca, tetapi bukan QR pertemanan STools. Coba QR dari menu pertemanan.';
+    }
+  } catch (e) {
+    // Data QR bukan URL yang valid; tunggu pemindaian berikutnya.
+  }
+  return false;
+}
+
+function bacaFrame() {
+  if (scanBusy || !scanStream) return;
+  var v = document.getElementById('scanVideo');
+  if (!v || !v.videoWidth || !v.videoHeight) return;
+  scanBusy = true;
+
+  // Coba pemindai QR bawaan browser terlebih dahulu jika tersedia.
+  if (scanDetector) {
+    scanDetector.detect(v).then(function(codes) {
+      if (codes && codes.length) {
+        for (var i = 0; i < codes.length; i++) {
+          if (tanganiHasilScan(codes[i].rawValue)) return;
+        }
+      }
+    }).catch(function() {}).then(function() {
+      if (!scanStream) { scanBusy = false; return; }
+      bacaFrameJsQR(v);
+    });
+  } else {
+    bacaFrameJsQR(v);
+  }
+}
+
+function bacaFrameJsQR(v) {
+  try {
+    var c = document.getElementById('scanCanvas');
+    var ctx = c.getContext('2d', { willReadFrequently: true });
+    // Batasi ukuran pemrosesan agar decoding lebih ringan pada HP.
+    var scale = Math.min(1, 1000 / v.videoWidth);
+    c.width = Math.max(1, Math.round(v.videoWidth * scale));
+    c.height = Math.max(1, Math.round(v.videoHeight * scale));
+    ctx.drawImage(v, 0, 0, c.width, c.height);
+    var img = ctx.getImageData(0, 0, c.width, c.height);
+    var hasil = jsQR(img.data, img.width, img.height, { inversionAttempts: 'attemptBoth' });
+    if (hasil && tanganiHasilScan(hasil.data)) return;
+
+    // Percobaan kedua: tingkatkan kontras gambar abu-abu untuk QR yang tampil di layar lain.
+    var pixels = img.data;
+    for (var i = 0; i < pixels.length; i += 4) {
+      var gray = Math.round(0.299 * pixels[i] + 0.587 * pixels[i + 1] + 0.114 * pixels[i + 2]);
+      gray = gray < 145 ? 0 : 255;
+      pixels[i] = pixels[i + 1] = pixels[i + 2] = gray;
+    }
+    var enhanced = jsQR(pixels, img.width, img.height, { inversionAttempts: 'attemptBoth' });
+    if (enhanced) tanganiHasilScan(enhanced.data);
+  } catch (e) {
+    // Abaikan satu frame yang gagal diproses; frame berikutnya akan dicoba lagi.
+  } finally {
+    scanBusy = false;
+  }
 }
 
 window.addEventListener('pagehide', stopScan);
