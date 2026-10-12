@@ -22,7 +22,6 @@
     --text-faint: #94A3B8;
     --border: #E2E8F0;
     --primary: #2563EB;
-    --primary-soft: #EFF6FF;
     --success: #059669;
     --success-soft: #ECFDF5;
     --danger: #DC2626;
@@ -39,7 +38,6 @@
       --text-faint: #64748B;
       --border: #1E293B;
       --primary: #60A5FA;
-      --primary-soft: #1E3A5F;
       --success: #34D399;
       --success-soft: #0F2A20;
       --danger: #F87171;
@@ -61,58 +59,128 @@
     color: var(--text);
     min-height: 100vh;
     padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px);
+    overflow-x: hidden;
   }
 
   .halaman {
-    max-width: 960px;
+    max-width: 640px;
     margin: 0 auto;
-    padding: 16px 12px 28px;
+    padding: 12px 12px 28px;
   }
 
-  .kepala {
-    padding: 4px 4px 14px;
+  .hero {
+    position: relative;
+    border-radius: 22px;
+    padding: 18px 16px 16px;
+    color: #FFFFFF;
+    background:
+      radial-gradient(circle at 90% 0%, rgba(255, 255, 255, 0.18), transparent 45%),
+      linear-gradient(145deg, #1E40AF 0%, #2563EB 55%, #3B82F6 100%);
+    margin-bottom: 10px;
+    overflow: hidden;
   }
 
-  .kepala small {
+  .hero-atas {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .hero-judul {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .hero-judul small {
     display: block;
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 700;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.7px;
     text-transform: uppercase;
-    color: var(--primary);
-    margin-bottom: 4px;
+    opacity: 0.8;
   }
 
-  .kepala h1 {
+  .hero-judul h1 {
+    margin-top: 3px;
     font-size: 21px;
     font-weight: 800;
     letter-spacing: -0.3px;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
   }
 
-  .kepala p {
-    margin-top: 2px;
-    font-size: 12.5px;
-    color: var(--text-soft);
+  .hero-judul p {
+    margin-top: 4px;
+    font-size: 12px;
+    opacity: 0.85;
+    line-height: 1.4;
   }
 
-  .kartu {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 14px;
-    margin-bottom: 12px;
+  .sudut {
+    flex-shrink: 0;
+    max-width: 44%;
+    text-align: right;
+    padding: 8px 11px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    backdrop-filter: blur(6px);
   }
 
-  .ringkasan {
+  .sudut span {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    opacity: 0.85;
+  }
+
+  .sudut b {
+    display: block;
+    margin-top: 1px;
+    font-size: 15px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .sudut em {
+    display: block;
+    margin-top: 1px;
+    font-style: normal;
+    font-size: 10px;
+    opacity: 0.8;
+  }
+
+  .saldo {
+    margin-top: 16px;
+  }
+
+  .saldo span {
+    display: block;
+    font-size: 11.5px;
+    opacity: 0.8;
+  }
+
+  .saldo b {
+    display: block;
+    margin-top: 1px;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.6px;
+  }
+
+  .dua {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 10px;
+    margin-bottom: 10px;
   }
 
   .kotak {
-    border-radius: 14px;
-    padding: 10px 12px;
-    background: var(--field-bg);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 11px 13px;
   }
 
   .kotak span {
@@ -127,26 +195,20 @@
     font-size: 15px;
   }
 
-  .kotak.saldo {
-    grid-column: 1 / -1;
-    background: var(--success-soft);
-  }
-
-  .kotak.saldo b {
-    font-size: 24px;
-    color: var(--success);
-  }
-
   .kotak.masuk b {
-    color: var(--primary);
-  }
-
-  .kotak.keluar {
-    background: var(--danger-soft);
+    color: var(--success);
   }
 
   .kotak.keluar b {
     color: var(--danger);
+  }
+
+  .kartu {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 14px 12px;
+    margin-bottom: 10px;
   }
 
   .judul-kartu {
@@ -155,6 +217,7 @@
     justify-content: space-between;
     gap: 10px;
     margin-bottom: 10px;
+    padding: 0 2px;
   }
 
   .judul-kartu h2 {
@@ -162,13 +225,13 @@
     font-weight: 700;
   }
 
-  .tahun {
+  .bulan {
     display: flex;
     align-items: center;
     gap: 4px;
   }
 
-  .tahun button {
+  .bulan button {
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -180,131 +243,131 @@
     cursor: pointer;
   }
 
-  .tahun span {
-    min-width: 46px;
+  .bulan button:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .bulan span {
+    min-width: 104px;
     text-align: center;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 13px;
   }
 
-  .gulir {
-    overflow: auto;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    max-height: 70vh;
-  }
-
-  .tbl {
-    border-collapse: separate;
-    border-spacing: 0;
+  .rekap {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
     font-size: 12px;
+  }
+
+  .rekap th {
+    padding: 0 1px 6px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--text-faint);
     text-align: center;
   }
 
-  .tbl th,
-  .tbl td {
-    height: 30px;
-    box-sizing: border-box;
-    padding: 0 6px;
-    white-space: nowrap;
-    background: var(--card);
-    border-bottom: 1px solid var(--border);
+  .rekap th.nm {
+    text-align: left;
+    padding-left: 4px;
   }
 
-  .tbl tbody tr:last-child td {
-    border-bottom: none;
+  .rekap th.tg {
+    text-align: right;
+    padding-right: 4px;
   }
 
-  .tbl .genap {
-    background: var(--field-bg);
+  .rekap th.sekarang span {
+    display: inline-block;
+    min-width: 18px;
+    padding: 1px 0;
+    border-radius: 6px;
+    background: var(--primary);
+    color: #FFFFFF;
   }
 
-  .tbl .awal {
-    border-left: 1px solid var(--border);
+  .rekap td {
+    padding: 4px 1px;
+    border-top: 1px solid var(--border);
+    vertical-align: middle;
+    text-align: center;
   }
 
-  .tbl thead th {
-    position: sticky;
-    z-index: 3;
-    border-bottom: none;
-  }
-
-  .tbl thead tr:first-child th {
-    top: 0;
-    height: 28px;
-    font-weight: 700;
-    color: var(--primary);
-  }
-
-  .tbl thead tr:first-child th.no,
-  .tbl thead tr:first-child th.nama {
-    color: var(--text-soft);
-    font-size: 11px;
-  }
-
-  .tbl thead tr:nth-child(2) th {
-    top: 28px;
-    height: 22px;
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--text-faint);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .tbl .no {
-    position: sticky;
-    left: 0;
-    z-index: 2;
-    min-width: 30px;
-    padding: 0 4px;
-    color: var(--text-faint);
-  }
-
-  .tbl .nama {
-    position: sticky;
-    left: 30px;
-    z-index: 2;
-    min-width: 112px;
-    max-width: 130px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .rekap td.nm {
+    padding: 6px 4px;
     text-align: left;
     font-weight: 600;
-    box-shadow: 6px 0 8px -6px rgba(15, 23, 42, 0.18);
+    line-height: 1.25;
+    overflow-wrap: anywhere;
   }
 
-  .tbl thead .no,
-  .tbl thead .nama {
-    z-index: 4;
-    top: 0;
-    border-bottom: 1px solid var(--border);
+  .rekap td.tg {
+    padding-right: 4px;
+    text-align: right;
+    font-weight: 700;
+    font-size: 11.5px;
+    white-space: nowrap;
   }
 
-  .pil {
-    display: inline-block;
-    min-width: 38px;
-    padding: 2px 6px;
-    border-radius: 8px;
-    font-size: 11px;
-    font-weight: 600;
-    line-height: 1.3;
+  .rekap td.tg.utang {
+    color: var(--danger);
   }
 
-  .pil.lunas {
+  .rekap td.tg.lunas {
+    color: var(--success);
+  }
+
+  .rekap td.tg.tunggu {
+    color: var(--text-faint);
+  }
+
+  .c {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 24px;
+    border-radius: 7px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .c.lunas {
     background: #FEF08A;
     color: #854D0E;
   }
 
-  .pil.cicil {
+  .c.cicil {
     background: #FED7AA;
     color: #9A3412;
   }
 
+  .c.belum {
+    background: var(--danger-soft);
+    box-shadow: inset 0 0 0 1px rgba(220, 38, 38, 0.35);
+  }
+
+  .c.nanti {
+    background: transparent;
+    border: 1px dashed var(--border);
+  }
+
+  .catatan {
+    margin: 10px 2px 0;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--text-soft);
+  }
+
   .legenda {
     display: flex;
-    gap: 14px;
-    margin-top: 10px;
-    font-size: 11.5px;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin: 8px 2px 0;
+    font-size: 11px;
     color: var(--text-soft);
   }
 
@@ -312,9 +375,9 @@
     display: inline-block;
     width: 12px;
     height: 12px;
-    border-radius: 3px;
+    border-radius: 4px;
     margin-right: 5px;
-    vertical-align: -1px;
+    vertical-align: -2px;
   }
 
   .transaksi {
@@ -322,7 +385,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    padding: 10px 0;
+    padding: 10px 2px;
     border-top: 1px solid var(--border);
   }
 
@@ -397,7 +460,8 @@
     text-align: center;
     font-size: 11.5px;
     color: var(--text-faint);
-    padding: 8px 0 0;
+    padding: 6px 0 0;
+    line-height: 1.6;
   }
 
   .sembunyi {
@@ -409,7 +473,7 @@
       padding-top: 28px;
     }
 
-    .kepala h1 {
+    .hero-judul h1 {
       font-size: 26px;
     }
   }
@@ -418,37 +482,46 @@
 <body>
 
 <div class="halaman">
-  <div class="kepala">
-    <small>Laporan Uang Kas</small>
-    <h1 id="namaKelas">Memuat...</h1>
-    <p id="infoPembaruan"></p>
+  <div class="hero">
+    <div class="hero-atas">
+      <div class="hero-judul">
+        <small>Laporan Uang Kas</small>
+        <h1 id="namaKelas">Memuat...</h1>
+        <p id="infoPeriode"></p>
+      </div>
+      <div class="sudut sembunyi" id="sudutTagihan"></div>
+    </div>
+    <div class="saldo sembunyi" id="blokSaldo">
+      <span>Saldo kas</span>
+      <b id="totalSaldo">Rp 0</b>
+    </div>
   </div>
 
   <div id="pesanUtama" class="kartu pesan sembunyi"></div>
 
   <div id="isi" class="sembunyi">
-    <div class="kartu">
-      <div class="ringkasan">
-        <div class="kotak saldo"><span>Saldo kas</span><b id="totalSaldo">Rp 0</b></div>
-        <div class="kotak masuk"><span>Total pemasukan</span><b id="totalMasuk">Rp 0</b></div>
-        <div class="kotak keluar"><span>Total pengeluaran</span><b id="totalKeluar">Rp 0</b></div>
-      </div>
+    <div class="dua">
+      <div class="kotak masuk"><span>Total pemasukan</span><b id="totalMasuk">Rp 0</b></div>
+      <div class="kotak keluar"><span>Total pengeluaran</span><b id="totalKeluar">Rp 0</b></div>
     </div>
 
     <div class="kartu">
       <div class="judul-kartu">
         <h2>Iuran per Murid</h2>
-        <div class="tahun">
-          <button type="button" onclick="ubahTahun(-1)" aria-label="Tahun sebelumnya">&#8249;</button>
-          <span id="labelTahun"></span>
-          <button type="button" onclick="ubahTahun(1)" aria-label="Tahun berikutnya">&#8250;</button>
+        <div class="bulan">
+          <button type="button" id="tombolSebelum" onclick="ubahBulan(-1)" aria-label="Bulan sebelumnya">&#8249;</button>
+          <span id="labelBulan"></span>
+          <button type="button" id="tombolSesudah" onclick="ubahBulan(1)" aria-label="Bulan berikutnya">&#8250;</button>
         </div>
       </div>
       <div id="tabelRekap"></div>
-      <div class="legenda">
+      <div class="legenda" id="legenda">
         <span><i style="background:#FEF08A"></i>Lunas</span>
         <span><i style="background:#FED7AA"></i>Cicil</span>
+        <span><i style="background:var(--danger-soft);box-shadow:inset 0 0 0 1px rgba(220,38,38,.35)"></i>Belum bayar</span>
+        <span><i style="border:1px dashed var(--border)"></i>Belum jatuh tempo</span>
       </div>
+      <p class="catatan" id="catatanTagihan"></p>
     </div>
 
     <div class="kartu">
@@ -458,7 +531,10 @@
     </div>
   </div>
 
-  <div class="kaki">Star Platform | STools 2026</div>
+  <div class="kaki">
+    <div id="infoPembaruan"></div>
+    <div>Star Platform | STools 2026</div>
+  </div>
 </div>
 
 <script>
@@ -473,10 +549,14 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 var db = firebase.database();
 
 var DAFTAR_BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+var NAMA_HARI = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 var JUMLAH_AWAL = 8;
+var MAKS_TAHUN = 15;
 
 var kelasId = "";
-var tahun = new Date().getFullYear();
+var sekarang = new Date();
+var tahun = sekarang.getFullYear();
+var bulan = sekarang.getMonth();
 var jumlahTampil = JUMLAH_AWAL;
 
 var pengaturan = {};
@@ -485,8 +565,9 @@ var dataTahun = {};
 var riwayat = [];
 
 var langganan = [];
-var langgananTahun = null;
+var langgananTahun = {};
 var menunggu = false;
+var tampilSudahTerbuka = false;
 
 function el(id) {
   return document.getElementById(id);
@@ -504,8 +585,17 @@ function rupiah(angka) {
   return "Rp " + Number(angka || 0).toLocaleString("id-ID");
 }
 
+function ringkasNominal(angka) {
+  var n = Number(angka) || 0;
+  if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, "").replace(".", ",") + "jt";
+  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "").replace(".", ",") + "k";
+  return String(n);
+}
+
 function tampilkanPesan(judul, isi) {
   el("isi").classList.add("sembunyi");
+  el("blokSaldo").classList.add("sembunyi");
+  el("sudutTagihan").classList.add("sembunyi");
   var kotak = el("pesanUtama");
   kotak.innerHTML = "<b>" + escapeHtml(judul) + "</b>" + escapeHtml(isi);
   kotak.classList.remove("sembunyi");
@@ -526,115 +616,140 @@ function frekuensiBulan(nilaiTahun, indeksBulan) {
   return Number(khusus) || Number(pengaturan.frekuensi) || 1;
 }
 
-function hitungRekap() {
+function dataBulan(nilaiTahun, indeksBulan) {
+  return (dataTahun[nilaiTahun] || {})[DAFTAR_BULAN[indeksBulan]] || {};
+}
+
+function jumlahSlot(nilaiTahun, indeksBulan) {
+  var data = dataBulan(nilaiTahun, indeksBulan);
+  var jumlah = 0;
+  Object.keys(data).forEach(function(nama) {
+    jumlah = Math.max(jumlah, Number(data[nama].frekuensi) || 0);
+  });
+  return jumlah || frekuensiBulan(nilaiTahun, indeksBulan);
+}
+
+function slotSekarang(jumlah, hari) {
+  if (jumlah <= 1) return 1;
+  if (jumlah === 2) return hari <= 15 ? 1 : 2;
+  return Math.min(jumlah, Math.ceil(hari / 7));
+}
+
+function satuanSlot(jumlah) {
+  if (jumlah >= 3) return "minggu";
+  if (jumlah === 2) return "paruh bulan";
+  return "bulan";
+}
+
+function labelPeriode(jumlah, slot) {
+  if (jumlah >= 3) return "Minggu ke-" + slot;
+  if (jumlah === 2) return "Paruh ke-" + slot;
+  return "Bulan ini";
+}
+
+function tahunAwal() {
+  var akhir = new Date().getFullYear();
+  var awal = Math.min(tahunDataLama(), akhir);
+  if (pengaturan.bulanMulai) {
+    var t = Number(String(pengaturan.bulanMulai).split("-")[0]);
+    if (t) awal = Math.min(t, akhir);
+  }
+  return Math.max(awal, akhir - MAKS_TAHUN + 1);
+}
+
+function semuaMuat() {
+  var akhir = new Date().getFullYear();
+  for (var y = tahunAwal(); y <= akhir; y++) {
+    if (dataTahun[y] === undefined) return false;
+  }
+  return true;
+}
+
+function indeksMulai() {
+  if (pengaturan.bulanMulai) {
+    var bagian = String(pengaturan.bulanMulai).split("-");
+    var t = Number(bagian[0]);
+    var m = Number(bagian[1]) - 1;
+    if (t && m >= 0 && m < 12) return t * 12 + m;
+  }
+  var terkecil = null;
+  Object.keys(dataTahun).forEach(function(y) {
+    DAFTAR_BULAN.forEach(function(nama, i) {
+      if (Object.keys((dataTahun[y] || {})[nama] || {}).length > 0) {
+        var idx = Number(y) * 12 + i;
+        if (terkecil === null || idx < terkecil) terkecil = idx;
+      }
+    });
+  });
+  return terkecil;
+}
+
+function hitungTagihan(nama) {
+  var mulai = indeksMulai();
+  var kini = sekarang.getFullYear() * 12 + sekarang.getMonth();
+  if (mulai === null || mulai > kini) return 0;
+
+  var dasar = Number(pengaturan.nominal) || 0;
+  var total = 0;
+
+  for (var idx = mulai; idx <= kini; idx++) {
+    var y = Math.floor(idx / 12);
+    var m = idx % 12;
+    var jumlah = jumlahSlot(y, m);
+    var batas = idx === kini ? slotSekarang(jumlah, sekarang.getDate()) : jumlah;
+    var rec = dataBulan(y, m)[nama];
+    var nominal = rec ? (Number(rec.nominal) || dasar) : dasar;
+
+    for (var slot = 1; slot <= batas; slot++) {
+      var bayar = rec && rec.bayar ? Number(rec.bayar[slot]) || 0 : 0;
+      if (nominal > bayar) total += nominal - bayar;
+    }
+  }
+  return total;
+}
+
+function daftarNama(nilaiTahun, indeksBulan) {
   var kumpulan = {};
   Object.keys(daftarSiswa).forEach(function(nama) {
     kumpulan[nama] = true;
   });
-  DAFTAR_BULAN.forEach(function(bulan) {
-    Object.keys(dataTahun[bulan] || {}).forEach(function(nama) {
-      kumpulan[nama] = true;
-    });
+  Object.keys(dataBulan(nilaiTahun, indeksBulan)).forEach(function(nama) {
+    kumpulan[nama] = true;
   });
-
-  var daftarNama = Object.keys(kumpulan).sort(function(a, b) {
+  return Object.keys(kumpulan).sort(function(a, b) {
     return a.localeCompare(b, "id");
   });
-
-  var awal = 0;
-  if (pengaturan.bulanMulai) {
-    var bagian = String(pengaturan.bulanMulai).split("-");
-    var tahunMulai = Number(bagian[0]);
-    if (tahun === tahunMulai) awal = Number(bagian[1]) - 1;
-    else if (tahun < tahunMulai) awal = DAFTAR_BULAN.length;
-  }
-
-  var kolom = [];
-  DAFTAR_BULAN.forEach(function(bulan, indeks) {
-    var adaData = Object.keys(dataTahun[bulan] || {}).length > 0;
-    if (indeks < awal && !adaData) return;
-
-    var jumlah = 0;
-    daftarNama.forEach(function(nama) {
-      var rec = (dataTahun[bulan] || {})[nama];
-      if (rec) jumlah = Math.max(jumlah, Number(rec.frekuensi) || 0);
-    });
-    kolom.push({ bulan: bulan, jumlah: jumlah || frekuensiBulan(tahun, indeks) });
-  });
-
-  var nominalDasar = Number(pengaturan.nominal) || 0;
-
-  var baris = daftarNama.map(function(nama) {
-    var sel = [];
-    kolom.forEach(function(k) {
-      var rec = (dataTahun[k.bulan] || {})[nama];
-      var nominal = rec ? (Number(rec.nominal) || nominalDasar) : nominalDasar;
-
-      for (var slot = 1; slot <= k.jumlah; slot++) {
-        var bayar = rec && rec.bayar ? Number(rec.bayar[slot]) || 0 : 0;
-        var status = "";
-        if (bayar > 0) status = nominal > 0 && bayar >= nominal ? "lunas" : "cicil";
-        sel.push({ bayar: bayar, status: status });
-      }
-    });
-    return { nama: nama, sel: sel };
-  });
-
-  return { kolom: kolom, baris: baris };
 }
 
-function buatTabel(model) {
-  var h = '<div class="gulir"><table class="tbl"><thead><tr>';
-  h += '<th rowspan="2" class="no">No</th><th rowspan="2" class="nama">Nama</th>';
+function gambarHero() {
+  var tgl = sekarang.getDate();
+  var jumlahKini = jumlahSlot(sekarang.getFullYear(), sekarang.getMonth());
+  var slotKini = slotSekarang(jumlahKini, tgl);
 
-  model.kolom.forEach(function(k, i) {
-    h += '<th colspan="' + k.jumlah + '" class="awal' + (i % 2 ? ' genap' : '') + '">' + k.bulan + '</th>';
-  });
-  h += '</tr><tr>';
+  el("infoPeriode").textContent = NAMA_HARI[sekarang.getDay()] + ", " + tgl + " " + DAFTAR_BULAN[sekarang.getMonth()] + " " + sekarang.getFullYear() + " · " + labelPeriode(jumlahKini, slotKini);
 
-  model.kolom.forEach(function(k, i) {
-    for (var slot = 1; slot <= k.jumlah; slot++) {
-      var kelas = [];
-      if (slot === 1) kelas.push('awal');
-      if (i % 2) kelas.push('genap');
-      h += '<th class="' + kelas.join(' ') + '">' + slot + '</th>';
+  var sudut = el("sudutTagihan");
+  if (!semuaMuat()) {
+    sudut.classList.add("sembunyi");
+    return;
+  }
+
+  var total = 0;
+  var orang = 0;
+  daftarNama(sekarang.getFullYear(), sekarang.getMonth()).forEach(function(nama) {
+    var t = hitungTagihan(nama);
+    if (t > 0) {
+      total += t;
+      orang++;
     }
   });
-  h += '</tr></thead><tbody>';
 
-  model.baris.forEach(function(b, nomor) {
-    h += '<tr><td class="no">' + (nomor + 1) + '</td><td class="nama">' + escapeHtml(b.nama) + '</td>';
-
-    var urutan = 0;
-    model.kolom.forEach(function(k, i) {
-      for (var slot = 1; slot <= k.jumlah; slot++) {
-        var c = b.sel[urutan++];
-        var kelas = [];
-        if (slot === 1) kelas.push('awal');
-        if (i % 2) kelas.push('genap');
-        var isi = c.bayar > 0 ? '<span class="pil ' + c.status + '">' + Number(c.bayar).toLocaleString('id-ID') + '</span>' : '';
-        h += '<td class="' + kelas.join(' ') + '">' + isi + '</td>';
-      }
-    });
-    h += '</tr>';
-  });
-
-  return h + '</tbody></table></div>';
-}
-
-function gambarRekap() {
-  el("labelTahun").textContent = tahun;
-  var model = hitungRekap();
-
-  if (model.baris.length === 0) {
-    el("tabelRekap").innerHTML = '<div class="pesan">Belum ada murid yang tercatat.</div>';
-    return;
+  if (total > 0) {
+    sudut.innerHTML = "<span>Perlu dibayar</span><b>" + rupiah(total) + "</b><em>" + orang + " murid belum lunas</em>";
+  } else {
+    sudut.innerHTML = "<span>Tagihan</span><b>Semua lunas</b>";
   }
-  if (model.kolom.length === 0) {
-    el("tabelRekap").innerHTML = '<div class="pesan">Belum ada pencatatan pada tahun ini.</div>';
-    return;
-  }
-  el("tabelRekap").innerHTML = buatTabel(model);
+  sudut.classList.remove("sembunyi");
 }
 
 function gambarRingkasan() {
@@ -648,6 +763,105 @@ function gambarRingkasan() {
   el("totalMasuk").textContent = rupiah(masuk);
   el("totalKeluar").textContent = rupiah(keluar);
   el("totalSaldo").textContent = rupiah(masuk - keluar);
+}
+
+function batasBulan() {
+  var kini = sekarang.getFullYear() * 12 + sekarang.getMonth();
+  var mulai = indeksMulai();
+  if (mulai === null || mulai > kini) mulai = kini;
+  return { bawah: mulai, atas: kini };
+}
+
+function ubahBulan(delta) {
+  var batas = batasBulan();
+  var idx = Math.min(batas.atas, Math.max(batas.bawah, tahun * 12 + bulan + delta));
+  tahun = Math.floor(idx / 12);
+  bulan = idx % 12;
+  gambarRekap();
+}
+
+function lebarSlot(jumlah) {
+  if (jumlah <= 4) return 32;
+  if (jumlah <= 6) return 28;
+  if (jumlah <= 8) return 24;
+  return 20;
+}
+
+function gambarRekap() {
+  var batas = batasBulan();
+  var idx = Math.min(batas.atas, Math.max(batas.bawah, tahun * 12 + bulan));
+  tahun = Math.floor(idx / 12);
+  bulan = idx % 12;
+
+  el("labelBulan").textContent = DAFTAR_BULAN[bulan] + " " + tahun;
+  el("tombolSebelum").disabled = idx <= batas.bawah;
+  el("tombolSesudah").disabled = idx >= batas.atas;
+
+  var nama = daftarNama(tahun, bulan);
+  if (nama.length === 0) {
+    el("tabelRekap").innerHTML = '<div class="pesan">Belum ada murid yang tercatat.</div>';
+    el("legenda").classList.add("sembunyi");
+    el("catatanTagihan").textContent = "";
+    return;
+  }
+  el("legenda").classList.remove("sembunyi");
+
+  var jumlah = jumlahSlot(tahun, bulan);
+  var dasar = Number(pengaturan.nominal) || 0;
+  var kini = batas.atas;
+  var mulai = indeksMulai();
+  var dihitung = mulai !== null && idx >= mulai;
+  var batasSlot = idx === kini ? slotSekarang(jumlah, sekarang.getDate()) : jumlah;
+  var siap = semuaMuat();
+  var lebar = lebarSlot(jumlah);
+
+  var h = '<table class="rekap"><colgroup><col>';
+  for (var c = 0; c < jumlah; c++) h += '<col style="width:' + lebar + 'px">';
+  h += '<col style="width:72px"></colgroup><thead><tr><th class="nm">Nama</th>';
+  for (var s = 1; s <= jumlah; s++) {
+    var tandai = idx === kini && s === batasSlot;
+    h += '<th' + (tandai ? ' class="sekarang"' : '') + '><span>' + s + '</span></th>';
+  }
+  h += '<th class="tg">Tagihan</th></tr></thead><tbody>';
+
+  nama.forEach(function(n) {
+    var rec = dataBulan(tahun, bulan)[n];
+    var nominal = rec ? (Number(rec.nominal) || dasar) : dasar;
+    h += '<tr><td class="nm">' + escapeHtml(n) + '</td>';
+
+    for (var slot = 1; slot <= jumlah; slot++) {
+      var bayar = rec && rec.bayar ? Number(rec.bayar[slot]) || 0 : 0;
+      var kelas = "nanti";
+      var isi = "";
+      if (bayar > 0) {
+        if (nominal > 0 && bayar >= nominal) {
+          kelas = "lunas";
+          isi = "✓";
+        } else {
+          kelas = "cicil";
+          isi = ringkasNominal(bayar);
+        }
+      } else if (dihitung && slot <= batasSlot && nominal > 0) {
+        kelas = "belum";
+      }
+      h += '<td><div class="c ' + kelas + '">' + isi + '</div></td>';
+    }
+
+    if (!siap) {
+      h += '<td class="tg tunggu">...</td>';
+    } else {
+      var tagihan = hitungTagihan(n);
+      if (tagihan > 0) h += '<td class="tg utang">' + Number(tagihan).toLocaleString("id-ID") + '</td>';
+      else h += '<td class="tg lunas">Lunas</td>';
+    }
+    h += '</tr>';
+  });
+
+  el("tabelRekap").innerHTML = h + '</tbody></table>';
+
+  var jumlahKini = jumlahSlot(sekarang.getFullYear(), sekarang.getMonth());
+  var slotKini = slotSekarang(jumlahKini, sekarang.getDate());
+  el("catatanTagihan").textContent = "Angka 1 sampai " + jumlah + " menunjukkan " + satuanSlot(jumlah) + " ke- dalam bulan ini. Tagihan adalah total iuran yang belum dibayar sampai " + labelPeriode(jumlahKini, slotKini).toLowerCase() + " " + DAFTAR_BULAN[sekarang.getMonth()] + " " + sekarang.getFullYear() + ". Periode setelahnya belum dihitung.";
 }
 
 function gambarTransaksi() {
@@ -678,10 +892,12 @@ function tampilkanLagi() {
 
 function gambarSemua() {
   menunggu = false;
+  sekarang = new Date();
   gambarRingkasan();
+  gambarHero();
   gambarRekap();
   gambarTransaksi();
-  el("infoPembaruan").textContent = "Diperbarui " + new Date().toLocaleString("id-ID", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  el("infoPembaruan").textContent = "Diperbarui " + sekarang.toLocaleString("id-ID", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
 function jadwalkanGambar() {
@@ -690,30 +906,45 @@ function jadwalkanGambar() {
   requestAnimationFrame(gambarSemua);
 }
 
-function langgananTahunBaru() {
-  if (langgananTahun) langgananTahun.ref.off("value", langgananTahun.fungsi);
-
-  var ref = db.ref(pathTahun(tahun));
-  var fungsi = function(snap) {
-    dataTahun = snap.val() || {};
-    jadwalkanGambar();
-  };
-  ref.on("value", fungsi);
-  langgananTahun = { ref: ref, fungsi: fungsi };
+function galatMuat() {
+  tampilkanPesan("Laporan tidak dapat dimuat", "Akses ke data ditolak atau koneksi bermasalah. Silakan hubungi pengelola kas kelas.");
 }
 
-function ubahTahun(delta) {
-  tahun += delta;
-  dataTahun = {};
-  el("labelTahun").textContent = tahun;
-  langgananTahunBaru();
-  jadwalkanGambar();
+function sinkronTahun() {
+  var perlu = {};
+  var akhir = new Date().getFullYear();
+  for (var y = tahunAwal(); y <= akhir; y++) perlu[y] = pathTahun(y);
+
+  Object.keys(langgananTahun).forEach(function(y) {
+    if (perlu[y] !== langgananTahun[y].path) {
+      langgananTahun[y].ref.off("value", langgananTahun[y].fungsi);
+      delete langgananTahun[y];
+      delete dataTahun[y];
+    }
+  });
+
+  Object.keys(perlu).forEach(function(y) {
+    if (langgananTahun[y]) return;
+    var ref = db.ref(perlu[y]);
+    var fungsi = function(snap) {
+      dataTahun[y] = snap.val() || {};
+      jadwalkanGambar();
+    };
+    ref.on("value", fungsi, galatMuat);
+    langgananTahun[y] = { ref: ref, fungsi: fungsi, path: perlu[y] };
+  });
+}
+
+function bukaTampilan() {
+  if (tampilSudahTerbuka) return;
+  tampilSudahTerbuka = true;
+  el("pesanUtama").classList.add("sembunyi");
+  el("isi").classList.remove("sembunyi");
+  el("blokSaldo").classList.remove("sembunyi");
 }
 
 function pasang(ref, fungsi) {
-  ref.on("value", fungsi, function() {
-    tampilkanPesan("Laporan tidak dapat dimuat", "Akses ke data ditolak atau koneksi bermasalah. Silakan hubungi pengelola kas kelas.");
-  });
+  ref.on("value", fungsi, galatMuat);
   langganan.push({ ref: ref, fungsi: fungsi });
 }
 
@@ -740,15 +971,11 @@ function mulai() {
       document.title = "Laporan Kas " + (snapNama.val() || "") + " - STools";
 
       pasang(db.ref("kas/" + kelasId + "/pengaturan"), function(s) {
-        var awal = pengaturan.tahunData;
         pengaturan = s.val() || {};
-        if (awal !== undefined && Number(awal) !== Number(pengaturan.tahunData)) langgananTahunBaru();
+        sinkronTahun();
+        bukaTampilan();
         jadwalkanGambar();
       });
-
-      return db.ref("kas/" + kelasId + "/pengaturan").once("value");
-    }).then(function(snapPengaturan) {
-      pengaturan = snapPengaturan.val() || {};
 
       pasang(db.ref("kas/" + kelasId + "/siswa"), function(s) {
         daftarSiswa = s.val() || {};
@@ -766,11 +993,6 @@ function mulai() {
         riwayat = daftar;
         jadwalkanGambar();
       });
-
-      langgananTahunBaru();
-      el("pesanUtama").classList.add("sembunyi");
-      el("isi").classList.remove("sembunyi");
-      jadwalkanGambar();
     });
   }).catch(function() {
     el("namaKelas").textContent = "Laporan Kas";
