@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>STools - Link Jawaban</title>
+<link rel="icon" type="image/png" href="logo.jpg">
+<link rel="apple-touch-icon" href="logo.jpg">
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif; background:#F1F5F9; color:#0F172A; }
+body.dark { background:#0B1120; color:#F1F5F9; }
+.app-container { max-width:560px; margin:0 auto; min-height:100vh; }
+
+.app-header { background:#fff; padding:16px 20px; display:flex; align-items:center; gap:12px; border-bottom:1px solid #E2E8F0; position:sticky; top:0; z-index:20; }
+body.dark .app-header { background:#111827; border-bottom-color:#1E293B; }
+.menu-icon { width:40px; height:40px; background:#F8FAFE; border-radius:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; border:1px solid #E2E8F0; }
+body.dark .menu-icon { background:#1E293B; border-color:#334155; }
+.menu-icon svg { stroke:#0F172A; } body.dark .menu-icon svg { stroke:#F1F5F9; }
+.app-title { font-weight:700; font-size:20px; letter-spacing:-.3px; background:linear-gradient(135deg,#2563EB,#60A5FA); -webkit-background-clip:text; background-clip:text; color:transparent; }
+
+
+.content { padding:16px; display:flex; flex-direction:column; gap:14px; }
+
+.hero { background:linear-gradient(135deg,#2563EB,#1D4ED8); color:#fff; border-radius:24px; padding:20px; }
+.hero-title { font-size:22px; font-weight:700; letter-spacing:-.3px; }
+.hero-sub { font-size:13px; opacity:.9; margin-top:4px; line-height:1.5; }
+.hero label { display:block; font-size:12px; font-weight:600; opacity:.9; margin:16px 0 6px; }
+.hero input { width:100%; padding:13px 16px; border:none; border-radius:16px; font-size:15px; font-family:inherit; background:#fff; color:#0F172A; outline:none; }
+
+.card { background:#fff; border:1px solid #E2E8F0; border-radius:24px; padding:16px 18px 18px; }
+body.dark .card { background:#111827; border-color:#1E293B; }
+.card-kepala { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; }
+.card-kepala h2 { font-size:15px; font-weight:700; }
+.card-kepala small { font-size:12px; color:#94A3B8; font-weight:500; margin-left:6px; }
+
+.baris2 { display:grid; grid-template-columns:1.4fr 1fr; gap:10px; margin-bottom:14px; }
+.isian { width:100%; padding:12px 14px; border-radius:14px; border:1px solid #E2E8F0; background:#F8FAFE; color:#0F172A; font-size:14px; font-family:inherit; outline:none; }
+.isian:focus { border-color:#2563EB; }
+body.dark .isian { background:#1E293B; border-color:#334155; color:#F1F5F9; }
+.isian::placeholder { color:#94A3B8; }
+
+.foto-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.foto { position:relative; aspect-ratio:1/1; border-radius:14px; overflow:hidden; background:#E2E8F0; }
+.foto img { width:100%; height:100%; object-fit:cover; display:block; }
+.foto .x { position:absolute; top:5px; right:5px; width:24px; height:24px; border-radius:50%; border:none; background:rgba(15,23,42,.72); color:#fff; font-size:15px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.foto .no { position:absolute; left:5px; bottom:5px; min-width:20px; padding:1px 6px; border-radius:99px; background:rgba(15,23,42,.62); color:#fff; font-size:10.5px; font-weight:700; text-align:center; }
+.tambah { aspect-ratio:1/1; border-radius:14px; border:2px dashed #CBD5E1; background:transparent; color:#64748B; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; font-family:inherit; font-size:11.5px; font-weight:600; }
+body.dark .tambah { border-color:#334155; color:#94A3B8; }
+.tambah svg { width:24px; height:24px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.tambah:active { transform:scale(.96); }
+.tambah:disabled { opacity:.4; cursor:default; }
+
+.hapus-entri { width:32px; height:32px; border:none; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.hapus-entri svg { width:18px; height:18px; stroke:#CBD5E1; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.hapus-entri:active svg { stroke:#DC2626; }
+
+.tambah-teman { width:100%; padding:14px; border-radius:18px; border:2px dashed #93C5FD; background:transparent; color:#2563EB; font-size:14px; font-weight:700; font-family:inherit; cursor:pointer; }
+body.dark .tambah-teman { border-color:#1E3A8A; color:#93C5FD; }
+.tambah-teman:active { transform:scale(.98); }
+.tambah-teman:disabled { opacity:.4; }
+
+.aksi { position:sticky; bottom:0; margin:0 -16px -16px; padding:12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); background:rgba(241,245,249,.92); backdrop-filter:blur(10px); border-top:1px solid #E2E8F0; display:flex; align-items:center; gap:12px; }
+body.dark .aksi { background:rgba(11,17,32,.92); border-top-color:#1E293B; }
+.aksi .info { flex:1; min-width:0; font-size:12px; color:#64748B; line-height:1.4; }
+body.dark .aksi .info { color:#94A3B8; }
+.aksi .info b { display:block; font-size:14px; color:#0F172A; }
+body.dark .aksi .info b { color:#F1F5F9; }
+.utama { padding:14px 20px; border:none; border-radius:16px; background:#2563EB; color:#fff; font-size:14.5px; font-weight:700; font-family:inherit; cursor:pointer; white-space:nowrap; }
+.utama:active { transform:scale(.97); background:#1D4ED8; }
+.utama:disabled { opacity:.55; }
+.sekunder { padding:12px 16px; border:1px solid #E2E8F0; border-radius:14px; background:#F8FAFE; color:#0F172A; font-size:14px; font-weight:600; font-family:inherit; cursor:pointer; }
+body.dark .sekunder { background:#1E293B; border-color:#334155; color:#F1F5F9; }
+.sekunder:active { transform:scale(.97); }
+
+.hasil { text-align:center; }
+.hasil .centang { width:56px; height:56px; border-radius:50%; background:#DCFCE7; display:flex; align-items:center; justify-content:center; margin:6px auto 12px; }
+body.dark .hasil .centang { background:#0F2A20; }
+.hasil .centang svg { width:28px; height:28px; stroke:#16A34A; fill:none; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+.hasil h2 { font-size:18px; letter-spacing:-.2px; }
+.hasil p { font-size:13px; color:#64748B; margin-top:4px; line-height:1.5; }
+body.dark .hasil p { color:#94A3B8; }
+.kotak-link { margin:16px 0 12px; padding:12px 14px; border-radius:14px; background:#F8FAFE; border:1px solid #E2E8F0; font-size:12.5px; word-break:break-all; text-align:left; color:#2563EB; font-weight:600; user-select:all; }
+body.dark .kotak-link { background:#1E293B; border-color:#334155; color:#93C5FD; }
+.tombol-baris { display:flex; gap:8px; }
+.tombol-baris .utama, .tombol-baris .sekunder { flex:1; padding-left:8px; padding-right:8px; }
+.catatan { margin-top:14px; font-size:12px; color:#94A3B8; line-height:1.6; }
+
+.riwayat-item { display:flex; align-items:center; gap:10px; padding:12px 0; border-top:1px solid #F1F5F9; }
+body.dark .riwayat-item { border-top-color:#1E293B; }
+.riwayat-item:first-of-type { border-top:none; padding-top:2px; }
+.riwayat-item .teks { flex:1; min-width:0; }
+.riwayat-item .judul { font-size:14px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.riwayat-item .meta { font-size:11.5px; color:#94A3B8; margin-top:1px; }
+.riwayat-item button { padding:7px 12px; border-radius:99px; border:none; background:#DBEAFE; color:#2563EB; font-size:12px; font-weight:700; font-family:inherit; cursor:pointer; }
+body.dark .riwayat-item button { background:#1E3A8A; color:#93C5FD; }
+
+.lapisan { position:fixed; inset:0; background:rgba(15,23,42,.6); backdrop-filter:blur(4px); z-index:200; display:none; align-items:center; justify-content:center; padding:24px; }
+.lapisan.aktif { display:flex; }
+.lapisan .kotak { width:100%; max-width:320px; background:#fff; border-radius:24px; padding:24px 22px; text-align:center; }
+body.dark .lapisan .kotak { background:#111827; }
+.lapisan .kotak b { display:block; font-size:16px; }
+.lapisan .kotak span { display:block; font-size:13px; color:#64748B; margin-top:4px; }
+.bilah { height:8px; border-radius:99px; background:#E2E8F0; overflow:hidden; margin-top:16px; }
+body.dark .bilah { background:#1E293B; }
+.bilah div { height:100%; width:0; background:#2563EB; border-radius:99px; transition:.3s; }
+
+.toast { position:fixed; left:50%; top:76px; transform:translateX(-50%) translateY(-8px); max-width:calc(100% - 32px); background:#1E293B; color:#fff; padding:12px 20px; border-radius:14px; font-size:13.5px; line-height:1.4; opacity:0; pointer-events:none; transition:.25s; z-index:300; border-left:4px solid #34D399; }
+.toast.tampil { opacity:1; transform:translateX(-50%) translateY(0); }
+.toast.galat { border-left-color:#F87171; }
+
+.sembunyi { display:none !important; }
+</style>
+</head>
+<body>
+<div class="app-container">
+
+  <div class="app-header">
+    <a class="menu-icon" href="index.html" aria-label="Kembali">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <span class="app-title">Link Jawaban</span>
+  </div>
+
+  <div class="content">
+
+    <div id="areaForm" class="content" style="padding:0;">
+      <div class="hero">
+        <div class="hero-title">Kumpulkan Tugas Lewat Link</div>
+        <div class="hero-sub">Foto jawaban dari buku, ubah menjadi satu link, lalu kirim ke guru. Guru dapat melihat semuanya tanpa membuka chat satu per satu.</div>
+        <label for="inJudul">Judul tugas</label>
+        <input type="text" id="inJudul" placeholder="Contoh: PR Matematika Bab 3" maxlength="100" autocomplete="off">
+      </div>
+
+      <div id="daftarEntri" class="content" style="padding:0;"></div>
+
+      <button type="button" class="tambah-teman" id="tombolTeman" onclick="tambahTeman()">+ Tambah Teman</button>
+
+      <div class="aksi">
+        <div class="info"><b id="ringkasJudul">0 murid</b><span id="ringkasFoto">0 foto</span></div>
+        <button type="button" class="utama" id="tombolLink" onclick="buatLink()">Ubah Menjadi Link</button>
+      </div>
+    </div>
+
+    <div id="areaHasil" class="content sembunyi" style="padding:0;">
+      <div class="card hasil">
+        <div class="centang"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <h2>Link siap dibagikan</h2>
+        <p id="hasilRingkas"></p>
+        <div class="kotak-link" id="kotakLink"></div>
+        <div class="tombol-baris">
+          <button type="button" class="utama" onclick="bagikanLink()">Bagikan</button>
+          <button type="button" class="sekunder" onclick="salinLinkTerakhir()">Salin</button>
+          <button type="button" class="sekunder" onclick="bukaLinkTerakhir()">Buka</button>
+        </div>
+        <p class="catatan">Guru dapat membuka link ini tanpa masuk akun. Jawaban yang sudah menjadi link tidak dapat diubah. Jika ada yang kurang, buat link baru.</p>
+      </div>
+      <button type="button" class="sekunder" onclick="mulaiBaru()">Buat Tugas Baru</button>
+    </div>
+
+    <div class="card sembunyi" id="kartuRiwayat">
+      <div class="card-kepala"><h2>Link Sebelumnya</h2><button type="button" class="hapus-entri" aria-label="Hapus riwayat" onclick="hapusRiwayat()"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>
+      <div id="daftarRiwayat"></div>
+    </div>
+
+  </div>
+</div>
+
+<input type="file" id="inputFoto" accept="image/*" multiple style="display:none;">
+
+<div class="lapisan" id="lapisanUnggah">
+  <div class="kotak">
+    <b id="unggahJudul">Mengunggah jawaban...</b>
+    <span id="unggahInfo">Jangan tutup halaman ini.</span>
+    <div class="bilah"><div id="unggahBilah"></div></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDgr_nHqvpMsiG4lBkYckzxRErkskXj_6E",
+  authDomain: "laporanstartools-c18b2.firebaseapp.com",
+  databaseURL: "https://laporanstartools-c18b2-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "laporanstartools-c18b2"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+try {
+  if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
+} catch (e) {}
+
+const MAKS_FOTO = 5;
+const MAKS_MURID = 40;
+const MAKS_SISI = 1280;
+const MAKS_KARAKTER = 600000;
+const MAKS_RIWAYAT = 10;
+const KUNCI_RIWAYAT = 'stools_jawaban_riwayat';
+const KUNCI_NAMA = 'stools_jawaban_nama';
+const KUNCI_KELAS = 'stools_jawaban_kelas';
+const ALFABET = 'abcdefghjkmnpqrstuvwxyz23456789';
+
+let entri = [];
+let penghitung = 0;
+let entriAktif = 0;
+let sedangUnggah = false;
+let linkTerakhir = '';
+let judulTerakhir = '';
+
+function el(id) {
+  return document.getElementById(id);
+}
+
+function simpanLokal(kunci, nilai) {
+  try { localStorage.setItem(kunci, nilai); } catch (e) {}
+}
+
+function bacaLokal(kunci) {
+  try { return localStorage.getItem(kunci) || ''; } catch (e) { return ''; }
+}
+
+let waktuToast = 0;
+function toast(pesan, galat) {
+  const t = el('toast');
+  t.textContent = pesan;
+  t.classList.toggle('galat', !!galat);
+  t.classList.add('tampil');
+  clearTimeout(waktuToast);
+  waktuToast = setTimeout(function() { t.classList.remove('tampil'); }, 3200);
+}
+
+function esc(teks) {
+  return String(teks)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function buatEntri(nama, kelas) {
+  penghitung++;
+  return { kunci: penghitung, nama: nama || '', kelas: kelas || '', foto: [] };
+}
+
+function cariEntri(kunci) {
+  return entri.find(function(e) { return e.kunci === kunci; });
+}
+
+function mulaiBaru() {
+  entri = [buatEntri(bacaLokal(KUNCI_NAMA), bacaLokal(KUNCI_KELAS))];
+  el('inJudul').value = '';
+  el('areaHasil').classList.add('sembunyi');
+  el('areaForm').classList.remove('sembunyi');
+  gambarEntri();
+  window.scrollTo({ top: 0 });
+}
+
+function ikonKamera() {
+  return '<svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>';
+}
+
+function gambarEntri() {
+  el('daftarEntri').innerHTML = entri.map(function(e, i) {
+    const judul = i === 0 ? 'Jawaban Kamu' : 'Jawaban Teman ' + i;
+    const kepala = '<div class="card-kepala"><h2>' + judul + '<small>' + e.foto.length + '/' + MAKS_FOTO + ' foto</small></h2>' +
+      (i > 0 ? '<button type="button" class="hapus-entri" aria-label="Hapus" onclick="hapusEntri(' + e.kunci + ')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>' : '') + '</div>';
+
+    const isian = '<div class="baris2">' +
+      '<input type="text" class="isian" placeholder="Nama (opsional)" maxlength="40" value="' + esc(e.nama) + '" oninput="ubahIsian(' + e.kunci + ',\'nama\',this.value)">' +
+      '<input type="text" class="isian" placeholder="Kelas (opsional)" maxlength="20" value="' + esc(e.kelas) + '" oninput="ubahIsian(' + e.kunci + ',\'kelas\',this.value)">' +
+      '</div>';
+
+    const foto = e.foto.map(function(f, j) {
+      return '<div class="foto"><img src="' + f.data + '" alt="Foto ' + (j + 1) + '"><span class="no">' + (j + 1) + '</span>' +
+        '<button type="button" class="x" aria-label="Hapus foto" onclick="hapusFoto(' + e.kunci + ',' + j + ')">&times;</button></div>';
+    }).join('');
+
+    const penuh = e.foto.length >= MAKS_FOTO;
+    const tombol = '<button type="button" class="tambah"' + (penuh ? ' disabled' : '') + ' onclick="pilihFoto(' + e.kunci + ')">' + ikonKamera() + '<span>Tambah Foto</span></button>';
+
+    return '<div class="card">' + kepala + isian + '<div class="foto-grid">' + foto + tombol + '</div></div>';
+  }).join('');
+
+  el('tombolTeman').disabled = entri.length >= MAKS_MURID;
+  perbaruiRingkasan();
+}
+
+function ubahIsian(kunci, bidang, nilai) {
+  const e = cariEntri(kunci);
+  if (!e) return;
+  e[bidang] = nilai;
+  perbaruiRingkasan();
+}
+
+function entriTerpakai() {
+  return entri.filter(function(e) { return e.foto.length > 0; });
+}
+
+function perbaruiRingkasan() {
+  const terpakai = entriTerpakai();
+  const jumlahFoto = terpakai.reduce(function(total, e) { return total + e.foto.length; }, 0);
+  el('ringkasJudul').textContent = terpakai.length + ' murid';
+  el('ringkasFoto').textContent = jumlahFoto + ' foto siap diunggah';
+}
+
+function tambahTeman() {
+  if (entri.length >= MAKS_MURID) {
+    toast('Maksimal ' + MAKS_MURID + ' murid dalam satu link.', true);
+    return;
+  }
+  const kelasAwal = entri.length ? entri[entri.length - 1].kelas : '';
+  entri.push(buatEntri('', kelasAwal));
+  gambarEntri();
+  const kartu = el('daftarEntri').lastElementChild;
+  if (kartu) kartu.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function hapusEntri(kunci) {
+  const e = cariEntri(kunci);
+  if (!e) return;
+  if (e.foto.length && !confirm('Hapus jawaban ini beserta fotonya?')) return;
+  entri = entri.filter(function(x) { return x.kunci !== kunci; });
+  gambarEntri();
+}
+
+function hapusFoto(kunci, indeks) {
+  const e = cariEntri(kunci);
+  if (!e) return;
+  e.foto.splice(indeks, 1);
+  gambarEntri();
+}
+
+function pilihFoto(kunci) {
+  entriAktif = kunci;
+  el('inputFoto').click();
+}
+
+function bacaFoto(file) {
+  return new Promise(function(selesai, gagal) {
+    const alamat = URL.createObjectURL(file);
+    const gambar = new Image();
+    gambar.onload = function() {
+      const skala = Math.min(1, MAKS_SISI / Math.max(gambar.naturalWidth, gambar.naturalHeight));
+      const lebar = Math.max(1, Math.round(gambar.naturalWidth * skala));
+      const tinggi = Math.max(1, Math.round(gambar.naturalHeight * skala));
+      const kanvas = document.createElement('canvas');
+      kanvas.width = lebar;
+      kanvas.height = tinggi;
+      const gambarKanvas = kanvas.getContext('2d');
+      gambarKanvas.fillStyle = '#FFFFFF';
+      gambarKanvas.fillRect(0, 0, lebar, tinggi);
+      gambarKanvas.drawImage(gambar, 0, 0, lebar, tinggi);
+      URL.revokeObjectURL(alamat);
+
+      let mutu = 0.72;
+      let data = kanvas.toDataURL('image/jpeg', mutu);
+      while (data.length > MAKS_KARAKTER && mutu > 0.3) {
+        mutu -= 0.1;
+        data = kanvas.toDataURL('image/jpeg', mutu);
+      }
+      if (data.length > MAKS_KARAKTER) gagal(new Error('terlalu besar'));
+      else selesai(data);
+    };
+    gambar.onerror = function() {
+      URL.revokeObjectURL(alamat);
+      gagal(new Error('tidak terbaca'));
+    };
+    gambar.src = alamat;
+  });
+}
+
+el('inputFoto').addEventListener('change', async function(ev) {
+  const berkas = Array.from(ev.target.files || []);
+  ev.target.value = '';
+  const e = cariEntri(entriAktif);
+  if (!e || !berkas.length) return;
+
+  const sisa = MAKS_FOTO - e.foto.length;
+  if (berkas.length > sisa) toast('Maksimal ' + MAKS_FOTO + ' foto per murid. Hanya ' + sisa + ' foto pertama yang dipakai.', true);
+
+  let gagalBaca = 0;
+  for (const file of berkas.slice(0, Math.max(0, sisa))) {
+    try {
+      const data = await bacaFoto(file);
+      e.foto.push({ data: data });
+      gambarEntri();
+    } catch (err) {
+      gagalBaca++;
+    }
+  }
+  if (gagalBaca) toast(gagalBaca + ' foto tidak dapat dibaca. Gunakan format JPG atau PNG.', true);
+});
+
+function buatId() {
+  const acak = new Uint8Array(32);
+  crypto.getRandomValues(acak);
+  let hasil = '';
+  for (let i = 0; i < acak.length && hasil.length < 22; i++) {
+    if (acak[i] < 248) hasil += ALFABET[acak[i] % ALFABET.length];
+  }
+  while (hasil.length < 22) hasil += ALFABET[Math.floor(Math.random() * ALFABET.length)];
+  return hasil;
+}
+
+function alamatLink(id) {
+  const u = new URL('jawaban-lihat.html', location.href);
+  u.search = '?j=' + id;
+  u.hash = '';
+  return u.href;
+}
+
+function tampilProgres(selesai, total, teks) {
+  el('unggahBilah').style.width = Math.round(selesai / total * 100) + '%';
+  el('unggahInfo').textContent = teks || ('Murid ' + selesai + ' dari ' + total + ' selesai diunggah.');
+}
+
+async function buatLink() {
+  if (sedangUnggah) return;
+
+  const judul = el('inJudul').value.trim();
+  if (!judul) {
+    toast('Judul tugas wajib diisi.', true);
+    el('inJudul').focus();
+    return;
+  }
+
+  for (let i = 1; i < entri.length; i++) {
+    if (entri[i].nama.trim() && !entri[i].foto.length) {
+      toast('Jawaban Teman ' + i + ' belum memiliki foto.', true);
+      return;
+    }
+  }
+
+  const terpakai = entriTerpakai();
+  if (!terpakai.length) {
+    toast('Tambahkan minimal satu foto jawaban.', true);
+    return;
+  }
+
+  sedangUnggah = true;
+  el('tombolLink').disabled = true;
+  el('lapisanUnggah').classList.add('aktif');
+  tampilProgres(0, terpakai.length, 'Menyiapkan unggahan...');
+
+  const id = buatId();
+  try {
+    const murid = {};
+    for (let i = 0; i < terpakai.length; i++) {
+      const e = terpakai[i];
+      const kunciMurid = 'm' + (i + 1);
+      const foto = {};
+      e.foto.forEach(function(f, j) { foto[j] = f.data; });
+      await db.ref('tugasFoto/' + id + '/' + kunciMurid).set(foto);
+
+      const data = { foto: e.foto.length, urut: i + 1 };
+      if (e.nama.trim()) data.nama = e.nama.trim().slice(0, 40);
+      if (e.kelas.trim()) data.kelas = e.kelas.trim().slice(0, 20);
+      murid[kunciMurid] = data;
+      tampilProgres(i + 1, terpakai.length);
+    }
+
+    await db.ref('tugasLink/' + id).set({
+      judul: judul.slice(0, 100),
+      dibuat: firebase.database.ServerValue.TIMESTAMP,
+      jumlahMurid: terpakai.length,
+      murid: murid
+    });
+
+    const pertama = terpakai[0];
+    simpanLokal(KUNCI_NAMA, pertama.nama.trim());
+    simpanLokal(KUNCI_KELAS, pertama.kelas.trim());
+
+    linkTerakhir = alamatLink(id);
+    judulTerakhir = judul;
+    const jumlahFoto = terpakai.reduce(function(total, e) { return total + e.foto.length; }, 0);
+    catatRiwayat({ id: id, judul: judul, dibuat: Date.now(), murid: terpakai.length, foto: jumlahFoto });
+    tampilkanHasil(judul, terpakai.length, jumlahFoto);
+  } catch (err) {
+    const ditolak = err && (err.code === 'PERMISSION_DENIED' || /permission/i.test(err.message || ''));
+    toast(ditolak ? 'Izin ditolak. Aturan Firebase untuk tugasLink dan tugasFoto belum dipasang.' : 'Gagal mengunggah. Periksa koneksi lalu coba lagi.', true);
+  } finally {
+    sedangUnggah = false;
+    el('tombolLink').disabled = false;
+    el('lapisanUnggah').classList.remove('aktif');
+  }
+}
+
+function tampilkanHasil(judul, jumlahMurid, jumlahFoto) {
+  el('hasilRingkas').textContent = judul + ' · ' + jumlahMurid + ' murid, ' + jumlahFoto + ' foto';
+  el('kotakLink').textContent = linkTerakhir;
+  el('areaForm').classList.add('sembunyi');
+  el('areaHasil').classList.remove('sembunyi');
+  gambarRiwayat();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function salinTeks(teks, pesan) {
+  const cadangan = function() {
+    const area = document.createElement('textarea');
+    area.value = teks;
+    area.style.position = 'fixed';
+    area.style.opacity = '0';
+    document.body.appendChild(area);
+    area.select();
+    let berhasil = false;
+    try { berhasil = document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(area);
+    toast(berhasil ? pesan : 'Salin manual: tahan lalu pilih salin.', !berhasil);
+  };
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(teks).then(function() { toast(pesan); }, cadangan);
+  } else {
+    cadangan();
+  }
+}
+
+function salinLinkTerakhir() {
+  salinTeks(linkTerakhir, 'Link berhasil disalin.');
+}
+
+function bukaLinkTerakhir() {
+  window.open(linkTerakhir, '_blank', 'noopener');
+}
+
+function bagikanLink() {
+  const teks = 'Jawaban tugas: ' + judulTerakhir;
+  if (navigator.share) {
+    navigator.share({ title: 'Jawaban ' + judulTerakhir, text: teks, url: linkTerakhir }).catch(function() {});
+  } else {
+    salinTeks(teks + '\n' + linkTerakhir, 'Link berhasil disalin.');
+  }
+}
+
+function bacaRiwayat() {
+  try {
+    const daftar = JSON.parse(bacaLokal(KUNCI_RIWAYAT) || '[]');
+    return Array.isArray(daftar) ? daftar : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function catatRiwayat(item) {
+  const daftar = bacaRiwayat();
+  daftar.unshift(item);
+  simpanLokal(KUNCI_RIWAYAT, JSON.stringify(daftar.slice(0, MAKS_RIWAYAT)));
+  gambarRiwayat();
+}
+
+function hapusRiwayat() {
+  if (!confirm('Hapus daftar link ini dari perangkat? Link yang sudah dibagikan tetap dapat dibuka guru.')) return;
+  simpanLokal(KUNCI_RIWAYAT, '[]');
+  gambarRiwayat();
+}
+
+function salinRiwayat(id) {
+  salinTeks(alamatLink(id), 'Link berhasil disalin.');
+}
+
+function gambarRiwayat() {
+  const daftar = bacaRiwayat();
+  el('kartuRiwayat').classList.toggle('sembunyi', daftar.length === 0);
+  el('daftarRiwayat').innerHTML = daftar.map(function(r) {
+    const tanggal = new Date(r.dibuat).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+    return '<div class="riwayat-item"><div class="teks"><div class="judul">' + esc(r.judul) + '</div>' +
+      '<div class="meta">' + esc(tanggal) + ' · ' + Number(r.murid) + ' murid, ' + Number(r.foto) + ' foto</div></div>' +
+      '<button type="button" onclick="salinRiwayat(\'' + esc(r.id) + '\')">Salin</button></div>';
+  }).join('');
+}
+
+mulaiBaru();
+gambarRiwayat();
+</script>
+</body>
+</html>

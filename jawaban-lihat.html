@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Jawaban Tugas - STools</title>
+
+<link rel="icon" type="image/png" href="logo.jpg">
+<link rel="apple-touch-icon" href="logo.jpg">
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<style>
+  :root {
+    --bg: #F1F5F9;
+    --card: #FFFFFF;
+    --text: #0F172A;
+    --text-soft: #64748B;
+    --text-faint: #94A3B8;
+    --border: #E2E8F0;
+    --primary: #2563EB;
+    --primary-soft: #DBEAFE;
+    --success: #059669;
+    --danger: #DC2626;
+    --danger-soft: #FEF2F2;
+    --field-bg: #F8FAFE;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0B1120;
+      --card: #111827;
+      --text: #F1F5F9;
+      --text-soft: #94A3B8;
+      --text-faint: #64748B;
+      --border: #1E293B;
+      --primary: #60A5FA;
+      --primary-soft: #1E3A8A;
+      --success: #34D399;
+      --danger: #F87171;
+      --danger-soft: #3A1414;
+      --field-bg: #1E293B;
+    }
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px);
+    overflow-x: hidden;
+  }
+
+  .halaman {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 12px 12px 28px;
+  }
+
+  .hero {
+    border-radius: 22px;
+    padding: 18px 16px;
+    color: #FFFFFF;
+    background:
+      radial-gradient(circle at 90% 0%, rgba(255, 255, 255, 0.18), transparent 45%),
+      linear-gradient(145deg, #1E40AF 0%, #2563EB 55%, #3B82F6 100%);
+    margin-bottom: 10px;
+  }
+
+  .hero-atas {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .hero-judul {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .hero-judul small {
+    display: block;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+
+  .hero-judul h1 {
+    margin-top: 3px;
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .hero-judul p {
+    margin-top: 5px;
+    font-size: 12px;
+    opacity: 0.85;
+    line-height: 1.4;
+  }
+
+  .sudut {
+    flex-shrink: 0;
+    text-align: right;
+    padding: 8px 12px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+  }
+
+  .sudut b {
+    display: block;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  .sudut span {
+    display: block;
+    font-size: 10px;
+    opacity: 0.85;
+    margin-top: 1px;
+  }
+
+  .kartu {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 14px 12px;
+    margin-bottom: 10px;
+  }
+
+  .alat {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .alat input {
+    flex: 1;
+    min-width: 0;
+    padding: 11px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+  }
+
+  .alat input:focus {
+    border-color: var(--primary);
+  }
+
+  .tombol {
+    padding: 11px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .tombol:active {
+    transform: scale(0.97);
+  }
+
+  .tombol.biru {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #FFFFFF;
+  }
+
+  .lipat summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 2px 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .lipat summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .lipat summary small {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--text-faint);
+  }
+
+  .lipat .isi {
+    padding: 10px 4px 2px;
+  }
+
+  .lipat p {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-soft);
+    margin-bottom: 8px;
+  }
+
+  .lipat textarea {
+    width: 100%;
+    min-height: 110px;
+    padding: 11px 13px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--field-bg);
+    color: var(--text);
+    font-size: 13.5px;
+    font-family: inherit;
+    line-height: 1.5;
+    resize: vertical;
+    outline: none;
+  }
+
+  .hasil-cek {
+    margin-top: 10px;
+    padding: 11px 13px;
+    border-radius: 14px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .hasil-cek.belum {
+    background: var(--danger-soft);
+    color: var(--danger);
+  }
+
+  .hasil-cek.lengkap {
+    background: rgba(5, 150, 105, 0.12);
+    color: var(--success);
+    font-weight: 600;
+  }
+
+  .hasil-cek b {
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .murid {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+
+  .murid-kepala {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .nomor {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--primary-soft);
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .murid-nama {
+    flex: 1;
+    min-width: 0;
+    font-size: 14.5px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+    line-height: 1.3;
+  }
+
+  .murid-nama.kosong {
+    color: var(--text-soft);
+    font-weight: 600;
+  }
+
+  .chip {
+    flex-shrink: 0;
+    padding: 3px 10px;
+    border-radius: 99px;
+    background: var(--field-bg);
+    border: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-soft);
+  }
+
+  .foto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+    gap: 8px;
+  }
+
+  .th {
+    position: relative;
+    aspect-ratio: 3/4;
+    border-radius: 12px;
+    overflow: hidden;
+    border: none;
+    padding: 0;
+    background: var(--field-bg);
+    cursor: pointer;
+  }
+
+  .th img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .th .no {
+    position: absolute;
+    left: 6px;
+    bottom: 6px;
+    min-width: 20px;
+    padding: 1px 7px;
+    border-radius: 99px;
+    background: rgba(15, 23, 42, 0.68);
+    color: #FFFFFF;
+    font-size: 10.5px;
+    font-weight: 700;
+  }
+
+  .th.muat {
+    animation: kedip 1.2s ease-in-out infinite;
+    cursor: default;
+  }
+
+  @keyframes kedip {
+    0%, 100% {
+      opacity: 0.55;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  .pesan {
+    text-align: center;
+    color: var(--text-faint);
+    font-size: 13.5px;
+    padding: 28px 12px;
+    line-height: 1.6;
+  }
+
+  .pesan b {
+    display: block;
+    color: var(--text);
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .kaki {
+    text-align: center;
+    font-size: 11.5px;
+    color: var(--text-faint);
+    padding: 8px 0 0;
+  }
+
+  .penampil {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(2, 6, 23, 0.96);
+    display: none;
+    flex-direction: column;
+  }
+
+  .penampil.aktif {
+    display: flex;
+  }
+
+  .p-atas,
+  .p-bawah {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 14px;
+    color: #FFFFFF;
+  }
+
+  .p-atas .judul {
+    flex: 1;
+    min-width: 0;
+    font-size: 14px;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .p-atas .judul span {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 500;
+    opacity: 0.7;
+    margin-top: 1px;
+  }
+
+  .p-tutup,
+  .p-panah {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.14);
+    color: #FFFFFF;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .p-panah:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  .p-gambar {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: pan-x pan-y pinch-zoom;
+  }
+
+  .p-gambar img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    cursor: zoom-in;
+  }
+
+  .p-gambar.zoom {
+    display: block;
+  }
+
+  .p-gambar.zoom img {
+    max-width: none;
+    max-height: none;
+    width: 220%;
+    cursor: zoom-out;
+  }
+
+  .p-simpan {
+    padding: 10px 16px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.14);
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    transform: translateX(-50%) translateY(8px);
+    max-width: calc(100% - 32px);
+    background: #1E293B;
+    color: #FFFFFF;
+    padding: 11px 18px;
+    border-radius: 14px;
+    font-size: 13px;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.25s;
+    z-index: 200;
+  }
+
+  .toast.tampil {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .sembunyi {
+    display: none !important;
+  }
+</style>
+</head>
+<body>
+
+<div class="halaman">
+  <div class="hero">
+    <div class="hero-atas">
+      <div class="hero-judul">
+        <small>Jawaban Tugas</small>
+        <h1 id="judulTugas">Memuat...</h1>
+        <p id="infoTugas"></p>
+      </div>
+      <div class="sudut sembunyi" id="sudutJumlah"><b id="jumlahMurid">0</b><span>murid mengumpulkan</span></div>
+    </div>
+  </div>
+
+  <div id="pesanUtama" class="kartu pesan sembunyi"></div>
+
+  <div id="isi" class="sembunyi">
+    <div class="kartu">
+      <details class="lipat" id="lipatCek">
+        <summary>Cek siapa yang belum mengumpulkan <small>Opsional</small></summary>
+        <div class="isi">
+          <p>Tempel daftar nama murid satu kelas, satu nama per baris. Daftar hanya diproses di perangkat ini dan tidak dikirim ke mana pun.</p>
+          <textarea id="daftarKelas" placeholder="Andi Saputra&#10;Budi Santoso&#10;Citra Lestari" oninput="cekKelas()"></textarea>
+          <div id="hasilCek"></div>
+        </div>
+      </details>
+    </div>
+
+    <div class="alat">
+      <input type="search" id="cari" placeholder="Cari nama murid" oninput="saring()" autocomplete="off">
+      <button type="button" class="tombol" onclick="salinDaftar()">Salin Nama</button>
+    </div>
+
+    <div id="daftarMurid"></div>
+  </div>
+
+  <div class="kaki">Star Platform | STools 2026</div>
+</div>
+
+<div class="penampil" id="penampil">
+  <div class="p-atas">
+    <div class="judul"><div id="pNama"></div><span id="pPosisi"></span></div>
+    <button type="button" class="p-tutup" onclick="tutupPenampil()" aria-label="Tutup">&times;</button>
+  </div>
+  <div class="p-gambar" id="pGambar"><img id="pFoto" alt="Foto jawaban" onclick="ubahZoom()"></div>
+  <div class="p-bawah">
+    <button type="button" class="p-panah" id="pSebelum" onclick="geser(-1)" aria-label="Foto sebelumnya">&#8249;</button>
+    <a class="p-simpan" id="pSimpan" download="jawaban.jpg" href="#">Simpan Foto</a>
+    <button type="button" class="p-panah" id="pSesudah" onclick="geser(1)" aria-label="Foto berikutnya">&#8250;</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var firebaseConfig = {
+  apiKey: "AIzaSyDgr_nHqvpMsiG4lBkYckzxRErkskXj_6E",
+  authDomain: "laporanstartools-c18b2.firebaseapp.com",
+  databaseURL: "https://laporanstartools-c18b2-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "laporanstartools-c18b2"
+};
+
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+var db = firebase.database();
+
+var DAFTAR_BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+var NAMA_HARI = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+
+var idTugas = "";
+var tugas = null;
+var daftarMurid = [];
+var fotoMurid = {};
+var pengamat = null;
+var penampilMurid = "";
+var penampilIndeks = 0;
+var waktuToast = 0;
+
+function el(id) {
+  return document.getElementById(id);
+}
+
+function escapeHtml(teks) {
+  return String(teks)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function toast(pesan) {
+  var t = el("toast");
+  t.textContent = pesan;
+  t.classList.add("tampil");
+  clearTimeout(waktuToast);
+  waktuToast = setTimeout(function() {
+    t.classList.remove("tampil");
+  }, 2600);
+}
+
+function tampilkanPesan(judul, isi) {
+  el("isi").classList.add("sembunyi");
+  el("sudutJumlah").classList.add("sembunyi");
+  var kotak = el("pesanUtama");
+  kotak.innerHTML = "<b>" + escapeHtml(judul) + "</b>" + escapeHtml(isi);
+  kotak.classList.remove("sembunyi");
+}
+
+function namaTampil(m) {
+  return m.nama || "Murid " + m.urut;
+}
+
+function normal(teks) {
+  return String(teks || "").toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function kataDari(teks) {
+  var n = normal(teks);
+  return n ? n.split(" ") : [];
+}
+
+function cocok(a, b) {
+  var kataA = kataDari(a);
+  var kataB = kataDari(b);
+  if (!kataA.length || !kataB.length) return false;
+  var pendek = kataA.length <= kataB.length ? kataA : kataB;
+  var panjang = kataA.length <= kataB.length ? kataB : kataA;
+  return pendek.every(function(k) {
+    return panjang.indexOf(k) !== -1;
+  });
+}
+
+function gambarKepala() {
+  el("judulTugas").textContent = tugas.judul;
+  document.title = tugas.judul + " - Jawaban Tugas";
+
+  var waktu = new Date(tugas.dibuat);
+  var jam = String(waktu.getHours()).padStart(2, "0") + "." + String(waktu.getMinutes()).padStart(2, "0");
+  el("infoTugas").textContent = "Dikirim " + NAMA_HARI[waktu.getDay()] + ", " + waktu.getDate() + " " + DAFTAR_BULAN[waktu.getMonth()] + " " + waktu.getFullYear() + " pukul " + jam;
+
+  el("jumlahMurid").textContent = daftarMurid.length;
+  el("sudutJumlah").classList.remove("sembunyi");
+}
+
+function gambarDaftar() {
+  var kata = normal(el("cari").value);
+  var tampil = daftarMurid.filter(function(m) {
+    return !kata || normal(namaTampil(m) + " " + (m.kelas || "")).indexOf(kata) !== -1;
+  });
+
+  if (!tampil.length) {
+    el("daftarMurid").innerHTML = '<div class="kartu pesan">Tidak ada murid dengan nama itu.</div>';
+    return;
+  }
+
+  el("daftarMurid").innerHTML = tampil.map(function(m) {
+    var sel = "";
+    for (var i = 0; i < m.foto; i++) {
+      sel += '<button type="button" class="th muat" aria-label="Memuat foto"></button>';
+    }
+    return '<div class="murid" data-mid="' + escapeHtml(m.kunci) + '">' +
+      '<div class="murid-kepala"><span class="nomor">' + m.urut + '</span>' +
+      '<div class="murid-nama' + (m.nama ? '' : ' kosong') + '">' + escapeHtml(namaTampil(m)) + '</div>' +
+      (m.kelas ? '<span class="chip">' + escapeHtml(m.kelas) + '</span>' : '') +
+      '<span class="chip">' + m.foto + ' foto</span></div>' +
+      '<div class="foto-grid">' + sel + '</div></div>';
+  }).join("");
+
+  pasangPengamat();
+}
+
+function pasangPengamat() {
+  var kartu = el("daftarMurid").querySelectorAll(".murid");
+  if (pengamat) pengamat.disconnect();
+
+  if (!("IntersectionObserver" in window)) {
+    Array.prototype.forEach.call(kartu, muatFoto);
+    return;
+  }
+
+  pengamat = new IntersectionObserver(function(daftar) {
+    daftar.forEach(function(item) {
+      if (item.isIntersecting) {
+        muatFoto(item.target);
+        pengamat.unobserve(item.target);
+      }
+    });
+  }, { rootMargin: "300px 0px" });
+
+  Array.prototype.forEach.call(kartu, function(k) {
+    pengamat.observe(k);
+  });
+}
+
+function gambarFoto(kartu, daftarFoto) {
+  var mid = kartu.getAttribute("data-mid");
+  var grid = kartu.querySelector(".foto-grid");
+  if (!daftarFoto.length) {
+    grid.innerHTML = '<div class="pesan" style="grid-column:1/-1;padding:14px 0;">Foto tidak dapat dimuat.</div>';
+    return;
+  }
+  grid.innerHTML = daftarFoto.map(function(data, i) {
+    return '<button type="button" class="th" onclick="bukaPenampil(\'' + escapeHtml(mid) + '\',' + i + ')" aria-label="Buka foto ' + (i + 1) + '">' +
+      '<img src="' + data + '" alt="Foto ' + (i + 1) + '" loading="lazy"><span class="no">' + (i + 1) + '</span></button>';
+  }).join("");
+}
+
+function muatFoto(kartu) {
+  var mid = kartu.getAttribute("data-mid");
+  if (fotoMurid[mid]) {
+    gambarFoto(kartu, fotoMurid[mid]);
+    return;
+  }
+
+  db.ref("tugasFoto/" + idTugas + "/" + mid).once("value").then(function(snap) {
+    var nilai = snap.val() || {};
+    var daftar = [];
+    for (var i = 0; i < 5; i++) {
+      if (nilai[i]) daftar.push(nilai[i]);
+    }
+    fotoMurid[mid] = daftar;
+    gambarFoto(kartu, daftar);
+  }).catch(function() {
+    gambarFoto(kartu, []);
+  });
+}
+
+function saring() {
+  gambarDaftar();
+}
+
+function salinDaftar() {
+  var baris = daftarMurid.map(function(m) {
+    return m.urut + ". " + namaTampil(m) + (m.kelas ? " (" + m.kelas + ")" : "");
+  });
+  var teks = tugas.judul + "\nSudah mengumpulkan (" + daftarMurid.length + "):\n" + baris.join("\n");
+
+  var cadangan = function() {
+    var area = document.createElement("textarea");
+    area.value = teks;
+    area.style.position = "fixed";
+    area.style.opacity = "0";
+    document.body.appendChild(area);
+    area.select();
+    var berhasil = false;
+    try {
+      berhasil = document.execCommand("copy");
+    } catch (e) {}
+    document.body.removeChild(area);
+    toast(berhasil ? "Daftar nama disalin." : "Daftar nama tidak dapat disalin.");
+  };
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(teks).then(function() {
+      toast("Daftar nama disalin.");
+    }, cadangan);
+  } else {
+    cadangan();
+  }
+}
+
+function kunciDaftarKelas() {
+  return "stools_daftar_kelas_" + idTugas;
+}
+
+function cekKelas() {
+  var teks = el("daftarKelas").value;
+  try {
+    localStorage.setItem(kunciDaftarKelas(), teks);
+  } catch (e) {}
+
+  var roster = teks.split("\n").map(function(n) {
+    return n.trim();
+  }).filter(function(n) {
+    return n;
+  });
+  var kotak = el("hasilCek");
+
+  if (!roster.length) {
+    kotak.innerHTML = "";
+    return;
+  }
+
+  var belum = roster.filter(function(nama) {
+    return !daftarMurid.some(function(m) {
+      return m.nama && cocok(nama, m.nama);
+    });
+  });
+
+  var tanpaNama = daftarMurid.filter(function(m) {
+    return !m.nama;
+  }).length;
+  var catatan = tanpaNama ? "<br>" + tanpaNama + " jawaban tidak memakai nama, jadi tidak dapat dicocokkan." : "";
+
+  if (!belum.length) {
+    kotak.innerHTML = '<div class="hasil-cek lengkap">Semua murid dalam daftar sudah mengumpulkan.' + catatan + '</div>';
+    return;
+  }
+
+  kotak.innerHTML = '<div class="hasil-cek belum"><b>Belum mengumpulkan (' + belum.length + ' dari ' + roster.length + '):</b>' +
+    belum.map(escapeHtml).join("<br>") + catatan + '</div>';
+}
+
+function bukaPenampil(mid, indeks) {
+  var daftar = fotoMurid[mid];
+  if (!daftar || !daftar[indeks]) return;
+  penampilMurid = mid;
+  penampilIndeks = indeks;
+  el("penampil").classList.add("aktif");
+  document.body.style.overflow = "hidden";
+  gambarPenampil();
+}
+
+function gambarPenampil() {
+  var daftar = fotoMurid[penampilMurid] || [];
+  var murid = daftarMurid.find(function(m) {
+    return m.kunci === penampilMurid;
+  });
+  var nama = murid ? namaTampil(murid) : "";
+
+  el("pFoto").src = daftar[penampilIndeks];
+  el("pNama").textContent = nama;
+  el("pPosisi").textContent = "Foto " + (penampilIndeks + 1) + " dari " + daftar.length;
+  el("pSebelum").disabled = penampilIndeks <= 0;
+  el("pSesudah").disabled = penampilIndeks >= daftar.length - 1;
+  el("pGambar").classList.remove("zoom");
+  el("pGambar").scrollTop = 0;
+  el("pGambar").scrollLeft = 0;
+
+  var berkas = (nama || "jawaban").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "") || "jawaban";
+  var tautan = el("pSimpan");
+  tautan.href = daftar[penampilIndeks];
+  tautan.setAttribute("download", berkas + "-" + (penampilIndeks + 1) + ".jpg");
+}
+
+function geser(arah) {
+  var daftar = fotoMurid[penampilMurid] || [];
+  var baru = penampilIndeks + arah;
+  if (baru < 0 || baru >= daftar.length) return;
+  penampilIndeks = baru;
+  gambarPenampil();
+}
+
+function ubahZoom() {
+  el("pGambar").classList.toggle("zoom");
+}
+
+function tutupPenampil() {
+  el("penampil").classList.remove("aktif");
+  document.body.style.overflow = "";
+}
+
+document.addEventListener("keydown", function(e) {
+  if (!el("penampil").classList.contains("aktif")) return;
+  if (e.key === "Escape") tutupPenampil();
+  if (e.key === "ArrowLeft") geser(-1);
+  if (e.key === "ArrowRight") geser(1);
+});
+
+var sentuhAwal = null;
+el("pGambar").addEventListener("touchstart", function(e) {
+  if (e.touches.length !== 1 || el("pGambar").classList.contains("zoom")) {
+    sentuhAwal = null;
+    return;
+  }
+  sentuhAwal = e.touches[0].clientX;
+}, { passive: true });
+
+el("pGambar").addEventListener("touchend", function(e) {
+  if (sentuhAwal === null) return;
+  var selisih = e.changedTouches[0].clientX - sentuhAwal;
+  sentuhAwal = null;
+  if (Math.abs(selisih) > 60) geser(selisih < 0 ? 1 : -1);
+}, { passive: true });
+
+function mulai() {
+  var id = new URLSearchParams(location.search).get("j");
+  if (!id || !/^[A-Za-z0-9_-]{8,64}$/.test(id)) {
+    el("judulTugas").textContent = "Link tidak valid";
+    tampilkanPesan("Link tidak valid", "Periksa kembali link jawaban yang Anda terima dari murid.");
+    return;
+  }
+  idTugas = id;
+
+  db.ref("tugasLink/" + id).once("value").then(function(snap) {
+    var data = snap.val();
+    if (!data || !data.murid) {
+      el("judulTugas").textContent = "Jawaban tidak ditemukan";
+      tampilkanPesan("Jawaban tidak ditemukan", "Link ini tidak ada atau belum selesai diunggah. Mintalah murid membuat link baru.");
+      return;
+    }
+
+    tugas = data;
+    daftarMurid = Object.keys(data.murid).map(function(kunci) {
+      var m = data.murid[kunci];
+      return { kunci: kunci, nama: m.nama || "", kelas: m.kelas || "", foto: Number(m.foto) || 0, urut: Number(m.urut) || 0 };
+    }).sort(function(a, b) {
+      return a.urut - b.urut;
+    });
+
+    gambarKepala();
+    el("pesanUtama").classList.add("sembunyi");
+    el("isi").classList.remove("sembunyi");
+
+    try {
+      var tersimpan = localStorage.getItem(kunciDaftarKelas()) || "";
+      if (tersimpan) {
+        el("daftarKelas").value = tersimpan;
+        el("lipatCek").open = true;
+        cekKelas();
+      }
+    } catch (e) {}
+
+    gambarDaftar();
+  }).catch(function() {
+    el("judulTugas").textContent = "Jawaban Tugas";
+    tampilkanPesan("Jawaban tidak dapat dimuat", "Periksa koneksi internet Anda lalu muat ulang halaman ini.");
+  });
+}
+
+mulai();
+</script>
+</body>
+</html>
