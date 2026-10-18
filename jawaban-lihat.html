@@ -518,6 +518,52 @@
   .sembunyi {
     display: none !important;
   }
+
+  /* ===== DESKTOP: halaman lihat jawaban layar penuh ===== */
+  @media (min-width: 900px) {
+    .halaman { max-width: 1200px; padding: 28px 32px 40px; }
+    .hero { border-radius: 28px; padding: 28px 32px; margin-bottom: 22px; }
+    .hero-judul small { font-size: 12px; }
+    .hero-judul h1 { font-size: 30px; }
+    .hero-judul p { font-size: 14px; }
+    .sudut { padding: 12px 20px; border-radius: 16px; }
+    .sudut b { font-size: 30px; }
+    .sudut span { font-size: 12px; }
+
+    #pesanUtama { max-width: 560px; margin: 8vh auto 0; padding: 40px 24px; }
+
+    /* kiri: cek + cari, kanan: daftar murid dua kolom */
+    #isi:not(.sembunyi) {
+      display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); grid-template-rows: auto auto 1fr;
+      column-gap: 24px; align-items: start;
+    }
+    #isi > .kartu { grid-column: 1; grid-row: 1; margin-bottom: 14px; padding: 18px 16px; border-radius: 22px; }
+    #isi > .alat { grid-column: 1; grid-row: 2; margin-bottom: 0; }
+    #isi > #daftarMurid {
+      grid-column: 2; grid-row: 1 / span 3; min-width: 0;
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start;
+    }
+    .murid { margin: 0; padding: 14px; border-radius: 22px; transition: border-color .15s, box-shadow .15s; }
+    .murid:hover { border-color: var(--primary); box-shadow: 0 8px 22px rgba(37, 99, 235, 0.08); }
+    .murid-nama { font-size: 15.5px; }
+    .foto-grid { grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); }
+    .th { transition: transform .15s, box-shadow .15s; }
+    .th:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18); }
+    .alat input { padding: 12px 16px; }
+    .tombol:hover { border-color: var(--primary); }
+    .tombol.biru:hover { filter: brightness(1.08); }
+    .lipat textarea { min-height: 150px; }
+    .kaki { padding: 24px 0 0; }
+
+    .p-atas, .p-bawah { padding: 16px 32px; }
+    .p-atas .judul { font-size: 16px; }
+    .p-tutup:hover, .p-panah:not(:disabled):hover { background: rgba(255, 255, 255, 0.26); }
+  }
+
+  @media (min-width: 900px) and (max-width: 1099px) {
+    #isi:not(.sembunyi) { grid-template-columns: minmax(0, 290px) minmax(0, 1fr); column-gap: 20px; }
+    #isi > #daftarMurid { grid-template-columns: minmax(0, 1fr); }
+  }
 </style>
 </head>
 <body>

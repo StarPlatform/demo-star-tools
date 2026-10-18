@@ -114,6 +114,64 @@ body.dark .bilah { background:#1E293B; }
 .toast.galat { border-left-color:#F87171; }
 
 .sembunyi { display:none !important; }
+
+  /* ===== DESKTOP: halaman link jawaban layar penuh ===== */
+  @media (min-width: 900px) {
+    body { background:#F8FAFC; }
+    body.dark { background:#0B1120; }
+
+    .app-container { max-width:none; width:100%; margin:0; min-height:100vh; display:flex; flex-direction:column; }
+    .app-header {
+      min-height:68px; background:rgba(255,255,255,.88); backdrop-filter:blur(10px);
+      padding:0 max(32px, calc((100% - 1100px) / 2 + 32px));
+    }
+    body.dark .app-header { background:rgba(17,24,39,.88); }
+    .app-title { font-size:22px; }
+    .menu-icon:hover { border-color:#2563EB; }
+
+    .app-container > .content { width:100%; max-width:1100px; margin:0 auto; padding:28px 32px 40px; flex:1; align-content:start; }
+
+    /* kiri: judul tugas + ringkasan, kanan: kartu murid */
+    #areaForm:not(.sembunyi) {
+      display:grid; grid-template-columns:minmax(0,340px) minmax(0,1fr); grid-template-rows:auto 1fr auto;
+      column-gap:24px; row-gap:14px; align-items:start;
+    }
+    #areaForm > .hero { grid-column:1; grid-row:1; padding:26px; border-radius:26px; }
+    #areaForm > .hero .hero-title { font-size:24px; }
+    #areaForm > .aksi {
+      grid-column:1; grid-row:2; position:sticky; top:92px; bottom:auto; margin:0; padding:18px;
+      border:1px solid #E2E8F0; border-radius:22px; background:#fff; backdrop-filter:none;
+      flex-direction:column; align-items:stretch; gap:14px;
+    }
+    body.dark #areaForm > .aksi { background:#111827; border-color:#1E293B; }
+    #areaForm > .aksi .utama { width:100%; padding:15px; transition:filter .15s; }
+    #areaForm > .aksi .utama:not(:disabled):hover { filter:brightness(1.08); }
+    #areaForm > #daftarEntri {
+      grid-column:2; grid-row:1 / span 2; min-width:0;
+      display:grid; grid-template-columns:minmax(0,1fr); gap:14px; align-items:start;
+    }
+    #areaForm > #tombolTeman { grid-column:2; grid-row:3; padding:16px; transition:background .15s; }
+    #areaForm > #tombolTeman:not(:disabled):hover { background:rgba(37,99,235,.06); }
+
+    .card { border-radius:22px; }
+    #daftarEntri .baris2 { grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); }
+    #daftarEntri .isian { min-width:0; width:100%; }
+    .isian:focus { box-shadow:0 0 0 3px rgba(37,99,235,.12); }
+    .tambah { transition:border-color .15s, color .15s; }
+    .tambah:not(:disabled):hover { border-color:#2563EB; color:#2563EB; }
+    .sekunder, .utama { transition:filter .15s, border-color .15s; }
+    .sekunder:hover { border-color:#9DB9F2; }
+
+    #areaHasil:not(.sembunyi) { width:100%; max-width:560px; margin:4vh auto 0; }
+    #kartuRiwayat:not(.sembunyi) { width:100%; max-width:560px; margin:0 auto; }
+    .lapisan .kotak { max-width:360px; padding:28px 26px; }
+    .toast { top:84px; }
+  }
+
+  @media (min-width: 900px) and (max-width: 1099px) {
+    #areaForm:not(.sembunyi) { grid-template-columns:minmax(0,290px) minmax(0,1fr); column-gap:20px; }
+    #areaForm > #daftarEntri { grid-template-columns:minmax(0,1fr); }
+  }
 </style>
 </head>
 <body>
