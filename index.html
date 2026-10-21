@@ -7,6 +7,9 @@
 
 <link rel="icon" type="image/png" href="logo.jpg">
 <link rel="apple-touch-icon" href="logo.jpg">
+<link rel="preload" href="logo.jpg" as="image">
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://laporanstartools-c18b2-default-rtdb.asia-southeast1.firebasedatabase.app" crossorigin>
 
 <meta property="og:image" content="https://www.stools.web.id/logo.jpg">
 <meta name="twitter:image" content="https://www.stools.web.id/logo.jpg">
@@ -21,12 +24,10 @@
 }
 </script>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
-
 <style>
+  /* Transisi mulus antar halaman (Chrome/Android; browser lain mengabaikan) */
+  @view-transition { navigation: auto; }
+
   * {
     margin: 0;
     padding: 0;
@@ -43,6 +44,43 @@
   body.dark {
     background: #0B1120;
     color: #F1F5F9;
+  }
+
+  /* ===== SPLASH LOGO BERANIMASI ===== */
+  #splash {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: #F1F5F9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity .3s ease;
+  }
+  body.dark #splash { background: #0B1120; }
+  #splash img {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    object-fit: cover;
+    animation: splashPop 1.2s ease-in-out infinite;
+  }
+  .splash-ring {
+    position: absolute;
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: #2563EB;
+    border-right-color: rgba(37, 99, 235, .25);
+    animation: splashSpin 1s linear infinite;
+  }
+  @keyframes splashPop {
+    0%, 100% { transform: scale(.92); }
+    50% { transform: scale(1.06); }
+  }
+  @keyframes splashSpin {
+    to { transform: rotate(360deg); }
   }
 
   body.dark .card-modern,
@@ -874,6 +912,15 @@
 </head>
 <body>
 
+<!-- SPLASH: logo beranimasi. Tema gelap dipasang lebih awal supaya tidak kedip putih -->
+<div id="splash">
+  <div class="splash-ring"></div>
+  <img src="logo.jpg" alt="STools">
+</div>
+<script>
+  try { if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark'); } catch (e) {}
+</script>
+
 <div class="app-container">
   <!-- HEADER -->
   <div class="app-header" id="mainHeader">
@@ -1084,9 +1131,42 @@
 
 <div id="tokenDisplay" style="display:none;"></div>
 
+<!-- Firebase SDK dipindah ke bawah body supaya tidak memblokir tampilan halaman -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
+
 <script src="fcm-helper.js"></script>
 
 <script>
+// ======================== SPLASH ========================
+function hideSplash() {
+  var s = document.getElementById('splash');
+  if (!s) return;
+  s.style.opacity = 0;
+  setTimeout(function() { if (s.parentNode) s.parentNode.removeChild(s); }, 300);
+}
+// Jaga-jaga: splash tidak pernah nyangkut lebih dari 3 detik
+setTimeout(hideSplash, 3000);
+
+// Kalau user sudah pernah login di perangkat ini, langsung tampilkan halaman
+// tanpa menunggu Firebase Auth selesai
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    if (localStorage.getItem('userName') || localStorage.getItem('isGuest') === 'true') {
+      hideSplash();
+    }
+  } catch (e) {}
+});
+
+// ======================== SERVICE WORKER (cache supaya pindah halaman instan) ========================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').catch(function() {});
+  });
+}
+
 const firebaseConfig = {
   apiKey: "AIzaSyDgr_nHqvpMsiG4lBkYckzxRErkskXj_6E",
   authDomain: "laporanstartools-c18b2.firebaseapp.com",
@@ -1449,6 +1529,8 @@ function updateUsername(nama) {
 }
 
 firebase.auth().onAuthStateChanged(function(user) {
+  hideSplash();
+
   if (user) {
     currentUser = user;
     const uid = user.uid;
