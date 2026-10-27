@@ -17,1026 +17,184 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
 
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
-  body {
-    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    background: #F1F5F9;
-    color: #0F172A;
-  }
-
-  body.dark {
-    background: #0B1120;
-    color: #F1F5F9;
-  }
-
-  body.dark .app-header,
-  body.dark .card-modern,
-  body.dark .friend-item,
-  body.dark .search-result-item {
-    background: #111827;
-    border-color: #1E293B;
-  }
-
-  body.dark .friend-item .name,
-  body.dark .search-result-item .name {
-    color: #F1F5F9;
-  }
-
-  body.dark .friend-item .status,
-  body.dark .search-result-item .sub {
-    color: #94A3B8;
-  }
-
-  body.dark .input {
-    background: #1E293B;
-    border-color: #334155;
-    color: #F1F5F9;
-  }
-
-  body.dark .input::placeholder {
-    color: #64748B;
-  }
-
-  body.dark .btn {
-    background: #1E293B;
-    border-color: #334155;
-    color: #F1F5F9;
-  }
-
-  body.dark .btn-primary {
-    background: #2563EB;
-    border-color: #2563EB;
-    color: #fff;
-  }
-
-  body.dark .btn-success {
-    background: #059669;
-    border-color: #059669;
-    color: #fff;
-  }
-
-  body.dark .btn-danger {
-    background: #DC2626;
-    border-color: #DC2626;
-    color: #fff;
-  }
-
-  body.dark .tabs-pill {
-    background: #1E293B;
-    border-color: #334155;
-  }
-
-  body.dark .tab-item {
-    color: #94A3B8;
-  }
-
-  body.dark .tab-item.active {
-    background: #2563EB;
-    color: #fff;
-  }
-
-  body.dark .empty-state {
-    color: #94A3B8;
-  }
-
-  body.dark .empty-state svg {
-    stroke: #475569;
-  }
-
-  body.dark .chat-input-area {
-    background: #111827;
-    border-top-color: #1E293B;
-  }
-
-  body.dark .chat-bubble.sent {
-    background: #2563EB;
-    color: #fff;
-  }
-
-  body.dark .chat-bubble.received {
-    background: #1E293B;
-    color: #F1F5F9;
-  }
-
-  body.dark .chat-backdrop {
-    background: rgba(0,0,0,0.7);
-  }
-
-  body.dark .friend-actions .btn-icon {
-    background: transparent;
-    border: none;
-  }
-
-  body.dark .friend-actions .btn-icon svg {
-    stroke: #64748B;
-  }
-
-  body.dark .friend-actions .btn-icon.danger svg {
-    stroke: #F87171;
-  }
-
-  body.dark .friend-actions .btn-icon.chat svg {
-    stroke: #60A5FA;
-  }
-
-  .app-container {
-    max-width: 560px;
-    margin: 0 auto;
-    background: #F1F5F9;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-  }
-
-  body.dark .app-container {
-    background: #0B1120;
-  }
-
-  .app-header {
-    background: #FFFFFF;
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid #E2E8F0;
-    position: sticky;
-    top: 0;
-    z-index: 20;
-  }
-
-  body.dark .app-header {
-    background: #111827;
-    border-bottom-color: #1E293B;
-  }
-
-  .logo-area {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .back-btn {
-    width: 40px;
-    height: 40px;
-    background: rgba(0,0,0,0.05);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: none;
-    transition: 0.2s;
-  }
-
-  body.dark .back-btn {
-    background: rgba(255,255,255,0.05);
-  }
-
-  .back-btn:active {
-    transform: scale(0.92);
-  }
-
-  .back-btn svg {
-    stroke: #0F172A;
-    width: 22px;
-    height: 22px;
-  }
-
-  body.dark .back-btn svg {
-    stroke: #F1F5F9;
-  }
-
-  .app-title {
-    font-weight: 700;
-    font-size: 20px;
-    letter-spacing: -0.3px;
-    background: linear-gradient(135deg, #2563EB, #60A5FA);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .screen {
-    padding: 16px 16px 30px;
-    flex: 1;
-  }
-
-  .card-modern {
-    background: #FFFFFF;
-    border-radius: 24px;
-    padding: 20px;
-    margin-bottom: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    border: 1px solid #E2E8F0;
-  }
-
-  body.dark .card-modern {
-    background: #111827;
-    border-color: #1E293B;
-  }
-
-  .card-modern h2 {
-    font-size: 17px;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-
-  .card-modern .subtext {
-    font-size: 13px;
-    color: #64748B;
-    margin-bottom: 14px;
-  }
-
-  body.dark .card-modern .subtext {
-    color: #94A3B8;
-  }
-
-  .tabs-pill {
-    display: flex;
-    gap: 8px;
-    background: #F8FAFE;
-    padding: 6px;
-    border-radius: 16px;
-    margin: 0 0 14px 0;
-    border: 1px solid #E2E8F0;
-    overflow-x: auto;
-  }
-
-  body.dark .tabs-pill {
-    background: #1E293B;
-    border-color: #334155;
-  }
-
-  .tab-item {
-    flex: 1;
-    text-align: center;
-    padding: 10px 8px;
-    border-radius: 12px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #64748B;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s;
-    background: transparent;
-    border: none;
-    font-family: inherit;
-    min-height: 40px;
-  }
-
-  body.dark .tab-item {
-    color: #94A3B8;
-  }
-
-  .tab-item.active {
-    background: #2563EB;
-    color: #fff;
-    box-shadow: 0 2px 8px rgba(37,99,235,0.25);
-  }
-
-  .tab-content {
-    display: none;
-  }
-
-  .tab-content.active {
-    display: block;
-  }
-
-  .input {
-    width: 100%;
-    padding: 12px 16px;
-    border-radius: 12px;
-    border: 1px solid #E2E8F0;
-    background: #FFFFFF;
-    color: #0F172A;
-    font-size: 14px;
-    outline: none;
-    transition: 0.2s;
-    margin-bottom: 12px;
-  }
-
-  body.dark .input {
-    background: #1E293B;
-    border-color: #334155;
-    color: #F1F5F9;
-  }
-
-  .input:focus {
-    border-color: #2563EB;
-  }
-
-  .input::placeholder {
-    color: #94A3B8;
-  }
-
-  body.dark .input::placeholder {
-    color: #64748B;
-  }
-
-  .btn {
-    background: #F8FAFE;
-    border: 1px solid #E2E8F0;
-    color: #0F172A;
-    padding: 12px;
-    width: 100%;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: 0.2s;
-    font-size: 14px;
-    font-weight: 600;
-    min-height: 48px;
-  }
-
-  body.dark .btn {
-    background: #1E293B;
-    border-color: #334155;
-    color: #F1F5F9;
-  }
-
-  .btn:active {
-    transform: scale(0.97);
-  }
-
-  .btn-primary {
-    background: #2563EB;
-    color: white;
-    border-color: #2563EB;
-  }
-
-  .btn-primary:active {
-    background: #1D4ED8;
-  }
-
-  .btn-success {
-    background: #059669;
-    color: white;
-    border-color: #059669;
-  }
-
-  .btn-success:active {
-    background: #047857;
-  }
-
-  .btn-danger {
-    background: #DC2626;
-    color: white;
-    border-color: #DC2626;
-  }
-
-  .btn-danger:active {
-    background: #B91C1C;
-  }
-
-  .btn-sm {
-    padding: 8px 14px;
-    font-size: 12px;
-    width: auto;
-    display: inline-block;
-    min-height: 36px;
-  }
-
-  .friend-item {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 12px 4px;
-    border-bottom: 1px solid #E2E8F0;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-
-  body.dark .friend-item {
-    border-bottom-color: #1E293B;
-  }
-
-  .friend-item:last-child {
-    border-bottom: none;
-  }
-
-  .friend-item:active {
-    opacity: 0.7;
-  }
-
-  .friend-avatar-wrapper {
-    position: relative;
-    width: 44px;
-    height: 44px;
-    flex-shrink: 0;
-  }
-
-  .friend-avatar {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: #EFF6FF;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 16px;
-    color: #2563EB;
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-
-  .friend-avatar:active {
-    transform: scale(0.95);
-  }
-
-  body.dark .friend-avatar {
-    background: #1D2B4A;
-    color: #60A5FA;
-  }
-
-  .friend-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .friend-avatar .avatar-text {
-    font-size: 16px;
-    font-weight: 700;
-  }
-
-  .friend-info {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .friend-info .name-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    overflow: hidden;
-    flex-wrap: nowrap;
-  }
-
-  .friend-info .name {
-    font-size: 15px;
-    font-weight: 600;
-    color: #0F172A;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  body.dark .friend-info .name {
-    color: #F1F5F9;
-  }
-
-  .friend-info .name .verified {
-    width: 16px;
-    height: 16px;
-    display: inline-flex;
-    flex-shrink: 0;
-    vertical-align: middle;
-  }
-
-  .friend-info .name .verified svg {
-    fill: #3B82F6;
-    width: 16px;
-    height: 16px;
-  }
-
-  .friend-info .status {
-    font-size: 12px;
-    color: #94A3B8;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-top: 2px;
-  }
-
-  body.dark .friend-info .status {
-    color: #64748B;
-  }
-
-  .friend-info .status .dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .friend-info .status .dot.online {
-    background: #22C55E;
-  }
-
-  .friend-info .status .dot.offline {
-    background: #94A3B8;
-  }
-
-  .friend-info .status.online-text {
-    color: #22C55E;
-  }
-
-  .friend-actions {
-    display: flex;
-    gap: 4px;
-    flex-shrink: 0;
-  }
-
-  .friend-actions .btn-icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: transparent;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-
-  .friend-actions .btn-icon:active {
-    transform: scale(0.85);
-  }
-
-  .friend-actions .btn-icon svg {
-    width: 20px;
-    height: 20px;
-    stroke: #94A3B8;
-    fill: none;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  body.dark .friend-actions .btn-icon svg {
-    stroke: #64748B;
-  }
-
-  .friend-actions .btn-icon.chat svg {
-    stroke: #2563EB;
-  }
-
-  body.dark .friend-actions .btn-icon.chat svg {
-    stroke: #60A5FA;
-  }
-
-  .friend-actions .btn-icon.danger svg {
-    stroke: #DC2626;
-  }
-
-  body.dark .friend-actions .btn-icon.danger svg {
-    stroke: #F87171;
-  }
-
-  .search-result-item {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 12px 4px;
-    border-bottom: 1px solid #E2E8F0;
-  }
-
-  body.dark .search-result-item {
-    border-bottom-color: #1E293B;
-  }
-
-  .search-result-item:last-child {
-    border-bottom: none;
-  }
-
-  .search-result-item .info {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .search-result-item .info .name {
-    font-size: 15px;
-    font-weight: 600;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .search-result-item .info .sub {
-    font-size: 11px;
-    color: #94A3B8;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  body.dark .search-result-item .info .sub {
-    color: #64748B;
-  }
-
-  .marquee-wrap {
-    overflow: hidden;
-    white-space: nowrap;
-    position: relative;
-    flex: 1;
-    min-width: 0;
-    display: inline-block;
-  }
-  .marquee-text {
-    display: inline-block;
-    will-change: transform;
-  }
-  .marquee-text.marquee-active {
-    animation: marqueeSlide 6s ease-in-out infinite;
-  }
-  @keyframes marqueeSlide {
-    0%, 15% { transform: translateX(0); }
-    50%, 65% { transform: translateX(var(--marquee-distance, 0)); }
-    100% { transform: translateX(0); }
-  }
-
-  .friend-item.has-banner, .search-result-item.has-banner {
-    position: relative;
-    overflow: hidden;
-    border-radius: 18px;
-    padding: 14px 14px;
-    margin-bottom: 8px;
-    border-bottom: none;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-  }
-  .friend-item.has-banner:last-child, .search-result-item.has-banner:last-child {
-    margin-bottom: 8px;
-  }
-
-  .friend-item.has-banner .row-stars, .search-result-item.has-banner .row-stars {
-    position: absolute;
-    font-size: 11px;
-    opacity: 0.18;
-    color: #fff;
-    pointer-events: none;
-    z-index: 1;
-  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background: #F1F5F9; color: #0F172A; }
+  body.dark { background: #0B1120; color: #F1F5F9; }
+  body.dark .app-header, body.dark .card-modern, body.dark .friend-item, body.dark .search-result-item { background: #111827; border-color: #1E293B; }
+  body.dark .friend-item .name, body.dark .search-result-item .name { color: #F1F5F9; }
+  body.dark .friend-item .status, body.dark .search-result-item .sub { color: #94A3B8; }
+  body.dark .input { background: #1E293B; border-color: #334155; color: #F1F5F9; }
+  body.dark .input::placeholder { color: #64748B; }
+  body.dark .btn { background: #1E293B; border-color: #334155; color: #F1F5F9; }
+  body.dark .btn-primary { background: #2563EB; border-color: #2563EB; color: #fff; }
+  body.dark .btn-success { background: #059669; border-color: #059669; color: #fff; }
+  body.dark .btn-danger { background: #DC2626; border-color: #DC2626; color: #fff; }
+  body.dark .tabs-pill { background: #1E293B; border-color: #334155; }
+  body.dark .tab-item { color: #94A3B8; }
+  body.dark .tab-item.active { background: #2563EB; color: #fff; }
+  body.dark .empty-state { color: #94A3B8; }
+  body.dark .empty-state svg { stroke: #475569; }
+  body.dark .chat-input-area { background: #111827; border-top-color: #1E293B; }
+  body.dark .chat-bubble.sent { background: #2563EB; color: #fff; }
+  body.dark .chat-bubble.received { background: #1E293B; color: #F1F5F9; }
+  body.dark .chat-backdrop { background: rgba(0, 0, 0, 0.7); }
+  body.dark .friend-actions .btn-icon { background: transparent; border: none; }
+  body.dark .friend-actions .btn-icon svg { stroke: #64748B; }
+  body.dark .friend-actions .btn-icon.danger svg { stroke: #F87171; }
+  body.dark .friend-actions .btn-icon.chat svg { stroke: #60A5FA; }
+  .app-container { max-width: 560px; margin: 0 auto; background: #F1F5F9; min-height: 100vh; display: flex; flex-direction: column; position: relative; }
+  body.dark .app-container { background: #0B1120; }
+  .app-header { background: #FFFFFF; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #E2E8F0; position: sticky; top: 0; z-index: 20; }
+  body.dark .app-header { background: #111827; border-bottom-color: #1E293B; }
+  .logo-area { display: flex; align-items: center; gap: 12px; }
+  .back-btn { width: 40px; height: 40px; background: rgba(0, 0, 0, 0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; transition: 0.2s; }
+  body.dark .back-btn { background: rgba(255, 255, 255, 0.05); }
+  .back-btn:active { transform: scale(0.92); }
+  .back-btn svg { stroke: #0F172A; width: 22px; height: 22px; }
+  body.dark .back-btn svg { stroke: #F1F5F9; }
+  .app-title { font-weight: 700; font-size: 20px; letter-spacing: -0.3px; background: linear-gradient(135deg, #2563EB, #60A5FA); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .screen { padding: 16px 16px 30px; flex: 1; }
+  .card-modern { background: #FFFFFF; border-radius: 24px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); border: 1px solid #E2E8F0; }
+  body.dark .card-modern { background: #111827; border-color: #1E293B; }
+  .card-modern h2 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+  .card-modern .subtext { font-size: 13px; color: #64748B; margin-bottom: 14px; }
+  body.dark .card-modern .subtext { color: #94A3B8; }
+  .tabs-pill { display: flex; gap: 8px; background: #F8FAFE; padding: 6px; border-radius: 16px; margin: 0 0 14px 0; border: 1px solid #E2E8F0; overflow-x: auto; }
+  body.dark .tabs-pill { background: #1E293B; border-color: #334155; }
+  .tab-item { flex: 1; text-align: center; padding: 10px 8px; border-radius: 12px; font-size: 13px; font-weight: 600; color: #64748B; cursor: pointer; white-space: nowrap; transition: all 0.2s; background: transparent; border: none; font-family: inherit; min-height: 40px; }
+  body.dark .tab-item { color: #94A3B8; }
+  .tab-item.active { background: #2563EB; color: #fff; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .input { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #E2E8F0; background: #FFFFFF; color: #0F172A; font-size: 14px; outline: none; transition: 0.2s; margin-bottom: 12px; }
+  body.dark .input { background: #1E293B; border-color: #334155; color: #F1F5F9; }
+  .input:focus { border-color: #2563EB; }
+  .input::placeholder { color: #94A3B8; }
+  body.dark .input::placeholder { color: #64748B; }
+  .btn { background: #F8FAFE; border: 1px solid #E2E8F0; color: #0F172A; padding: 12px; width: 100%; border-radius: 12px; cursor: pointer; transition: 0.2s; font-size: 14px; font-weight: 600; min-height: 48px; }
+  body.dark .btn { background: #1E293B; border-color: #334155; color: #F1F5F9; }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: #2563EB; color: white; border-color: #2563EB; }
+  .btn-primary:active { background: #1D4ED8; }
+  .btn-success { background: #059669; color: white; border-color: #059669; }
+  .btn-success:active { background: #047857; }
+  .btn-danger { background: #DC2626; color: white; border-color: #DC2626; }
+  .btn-danger:active { background: #B91C1C; }
+  .btn-sm { padding: 8px 14px; font-size: 12px; width: auto; display: inline-block; min-height: 36px; }
+  .friend-item { display: flex; align-items: center; gap: 14px; padding: 12px 4px; border-bottom: 1px solid #E2E8F0; cursor: pointer; transition: 0.2s; }
+  body.dark .friend-item { border-bottom-color: #1E293B; }
+  .friend-item:last-child { border-bottom: none; }
+  .friend-item:active { opacity: 0.7; }
+  .friend-avatar-wrapper { position: relative; width: 44px; height: 44px; flex-shrink: 0; }
+  .friend-avatar { width: 44px; height: 44px; border-radius: 50%; background: #EFF6FF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; color: #2563EB; overflow: hidden; position: relative; cursor: pointer; transition: 0.2s; }
+  .friend-avatar:active { transform: scale(0.95); }
+  body.dark .friend-avatar { background: #1D2B4A; color: #60A5FA; }
+  .friend-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .friend-avatar .avatar-text { font-size: 16px; font-weight: 700; }
+  .friend-info { flex: 1; min-width: 0; }
+  .friend-info .name-wrapper { display: flex; align-items: center; gap: 6px; overflow: hidden; flex-wrap: nowrap; }
+  .friend-info .name { font-size: 15px; font-weight: 600; color: #0F172A; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  body.dark .friend-info .name { color: #F1F5F9; }
+  .friend-info .name .verified { width: 16px; height: 16px; display: inline-flex; flex-shrink: 0; vertical-align: middle; }
+  .friend-info .name .verified svg { fill: #3B82F6; width: 16px; height: 16px; }
+  .friend-info .status { font-size: 12px; color: #94A3B8; display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+  body.dark .friend-info .status { color: #64748B; }
+  .friend-info .status .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .friend-info .status .dot.online { background: #22C55E; }
+  .friend-info .status .dot.offline { background: #94A3B8; }
+  .friend-info .status.online-text { color: #22C55E; }
+  .friend-actions { display: flex; gap: 4px; flex-shrink: 0; }
+  .friend-actions .btn-icon { width: 34px; height: 34px; border-radius: 50%; background: transparent; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+  .friend-actions .btn-icon:active { transform: scale(0.85); }
+  .friend-actions .btn-icon svg { width: 20px; height: 20px; stroke: #94A3B8; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  body.dark .friend-actions .btn-icon svg { stroke: #64748B; }
+  .friend-actions .btn-icon.chat svg { stroke: #2563EB; }
+  body.dark .friend-actions .btn-icon.chat svg { stroke: #60A5FA; }
+  .friend-actions .btn-icon.danger svg { stroke: #DC2626; }
+  body.dark .friend-actions .btn-icon.danger svg { stroke: #F87171; }
+  .search-result-item { display: flex; align-items: center; gap: 14px; padding: 12px 4px; border-bottom: 1px solid #E2E8F0; }
+  body.dark .search-result-item { border-bottom-color: #1E293B; }
+  .search-result-item:last-child { border-bottom: none; }
+  .search-result-item .info { flex: 1; min-width: 0; }
+  .search-result-item .info .name { font-size: 15px; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .search-result-item .info .sub { font-size: 11px; color: #94A3B8; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  body.dark .search-result-item .info .sub { color: #64748B; }
+  .marquee-wrap { overflow: hidden; white-space: nowrap; position: relative; flex: 1; min-width: 0; display: inline-block; }
+  .marquee-text { display: inline-block; will-change: transform; }
+  .marquee-text.marquee-active { animation: marqueeSlide 6s ease-in-out infinite; }
+  @keyframes marqueeSlide { 0%, 15% { transform: translateX(0); } 50%, 65% { transform: translateX(var(--marquee-distance, 0)); } 100% { transform: translateX(0); } }
+  .friend-item.has-banner, .search-result-item.has-banner { position: relative; overflow: hidden; border-radius: 18px; padding: 14px 14px; margin-bottom: 8px; border-bottom: none; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); }
+  .friend-item.has-banner:last-child, .search-result-item.has-banner:last-child { margin-bottom: 8px; }
+  .friend-item.has-banner .row-stars, .search-result-item.has-banner .row-stars { position: absolute; font-size: 11px; opacity: 0.18; color: #fff; pointer-events: none; z-index: 1; }
   .row-stars.rs1 { top: 6px; left: 60px; }
   .row-stars.rs2 { bottom: 6px; right: 90px; }
   .row-stars.rs3 { top: 10px; right: 20px; }
-
-  .friend-item.has-banner .friend-info, .search-result-item.has-banner .info,
-  .friend-item.has-banner .friend-avatar-wrapper, .search-result-item.has-banner .friend-avatar-wrapper,
-  .friend-item.has-banner .row-side, .search-result-item.has-banner .row-side {
-    position: relative;
-    z-index: 2;
-  }
+  .friend-item.has-banner .friend-info, .search-result-item.has-banner .info, .friend-item.has-banner .friend-avatar-wrapper, .search-result-item.has-banner .friend-avatar-wrapper, .friend-item.has-banner .row-side, .search-result-item.has-banner .row-side { position: relative; z-index: 2; }
   .friend-item.has-banner .friend-info { margin-top: 8px; }
-
-  .friend-item.has-banner .friend-info .name,
-  .search-result-item.has-banner .info .name {
-    color: #fff !important;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  }
-  .friend-item.has-banner .friend-info .status,
-  .search-result-item.has-banner .info .sub {
-    color: rgba(255,255,255,0.85) !important;
-    text-shadow: 0 1px 6px rgba(0,0,0,0.2);
-  }
-  .friend-item.has-banner .friend-avatar,
-  .search-result-item.has-banner .friend-avatar {
-    border: 2.5px solid rgba(255,255,255,0.9);
-    box-shadow: 0 3px 12px rgba(0,0,0,0.25);
-  }
-  .friend-item.has-banner .btn-icon svg { stroke: rgba(255,255,255,0.9) !important; }
+  .friend-item.has-banner .friend-info .name, .search-result-item.has-banner .info .name { color: #fff !important; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
+  .friend-item.has-banner .friend-info .status, .search-result-item.has-banner .info .sub { color: rgba(255, 255, 255, 0.85) !important; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.2); }
+  .friend-item.has-banner .friend-avatar, .search-result-item.has-banner .friend-avatar { border: 2.5px solid rgba(255, 255, 255, 0.9); box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25); }
+  .friend-item.has-banner .btn-icon svg { stroke: rgba(255, 255, 255, 0.9) !important; }
   .friend-item.has-banner .btn-icon.danger svg { stroke: #FCA5A5 !important; }
   .friend-item.has-banner .btn-icon.chat svg { stroke: #fff !important; }
-
-  .premium-silver.has-banner {
-    background: linear-gradient(135deg, #94A3B8, #CBD5E1);
-    box-shadow: inset 0 0 40px rgba(255,255,255,0.12), 0 4px 16px rgba(0,0,0,0.15);
-  }
-  .premium-silver.has-banner::after {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(circle at 20% 80%, rgba(255,255,255,0.22), transparent 60%);
-    pointer-events: none; z-index: 1;
-  }
-
-  .premium-gold.has-banner {
-    background: linear-gradient(135deg, #B45309, #F59E0B, #FBBF24, #F59E0B, #92400E);
-    background-size: 250% 250%;
-    animation: goldShimmerRow 4s ease-in-out infinite;
-  }
-  .premium-gold.has-banner::after {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.25), transparent 60%);
-    pointer-events: none; z-index: 1;
-  }
+  .premium-silver.has-banner { background: linear-gradient(135deg, #94A3B8, #CBD5E1); box-shadow: inset 0 0 40px rgba(255, 255, 255, 0.12), 0 4px 16px rgba(0, 0, 0, 0.15); }
+  .premium-silver.has-banner::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.22), transparent 60%); pointer-events: none; z-index: 1; }
+  .premium-gold.has-banner { background: linear-gradient(135deg, #B45309, #F59E0B, #FBBF24, #F59E0B, #92400E); background-size: 250% 250%; animation: goldShimmerRow 4s ease-in-out infinite; }
+  .premium-gold.has-banner::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.25), transparent 60%); pointer-events: none; z-index: 1; }
   @keyframes goldShimmerRow { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-
-  .premium-platinum.has-banner {
-    background: linear-gradient(135deg, #06B6D4, #3B82F6, #8B5CF6);
-    background-size: 200% 200%;
-    animation: platinumShimmerRow 3s ease-in-out infinite;
-  }
-  .premium-platinum.has-banner::after {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.15), transparent 60%);
-    pointer-events: none; z-index: 1;
-  }
+  .premium-platinum.has-banner { background: linear-gradient(135deg, #06B6D4, #3B82F6, #8B5CF6); background-size: 200% 200%; animation: platinumShimmerRow 3s ease-in-out infinite; }
+  .premium-platinum.has-banner::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.15), transparent 60%); pointer-events: none; z-index: 1; }
   @keyframes platinumShimmerRow { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-
-  .premium-diamond.has-banner {
-    background: linear-gradient(135deg, #0B1120, #1E293B, #0B1120);
-    background-size: 250% 250%;
-    animation: diamondBaseRow 6s ease-in-out infinite;
-    box-shadow: inset 0 0 40px rgba(125,211,252,0.1), 0 4px 16px rgba(0,0,0,0.25);
-  }
-  .premium-diamond.has-banner::before {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(120deg, transparent 25%, rgba(224,242,254,0.55) 42%, rgba(165,243,252,0.35) 48%, rgba(224,242,254,0.55) 54%, transparent 72%);
-    background-size: 250% 250%;
-    animation: diamondSweepRow 3.2s ease-in-out infinite;
-    pointer-events: none; mix-blend-mode: overlay; z-index: 1;
-  }
-  .premium-diamond.has-banner::after {
-    content: ''; position: absolute; inset: 0;
-    background:
-      radial-gradient(circle at 15% 20%, rgba(165,243,252,0.18), transparent 40%),
-      radial-gradient(circle at 85% 75%, rgba(196,181,253,0.15), transparent 45%);
-    pointer-events: none; z-index: 1;
-  }
+  .premium-diamond.has-banner { background: linear-gradient(135deg, #0B1120, #1E293B, #0B1120); background-size: 250% 250%; animation: diamondBaseRow 6s ease-in-out infinite; box-shadow: inset 0 0 40px rgba(125, 211, 252, 0.1), 0 4px 16px rgba(0, 0, 0, 0.25); }
+  .premium-diamond.has-banner::before { content: ''; position: absolute; inset: 0; background: linear-gradient(120deg, transparent 25%, rgba(224, 242, 254, 0.55) 42%, rgba(165, 243, 252, 0.35) 48%, rgba(224, 242, 254, 0.55) 54%, transparent 72%); background-size: 250% 250%; animation: diamondSweepRow 3.2s ease-in-out infinite; pointer-events: none; mix-blend-mode: overlay; z-index: 1; }
+  .premium-diamond.has-banner::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 15% 20%, rgba(165, 243, 252, 0.18), transparent 40%), radial-gradient(circle at 85% 75%, rgba(196, 181, 253, 0.15), transparent 45%); pointer-events: none; z-index: 1; }
   @keyframes diamondBaseRow { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
   @keyframes diamondSweepRow { 0% { background-position: -60% -60%; } 100% { background-position: 160% 160%; } }
-
-  .empty-state {
-    text-align: center;
-    padding: 40px 20px;
-    color: #94A3B8;
-  }
-
-  .empty-state svg {
-    stroke: #CBD5E1;
-    width: 48px;
-    height: 48px;
-    margin-bottom: 12px;
-  }
-
-  body.dark .empty-state svg {
-    stroke: #475569;
-  }
-
-  .empty-state h3 {
-    font-size: 16px;
-    font-weight: 700;
-    color: #64748B;
-    margin-bottom: 4px;
-  }
-
-  body.dark .empty-state h3 {
-    color: #94A3B8;
-  }
-
-  .empty-state p {
-    font-size: 13px;
-    color: #94A3B8;
-  }
-
-  body.dark .empty-state p {
-    color: #64748B;
-  }
-
-  .loading-spinner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 0;
-  }
-
-  .spinner {
-    width: 36px;
-    height: 36px;
-    border: 3px solid #E2E8F0;
-    border-top-color: #2563EB;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
-  body.dark .spinner {
-    border-color: #1E293B;
-    border-top-color: #2563EB;
-  }
-
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-
-  .chat-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 100;
-    display: none;
-    align-items: flex-end;
-    justify-content: center;
-  }
-
-  .chat-backdrop.active {
-    display: flex;
-  }
-
-  .chat-panel {
-    width: 100%;
-    max-width: 560px;
-    height: 85vh;
-    background: #FFFFFF;
-    border-radius: 24px 24px 0 0;
-    display: flex;
-    flex-direction: column;
-    animation: slideUp 0.3s ease;
-    overflow: hidden;
-  }
-
-  body.dark .chat-panel {
-    background: #111827;
-  }
-
-  @keyframes slideUp {
-    from { transform: translateY(30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-
-  .chat-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid #E2E8F0;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-shrink: 0;
-  }
-
-  body.dark .chat-header {
-    border-bottom-color: #1E293B;
-  }
-
-  .chat-header .back-chat {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.05);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: none;
-  }
-
-  body.dark .chat-header .back-chat {
-    background: rgba(255,255,255,0.05);
-  }
-
-  .chat-header .back-chat svg {
-    width: 20px;
-    height: 20px;
-    stroke: #0F172A;
-  }
-
-  body.dark .chat-header .back-chat svg {
-    stroke: #F1F5F9;
-  }
-
-  .chat-header .chat-avatar-wrapper {
-    width: 40px;
-    height: 40px;
-    flex-shrink: 0;
-  }
-
-  .chat-header .chat-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #EFF6FF;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 16px;
-    color: #2563EB;
-    overflow: hidden;
-    cursor: pointer;
-  }
-
-  body.dark .chat-header .chat-avatar {
-    background: #1D2B4A;
-    color: #60A5FA;
-  }
-
-  .chat-header .chat-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .chat-header .chat-name {
-    flex: 1;
-    font-weight: 700;
-    font-size: 15px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .chat-header .chat-status {
-    font-size: 12px;
-    color: #94A3B8;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .chat-header .chat-status .dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-  }
-
-  .chat-header .chat-status .dot.online {
-    background: #22C55E;
-  }
-
-  .chat-header .chat-status .dot.offline {
-    background: #94A3B8;
-  }
-
-  .chat-header .chat-status.online-text {
-    color: #22C55E;
-  }
-
-  .chat-header .chat-actions {
-    position: relative;
-  }
-
-  .chat-header .chat-actions .btn-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: transparent;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-
-  .chat-header .chat-actions .btn-icon svg {
-    width: 18px;
-    height: 18px;
-    stroke: #94A3B8;
-  }
-
-  body.dark .chat-header .chat-actions .btn-icon svg {
-    stroke: #64748B;
-  }
-
-  .chat-header .chat-actions .btn-icon.danger svg {
-    stroke: #DC2626;
-  }
-
-  body.dark .chat-header .chat-actions .btn-icon.danger svg {
-    stroke: #F87171;
-  }
-
-  .chat-header .chat-actions .btn-icon#chatMenuBtn.active-block {
-    background: #FEF2F2;
-  }
-  .chat-header .chat-actions .btn-icon#chatMenuBtn.active-block svg {
-    fill: #DC2626;
-  }
-  body.dark .chat-header .chat-actions .btn-icon#chatMenuBtn.active-block {
-    background: #7F1D1D;
-  }
-
-  .chat-menu-dropdown {
-    display: none;
-    position: absolute;
-    top: 40px;
-    right: 0;
-    background: #FFFFFF;
-    border: 1px solid #E2E8F0;
-    border-radius: 14px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-    min-width: 180px;
-    z-index: 40;
-    overflow: hidden;
-  }
+  .empty-state { text-align: center; padding: 40px 20px; color: #94A3B8; }
+  .empty-state svg { stroke: #CBD5E1; width: 48px; height: 48px; margin-bottom: 12px; }
+  body.dark .empty-state svg { stroke: #475569; }
+  .empty-state h3 { font-size: 16px; font-weight: 700; color: #64748B; margin-bottom: 4px; }
+  body.dark .empty-state h3 { color: #94A3B8; }
+  .empty-state p { font-size: 13px; color: #94A3B8; }
+  body.dark .empty-state p { color: #64748B; }
+  .loading-spinner { display: flex; justify-content: center; align-items: center; padding: 40px 0; }
+  .spinner { width: 36px; height: 36px; border: 3px solid #E2E8F0; border-top-color: #2563EB; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  body.dark .spinner { border-color: #1E293B; border-top-color: #2563EB; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .chat-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 100; display: none; align-items: flex-end; justify-content: center; }
+  .chat-backdrop.active { display: flex; }
+  .chat-panel { width: 100%; max-width: 560px; height: 85vh; background: #FFFFFF; border-radius: 24px 24px 0 0; display: flex; flex-direction: column; animation: slideUp 0.3s ease; overflow: hidden; }
+  body.dark .chat-panel { background: #111827; }
+  @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .chat-header { padding: 16px 20px; border-bottom: 1px solid #E2E8F0; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  body.dark .chat-header { border-bottom-color: #1E293B; }
+  .chat-header .back-chat { width: 36px; height: 36px; border-radius: 50%; background: rgba(0, 0, 0, 0.05); display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
+  body.dark .chat-header .back-chat { background: rgba(255, 255, 255, 0.05); }
+  .chat-header .back-chat svg { width: 20px; height: 20px; stroke: #0F172A; }
+  body.dark .chat-header .back-chat svg { stroke: #F1F5F9; }
+  .chat-header .chat-avatar-wrapper { width: 40px; height: 40px; flex-shrink: 0; }
+  .chat-header .chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: #EFF6FF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; color: #2563EB; overflow: hidden; cursor: pointer; }
+  body.dark .chat-header .chat-avatar { background: #1D2B4A; color: #60A5FA; }
+  .chat-header .chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .chat-header .chat-name { flex: 1; font-weight: 700; font-size: 15px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .chat-header .chat-status { font-size: 12px; color: #94A3B8; display: flex; align-items: center; gap: 4px; }
+  .chat-header .chat-status .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+  .chat-header .chat-status .dot.online { background: #22C55E; }
+  .chat-header .chat-status .dot.offline { background: #94A3B8; }
+  .chat-header .chat-status.online-text { color: #22C55E; }
+  .chat-header .chat-actions { position: relative; }
+  .chat-header .chat-actions .btn-icon { width: 32px; height: 32px; border-radius: 50%; background: transparent; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .chat-header .chat-actions .btn-icon svg { width: 18px; height: 18px; stroke: #94A3B8; }
+  body.dark .chat-header .chat-actions .btn-icon svg { stroke: #64748B; }
+  .chat-header .chat-actions .btn-icon.danger svg { stroke: #DC2626; }
+  body.dark .chat-header .chat-actions .btn-icon.danger svg { stroke: #F87171; }
+  .chat-header .chat-actions .btn-icon#chatMenuBtn.active-block { background: #FEF2F2; }
+  .chat-header .chat-actions .btn-icon#chatMenuBtn.active-block svg { fill: #DC2626; }
+  body.dark .chat-header .chat-actions .btn-icon#chatMenuBtn.active-block { background: #7F1D1D; }
+  .chat-menu-dropdown { display: none; position: absolute; top: 40px; right: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); min-width: 180px; z-index: 40; overflow: hidden; }
   .chat-menu-dropdown.active { display: block; }
   body.dark .chat-menu-dropdown { background: #1E293B; border-color: #334155; }
-  .chat-menu-dropdown button {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    padding: 12px 14px;
-    background: none;
-    border: none;
-    font-size: 13.5px;
-    font-weight: 600;
-    color: #0F172A;
-    cursor: pointer;
-    text-align: left;
-  }
+  .chat-menu-dropdown button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px 14px; background: none; border: none; font-size: 13.5px; font-weight: 600; color: #0F172A; cursor: pointer; text-align: left; }
   .chat-menu-dropdown button:active { background: #F1F5F9; }
   body.dark .chat-menu-dropdown button { color: #F1F5F9; }
   body.dark .chat-menu-dropdown button:active { background: #334155; }
@@ -1045,675 +203,230 @@
   .chat-menu-dropdown button.danger svg { stroke: #DC2626; }
   .chat-menu-dropdown button + button { border-top: 1px solid #E2E8F0; }
   body.dark .chat-menu-dropdown button + button { border-top-color: #334155; }
-
-  .chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .chat-bubble {
-    max-width: 80%;
-    padding: 10px 14px;
-    border-radius: 16px;
-    font-size: 13px;
-    line-height: 1.5;
-    word-wrap: break-word;
-  }
-
-  .chat-bubble.sent {
-    background: #2563EB;
-    color: white;
-    align-self: flex-end;
-    border-bottom-right-radius: 4px;
-  }
-
-  .chat-bubble.received {
-    background: #F1F5F9;
-    color: #0F172A;
-    align-self: flex-start;
-    border-bottom-left-radius: 4px;
-  }
-
-  body.dark .chat-bubble.received {
-    background: #1E293B;
-    color: #F1F5F9;
-  }
-
-  .chat-bubble .time {
-    font-size: 9px;
-    opacity: 0.7;
-    margin-top: 4px;
-    display: block;
-    text-align: right;
-  }
-
-  .chat-input-area {
-    padding: 12px 16px;
-    border-top: 1px solid #E2E8F0;
-    display: flex;
-    gap: 8px;
-    flex-shrink: 0;
-    background: #FFFFFF;
-  }
-
-  body.dark .chat-input-area {
-    background: #111827;
-    border-top-color: #1E293B;
-  }
-
-  .chat-input-area input {
-    flex: 1;
-    padding: 10px 14px;
-    border-radius: 12px;
-    border: 1px solid #E2E8F0;
-    font-size: 13px;
-    outline: none;
-    background: #FFFFFF;
-    color: #0F172A;
-  }
-
-  body.dark .chat-input-area input {
-    background: #1E293B;
-    border-color: #334155;
-    color: #F1F5F9;
-  }
-
-  .chat-input-area input::placeholder {
-    color: #94A3B8;
-  }
-
-  body.dark .chat-input-area input::placeholder {
-    color: #64748B;
-  }
-
-  .chat-input-area .btn-send {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: #2563EB;
-    border: none;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: 0.2s;
-  }
-
-  .chat-input-area .btn-send:active {
-    transform: scale(0.95);
-  }
-
-  .chat-input-area .btn-send svg {
-    width: 20px;
-    height: 20px;
-    stroke: white;
-    fill: none;
-    stroke-width: 2;
-  }
-
-  .alert-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(6px);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 200;
-  }
+  .chat-messages { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 6px; }
+  .chat-bubble { max-width: 80%; padding: 10px 14px; border-radius: 16px; font-size: 13px; line-height: 1.5; word-wrap: break-word; }
+  .chat-bubble.sent { background: #2563EB; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .chat-bubble.received { background: #F1F5F9; color: #0F172A; align-self: flex-start; border-bottom-left-radius: 4px; }
+  body.dark .chat-bubble.received { background: #1E293B; color: #F1F5F9; }
+  .chat-bubble .time { font-size: 9px; opacity: 0.7; margin-top: 4px; display: block; text-align: right; }
+  .chat-input-area { padding: 12px 16px; border-top: 1px solid #E2E8F0; display: flex; gap: 8px; flex-shrink: 0; background: #FFFFFF; }
+  body.dark .chat-input-area { background: #111827; border-top-color: #1E293B; }
+  .chat-input-area input { flex: 1; padding: 10px 14px; border-radius: 12px; border: 1px solid #E2E8F0; font-size: 13px; outline: none; background: #FFFFFF; color: #0F172A; }
+  body.dark .chat-input-area input { background: #1E293B; border-color: #334155; color: #F1F5F9; }
+  .chat-input-area input::placeholder { color: #94A3B8; }
+  body.dark .chat-input-area input::placeholder { color: #64748B; }
+  .chat-input-area .btn-send { width: 44px; height: 44px; border-radius: 12px; background: #2563EB; border: none; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
+  .chat-input-area .btn-send:active { transform: scale(0.95); }
+  .chat-input-area .btn-send svg { width: 20px; height: 20px; stroke: white; fill: none; stroke-width: 2; }
+  .alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(6px); display: none; justify-content: center; align-items: center; z-index: 200; }
   #globalAlert { z-index: 300; }
-
-  .alert-card {
-    background: #FFFFFF;
-    width: 300px;
-    border-radius: 28px;
-    padding: 24px 22px;
-    text-align: center;
-    border: 1px solid #E2E8F0;
-  }
-
-  body.dark .alert-card {
-    background: #111827;
-    border-color: #1E293B;
-  }
-
-  .alert-card h3 {
-    font-size: 17px;
-    font-weight: 700;
-    margin-bottom: 8px;
-    color: #0F172A;
-  }
-
-  body.dark .alert-card h3 {
-    color: #F1F5F9;
-  }
-
-  .alert-card p {
-    font-size: 14px;
-    color: #64748B;
-    margin-bottom: 16px;
-    line-height: 1.5;
-  }
-
-  body.dark .alert-card p {
-    color: #94A3B8;
-  }
-
-  .btn-full {
-    background: #2563EB;
-    border: none;
-    color: white;
-    font-weight: 600;
-    padding: 12px;
-    border-radius: 40px;
-    font-size: 14px;
-    width: 100%;
-    cursor: pointer;
-  }
-
-  .btn-full:active {
-    transform: scale(0.97);
-  }
-
-  .footer-app {
-    text-align: center;
-    padding: 16px;
-    font-size: 11px;
-    color: #64748B;
-    border-top: 1px solid #E2E8F0;
-    margin-top: 16px;
-  }
-
-  body.dark .footer-app {
-    color: #94A3B8;
-    border-top-color: #1E293B;
-  }
-
-  .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    max-width: 560px;
-    margin: 0 auto;
-    right: 0;
-    background: #FFFFFF;
-    display: flex;
-    justify-content: space-around;
-    padding: 8px 0 12px 0;
-    z-index: 50;
-    border-top: 1px solid #E2E8F0;
-  }
-
-  body.dark .bottom-nav {
-    background: #111827;
-    border-top-color: #1E293B;
-  }
-
-  .bottom-nav .nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-    color: #94A3B8;
-    font-size: 10px;
-    cursor: pointer;
-    transition: 0.2s;
-    padding: 4px 12px;
-    border-radius: 12px;
-    background: transparent;
-    border: none;
-  }
-
-  .bottom-nav .nav-item:active {
-    transform: scale(0.95);
-  }
-
-  .bottom-nav svg {
-    width: 22px;
-    height: 22px;
-    stroke: #94A3B8;
-    fill: none;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    transition: 0.2s;
-  }
-
-  .bottom-nav .nav-item.active {
-    color: #2563EB;
-  }
-
-  .bottom-nav .nav-item.active svg {
-    stroke: #2563EB;
-  }
-
-  .foto-zoom-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.92);
-    display: none;
-    place-items: center;
-    z-index: 300;
-    padding: 20px;
-    cursor: pointer;
-  }
-
-  .foto-zoom-overlay.active {
-    display: grid;
-  }
-
-  .foto-zoom-overlay img {
-    max-width: 100%;
-    max-height: 85vh;
-    border-radius: 12px;
-    animation: fotoZoomIn 0.25s ease;
-    cursor: default;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    aspect-ratio: 1/1;
-    object-fit: cover;
-  }
-
-  @keyframes fotoZoomIn {
-    from { transform: scale(0.85); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-
-  .foto-zoom-close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-
-  .foto-zoom-close:hover {
-    background: rgba(255,255,255,0.2);
-  }
-
-  .foto-zoom-close svg {
-    width: 24px;
-    height: 24px;
-    stroke: #fff;
-    stroke-width: 2.5;
-  }
-
-  .foto-zoom-name {
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #fff;
-    font-size: 16px;
-    font-weight: 700;
-    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
-  }
-
-  .profile-popup-card {
-    text-align: left !important;
-    padding: 0 !important;
-    overflow: hidden;
-    position: relative;
-    width: 320px !important;
-  }
-
-  .profile-popup-close {
-    position: absolute;
-    top: 10px;
-    right: 14px;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.4);
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 10;
-    color: #fff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  }
-
-  .profile-popup-header {
-    position: relative;
-    padding: 24px 52px 14px 20px;
-  }
-
-  .friend-status-pill {
-    font-size: 12px;
-    font-weight: 700;
-    white-space: nowrap;
-  }
+  .alert-card { background: #FFFFFF; width: 300px; border-radius: 28px; padding: 24px 22px; text-align: center; border: 1px solid #E2E8F0; }
+  body.dark .alert-card { background: #111827; border-color: #1E293B; }
+  .alert-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; color: #0F172A; }
+  body.dark .alert-card h3 { color: #F1F5F9; }
+  .alert-card p { font-size: 14px; color: #64748B; margin-bottom: 16px; line-height: 1.5; }
+  body.dark .alert-card p { color: #94A3B8; }
+  .btn-full { background: #2563EB; border: none; color: white; font-weight: 600; padding: 12px; border-radius: 40px; font-size: 14px; width: 100%; cursor: pointer; }
+  .btn-full:active { transform: scale(0.97); }
+  .footer-app { text-align: center; padding: 16px; font-size: 11px; color: #64748B; border-top: 1px solid #E2E8F0; margin-top: 16px; }
+  body.dark .footer-app { color: #94A3B8; border-top-color: #1E293B; }
+  .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; max-width: 560px; margin: 0 auto; right: 0; background: #FFFFFF; display: flex; justify-content: space-around; padding: 8px 0 12px 0; z-index: 50; border-top: 1px solid #E2E8F0; }
+  body.dark .bottom-nav { background: #111827; border-top-color: #1E293B; }
+  .bottom-nav .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: #94A3B8; font-size: 10px; cursor: pointer; transition: 0.2s; padding: 4px 12px; border-radius: 12px; background: transparent; border: none; }
+  .bottom-nav .nav-item:active { transform: scale(0.95); }
+  .bottom-nav svg { width: 22px; height: 22px; stroke: #94A3B8; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: 0.2s; }
+  .bottom-nav .nav-item.active { color: #2563EB; }
+  .bottom-nav .nav-item.active svg { stroke: #2563EB; }
+  .foto-zoom-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.92); display: none; place-items: center; z-index: 300; padding: 20px; cursor: pointer; }
+  .foto-zoom-overlay.active { display: grid; }
+  .foto-zoom-overlay img { max-width: 100%; max-height: 85vh; border-radius: 12px; animation: fotoZoomIn 0.25s ease; cursor: default; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); aspect-ratio: 1/1; object-fit: cover; }
+  @keyframes fotoZoomIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .foto-zoom-close { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+  .foto-zoom-close:hover { background: rgba(255, 255, 255, 0.2); }
+  .foto-zoom-close svg { width: 24px; height: 24px; stroke: #fff; stroke-width: 2.5; }
+  .foto-zoom-name { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 16px; font-weight: 700; text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5); }
+  .profile-popup-card { text-align: left !important; padding: 0 !important; overflow: hidden; position: relative; width: 320px !important; }
+  .profile-popup-close { position: absolute; top: 10px; right: 14px; width: 28px; height: 28px; border-radius: 50%; background: rgba(0, 0, 0, 0.4); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; color: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); }
+  .profile-popup-header { position: relative; padding: 24px 52px 14px 20px; }
+  .friend-status-pill { font-size: 12px; font-weight: 700; white-space: nowrap; }
   .friend-status-pill.status-friend { color: #059669; }
   .friend-status-pill.status-pending { color: #D97706; }
-  .has-banner .friend-status-pill.status-friend,
-  .has-banner .friend-status-pill.status-pending {
-    background: rgba(0,0,0,0.3);
-    backdrop-filter: blur(6px);
-    padding: 4px 10px;
-    border-radius: 40px;
-    color: #fff !important;
-    border: 1px solid rgba(255,255,255,0.15);
-  }
-
-  .friend-status-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: #ECFDF5;
-    color: #059669;
-    flex-shrink: 0;
-  }
+  .has-banner .friend-status-pill.status-friend, .has-banner .friend-status-pill.status-pending { background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(6px); padding: 4px 10px; border-radius: 40px; color: #fff !important; border: 1px solid rgba(255, 255, 255, 0.15); }
+  .friend-status-icon { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: #ECFDF5; color: #059669; flex-shrink: 0; }
   .friend-status-icon svg { width: 18px; height: 18px; }
   body.dark .friend-status-icon { background: #064E3B; color: #34D399; }
-  .has-banner .friend-status-icon {
-    background: rgba(0,0,0,0.3);
-    backdrop-filter: blur(6px);
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.2);
-  }
-
-  .row-side {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 6px;
-    flex-shrink: 0;
-    position: relative;
-    z-index: 2;
-  }
-
-  .btn-outline {
-    background: transparent;
-    border: 1px solid #E2E8F0;
-    color: #0F172A;
-    padding: 10px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    width: 100%;
-    margin-bottom: 8px;
-  }
-  body.dark .btn-outline {
-    border-color: #334155;
-    color: #F1F5F9;
-  }
+  .has-banner .friend-status-icon { background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(6px); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); }
+  .row-side { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; position: relative; z-index: 2; }
+  .btn-outline { background: transparent; border: 1px solid #E2E8F0; color: #0F172A; padding: 10px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; width: 100%; margin-bottom: 8px; }
+  body.dark .btn-outline { border-color: #334155; color: #F1F5F9; }
   .btn-outline:active { transform: scale(0.97); }
-
-  
-
-  .scanner-overlay { position:fixed; inset:0; background:#000; z-index:250; display:none; flex-direction:column; }
-  .scanner-overlay.active { display:flex; }
-  .scanner-top { display:flex; align-items:center; justify-content:space-between; padding:calc(14px + env(safe-area-inset-top, 0px)) 18px 14px; color:#fff; position:relative; z-index:2; }
-  .scanner-top b { font-size:16px; }
-  .scanner-close { width:40px; height:40px; border-radius:50%; border:none; background:rgba(255,255,255,.18); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; }
-  .scanner-close svg { width:20px; height:20px; stroke:#fff; fill:none; stroke-width:2; stroke-linecap:round; }
-  .scanner-stage { position:relative; flex:1; overflow:hidden; }
-  .scanner-stage video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-  .scanner-frame { position:absolute; left:50%; top:50%; width:min(70vw,280px); aspect-ratio:1/1; transform:translate(-50%,-50%); border:3px solid #fff; border-radius:24px; box-shadow:0 0 0 999px rgba(0,0,0,.5); }
-  .scanner-hint { position:absolute; left:0; right:0; bottom:calc(40px + env(safe-area-inset-bottom, 0px)); text-align:center; color:#fff; font-size:14px; padding:0 24px; }
-
-  #friendList .friend-item {
-    padding: 14px;
-    margin-bottom: 8px;
-    border-bottom: none;
-    border-radius: 18px;
-  }
-
-  #friendList .friend-item:last-child {
-    margin-bottom: 0;
-  }
-
-  #friendList .friend-item:not(.has-banner) {
-    background: #F8FAFE;
-  }
-
-  body.dark #friendList .friend-item:not(.has-banner) {
-    background: #1E293B;
-  }
-
-  #friendList .friend-item.has-banner .friend-info {
-    margin-top: 0;
-  }
-
-  #friendList .friend-actions .btn-icon.chat {
-    width: 40px;
-    height: 40px;
-    background: #DBEAFE;
-  }
-
-  #friendList .friend-actions .btn-icon.chat svg {
-    width: 19px;
-    height: 19px;
-    stroke: #2563EB;
-  }
-
-  body.dark #friendList .friend-actions .btn-icon.chat {
-    background: #1E3A8A;
-  }
-
-  body.dark #friendList .friend-actions .btn-icon.chat svg {
-    stroke: #93C5FD;
-  }
-
-  #friendList .friend-item.has-banner .friend-actions .btn-icon.chat {
-    background: rgba(0, 0, 0, 0.28);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(6px);
-  }
-
-  #friendList .friend-item.has-banner .friend-actions .btn-icon.chat svg {
-    stroke: #fff !important;
-  }
-
-  .pin-icon {
-    width: 13px;
-    height: 13px;
-    flex-shrink: 0;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    opacity: 0.7;
-  }
-
-  #profilePopupInfo {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 10px;
-  }
-
-  #profilePopupInfo:empty {
-    display: none;
-  }
-
-  .info-chip {
-    font-size: 11px;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 99px;
-    background: #EFF6FF;
-    color: #2563EB;
-  }
-
-  body.dark .info-chip {
-    background: #1E3A8A;
-    color: #93C5FD;
-  }
-
-  .popup-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 8px;
-  }
-
-  .popup-grid .btn {
-    margin: 0;
-    padding-left: 8px;
-    padding-right: 8px;
-    font-size: 13px;
-  }
-
-  body.dark #profilePopupName {
-    color: #F1F5F9 !important;
-  }
-
-  body.dark #profilePopupBio {
-    color: #94A3B8 !important;
-  }
-
-
-
-
-  /* ===== Ikon tab (hanya tampil di desktop) ===== */
-  .tab-icon { display:none; }
-
-  /* ===== DESKTOP: tampilan aplikasi penuh, tanpa kontainer ganda ===== */
+  .scanner-overlay { position: fixed; inset: 0; background: #000; z-index: 250; display: none; flex-direction: column; }
+  .scanner-overlay.active { display: flex; }
+  .scanner-top { display: flex; align-items: center; justify-content: space-between; padding: calc(14px + env(safe-area-inset-top, 0px)) 18px 14px; color: #fff; position: relative; z-index: 2; }
+  .scanner-top b { font-size: 16px; }
+  .scanner-close { width: 40px; height: 40px; border-radius: 50%; border: none; background: rgba(255, 255, 255, .18); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .scanner-close svg { width: 20px; height: 20px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; }
+  .scanner-stage { position: relative; flex: 1; overflow: hidden; }
+  .scanner-stage video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .scanner-frame { position: absolute; left: 50%; top: 50%; width: min(70vw, 280px); aspect-ratio: 1/1; transform: translate(-50%, -50%); border: 3px solid #fff; border-radius: 24px; box-shadow: 0 0 0 999px rgba(0, 0, 0, .5); }
+  .scanner-hint { position: absolute; left: 0; right: 0; bottom: calc(40px + env(safe-area-inset-bottom, 0px)); text-align: center; color: #fff; font-size: 14px; padding: 0 24px; }
+  #friendList .friend-item { padding: 14px; margin-bottom: 8px; border-bottom: none; border-radius: 18px; }
+  #friendList .friend-item:last-child { margin-bottom: 0; }
+  #friendList .friend-item:not(.has-banner) { background: #F8FAFE; }
+  body.dark #friendList .friend-item:not(.has-banner) { background: #1E293B; }
+  #friendList .friend-item.has-banner .friend-info { margin-top: 0; }
+  #friendList .friend-actions .btn-icon.chat { width: 40px; height: 40px; background: #DBEAFE; }
+  #friendList .friend-actions .btn-icon.chat svg { width: 19px; height: 19px; stroke: #2563EB; }
+  body.dark #friendList .friend-actions .btn-icon.chat { background: #1E3A8A; }
+  body.dark #friendList .friend-actions .btn-icon.chat svg { stroke: #93C5FD; }
+  #friendList .friend-item.has-banner .friend-actions .btn-icon.chat { background: rgba(0, 0, 0, 0.28); border: 1px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(6px); }
+  #friendList .friend-item.has-banner .friend-actions .btn-icon.chat svg { stroke: #fff !important; }
+  .pin-icon { width: 13px; height: 13px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: 0.7; }
+  #profilePopupInfo { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  #profilePopupInfo:empty { display: none; }
+  .info-chip { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 99px; background: #EFF6FF; color: #2563EB; }
+  body.dark .info-chip { background: #1E3A8A; color: #93C5FD; }
+  .popup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  .popup-grid .btn { margin: 0; padding-left: 8px; padding-right: 8px; font-size: 13px; }
+  body.dark #profilePopupName { color: #F1F5F9 !important; }
+  body.dark #profilePopupBio { color: #94A3B8 !important; }
+  .grup-btn-buat { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 14px; }
+  .grup-avatar { width: 46px; height: 46px; border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 18px; flex-shrink: 0; }
+  .grup-prev { font-size: 12px; color: #94A3B8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+  body.dark .grup-prev { color: #64748B; }
+  .grup-waktu { font-size: 11px; color: #94A3B8; }
+  #grupList .friend-item { padding: 14px; margin-bottom: 8px; border-bottom: none; border-radius: 18px; background: #F8FAFE; }
+  body.dark #grupList .friend-item { background: #1E293B; }
+  #grupList .friend-item:last-child { margin-bottom: 0; }
+  .grup-avatar-hdr { width: 40px; height: 40px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 16px; cursor: pointer; flex-shrink: 0; }
+  .grup-sender { display: block; font-size: 11px; font-weight: 700; margin-bottom: 2px; }
+  .grup-modal-card { width: min(92vw, 420px) !important; max-height: 86vh; overflow-y: auto; text-align: left !important; padding: 22px 20px !important; }
+  .grup-modal-card h3 { text-align: left; }
+  .grup-modal-card p { margin-bottom: 14px; }
+  .pilih-judul { display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 700; margin: 4px 0 8px; }
+  .pilih-judul span { font-size: 12px; font-weight: 600; color: #2563EB; }
+  body.dark .pilih-judul span { color: #93C5FD; }
+  .pilih-list { max-height: 260px; overflow-y: auto; border: 1px solid #E2E8F0; border-radius: 14px; padding: 2px 12px; margin-bottom: 14px; }
+  body.dark .pilih-list { border-color: #334155; }
+  .pilih-item, .anggota-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #E2E8F0; }
+  body.dark .pilih-item, body.dark .anggota-row { border-bottom-color: #1E293B; }
+  .pilih-item:last-child, .anggota-row:last-child { border-bottom: none; }
+  .pilih-item { cursor: pointer; }
+  .pilih-item input { width: 20px; height: 20px; accent-color: #2563EB; flex-shrink: 0; }
+  .pilih-item .friend-avatar, .anggota-row .friend-avatar { width: 38px; height: 38px; flex-shrink: 0; cursor: default; }
+  .pilih-nama { font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pilih-kosong { text-align: center; padding: 18px 0; font-size: 13px; color: #94A3B8; }
+  .anggota-info { flex: 1; min-width: 0; }
+  .anggota-nama { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .anggota-nama .kamu { font-size: 12px; font-weight: 500; color: #94A3B8; }
+  .role-chip { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: #EFF6FF; color: #2563EB; }
+  .role-chip.pembuat { background: #FEF3C7; color: #B45309; }
+  body.dark .role-chip { background: #1E3A8A; color: #93C5FD; }
+  body.dark .role-chip.pembuat { background: #78350F; color: #FDE68A; }
+  .anggota-aksi { display: none; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .anggota-row.terbuka .anggota-aksi { display: flex; }
+  .anggota-row.bisa { cursor: pointer; }
+  .anggota-panah { width: 18px; height: 18px; color: #94A3B8; flex-shrink: 0; transition: transform .2s; align-self: flex-start; margin-top: 10px; }
+  .anggota-row.terbuka .anggota-panah { transform: rotate(180deg); }
+  .anggota-aksi button { border: 1px solid #E2E8F0; background: #F8FAFE; color: #0F172A; font-size: 11.5px; font-weight: 600; padding: 5px 10px; border-radius: 99px; cursor: pointer; font-family: inherit; }
+  body.dark .anggota-aksi button { background: #1E293B; border-color: #334155; color: #F1F5F9; }
+  .anggota-aksi button.bahaya { color: #DC2626; }
+  .info-nama { font-size: 18px; font-weight: 800; }
+  .info-desk { font-size: 13px; color: #64748B; margin-top: 4px; line-height: 1.5; }
+  .info-sub { font-size: 12px; color: #94A3B8; margin: 6px 0 14px; }
+  .modal-aksi { display: flex; gap: 8px; }
+  .modal-aksi .btn { margin: 0; }
+  .modal-kolom { display: flex; flex-direction: column; gap: 8px; }
+  .modal-kolom .btn { margin: 0; }
+  .grup-row { display: flex; align-items: flex-end; gap: 8px; margin: 0 -20px; padding: 1px 20px; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  .grup-row.sent { justify-content: flex-end; }
+  .grup-row.bisa-hapus { cursor: pointer; }
+  .grup-row.dipilih { background: rgba(37, 99, 235, .14); }
+  body.dark .grup-row.dipilih { background: rgba(96, 165, 250, .18); }
+  .grup-row .chat-bubble { max-width: calc(100% - 40px); }
+  .grup-row.sent .chat-bubble { max-width: 80%; }
+  .grup-av { width: 30px; height: 30px; border-radius: 50%; background: #EFF6FF; color: #2563EB; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; overflow: hidden; flex-shrink: 0; }
+  .grup-av.kosong { background: transparent; }
+  .grup-av img { width: 100%; height: 100%; object-fit: cover; }
+  #grupBackdrop .chat-header { position: relative; }
+  .grup-pilih-bar { display: none; position: absolute; inset: 0; align-items: center; gap: 12px; padding: 0 20px; background: #fff; z-index: 5; }
+  body.dark .grup-pilih-bar { background: #0F172A; }
+  .grup-pilih-bar .jumlah { flex: 1; font-size: 16px; font-weight: 700; }
+  .grup-pilih-bar button { width: 40px; height: 40px; border-radius: 50%; border: none; background: #F1F5F9; color: #0F172A; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  body.dark .grup-pilih-bar button { background: #1E293B; color: #F1F5F9; }
+  .grup-pilih-bar button.hapus { background: #FEE2E2; color: #DC2626; }
+  body.dark .grup-pilih-bar button.hapus { background: #7F1D1D; color: #FCA5A5; }
+  .grup-pilih-bar svg { width: 20px; height: 20px; }
+  .telp-overlay { position: fixed; inset: 0; z-index: 150; display: none; flex-direction: column; align-items: center; justify-content: space-between; padding: calc(70px + env(safe-area-inset-top, 0px)) 24px calc(56px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(170deg, #0F172A 0%, #1E3A8A 100%); color: #fff; text-align: center; }
+  .telp-tengah { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .telp-avatar { width: 120px; height: 120px; border-radius: 50%; background: #2563EB; display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: 800; overflow: hidden; box-shadow: 0 0 0 10px rgba(255, 255, 255, .08), 0 0 0 22px rgba(255, 255, 255, .04); margin-bottom: 18px; }
+  .telp-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .telp-nama { font-size: 26px; font-weight: 800; max-width: 86vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .telp-status { font-size: 15px; color: rgba(255, 255, 255, .75); min-height: 22px; font-variant-numeric: tabular-nums; }
+  .telp-baris { display: none; align-items: flex-start; justify-content: center; gap: 44px; }
+  .telp-tombol { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 12px; color: rgba(255, 255, 255, .85); }
+  .telp-tombol button { width: 68px; height: 68px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; background: rgba(255, 255, 255, .16); transition: transform .15s, background .15s; }
+  .telp-tombol button:active { transform: scale(.94); }
+  .telp-tombol button svg { width: 28px; height: 28px; }
+  .telp-tombol .merah { background: #DC2626; }
+  .telp-tombol .hijau { background: #16A34A; }
+  .telp-tombol.nyala button { background: #fff; color: #0F172A; }
+  #chatTelpBtn svg { stroke: #2563EB !important; }
+  body.dark #chatTelpBtn svg { stroke: #60A5FA !important; }
+  .chat-header .chat-actions { display: flex; align-items: center; gap: 2px; }
+  .tab-icon { display: none; }
   @media (min-width: 900px) {
-    body { background:#F8FAFC; }
-    body.dark { background:#0B1120; }
-
-    .app-container {
-      max-width:none; width:100%; min-height:100vh; margin:0; padding:0;
-      border:0; border-radius:0; box-shadow:none; overflow:visible;
-      background:#F8FAFC;
-    }
-    body.dark .app-container { background:#0B1120; border:0; box-shadow:none; }
-
-    .app-header {
-      min-height:72px; border-radius:0;
-      padding:0 max(32px, calc((100% - 1120px) / 2 + 32px));
-      box-shadow:0 1px 0 rgba(15,23,42,.02);
-    }
-    .app-title { font-size:22px; }
-    .back-btn:hover { background:rgba(37,99,235,.10); }
-
-    .screen {
-      width:100%; max-width:1120px; margin:0 auto; padding:36px 32px 48px;
-      display:grid; grid-template-columns:230px minmax(0,1fr); gap:48px; align-items:start;
-    }
-
-    /* tab jadi menu samping */
-    .tabs-pill {
-      flex-direction:column; gap:4px; padding:0; margin:0; overflow:visible;
-      background:transparent; border:0; border-radius:0;
-      position:sticky; top:108px;
-    }
-    body.dark .tabs-pill { background:transparent; border:0; }
-    .tab-item {
-      display:flex; align-items:center; gap:12px; text-align:left;
-      min-height:48px; padding:0 16px; font-size:14px; border-radius:12px;
-    }
-    .tab-item:hover { background:#EAF0F8; color:#0F172A; }
-    body.dark .tab-item:hover { background:#16203A; color:#F1F5F9; }
-    .tab-item.active, .tab-item.active:hover {
-      background:#E3EDFF; color:#1D4ED8; box-shadow:none;
-    }
-    body.dark .tab-item.active, body.dark .tab-item.active:hover {
-      background:rgba(37,99,235,.22); color:#93C5FD;
-    }
-    .tab-icon {
-      display:block; width:20px; height:20px; flex-shrink:0;
-      stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;
-    }
-    #requestBadge { margin-left:auto !important; }
-
-    /* isi langsung di atas halaman, tanpa kartu pembungkus */
-    .tab-content { min-width:0; }
-    .card-modern, body.dark .card-modern {
-      background:transparent; border:0; box-shadow:none; padding:0; margin:0; border-radius:0;
-    }
-    .card-modern h2 { font-size:24px; letter-spacing:-.4px; margin-bottom:6px; }
-    .card-modern .subtext { font-size:14px; margin-bottom:22px; }
-
-    /* pencarian */
-    .search-row { max-width:600px; }
-    .scan-btn { max-width:600px; }
-    .search-row .input { background:#fff; }
-    body.dark .search-row .input { background:#111827; }
-
-    /* daftar jadi grid */
-    .list-grid {
-      display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:12px;
-    }
-    .list-grid > :not(.friend-item):not(.search-result-item) { grid-column:1 / -1; }
-
-    #friendList .friend-item, #requestList .friend-item, #searchResult .search-result-item,
-    #friendList .friend-item.has-banner, #requestList .friend-item.has-banner,
-    #searchResult .search-result-item.has-banner { margin:0; }
-
-    #friendList .friend-item:not(.has-banner),
-    #requestList .friend-item:not(.has-banner),
-    #searchResult .search-result-item:not(.has-banner) {
-      background:#fff; border:1px solid #E2E8F0; border-radius:16px; padding:14px 16px;
-      transition:border-color .15s, box-shadow .15s;
-    }
-    #friendList .friend-item:not(.has-banner):hover,
-    #requestList .friend-item:not(.has-banner):hover,
-    #searchResult .search-result-item:not(.has-banner):hover {
-      border-color:#BFD3F5; box-shadow:0 4px 14px rgba(37,99,235,.08);
-    }
-    body.dark #friendList .friend-item:not(.has-banner),
-    body.dark #requestList .friend-item:not(.has-banner),
-    body.dark #searchResult .search-result-item:not(.has-banner) {
-      background:#111827; border-color:#1E293B;
-    }
-    body.dark #friendList .friend-item:not(.has-banner):hover,
-    body.dark #requestList .friend-item:not(.has-banner):hover,
-    body.dark #searchResult .search-result-item:not(.has-banner):hover {
-      border-color:#2F4A8A; box-shadow:none;
-    }
-    .friend-item.has-banner, .search-result-item.has-banner { transition:transform .15s; }
-    .friend-item.has-banner:hover, .search-result-item.has-banner:hover { transform:translateY(-1px); }
-    .friend-item:active, .search-result-item:active { opacity:1; }
-
-    .empty-state { padding:72px 20px; }
-
-    /* footer menempel di bawah layar */
-    .footer-app { margin-top:auto; background:transparent; padding:20px; }
-
-    /* chat jadi dialog di tengah */
-    .chat-backdrop { align-items:center; backdrop-filter:blur(4px); }
-    .chat-panel {
-      max-width:520px; height:min(760px, 86vh); border-radius:24px;
-      box-shadow:0 30px 80px rgba(0,0,0,.28);
-    }
-
-    .scanner-stage {
-      align-self:center; width:min(92vw, 620px); height:min(78vh, 700px);
-      min-height:420px; border-radius:28px; margin-bottom:24px;
-    }
+    body { background: #F8FAFC; }
+    body.dark { background: #0B1120; }
+    .app-container { max-width: none; width: 100%; min-height: 100vh; margin: 0; padding: 0; border: 0; border-radius: 0; box-shadow: none; overflow: visible; background: #F8FAFC; }
+    body.dark .app-container { background: #0B1120; border: 0; box-shadow: none; }
+    .app-header { min-height: 72px; border-radius: 0; padding: 0 max(32px, calc((100% - 1120px) / 2 + 32px)); box-shadow: 0 1px 0 rgba(15, 23, 42, .02); }
+    .app-title { font-size: 22px; }
+    .back-btn:hover { background: rgba(37, 99, 235, .10); }
+    .screen { width: 100%; max-width: 1120px; margin: 0 auto; padding: 36px 32px 48px; display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 48px; align-items: start; }
+    .tabs-pill { flex-direction: column; gap: 4px; padding: 0; margin: 0; overflow: visible; background: transparent; border: 0; border-radius: 0; position: sticky; top: 108px; }
+    body.dark .tabs-pill { background: transparent; border: 0; }
+    .tab-item { display: flex; align-items: center; gap: 12px; text-align: left; min-height: 48px; padding: 0 16px; font-size: 14px; border-radius: 12px; }
+    .tab-item:hover { background: #EAF0F8; color: #0F172A; }
+    body.dark .tab-item:hover { background: #16203A; color: #F1F5F9; }
+    .tab-item.active, .tab-item.active:hover { background: #E3EDFF; color: #1D4ED8; box-shadow: none; }
+    body.dark .tab-item.active, body.dark .tab-item.active:hover { background: rgba(37, 99, 235, .22); color: #93C5FD; }
+    .tab-icon { display: block; width: 20px; height: 20px; flex-shrink: 0; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    #requestBadge { margin-left: auto !important; }
+    .tab-content { min-width: 0; }
+    .card-modern, body.dark .card-modern { background: transparent; border: 0; box-shadow: none; padding: 0; margin: 0; border-radius: 0; }
+    .card-modern h2 { font-size: 24px; letter-spacing: -.4px; margin-bottom: 6px; }
+    .card-modern .subtext { font-size: 14px; margin-bottom: 22px; }
+    .search-row { max-width: 600px; }
+    .scan-btn { max-width: 600px; }
+    .search-row .input { background: #fff; }
+    body.dark .search-row .input { background: #111827; }
+    .list-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
+    .list-grid > :not(.friend-item):not(.search-result-item) { grid-column: 1 / -1; }
+    #friendList .friend-item, #requestList .friend-item, #searchResult .search-result-item, #friendList .friend-item.has-banner, #requestList .friend-item.has-banner, #searchResult .search-result-item.has-banner { margin: 0; }
+    #friendList .friend-item:not(.has-banner), #requestList .friend-item:not(.has-banner), #searchResult .search-result-item:not(.has-banner) { background: #fff; border: 1px solid #E2E8F0; border-radius: 16px; padding: 14px 16px; transition: border-color .15s, box-shadow .15s; }
+    #friendList .friend-item:not(.has-banner):hover, #requestList .friend-item:not(.has-banner):hover, #searchResult .search-result-item:not(.has-banner):hover { border-color: #BFD3F5; box-shadow: 0 4px 14px rgba(37, 99, 235, .08); }
+    body.dark #friendList .friend-item:not(.has-banner), body.dark #requestList .friend-item:not(.has-banner), body.dark #searchResult .search-result-item:not(.has-banner) { background: #111827; border-color: #1E293B; }
+    body.dark #friendList .friend-item:not(.has-banner):hover, body.dark #requestList .friend-item:not(.has-banner):hover, body.dark #searchResult .search-result-item:not(.has-banner):hover { border-color: #2F4A8A; box-shadow: none; }
+    .friend-item.has-banner, .search-result-item.has-banner { transition: transform .15s; }
+    .friend-item.has-banner:hover, .search-result-item.has-banner:hover { transform: translateY(-1px); }
+    .friend-item:active, .search-result-item:active { opacity: 1; }
+    .empty-state { padding: 72px 20px; }
+    .footer-app { margin-top: auto; background: transparent; padding: 20px; }
+    .chat-backdrop { align-items: center; backdrop-filter: blur(4px); }
+    .chat-panel { max-width: 520px; height: min(760px, 86vh); border-radius: 24px; box-shadow: 0 30px 80px rgba(0, 0, 0, .28); }
+    .scanner-stage { align-self: center; width: min(92vw, 620px); height: min(78vh, 700px); min-height: 420px; border-radius: 28px; margin-bottom: 24px; }
   }
-
-  /* layar sedang: menu samping lebih ramping */
   @media (min-width: 900px) and (max-width: 1099px) {
-    .screen { grid-template-columns:200px minmax(0,1fr); gap:32px; }
+    .screen { grid-template-columns: 200px minmax(0, 1fr); gap: 32px; }
   }
-
+  @media (min-width: 900px) {
+    .grup-btn-buat { max-width: 320px; }
+    #grupList .friend-item { margin: 0; background: #fff; border: 1px solid #E2E8F0; border-radius: 16px; padding: 14px 16px; transition: border-color .15s, box-shadow .15s; }
+    #grupList .friend-item:hover { border-color: #BFD3F5; box-shadow: 0 4px 14px rgba(37, 99, 235, .08); }
+    body.dark #grupList .friend-item { background: #111827; border-color: #1E293B; }
+    body.dark #grupList .friend-item:hover { border-color: #2F4A8A; box-shadow: none; }
+  }
 </style>
 </head>
 <body>
@@ -1748,6 +461,7 @@
         <span id="requestBadge" style="background:#DC2626;color:#fff;font-size:10px;padding:1px 8px;border-radius:10px;margin-left:4px;display:none;">0</span>
       </button>
       <button class="tab-item" data-tab="tabTeman" onclick="switchTab('tabTeman')"><svg class="tab-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Teman</button>
+      <button class="tab-item" data-tab="tabGrup" onclick="switchTab('tabGrup')"><svg class="tab-icon" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></svg>Grup</button>
     </div>
 
     <div id="tabCari" class="tab-content active">
@@ -1801,6 +515,19 @@
         </div>
       </div>
     </div>
+    <div id="tabGrup" class="tab-content">
+      <div class="card-modern">
+        <h2>Grup</h2>
+        <p class="subtext">Mengobrol bersama beberapa teman dalam satu grup.</p>
+        <button class="btn btn-primary grup-btn-buat" onclick="bukaBuatGrup()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Buat Grup Baru
+        </button>
+        <div id="grupList" class="list-grid">
+          <div class="loading-spinner"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="footer-app">
@@ -1826,6 +553,9 @@
         </div>
       </div>
       <div class="chat-actions">
+        <button class="btn-icon" onclick="mulaiTelepon()" title="Telepon" id="chatTelpBtn" aria-label="Telepon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </button>
         <button class="btn-icon" onclick="toggleChatMenu()" title="Menu" id="chatMenuBtn">
           <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
             <circle cx="12" cy="6" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="18" r="1.8"/>
@@ -1856,6 +586,83 @@
       </button>
     </div>
   </div>
+</div>
+
+<div class="chat-backdrop" id="grupBackdrop">
+  <div class="chat-panel">
+    <div class="chat-header">
+      <button class="back-chat" onclick="tutupGrup()" aria-label="Kembali">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="grup-avatar-hdr" id="grupAvatar" onclick="bukaInfoGrup()">G</div>
+      <div style="flex:1;min-width:0;cursor:pointer;" onclick="bukaInfoGrup()">
+        <div class="chat-name" id="grupNama">Grup</div>
+        <div class="chat-status" id="grupSub"></div>
+      </div>
+      <div class="chat-actions">
+        <button class="btn-icon" onclick="bukaInfoGrup()" title="Info Grup" aria-label="Info Grup">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        </button>
+      </div>
+      <div class="grup-pilih-bar" id="grupPilihBar">
+        <button onclick="keluarPilihGrup()" aria-label="Batal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <span class="jumlah" id="grupPilihJumlah">0 dipilih</span>
+        <button class="hapus" onclick="hapusPesanGrup()" aria-label="Hapus pesan">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="chat-messages" id="grupPesan"></div>
+    <div class="chat-input-area">
+      <input type="text" id="grupInput" maxlength="500" placeholder="Ketik pesan..." autocomplete="off" onkeypress="if(event.key==='Enter') kirimGrup()">
+      <button class="btn-send" onclick="kirimGrup()" aria-label="Kirim">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="grupModal" class="alert-overlay" onclick="if(event.target===this) tutupGrupModal();">
+  <div class="alert-card grup-modal-card" id="grupModalCard"></div>
+</div>
+
+<div class="telp-overlay" id="telpOverlay">
+  <div class="telp-tengah">
+    <div class="telp-avatar" id="telpAvatar"></div>
+    <div class="telp-nama" id="telpNama">Pengguna</div>
+    <div class="telp-status" id="telpStatus"></div>
+  </div>
+  <div class="telp-baris" id="telpMasuk">
+    <div class="telp-tombol">
+      <button class="merah" onclick="tolakTelepon()" aria-label="Tolak">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(135deg)"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </button>
+      <span>Tolak</span>
+    </div>
+    <div class="telp-tombol">
+      <button class="hijau" onclick="angkatTelepon()" aria-label="Angkat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </button>
+      <span>Angkat</span>
+    </div>
+  </div>
+  <div class="telp-baris" id="telpAktif">
+    <div class="telp-tombol" id="telpBisu">
+      <button onclick="togelBisuTelp()" aria-label="Bisukan mikrofon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+      <span id="telpBisuTeks">Bisukan</span>
+    </div>
+    <div class="telp-tombol">
+      <button class="merah" onclick="tutupTelepon()" aria-label="Akhiri">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(135deg)"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </button>
+      <span>Akhiri</span>
+    </div>
+  </div>
+  <audio id="telpAudio" autoplay playsinline></audio>
 </div>
 
 <div id="scannerOverlay" class="scanner-overlay">
@@ -1951,7 +758,7 @@ function getPremiumLevel(premiumMapel) {
   if (!premiumMapel) return { level: 'standard', color: '', name: 'Standard' };
   const key = JSON.stringify(premiumMapel);
   if (premiumLevelCache[key]) return premiumLevelCache[key];
-  
+
   let count = 0;
   ['ekonomi','sains','coding','matematika','bahasa','pendukung','robotik'].forEach(function(m) {
     if (premiumMapel[m] === true) count++;
@@ -1962,7 +769,7 @@ function getPremiumLevel(premiumMapel) {
   else if (count >= 2) result = { level: 'platinum', color: 'platinum', name: 'Platinum' };
   else if (count >= 1) result = { level: 'silver', color: 'silver', name: 'Silver' };
   else result = { level: 'standard', color: '', name: 'Standard' };
-  
+
   premiumLevelCache[key] = result;
   return result;
 }
@@ -2066,12 +873,12 @@ function getUsersBatch(uids, callback) {
       needFetch.push(uid);
     }
   });
-  
+
   if (needFetch.length === 0) {
     callback(cached);
     return;
   }
-  
+
   const promises = needFetch.map(function(uid) {
     return db.ref('users/' + uid).once('value').then(function(snap) {
       const data = snap.val() || {};
@@ -2079,7 +886,7 @@ function getUsersBatch(uids, callback) {
       return { uid: uid, data: data };
     });
   });
-  
+
   Promise.all(promises).then(function(fetched) {
     callback(cached.concat(fetched));
   }).catch(function(err) {
@@ -2096,6 +903,7 @@ function switchTab(tabId) {
 
   if (tabId === 'tabPermintaan') loadRequestsOptimized();
   if (tabId === 'tabTeman') loadFriendsOptimized();
+  if (tabId === 'tabGrup') loadGrup();
 }
 
 function loadFriendsOptimized() {
@@ -2147,10 +955,10 @@ function loadFriendsOptimized() {
         const level = getPremiumLevel(premium);
         const hasPremium = level.level !== 'standard';
         const nameAttr = nama.replace(/'/g, "\\'");
-        
+
         html += `
-          <div class="friend-item${hasPremium ? ' has-banner premium-' + level.color : ''}" 
-               id="friend_${uid}" 
+          <div class="friend-item${hasPremium ? ' has-banner premium-' + level.color : ''}"
+               id="friend_${uid}"
                onclick="openProfilePopup('${uid}')"
                style="cursor:pointer;">
             ${hasPremium ? `<span class="row-stars rs1">✦</span><span class="row-stars rs2">✦</span><span class="row-stars rs3">✦</span>` : ''}
@@ -2203,7 +1011,7 @@ function loadRequestsOptimized() {
     .then(function(snap) {
       const data = snap.val() || {};
       const requests = Object.keys(data).filter(key => data[key] === 'pending_received');
-      
+
       const badge = document.getElementById('requestBadge');
       if (requests.length > 0) {
         badge.style.display = 'inline';
@@ -2234,7 +1042,7 @@ function loadRequestsOptimized() {
     })
     .then(function(results) {
       if (!results) return;
-      
+
       let html = '';
       results.forEach(function({ uid, data }) {
         const profile = data.profile || {};
@@ -2244,10 +1052,10 @@ function loadRequestsOptimized() {
         const level = getPremiumLevel(premium);
         const hasPremium = level.level !== 'standard';
         const nameAttr = nama.replace(/'/g, "\\'");
-        
+
         html += `
-          <div class="friend-item${hasPremium ? ' has-banner premium-' + level.color : ''}" 
-               id="req_${uid}" 
+          <div class="friend-item${hasPremium ? ' has-banner premium-' + level.color : ''}"
+               id="req_${uid}"
                onclick="openProfilePopup('${uid}')"
                style="cursor:pointer;">
             ${hasPremium ? `<span class="row-stars rs1">✦</span><span class="row-stars rs2">✦</span><span class="row-stars rs3">✦</span>` : ''}
@@ -2345,9 +1153,9 @@ function hapusTeman(targetUid) {
 
 function fetchAllUsersOnce(callback) {
   const now = Date.now();
-  if (allUsersCache && (now - allUsersCacheTime) < 60000) { 
-    callback(allUsersCache); 
-    return; 
+  if (allUsersCache && (now - allUsersCacheTime) < 60000) {
+    callback(allUsersCache);
+    return;
   }
   db.ref('users').once('value').then(function(snap) {
     allUsersCache = snap.val() || {};
@@ -2416,7 +1224,7 @@ function performSearch(query) {
         const hasPremium = level.level !== 'standard';
         const verified = user.profile.verified;
         const nameAttr = user.nama.replace(/'/g, "\\'");
-        
+
         html += `
           <div class="search-result-item${hasPremium ? ' has-banner premium-' + level.color : ''}" id="searchResult_${user.uid}" onclick="openProfilePopup('${user.uid}')">
             ${hasPremium ? `<span class="row-stars rs1">✦</span><span class="row-stars rs2">✦</span><span class="row-stars rs3">✦</span>` : ''}
@@ -2989,7 +1797,7 @@ function bacaFrame() {
       var hasil = jsQR(img.data, img.width, img.height, { inversionAttempts: 'attemptBoth' });
       if (hasil && tanganiQRTeman(hasil.data)) { scanBusy = false; return; }
       if (!hasil && scanStream) {
-        // Percobaan kedua: tingkatkan kontras untuk QR yang agak pudar.
+
         var d = img.data;
         for (var i = 0; i < d.length; i += 4) {
           var gray = (d[i] * 0.299 + d[i+1] * 0.587 + d[i+2] * 0.114);
@@ -3013,10 +1821,1148 @@ function bacaFrame() {
 window.addEventListener('pagehide', tutupScanner);
 document.addEventListener('keydown', function(e) { if (e.key === 'Escape') tutupScanner(); });
 
+let grupAktif = null;
+let grupRefs = [];
+let grupModalMode = '';
+let grupLastSend = 0;
+let grupPilihBatas = 0;
+const GRUP_MAKS_ANGGOTA = 50;
+const WARNA_GRUP = ['#6366F1', '#2563EB', '#0EA5E9', '#14B8A6', '#10B981', '#F59E0B', '#EF4444', '#EC4899', '#8B5CF6'];
+
+function $g(id) {
+  return document.getElementById(id);
+}
+
+function grupEsc(teks) {
+  return String(teks == null ? '' : teks)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function warnaGrup(teks) {
+  let h = 0;
+  const s = String(teks || '');
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return WARNA_GRUP[h % WARNA_GRUP.length];
+}
+
+function namaDari(data) {
+  return ((data && data.profile && data.profile.nama) || 'Pengguna');
+}
+
+function namaSaya(callback) {
+  getUserData(currentUser, function(user) {
+    callback(namaDari(user));
+  });
+}
+
+function avatarMini(data) {
+  const profile = (data && data.profile) || {};
+  const nama = profile.nama || 'Pengguna';
+  if (profile.foto) return '<div class="friend-avatar"><img src="' + grupEsc(profile.foto) + '" loading="lazy"></div>';
+  return '<div class="friend-avatar"><span class="avatar-text">' + grupEsc(nama.charAt(0).toUpperCase()) + '</span></div>';
+}
+
+function ambilTemanDiterima(callback) {
+  db.ref('users/' + currentUser + '/friends').once('value').then(function(snap) {
+    const data = snap.val() || {};
+    const ids = Object.keys(data).filter(function(k) { return data[k] === 'accepted'; });
+    if (!ids.length) { callback([]); return; }
+    getUsersBatch(ids, function(hasil) {
+      hasil.sort(function(a, b) { return namaDari(a.data).localeCompare(namaDari(b.data)); });
+      callback(hasil);
+    });
+  }).catch(function() { callback([]); });
+}
+
+function waktuSingkat(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  const sekarang = new Date();
+  if (d.toDateString() === sekarang.toDateString()) return formatTime(ts);
+  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+}
+
+function loadGrup() {
+  const list = $g('grupList');
+  if (!list) return;
+  if (!currentUser) {
+    list.innerHTML = '<div class="empty-state"><h3>Masuk dahulu</h3><p>Masuk ke akun untuk memakai grup.</p></div>';
+    return;
+  }
+  const uid = currentUser;
+  list.innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
+
+  db.ref('grupUser/' + uid).once('value').then(function(snap) {
+    const ids = Object.keys(snap.val() || {});
+    return Promise.all(ids.map(function(id) {
+      return Promise.all([
+        db.ref('grup/' + id + '/info').once('value'),
+        db.ref('grup/' + id + '/terakhir').once('value'),
+        db.ref('grup/' + id + '/anggota').once('value')
+      ]).then(function(r) {
+        const info = r[0].val();
+        if (!info) {
+          db.ref('grupUser/' + uid + '/' + id).remove().catch(function() {});
+          return null;
+        }
+        return { id: id, info: info, terakhir: r[1].val(), jumlah: r[2].numChildren() };
+      }).catch(function() { return null; });
+    }));
+  }).then(function(hasil) {
+    const data = hasil.filter(Boolean);
+    data.sort(function(a, b) {
+      const wa = (a.terakhir && a.terakhir.waktu) || a.info.dibuat || 0;
+      const wb = (b.terakhir && b.terakhir.waktu) || b.info.dibuat || 0;
+      return wb - wa;
+    });
+    gambarGrupList(data);
+  }).catch(function(err) {
+    list.innerHTML = '<div style="text-align:center;padding:20px;color:#DC2626;">Gagal memuat grup: ' + grupEsc(err.message) + '</div>';
+  });
+}
+
+function gambarGrupList(data) {
+  const list = $g('grupList');
+  if (!data.length) {
+    list.innerHTML = '<div class="empty-state">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' +
+      '<h3>Belum ada grup</h3><p>Buat grup untuk mengobrol bersama beberapa teman sekaligus.</p></div>';
+    return;
+  }
+  list.innerHTML = data.map(function(g) {
+    const nama = g.info.nama || 'Grup';
+    const t = g.terakhir;
+    let preview = 'Belum ada pesan';
+    if (t && t.teks) preview = (t.pengirim === currentUser ? 'Kamu' : (t.nama || 'Anggota')) + ': ' + t.teks;
+    return '<div class="friend-item" onclick="bukaGrup(\'' + g.id + '\')">' +
+      '<div class="grup-avatar" style="background:' + warnaGrup(g.id) + '">' + grupEsc(nama.charAt(0).toUpperCase()) + '</div>' +
+      '<div class="friend-info"><div class="name-wrapper"><span class="name">' + grupEsc(nama) + '</span></div>' +
+      '<div class="grup-prev">' + grupEsc(preview) + '</div></div>' +
+      '<div class="row-side"><span class="grup-waktu">' + grupEsc(waktuSingkat(t ? t.waktu : g.info.dibuat)) + '</span>' +
+      '<span class="info-chip">' + g.jumlah + ' anggota</span></div></div>';
+  }).join('');
+}
+
+function lepasListenerGrup() {
+  grupRefs.forEach(function(r) { try { r.off(); } catch (e) {} });
+  grupRefs = [];
+}
+
+function bukaGrup(gid) {
+  lepasListenerGrup();
+  grupAktif = { id: gid, info: null, anggota: {}, pesan: [], profil: {}, dipilih: {}, terbuka: '' };
+  keluarPilihGrup(true);
+  $g('grupBackdrop').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  $g('grupNama').innerText = 'Memuat...';
+  $g('grupSub').innerText = '';
+  $g('grupPesan').innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
+
+  const galat = function() {
+    if (!grupAktif || grupAktif.id !== gid) return;
+    tutupGrup();
+    showAlert('Grup Tidak Tersedia', 'Kamu bukan anggota grup ini atau grup sudah dihapus.');
+    loadGrup();
+  };
+
+  const rInfo = db.ref('grup/' + gid + '/info');
+  const rAnggota = db.ref('grup/' + gid + '/anggota');
+  const rPesan = db.ref('grup/' + gid + '/pesan').orderByChild('waktu').limitToLast(80);
+
+  rInfo.on('value', function(snap) {
+    if (!grupAktif || grupAktif.id !== gid) return;
+    if (!snap.val()) { galat(); return; }
+    grupAktif.info = snap.val();
+    perbaruiHeaderGrup();
+  }, galat);
+
+  rAnggota.on('value', function(snap) {
+    if (!grupAktif || grupAktif.id !== gid) return;
+    const data = snap.val() || {};
+    if (!data[currentUser]) { galat(); return; }
+    grupAktif.anggota = data;
+    perbaruiHeaderGrup();
+    gambarPesanGrup(false);
+    isiAnggotaInfo();
+    muatProfilGrup(Object.keys(data));
+  }, galat);
+
+  rPesan.on('value', function(snap) {
+    if (!grupAktif || grupAktif.id !== gid) return;
+    const arr = [];
+    snap.forEach(function(c) {
+      const v = c.val();
+      if (v && v.teks) arr.push({ id: c.key, pengirim: v.pengirim, nama: v.nama || '', teks: v.teks, waktu: v.waktu || 0 });
+    });
+    arr.sort(function(a, b) { return a.waktu - b.waktu; });
+    grupAktif.pesan = arr;
+    Object.keys(grupAktif.dipilih).forEach(function(id) {
+      if (!arr.some(function(m) { return m.id === id; })) delete grupAktif.dipilih[id];
+    });
+    gambarPesanGrup(true);
+    perbaruiBarPilih();
+    muatProfilGrup(arr.map(function(m) { return m.pengirim; }));
+  }, galat);
+
+  grupRefs = [rInfo, rAnggota, rPesan];
+}
+
+function tutupGrup() {
+  keluarPilihGrup(true);
+  lepasListenerGrup();
+  grupAktif = null;
+  $g('grupBackdrop').style.display = 'none';
+  document.body.style.overflow = '';
+  tutupGrupModal();
+}
+
+function perbaruiHeaderGrup() {
+  if (!grupAktif || !grupAktif.info) return;
+  const nama = grupAktif.info.nama || 'Grup';
+  $g('grupNama').innerText = nama;
+  const av = $g('grupAvatar');
+  av.innerText = nama.charAt(0).toUpperCase();
+  av.style.background = warnaGrup(grupAktif.id);
+  $g('grupSub').innerText = Object.keys(grupAktif.anggota).length + ' anggota';
+}
+
+function muatProfilGrup(uids) {
+  if (!grupAktif) return;
+  const gid = grupAktif.id;
+  const perlu = uids.filter(function(u, i) { return u && uids.indexOf(u) === i && !grupAktif.profil[u]; });
+  if (!perlu.length) return;
+  getUsersBatch(perlu, function(hasil) {
+    if (!grupAktif || grupAktif.id !== gid) return;
+    hasil.forEach(function(r) { grupAktif.profil[r.uid] = r.data || {}; });
+    gambarPesanGrup(false);
+  });
+}
+
+function avatarPesanGrup(uid) {
+  const data = (grupAktif && grupAktif.profil[uid]) || {};
+  const profile = data.profile || {};
+  const nama = profile.nama || '?';
+  if (profile.foto) return '<div class="grup-av"><img src="' + grupEsc(profile.foto) + '" loading="lazy"></div>';
+  return '<div class="grup-av" style="background:' + warnaGrup(uid) + ';color:#fff">' + grupEsc(nama.charAt(0).toUpperCase()) + '</div>';
+}
+
+function gambarPesanGrup(paksaBawah) {
+  if (!grupAktif) return;
+  const box = $g('grupPesan');
+  const dekat = box.scrollHeight - box.scrollTop - box.clientHeight < 120;
+  const pesan = grupAktif.pesan;
+  if (!pesan.length) {
+    box.innerHTML = '<div style="text-align:center;padding:30px 0;color:#94A3B8;font-size:13px;">Belum ada pesan. Mulai percakapan grup sekarang!</div>';
+    return;
+  }
+  const admin = grupAktif.anggota[currentUser] === 'admin';
+  let html = '';
+  let tanggalTerakhir = '';
+  pesan.forEach(function(m, i) {
+    const tanggal = formatDate(m.waktu);
+    const tanggalBaru = tanggal !== tanggalTerakhir;
+    if (tanggalBaru) {
+      html += '<div style="text-align:center;font-size:10px;color:#94A3B8;padding:8px 0;">' + tanggal + '</div>';
+      tanggalTerakhir = tanggal;
+    }
+    const sendiri = m.pengirim === currentUser;
+    const bisaHapus = sendiri || admin;
+    const sebelum = pesan[i - 1];
+    const sesudah = pesan[i + 1];
+    const awalRun = tanggalBaru || !sebelum || sebelum.pengirim !== m.pengirim;
+    const akhirRun = !sesudah || sesudah.pengirim !== m.pengirim || formatDate(sesudah.waktu) !== tanggal;
+    html += '<div class="grup-row ' + (sendiri ? 'sent' : 'received') + (bisaHapus ? ' bisa-hapus' : '') + (grupAktif.dipilih[m.id] ? ' dipilih' : '') + '" data-id="' + grupEsc(m.id) + '" data-hapus="' + (bisaHapus ? '1' : '0') + '">' +
+      (sendiri ? '' : (akhirRun ? avatarPesanGrup(m.pengirim) : '<div class="grup-av kosong"></div>')) +
+      '<div class="chat-bubble ' + (sendiri ? 'sent' : 'received') + '">' +
+      (sendiri || !awalRun ? '' : '<span class="grup-sender" style="color:' + warnaGrup(m.pengirim) + '">' + grupEsc(m.nama || 'Anggota') + '</span>') +
+      grupEsc(m.teks) +
+      '<span class="time">' + formatTime(m.waktu) + '</span></div></div>';
+  });
+  box.innerHTML = html;
+  if (paksaBawah && dekat || box.dataset.awal !== grupAktif.id) {
+    box.scrollTop = box.scrollHeight;
+    box.dataset.awal = grupAktif.id;
+  }
+}
+
+let grupTahanTimer = null;
+let grupTahanXY = null;
+let grupAbaikanKlik = false;
+
+function pasangPilihGrup() {
+  const box = $g('grupPesan');
+  const barisDari = function(e) {
+    const el = e.target.closest ? e.target.closest('.grup-row') : null;
+    return el && el.dataset.hapus === '1' ? el : null;
+  };
+  const batalTahan = function() {
+    clearTimeout(grupTahanTimer);
+    grupTahanTimer = null;
+  };
+  box.addEventListener('pointerdown', function(e) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    const el = barisDari(e);
+    if (!el || !grupAktif) return;
+    grupTahanXY = [e.clientX, e.clientY];
+    batalTahan();
+    grupTahanTimer = setTimeout(function() {
+      grupTahanTimer = null;
+      grupAbaikanKlik = true;
+      togelPilihPesan(el.dataset.id);
+    }, 450);
+  });
+  box.addEventListener('pointermove', function(e) {
+    if (grupTahanTimer && grupTahanXY && Math.abs(e.clientX - grupTahanXY[0]) + Math.abs(e.clientY - grupTahanXY[1]) > 10) batalTahan();
+  });
+  ['pointerup', 'pointercancel', 'pointerleave', 'scroll'].forEach(function(n) {
+    box.addEventListener(n, batalTahan, true);
+  });
+  box.addEventListener('pointerup', function() {
+    setTimeout(function() { grupAbaikanKlik = false; }, 60);
+  });
+  box.addEventListener('contextmenu', function(e) {
+    if (barisDari(e)) e.preventDefault();
+  });
+  box.addEventListener('click', function(e) {
+    if (grupAbaikanKlik) { grupAbaikanKlik = false; return; }
+    if (!grupAktif || !Object.keys(grupAktif.dipilih).length) return;
+    const el = barisDari(e);
+    if (el) togelPilihPesan(el.dataset.id);
+  });
+}
+
+function togelPilihPesan(id) {
+  if (!grupAktif) return;
+  if (grupAktif.dipilih[id]) delete grupAktif.dipilih[id];
+  else grupAktif.dipilih[id] = true;
+  const baris = $g('grupPesan').querySelectorAll('.grup-row');
+  for (let i = 0; i < baris.length; i++) {
+    if (baris[i].dataset.id === id) baris[i].classList.toggle('dipilih', !!grupAktif.dipilih[id]);
+  }
+  perbaruiBarPilih();
+}
+
+function perbaruiBarPilih() {
+  const bar = $g('grupPilihBar');
+  if (!bar) return;
+  const n = grupAktif ? Object.keys(grupAktif.dipilih).length : 0;
+  bar.style.display = n ? 'flex' : 'none';
+  $g('grupPilihJumlah').innerText = n + ' dipilih';
+}
+
+function keluarPilihGrup(diam) {
+  if (grupAktif) grupAktif.dipilih = {};
+  perbaruiBarPilih();
+  if (!diam) gambarPesanGrup(false);
+}
+
+function kirimGrup() {
+  const input = $g('grupInput');
+  const teks = input.value.trim();
+  if (!teks || !grupAktif || !grupAktif.anggota[currentUser]) return;
+  const sekarang = Date.now();
+  if (sekarang - grupLastSend < 600) return;
+  grupLastSend = sekarang;
+  const gid = grupAktif.id;
+  namaSaya(function(nama) {
+    const ts = firebase.database.ServerValue.TIMESTAMP;
+    db.ref('grup/' + gid + '/pesan').push().set({
+      pengirim: currentUser,
+      nama: nama.slice(0, 40),
+      teks: teks.slice(0, 500),
+      waktu: ts
+    }).then(function() {
+      input.value = '';
+      return db.ref('grup/' + gid + '/terakhir').set({
+        teks: teks.slice(0, 60),
+        nama: nama.slice(0, 40),
+        pengirim: currentUser,
+        waktu: ts
+      });
+    }).catch(function(err) {
+      showAlert('Gagal', 'Pesan gagal terkirim: ' + err.message);
+    });
+  });
+}
+
+function hapusPesanGrup() {
+  if (!grupAktif) return;
+  const gid = grupAktif.id;
+  const ids = Object.keys(grupAktif.dipilih);
+  if (!ids.length) return;
+  const pesan = grupAktif.pesan;
+  const teks = ids.length === 1 ? 'Pesan ini akan dihapus untuk semua anggota grup dan tidak meninggalkan jejak. Yakin?' : ids.length + ' pesan ini akan dihapus untuk semua anggota grup dan tidak meninggalkan jejak. Yakin?';
+  showConfirm('Hapus Pesan', teks, 'Ya, Hapus', function() {
+    const sisa = pesan.filter(function(m) { return ids.indexOf(m.id) === -1; });
+    const terbaruHilang = pesan.length && ids.indexOf(pesan[pesan.length - 1].id) !== -1;
+    keluarPilihGrup();
+    Promise.all(ids.map(function(id) {
+      return db.ref('grup/' + gid + '/pesan/' + id).remove();
+    })).then(function() {
+      if (!terbaruHilang) return null;
+      if (!sisa.length) return db.ref('grup/' + gid + '/terakhir').remove();
+      const m = sisa[sisa.length - 1];
+      return db.ref('grup/' + gid + '/terakhir').set({ teks: m.teks.slice(0, 60), nama: (m.nama || '').slice(0, 40), pengirim: m.pengirim, waktu: m.waktu });
+    }).catch(function(err) {
+      showAlert('Gagal', 'Pesan gagal dihapus: ' + err.message);
+    });
+  });
+}
+
+function isiModal(html) {
+  $g('grupModalCard').innerHTML = html;
+  $g('grupModal').style.display = 'flex';
+}
+
+function tutupGrupModal() {
+  const m = $g('grupModal');
+  if (m) m.style.display = 'none';
+  grupModalMode = '';
+}
+
+function gambarPilihTeman(teman, batas) {
+  grupPilihBatas = batas;
+  const box = $g('pilihTeman');
+  if (!box) return;
+  if (!teman.length) {
+    box.innerHTML = '<div class="pilih-kosong">Tidak ada teman yang dapat dipilih.</div>';
+    return;
+  }
+  box.innerHTML = teman.map(function(t) {
+    return '<label class="pilih-item">' +
+      '<input type="checkbox" value="' + grupEsc(t.uid) + '" onchange="hitungPilih(this)">' +
+      avatarMini(t.data) +
+      '<span class="pilih-nama">' + grupEsc(namaDari(t.data)) + '</span></label>';
+  }).join('');
+}
+
+function hitungPilih(cek) {
+  const dipilih = document.querySelectorAll('#pilihTeman input:checked').length;
+  if (grupPilihBatas && dipilih > grupPilihBatas) {
+    cek.checked = false;
+    showAlert('Batas Anggota', 'Grup dapat memiliki paling banyak ' + GRUP_MAKS_ANGGOTA + ' anggota.');
+    return;
+  }
+  const label = $g('pilihJumlah');
+  if (label) label.innerText = dipilih + ' dipilih';
+}
+
+function uidTerpilih() {
+  return Array.from(document.querySelectorAll('#pilihTeman input:checked')).map(function(i) { return i.value; });
+}
+
+function bukaBuatGrup() {
+  if (!currentUser) { showAlert('Masuk Dahulu', 'Kamu perlu masuk ke akun untuk membuat grup.'); return; }
+  grupModalMode = 'buat';
+  isiModal(
+    '<h3>Buat Grup Baru</h3>' +
+    '<p>Beri nama grup lalu pilih teman yang akan diajak.</p>' +
+    '<input id="grupNamaInput" class="input" maxlength="40" placeholder="Nama grup" autocomplete="off">' +
+    '<input id="grupDeskInput" class="input" maxlength="100" placeholder="Deskripsi (opsional)" autocomplete="off">' +
+    '<div class="pilih-judul">Pilih anggota <span id="pilihJumlah">0 dipilih</span></div>' +
+    '<div id="pilihTeman" class="pilih-list"><div class="loading-spinner"><div class="spinner"></div></div></div>' +
+    '<div class="modal-aksi"><button class="btn btn-outline" onclick="tutupGrupModal()">Batal</button>' +
+    '<button class="btn btn-primary" id="btnBuatGrup" onclick="buatGrup()">Buat Grup</button></div>'
+  );
+  ambilTemanDiterima(function(teman) {
+    if (grupModalMode === 'buat') gambarPilihTeman(teman, GRUP_MAKS_ANGGOTA - 1);
+  });
+}
+
+function buatGrup() {
+  const nama = $g('grupNamaInput').value.trim();
+  const deskripsi = $g('grupDeskInput').value.trim();
+  const dipilih = uidTerpilih();
+  if (!nama) { showAlert('Nama Grup', 'Nama grup belum diisi.'); return; }
+  if (!dipilih.length) { showAlert('Anggota Grup', 'Pilih minimal satu teman untuk diajak.'); return; }
+
+  const tombol = $g('btnBuatGrup');
+  tombol.disabled = true;
+  tombol.innerText = 'Membuat...';
+
+  const me = currentUser;
+  const gid = db.ref('grup').push().key;
+  const anggota = {};
+  anggota[me] = 'admin';
+  const info = { nama: nama.slice(0, 40), pembuat: me, dibuat: firebase.database.ServerValue.TIMESTAMP };
+  if (deskripsi) info.deskripsi = deskripsi.slice(0, 100);
+
+  db.ref('grup/' + gid).set({ info: info, anggota: anggota })
+    .then(function() { return db.ref('grupUser/' + me + '/' + gid).set(true); })
+    .then(function() {
+      return Promise.all(dipilih.map(function(u) {
+        return db.ref('grup/' + gid + '/anggota/' + u).set('anggota').then(function() {
+          return db.ref('grupUser/' + u + '/' + gid).set(true);
+        });
+      }));
+    })
+    .then(function() {
+      tutupGrupModal();
+      loadGrup();
+      bukaGrup(gid);
+    })
+    .catch(function(err) {
+      tombol.disabled = false;
+      tombol.innerText = 'Buat Grup';
+      showAlert('Gagal', 'Grup gagal dibuat: ' + err.message);
+    });
+}
+
+function bukaInfoGrup() {
+  if (!grupAktif || !grupAktif.info) return;
+  const g = grupAktif;
+  const info = g.info;
+  const me = currentUser;
+  const admin = g.anggota[me] === 'admin';
+  const pembuat = info.pembuat === me;
+  grupModalMode = 'info';
+
+  let html = '<h3>Info Grup</h3>';
+  if (admin) {
+    html += '<input id="infoNama" class="input" maxlength="40" value="' + grupEsc(info.nama) + '" placeholder="Nama grup">' +
+      '<input id="infoDesk" class="input" maxlength="100" value="' + grupEsc(info.deskripsi || '') + '" placeholder="Deskripsi (opsional)">' +
+      '<button class="btn btn-primary" style="margin-bottom:6px" onclick="simpanInfoGrup()">Simpan Perubahan</button>';
+  } else {
+    html += '<div class="info-nama">' + grupEsc(info.nama) + '</div>' +
+      (info.deskripsi ? '<div class="info-desk">' + grupEsc(info.deskripsi) + '</div>' : '');
+  }
+  html += '<div class="info-sub">Dibuat ' + (info.dibuat ? formatDate(info.dibuat) : '-') + '</div>' +
+    '<div class="pilih-judul">Anggota <span id="infoJumlah"></span></div>' +
+    '<div id="infoAnggota" class="pilih-list"><div class="loading-spinner"><div class="spinner"></div></div></div>' +
+    '<div class="modal-kolom">' +
+    (admin ? '<button class="btn" onclick="bukaTambahAnggota()">+ Tambah Anggota</button>' : '') +
+    (pembuat ? '<button class="btn btn-danger" onclick="hapusGrup()">Hapus Grup</button>' : '<button class="btn btn-danger" onclick="keluarGrup()">Keluar dari Grup</button>') +
+    '<button class="btn btn-outline" onclick="tutupGrupModal()">Tutup</button></div>';
+  isiModal(html);
+  isiAnggotaInfo();
+}
+
+function isiAnggotaInfo() {
+  if (grupModalMode !== 'info' || !grupAktif) return;
+  const box = $g('infoAnggota');
+  if (!box) return;
+  const g = grupAktif;
+  const me = currentUser;
+  const adminSaya = g.anggota[me] === 'admin';
+  const uids = Object.keys(g.anggota);
+  const peringkat = function(u) { return u === g.info.pembuat ? 0 : (g.anggota[u] === 'admin' ? 1 : 2); };
+
+  getUsersBatch(uids, function(hasil) {
+    if (grupModalMode !== 'info' || !grupAktif || !$g('infoAnggota')) return;
+    const peta = {};
+    hasil.forEach(function(r) { peta[r.uid] = r.data; });
+    uids.sort(function(a, b) {
+      return peringkat(a) - peringkat(b) || namaDari(peta[a]).localeCompare(namaDari(peta[b]));
+    });
+    box.innerHTML = uids.map(function(u) {
+      const data = peta[u] || {};
+      const peran = u === g.info.pembuat ? '<span class="role-chip pembuat">Pembuat</span>' : (g.anggota[u] === 'admin' ? '<span class="role-chip">Admin</span>' : '');
+      const bisaUrus = adminSaya && u !== me && u !== g.info.pembuat;
+      const aksi = bisaUrus ?
+        '<div class="anggota-aksi">' +
+        '<button onclick="event.stopPropagation();ubahPeranGrup(\'' + grupEsc(u) + '\',\'' + (g.anggota[u] === 'admin' ? 'anggota' : 'admin') + '\')">' + (g.anggota[u] === 'admin' ? 'Cabut Admin' : 'Jadikan Admin') + '</button>' +
+        '<button class="bahaya" onclick="event.stopPropagation();keluarkanAnggota(\'' + grupEsc(u) + '\')">Keluarkan</button></div>' : '';
+      const panah = bisaUrus ? '<svg class="anggota-panah" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>' : '';
+      return '<div class="anggota-row' + (bisaUrus ? ' bisa' : '') + (bisaUrus && g.terbuka === u ? ' terbuka' : '') + '"' + (bisaUrus ? ' onclick="togelAnggotaGrup(this,\'' + grupEsc(u) + '\')"' : '') + '>' + avatarMini(data) +
+        '<div class="anggota-info"><div class="anggota-nama">' + grupEsc(namaDari(data)) + (u === me ? ' <span class="kamu">(Kamu)</span>' : '') + ' ' + peran + '</div>' + aksi + '</div>' + panah + '</div>';
+    }).join('');
+    const jumlah = $g('infoJumlah');
+    if (jumlah) jumlah.innerText = uids.length + ' orang';
+  });
+}
+
+function togelAnggotaGrup(el, uid) {
+  if (!grupAktif) return;
+  const buka = !el.classList.contains('terbuka');
+  const semua = el.parentNode.querySelectorAll('.anggota-row.terbuka');
+  for (let i = 0; i < semua.length; i++) semua[i].classList.remove('terbuka');
+  if (buka) el.classList.add('terbuka');
+  grupAktif.terbuka = buka ? uid : '';
+}
+
+function simpanInfoGrup() {
+  if (!grupAktif) return;
+  const nama = $g('infoNama').value.trim();
+  const deskripsi = $g('infoDesk').value.trim();
+  if (!nama) { showAlert('Nama Grup', 'Nama grup tidak boleh kosong.'); return; }
+  db.ref('grup/' + grupAktif.id + '/info').update({ nama: nama.slice(0, 40), deskripsi: deskripsi.slice(0, 100) })
+    .then(function() { showAlert('Berhasil', 'Info grup berhasil diperbarui.'); })
+    .catch(function(err) { showAlert('Gagal', 'Info grup gagal diperbarui: ' + err.message); });
+}
+
+function ubahPeranGrup(uid, peran) {
+  if (!grupAktif) return;
+  db.ref('grup/' + grupAktif.id + '/anggota/' + uid).set(peran).catch(function(err) {
+    showAlert('Gagal', 'Peran gagal diubah: ' + err.message);
+  });
+}
+
+function keluarkanAnggota(uid) {
+  if (!grupAktif) return;
+  const gid = grupAktif.id;
+  getUserData(uid, function(user) {
+    showConfirm('Keluarkan Anggota', 'Keluarkan ' + namaDari(user) + ' dari grup ini?', 'Ya, Keluarkan', function() {
+      db.ref('grup/' + gid + '/anggota/' + uid).remove()
+        .then(function() { return db.ref('grupUser/' + uid + '/' + gid).remove(); })
+        .catch(function(err) { showAlert('Gagal', 'Anggota gagal dikeluarkan: ' + err.message); });
+    });
+  });
+}
+
+function bukaTambahAnggota() {
+  if (!grupAktif) return;
+  const g = grupAktif;
+  const sisa = GRUP_MAKS_ANGGOTA - Object.keys(g.anggota).length;
+  if (sisa <= 0) { showAlert('Grup Penuh', 'Grup sudah mencapai batas ' + GRUP_MAKS_ANGGOTA + ' anggota.'); return; }
+  grupModalMode = 'tambah';
+  isiModal(
+    '<h3>Tambah Anggota</h3>' +
+    '<p>Pilih teman yang akan diajak ke grup ini.</p>' +
+    '<div class="pilih-judul">Teman <span id="pilihJumlah">0 dipilih</span></div>' +
+    '<div id="pilihTeman" class="pilih-list"><div class="loading-spinner"><div class="spinner"></div></div></div>' +
+    '<div class="modal-aksi"><button class="btn btn-outline" onclick="bukaInfoGrup()">Kembali</button>' +
+    '<button class="btn btn-primary" id="btnTambahAnggota" onclick="tambahAnggota()">Tambahkan</button></div>'
+  );
+  ambilTemanDiterima(function(teman) {
+    if (grupModalMode === 'tambah' && grupAktif) gambarPilihTeman(teman.filter(function(t) { return !grupAktif.anggota[t.uid]; }), sisa);
+  });
+}
+
+function tambahAnggota() {
+  if (!grupAktif) return;
+  const dipilih = uidTerpilih();
+  if (!dipilih.length) { showAlert('Anggota Grup', 'Pilih minimal satu teman.'); return; }
+  const gid = grupAktif.id;
+  const tombol = $g('btnTambahAnggota');
+  tombol.disabled = true;
+  tombol.innerText = 'Menambahkan...';
+  Promise.all(dipilih.map(function(u) {
+    return db.ref('grup/' + gid + '/anggota/' + u).set('anggota').then(function() {
+      return db.ref('grupUser/' + u + '/' + gid).set(true);
+    });
+  })).then(function() {
+    bukaInfoGrup();
+  }).catch(function(err) {
+    tombol.disabled = false;
+    tombol.innerText = 'Tambahkan';
+    showAlert('Gagal', 'Anggota gagal ditambahkan: ' + err.message);
+  });
+}
+
+function keluarGrup() {
+  if (!grupAktif) return;
+  const gid = grupAktif.id;
+  const me = currentUser;
+  showConfirm('Keluar dari Grup', 'Kamu tidak akan menerima pesan dari grup ini lagi. Yakin ingin keluar?', 'Ya, Keluar', function() {
+    lepasListenerGrup();
+    db.ref('grup/' + gid + '/anggota/' + me).remove()
+      .then(function() { return db.ref('grupUser/' + me + '/' + gid).remove(); })
+      .then(function() {
+        tutupGrup();
+        loadGrup();
+      })
+      .catch(function(err) {
+        showAlert('Gagal', 'Gagal keluar dari grup: ' + err.message);
+        bukaGrup(gid);
+      });
+  });
+}
+
+function hapusGrup() {
+  if (!grupAktif) return;
+  const gid = grupAktif.id;
+  const me = currentUser;
+  const lain = Object.keys(grupAktif.anggota).filter(function(u) { return u !== me; });
+  showConfirm('Hapus Grup', 'Grup beserta seluruh pesannya akan dihapus permanen untuk semua anggota. Yakin?', 'Ya, Hapus Grup', function() {
+    lepasListenerGrup();
+    Promise.all(lain.map(function(u) { return db.ref('grupUser/' + u + '/' + gid).remove(); }))
+      .then(function() { return db.ref('grup/' + gid).remove(); })
+      .then(function() { return db.ref('grupUser/' + me + '/' + gid).remove(); })
+      .then(function() {
+        tutupGrup();
+        loadGrup();
+      })
+      .catch(function(err) {
+        showAlert('Gagal', 'Grup gagal dihapus: ' + err.message);
+        bukaGrup(gid);
+      });
+  });
+}
+
+
+pasangPilihGrup();
+
+const ICE_SERVER_TELEPON = [
+  { urls: 'stun:stun.l.google.com:19302' },
+  { urls: 'stun:stun1.l.google.com:19302' }
+];
+const ICE_TAMBAHAN_TELEPON = [];
+const TELEPON_BATAS_DERING = 45000;
+const TELEPON_BATAS_KONEKSI = 25000;
+const TELEPON_BATAS_PUTUS = 10000;
+let telp = null;
+let telpOffsetWaktu = 0;
+let telpDering = null;
+let telpTandaAkhir = 0;
+
+function $t(id) {
+  return document.getElementById(id);
+}
+
+function waktuServerTelp() {
+  return Date.now() + telpOffsetWaktu;
+}
+
+function slotTeleponAktif(v) {
+  if (!v) return false;
+  const umur = waktuServerTelp() - (v.dibuat || 0);
+  if (v.status === 'memanggil') return umur < 60000;
+  if (v.status === 'diangkat') return umur < 10800000;
+  return false;
+}
+
+function pasangTelepon() {
+  try {
+    db.ref('.info/serverTimeOffset').on('value', function(snap) {
+      telpOffsetWaktu = Number(snap.val()) || 0;
+    });
+  } catch (e) {}
+  db.ref('panggilan/' + currentUser).on('value', function(snap) {
+    tanganiSlotMasuk(snap.val());
+  }, function() {});
+  window.addEventListener('pagehide', function() {
+    if (!telp) return;
+    try { db.ref('panggilan/' + telp.slot).remove(); } catch (e) {}
+  });
+}
+
+function ambilMikrofon() {
+  return navigator.mediaDevices.getUserMedia({
+    audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+    video: false
+  });
+}
+
+function hentikanStream(stream) {
+  try { stream.getTracks().forEach(function(t) { t.stop(); }); } catch (e) {}
+}
+
+function pesanGalatTelp(err) {
+  const nama = err && err.name;
+  if (nama === 'NotAllowedError' || nama === 'PermissionDeniedError' || nama === 'SecurityError') return 'Izin mikrofon ditolak. Izinkan mikrofon di pengaturan peramban lalu coba lagi.';
+  if (nama === 'NotFoundError' || nama === 'DevicesNotFoundError') return 'Mikrofon tidak ditemukan di perangkat ini.';
+  return 'Panggilan gagal: ' + ((err && err.message) || 'terjadi kesalahan');
+}
+
+function tampilkanTelp(uid, mode, teks) {
+  telpTandaAkhir++;
+  const overlay = $t('telpOverlay');
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  $t('telpNama').innerText = 'Memuat...';
+  const av = $t('telpAvatar');
+  av.innerHTML = '';
+  av.style.background = '#2563EB';
+  getUserData(uid, function(user) {
+    if (!telp || telp.lawan !== uid) return;
+    const profile = user.profile || {};
+    const nama = profile.nama || 'Pengguna';
+    $t('telpNama').innerText = nama;
+    if (profile.foto) av.innerHTML = '<img src="' + grupEsc(profile.foto) + '">';
+    else av.innerText = nama.charAt(0).toUpperCase();
+  });
+  aturTelp(mode, teks);
+}
+
+function aturTelp(mode, teks) {
+  $t('telpMasuk').style.display = mode === 'masuk' ? 'flex' : 'none';
+  $t('telpAktif').style.display = mode === 'masuk' || mode === 'akhir' ? 'none' : 'flex';
+  $t('telpBisu').style.display = mode === 'aktif' ? 'flex' : 'none';
+  $t('telpBisu').classList.remove('nyala');
+  $t('telpBisuTeks').innerText = 'Bisukan';
+  if (teks != null) $t('telpStatus').innerText = teks;
+}
+
+function setStatusTelp(teks) {
+  $t('telpStatus').innerText = teks;
+}
+
+function tampilAkhirTelp(teks) {
+  aturTelp('akhir', teks);
+  const tanda = ++telpTandaAkhir;
+  setTimeout(function() {
+    if (tanda !== telpTandaAkhir) return;
+    $t('telpOverlay').style.display = 'none';
+    document.body.style.overflow = $t('chatBackdrop').style.display === 'flex' || $t('grupBackdrop').style.display === 'flex' ? 'hidden' : '';
+  }, 1800);
+}
+
+function mulaiTelepon() {
+  const target = chatTarget;
+  if (!target || !currentUser) return;
+  if (telp) { showAlert('Telepon', 'Kamu sedang dalam panggilan.'); return; }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.RTCPeerConnection) {
+    showAlert('Tidak Didukung', 'Peramban ini belum mendukung telepon suara.');
+    return;
+  }
+  if (currentFriendStatus !== 'accepted') { showAlert('Telepon', 'Telepon hanya bisa ke teman yang sudah diterima.'); return; }
+  if (isBlockedByMe) { showAlert('Telepon', 'Buka blokir pengguna ini terlebih dahulu.'); return; }
+  if (isBlockedByThem) { showAlert('Telepon', 'Kamu tidak dapat menelepon pengguna ini.'); return; }
+  db.ref('users/' + target + '/online').once('value').then(function(snap) {
+    if (snap.val() === true) { mulaiTeleponLangsung(target); return; }
+    showConfirm('Teman Sedang Offline', 'Telepon hanya berdering kalau Star Tools sedang terbuka di perangkat temanmu. Tetap telepon?', 'Ya, Telepon', function() {
+      mulaiTeleponLangsung(target);
+    });
+  }).catch(function() { mulaiTeleponLangsung(target); });
+}
+
+function buatSesiTelp(peran, lawan, slot) {
+  return {
+    peran: peran, lawan: lawan, slot: slot, status: '', pc: null, stream: null, refs: [], data: null,
+    antreanKeluar: [], antreanMasuk: [], dilihat: {}, remoteSiap: false, slotDibuat: false, jawabanDipakai: false,
+    mulai: 0, timer: null, batas: null, batasKoneksi: null, putus: null, bisu: false
+  };
+}
+
+function mulaiTeleponLangsung(target) {
+  if (telp) return;
+  const sesi = buatSesiTelp('pemanggil', target, target);
+  sesi.status = 'meminta';
+  telp = sesi;
+  tampilkanTelp(target, 'keluar', 'Meminta izin mikrofon...');
+  ambilMikrofon().then(function(stream) {
+    if (telp !== sesi) { hentikanStream(stream); return null; }
+    sesi.stream = stream;
+    return db.ref('panggilan/' + target).once('value');
+  }).then(function(snap) {
+    if (telp !== sesi || !snap) return null;
+    if (slotTeleponAktif(snap.val())) {
+      akhiriTelp(sesi, 'Sedang sibuk', { hapus: false });
+      return null;
+    }
+    return bangunPemanggil(sesi);
+  }).catch(function(err) {
+    if (telp !== sesi) return;
+    akhiriTelp(sesi, 'Panggilan gagal', { hapus: sesi.slotDibuat });
+    showAlert('Telepon', pesanGalatTelp(err));
+  });
+}
+
+function buatPcTelp(sesi) {
+  const pc = new RTCPeerConnection({ iceServers: ICE_SERVER_TELEPON.concat(ICE_TAMBAHAN_TELEPON) });
+  sesi.pc = pc;
+  pc.ontrack = function(e) {
+    const audio = $t('telpAudio');
+    audio.srcObject = e.streams && e.streams[0] ? e.streams[0] : new MediaStream([e.track]);
+    const p = audio.play();
+    if (p && p.catch) p.catch(function() {});
+  };
+  pc.onicecandidate = function(e) {
+    if (e.candidate) kirimIceTelp(sesi, e.candidate);
+  };
+  pc.onconnectionstatechange = function() { statusKoneksiTelp(sesi); };
+  pc.oniceconnectionstatechange = function() { statusKoneksiTelp(sesi); };
+  sesi.stream.getTracks().forEach(function(t) { pc.addTrack(t, sesi.stream); });
+  return pc;
+}
+
+function kirimIceTelp(sesi, kandidat) {
+  const data = { c: kandidat.candidate, m: kandidat.sdpMid || '0', i: kandidat.sdpMLineIndex == null ? 0 : kandidat.sdpMLineIndex };
+  if (sesi.peran === 'pemanggil' && !sesi.slotDibuat) { sesi.antreanKeluar.push(data); return; }
+  tulisIceTelp(sesi, data);
+}
+
+function tulisIceTelp(sesi, data) {
+  const sisi = sesi.peran === 'pemanggil' ? 'pemanggil' : 'penerima';
+  db.ref('panggilan/' + sesi.slot + '/ice/' + sisi).push().set(data).catch(function() {});
+}
+
+function terimaIceTelp(sesi, snap) {
+  snap.forEach(function(c) {
+    if (sesi.dilihat[c.key]) return;
+    sesi.dilihat[c.key] = true;
+    const v = c.val() || {};
+    if (!v.c) return;
+    sesi.antreanMasuk.push({ candidate: v.c, sdpMid: v.m || '0', sdpMLineIndex: v.i || 0 });
+  });
+  keringkanIceTelp(sesi);
+}
+
+function keringkanIceTelp(sesi) {
+  if (!sesi.remoteSiap || !sesi.pc) return;
+  while (sesi.antreanMasuk.length) {
+    sesi.pc.addIceCandidate(sesi.antreanMasuk.shift()).catch(function() {});
+  }
+}
+
+function bangunPemanggil(sesi) {
+  const pc = buatPcTelp(sesi);
+  let tawaran = null;
+  return pc.createOffer().then(function(o) {
+    tawaran = o;
+    return pc.setLocalDescription(o);
+  }).then(function() {
+    if (telp !== sesi) return null;
+    return db.ref('panggilan/' + sesi.lawan).set({
+      dari: currentUser,
+      dibuat: firebase.database.ServerValue.TIMESTAMP,
+      status: 'memanggil',
+      offer: { type: tawaran.type, sdp: tawaran.sdp }
+    }).then(function() { return true; });
+  }).then(function(ok) {
+    if (!ok) return;
+    if (telp !== sesi) { db.ref('panggilan/' + sesi.lawan).remove().catch(function() {}); return; }
+    sesi.slotDibuat = true;
+    sesi.status = 'memanggil';
+    setStatusTelp('Memanggil...');
+    sesi.antreanKeluar.splice(0).forEach(function(d) { tulisIceTelp(sesi, d); });
+    const ref = db.ref('panggilan/' + sesi.lawan);
+    const refIce = db.ref('panggilan/' + sesi.lawan + '/ice/penerima');
+    sesi.refs.push(ref, refIce);
+    ref.on('value', function(snap) {
+      if (telp !== sesi) return;
+      tanganiSlotPemanggil(sesi, snap.val());
+    }, function() {});
+    refIce.on('value', function(snap) {
+      if (telp !== sesi) return;
+      terimaIceTelp(sesi, snap);
+    }, function() {});
+    sesi.batas = setTimeout(function() {
+      akhiriTelp(sesi, 'Tidak dijawab', { hapus: true });
+    }, TELEPON_BATAS_DERING);
+  });
+}
+
+function tanganiSlotPemanggil(sesi, v) {
+  if (!v) {
+    akhiriTelp(sesi, sesi.status === 'tersambung' ? 'Panggilan berakhir' : 'Panggilan dibatalkan', { hapus: false });
+    return;
+  }
+  if (v.status === 'ditolak') { akhiriTelp(sesi, 'Panggilan ditolak', { hapus: true }); return; }
+  if (v.status === 'sibuk') { akhiriTelp(sesi, 'Sedang di telepon lain', { hapus: true }); return; }
+  if (v.status === 'selesai') { akhiriTelp(sesi, 'Panggilan berakhir', { hapus: true }); return; }
+  if (v.jawaban && !sesi.jawabanDipakai) {
+    sesi.jawabanDipakai = true;
+    clearTimeout(sesi.batas);
+    setStatusTelp('Menyambungkan...');
+    sesi.batasKoneksi = setTimeout(function() {
+      akhiriTelp(sesi, 'Koneksi gagal. Coba lagi nanti.', { hapus: true });
+    }, TELEPON_BATAS_KONEKSI);
+    sesi.pc.setRemoteDescription({ type: 'answer', sdp: v.jawaban.sdp }).then(function() {
+      sesi.remoteSiap = true;
+      keringkanIceTelp(sesi);
+    }).catch(function() {
+      akhiriTelp(sesi, 'Koneksi gagal. Coba lagi nanti.', { hapus: true });
+    });
+  }
+}
+
+function tanganiSlotMasuk(v) {
+  if (!v) {
+    if (telp && telp.peran === 'penerima') {
+      akhiriTelp(telp, telp.status === 'tersambung' ? 'Panggilan berakhir' : 'Panggilan dibatalkan', { hapus: false });
+    }
+    return;
+  }
+  if (telp && telp.peran === 'penerima') {
+    if (v.dari !== telp.lawan) return;
+    if (v.status === 'selesai' || v.status === 'ditolak') akhiriTelp(telp, 'Panggilan berakhir', { hapus: true });
+    return;
+  }
+  if (v.status !== 'memanggil' || !v.offer || !v.dari) return;
+  if (waktuServerTelp() - (v.dibuat || 0) > TELEPON_BATAS_DERING + 5000) return;
+  if (telp) {
+    db.ref('panggilan/' + currentUser + '/status').set('sibuk').catch(function() {});
+    return;
+  }
+  const sesi = buatSesiTelp('penerima', v.dari, currentUser);
+  sesi.status = 'dering';
+  sesi.data = v;
+  telp = sesi;
+  tampilkanTelp(v.dari, 'masuk', 'Panggilan suara masuk');
+  mulaiDering();
+  sesi.batas = setTimeout(function() {
+    akhiriTelp(sesi, 'Panggilan terlewat', { hapus: true });
+  }, TELEPON_BATAS_DERING + 5000);
+}
+
+function angkatTelepon() {
+  const sesi = telp;
+  if (!sesi || sesi.peran !== 'penerima' || sesi.status !== 'dering') return;
+  sesi.status = 'menjawab';
+  berhentiDering();
+  clearTimeout(sesi.batas);
+  aturTelp('keluar', 'Menyambungkan...');
+  ambilMikrofon().then(function(stream) {
+    if (telp !== sesi) { hentikanStream(stream); return null; }
+    sesi.stream = stream;
+    const pc = buatPcTelp(sesi);
+    return pc.setRemoteDescription({ type: 'offer', sdp: sesi.data.offer.sdp }).then(function() {
+      sesi.remoteSiap = true;
+      return pc.createAnswer();
+    }).then(function(jawaban) {
+      return pc.setLocalDescription(jawaban).then(function() { return jawaban; });
+    }).then(function(jawaban) {
+      if (telp !== sesi) return null;
+      return db.ref('panggilan/' + currentUser + '/jawaban').set({ type: jawaban.type, sdp: jawaban.sdp });
+    }).then(function(ok) {
+      if (telp !== sesi || ok === null) return;
+      return db.ref('panggilan/' + currentUser + '/status').set('diangkat').then(function() {
+        if (telp !== sesi) return;
+        const refIce = db.ref('panggilan/' + currentUser + '/ice/pemanggil');
+        sesi.refs.push(refIce);
+        refIce.on('value', function(snap) {
+          if (telp !== sesi) return;
+          terimaIceTelp(sesi, snap);
+        }, function() {});
+        sesi.batasKoneksi = setTimeout(function() {
+          akhiriTelp(sesi, 'Koneksi gagal. Coba lagi nanti.', { hapus: true });
+        }, TELEPON_BATAS_KONEKSI);
+      });
+    });
+  }).catch(function(err) {
+    if (telp !== sesi) return;
+    akhiriTelp(sesi, 'Panggilan gagal', { hapus: true });
+    showAlert('Telepon', pesanGalatTelp(err));
+  });
+}
+
+function tolakTelepon() {
+  const sesi = telp;
+  if (!sesi || sesi.peran !== 'penerima') return;
+  berhentiDering();
+  db.ref('panggilan/' + currentUser + '/status').set('ditolak').catch(function() {});
+  akhiriTelp(sesi, 'Panggilan ditolak', { hapus: false });
+  setTimeout(function() {
+    db.ref('panggilan/' + currentUser).once('value').then(function(snap) {
+      const v = snap.val();
+      if (v && v.status === 'ditolak') db.ref('panggilan/' + currentUser).remove();
+    }).catch(function() {});
+  }, 4000);
+}
+
+function tutupTelepon() {
+  const sesi = telp;
+  if (!sesi) return;
+  if (sesi.peran === 'penerima' && sesi.status === 'dering') { tolakTelepon(); return; }
+  akhiriTelp(sesi, sesi.status === 'tersambung' ? 'Panggilan berakhir' : 'Panggilan dibatalkan', { hapus: true });
+}
+
+function togelBisuTelp() {
+  const sesi = telp;
+  if (!sesi || !sesi.stream) return;
+  sesi.bisu = !sesi.bisu;
+  sesi.stream.getAudioTracks().forEach(function(t) { t.enabled = !sesi.bisu; });
+  $t('telpBisu').classList.toggle('nyala', sesi.bisu);
+  $t('telpBisuTeks').innerText = sesi.bisu ? 'Bunyikan' : 'Bisukan';
+}
+
+function keadaanKoneksiTelp(pc) {
+  if (pc.connectionState) return pc.connectionState;
+  const peta = { connected: 'connected', completed: 'connected', disconnected: 'disconnected', failed: 'failed' };
+  return peta[pc.iceConnectionState] || '';
+}
+
+function statusKoneksiTelp(sesi) {
+  if (telp !== sesi || !sesi.pc) return;
+  const s = keadaanKoneksiTelp(sesi.pc);
+  if (s === 'connected') {
+    clearTimeout(sesi.putus);
+    clearTimeout(sesi.batasKoneksi);
+    if (sesi.status !== 'tersambung') {
+      sesi.status = 'tersambung';
+      sesi.mulai = Date.now();
+      aturTelp('aktif', '00:00');
+      sesi.timer = setInterval(function() {
+        if (telp !== sesi) return;
+        const d = Math.floor((Date.now() - sesi.mulai) / 1000);
+        const mm = String(Math.floor(d / 60)).padStart(2, '0');
+        const ss = String(d % 60).padStart(2, '0');
+        setStatusTelp(mm + ':' + ss);
+      }, 500);
+    }
+  } else if (s === 'disconnected') {
+    if (sesi.status !== 'tersambung') return;
+    setStatusTelp('Koneksi terputus...');
+    clearTimeout(sesi.putus);
+    sesi.putus = setTimeout(function() {
+      akhiriTelp(sesi, 'Koneksi terputus', { hapus: true });
+    }, TELEPON_BATAS_PUTUS);
+  } else if (s === 'failed') {
+    akhiriTelp(sesi, 'Koneksi gagal. Coba lagi nanti.', { hapus: true });
+  }
+}
+
+function akhiriTelp(sesi, teks, opsi) {
+  if (telp !== sesi) return;
+  telp = null;
+  clearTimeout(sesi.batas);
+  clearTimeout(sesi.batasKoneksi);
+  clearTimeout(sesi.putus);
+  clearInterval(sesi.timer);
+  berhentiDering();
+  sesi.refs.forEach(function(r) { try { r.off(); } catch (e) {} });
+  if (sesi.pc) {
+    try {
+      sesi.pc.onconnectionstatechange = null;
+      sesi.pc.oniceconnectionstatechange = null;
+      sesi.pc.close();
+    } catch (e) {}
+  }
+  if (sesi.stream) hentikanStream(sesi.stream);
+  $t('telpAudio').srcObject = null;
+  if (opsi && opsi.hapus && (sesi.slotDibuat || sesi.peran === 'penerima')) {
+    db.ref('panggilan/' + sesi.slot).remove().catch(function() {});
+  }
+  tampilAkhirTelp(teks);
+}
+
+function mulaiDering() {
+  berhentiDering();
+  let ctx = null;
+  try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { ctx = null; }
+  const bunyi = function() {
+    if (ctx) {
+      try {
+        if (ctx.state === 'suspended') ctx.resume();
+        [0, 0.4].forEach(function(jeda, i) {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.frequency.value = i ? 480 : 440;
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          const t = ctx.currentTime + jeda;
+          gain.gain.setValueAtTime(0.0001, t);
+          gain.gain.exponentialRampToValueAtTime(0.18, t + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.32);
+          osc.start(t);
+          osc.stop(t + 0.35);
+        });
+      } catch (e) {}
+    }
+    if (navigator.vibrate) navigator.vibrate([400, 200, 400]);
+  };
+  bunyi();
+  telpDering = { ctx: ctx, timer: setInterval(bunyi, 2400) };
+}
+
+function berhentiDering() {
+  if (!telpDering) return;
+  clearInterval(telpDering.timer);
+  try { if (telpDering.ctx) telpDering.ctx.close(); } catch (e) {}
+  if (navigator.vibrate) navigator.vibrate(0);
+  telpDering = null;
+}
+
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     currentUser = user.uid;
     updateOnlineStatus();
+    pasangTelepon();
     loadRequestsOptimized();
     loadFriendsOptimized();
     fetchAllUsersOnce(function() {});
@@ -3041,5 +2987,6 @@ document.getElementById('searchInput').addEventListener('input', function(e) {
   if (!query) performSearch('');
 });
 </script>
+<script src="translate.js"></script>
 </body>
 </html>
