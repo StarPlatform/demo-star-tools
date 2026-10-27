@@ -2637,17 +2637,14 @@ function mulaiTeleponLangsung(target) {
   ambilMikrofon().then(function(stream) {
     if (telp !== sesi) { hentikanStream(stream); return null; }
     sesi.stream = stream;
-    return db.ref('panggilan/' + target).once('value');
-  }).then(function(snap) {
-    if (telp !== sesi || !snap) return null;
-    if (slotTeleponAktif(snap.val())) {
-      akhiriTelp(sesi, 'Sedang sibuk', { hapus: false });
-      return null;
-    }
     return bangunPemanggil(sesi);
   }).catch(function(err) {
     if (telp !== sesi) return;
     akhiriTelp(sesi, 'Panggilan gagal', { hapus: sesi.slotDibuat });
+    if (err && /permission_denied/i.test(String(err.code || '') + ' ' + String(err.message || ''))) {
+      showAlert('Telepon', 'Temanmu sedang di telepon lain atau tidak dapat dihubungi saat ini.');
+      return;
+    }
     showAlert('Telepon', pesanGalatTelp(err));
   });
 }
