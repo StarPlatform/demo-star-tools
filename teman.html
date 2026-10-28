@@ -357,20 +357,25 @@
   .grup-pilih-bar button.hapus { background: #FEE2E2; color: #DC2626; }
   body.dark .grup-pilih-bar button.hapus { background: #7F1D1D; color: #FCA5A5; }
   .grup-pilih-bar svg { width: 20px; height: 20px; }
-  .telp-overlay { position: fixed; inset: 0; z-index: 150; display: none; flex-direction: column; align-items: center; justify-content: space-between; padding: calc(70px + env(safe-area-inset-top, 0px)) 24px calc(56px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(170deg, #0F172A 0%, #1E3A8A 100%); color: #fff; text-align: center; }
+  .telp-overlay { position: fixed; inset: 0; z-index: 150; display: none; flex-direction: column; align-items: center; justify-content: space-between; padding: calc(70px + env(safe-area-inset-top, 0px)) 24px calc(56px + env(safe-area-inset-bottom, 0px)); background: #FFFFFF; color: #0F172A; text-align: center; }
+  body.dark .telp-overlay { background: #111827; color: #F1F5F9; }
   .telp-tengah { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-  .telp-avatar { width: 120px; height: 120px; border-radius: 50%; background: #2563EB; display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: 800; overflow: hidden; box-shadow: 0 0 0 10px rgba(255, 255, 255, .08), 0 0 0 22px rgba(255, 255, 255, .04); margin-bottom: 18px; }
+  .telp-avatar { width: 120px; height: 120px; border-radius: 50%; background: #EFF6FF; color: #2563EB; display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: 800; overflow: hidden; margin-bottom: 18px; }
+  body.dark .telp-avatar { background: #1D2B4A; color: #60A5FA; }
   .telp-avatar img { width: 100%; height: 100%; object-fit: cover; }
   .telp-nama { font-size: 26px; font-weight: 800; max-width: 86vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .telp-status { font-size: 15px; color: rgba(255, 255, 255, .75); min-height: 22px; font-variant-numeric: tabular-nums; }
+  .telp-status { font-size: 15px; color: #64748B; min-height: 22px; font-variant-numeric: tabular-nums; }
+  body.dark .telp-status { color: #94A3B8; }
   .telp-baris { display: none; align-items: flex-start; justify-content: center; gap: 44px; }
-  .telp-tombol { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 12px; color: rgba(255, 255, 255, .85); }
-  .telp-tombol button { width: 68px; height: 68px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; background: rgba(255, 255, 255, .16); transition: transform .15s, background .15s; }
+  .telp-tombol { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 12px; color: #64748B; }
+  body.dark .telp-tombol { color: #94A3B8; }
+  .telp-tombol button { width: 68px; height: 68px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #0F172A; background: #F1F5F9; transition: transform .15s, background .15s; }
+  body.dark .telp-tombol button { color: #F1F5F9; background: #1E293B; }
   .telp-tombol button:active { transform: scale(.94); }
   .telp-tombol button svg { width: 28px; height: 28px; }
-  .telp-tombol .merah { background: #DC2626; }
-  .telp-tombol .hijau { background: #16A34A; }
-  .telp-tombol.nyala button { background: #fff; color: #0F172A; }
+  .telp-tombol .merah, body.dark .telp-tombol .merah { background: #DC2626; color: #fff; }
+  .telp-tombol .hijau, body.dark .telp-tombol .hijau { background: #16A34A; color: #fff; }
+  .telp-tombol.nyala button, body.dark .telp-tombol.nyala button { background: #2563EB; color: #fff; }
   #chatTelpBtn svg { stroke: #2563EB !important; }
   body.dark #chatTelpBtn svg { stroke: #60A5FA !important; }
   .chat-header .chat-actions { display: flex; align-items: center; gap: 2px; }
@@ -2508,6 +2513,7 @@ let telp = null;
 let telpOffsetWaktu = 0;
 let telpDering = null;
 let telpTandaAkhir = 0;
+let telpDiperiksa = '';
 
 function $t(id) {
   return document.getElementById(id);
@@ -2741,6 +2747,7 @@ function tanganiSlotPemanggil(sesi, v) {
   }
   if (v.status === 'ditolak') { akhiriTelp(sesi, 'Panggilan ditolak', { hapus: true }); return; }
   if (v.status === 'sibuk') { akhiriTelp(sesi, 'Sedang di telepon lain', { hapus: true }); return; }
+  if (v.status === 'tanpamik') { akhiriTelp(sesi, 'Teman tidak bisa menjawab (mikrofon tidak tersedia)', { hapus: true }); return; }
   if (v.status === 'selesai') { akhiriTelp(sesi, 'Panggilan berakhir', { hapus: true }); return; }
   if (v.jawaban && !sesi.jawabanDipakai) {
     sesi.jawabanDipakai = true;
@@ -2776,15 +2783,48 @@ function tanganiSlotMasuk(v) {
     db.ref('panggilan/' + currentUser + '/status').set('sibuk').catch(function() {});
     return;
   }
-  const sesi = buatSesiTelp('penerima', v.dari, currentUser);
-  sesi.status = 'dering';
-  sesi.data = v;
-  telp = sesi;
-  tampilkanTelp(v.dari, 'masuk', 'Panggilan suara masuk');
-  mulaiDering();
-  sesi.batas = setTimeout(function() {
-    akhiriTelp(sesi, 'Panggilan terlewat', { hapus: true });
-  }, TELEPON_BATAS_DERING + 5000);
+  const kunci = v.dari + '_' + v.dibuat;
+  if (telpDiperiksa === kunci) return;
+  telpDiperiksa = kunci;
+  adaMikrofon().then(function(ada) {
+    if (telp) return;
+    if (!ada) { tolakTanpaMik(v); return; }
+    const sesi = buatSesiTelp('penerima', v.dari, currentUser);
+    sesi.status = 'dering';
+    sesi.data = v;
+    telp = sesi;
+    tampilkanTelp(v.dari, 'masuk', 'Panggilan suara masuk');
+    mulaiDering();
+    sesi.batas = setTimeout(function() {
+      akhiriTelp(sesi, 'Panggilan terlewat', { hapus: true });
+    }, TELEPON_BATAS_DERING + 5000);
+  });
+}
+
+function adaMikrofon() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return Promise.resolve(true);
+  return navigator.mediaDevices.enumerateDevices().then(function(daftar) {
+    return daftar.some(function(d) { return d.kind === 'audioinput'; });
+  }).catch(function() { return true; });
+}
+
+function laporTanpaMik() {
+  db.ref('panggilan/' + currentUser + '/status').set('tanpamik').catch(function() {
+    db.ref('panggilan/' + currentUser).remove().catch(function() {});
+  });
+  setTimeout(function() {
+    db.ref('panggilan/' + currentUser).once('value').then(function(snap) {
+      const v = snap.val();
+      if (v && v.status === 'tanpamik') db.ref('panggilan/' + currentUser).remove();
+    }).catch(function() {});
+  }, 4000);
+}
+
+function tolakTanpaMik(v) {
+  laporTanpaMik();
+  getUserData(v.dari, function(user) {
+    showAlert('Panggilan Tidak Bisa Diterima', 'Ada panggilan suara dari ' + namaDari(user) + ', tetapi perangkat ini tidak memiliki mikrofon sehingga panggilan diakhiri.');
+  });
 }
 
 function angkatTelepon() {
@@ -2823,7 +2863,14 @@ function angkatTelepon() {
     });
   }).catch(function(err) {
     if (telp !== sesi) return;
-    akhiriTelp(sesi, 'Panggilan gagal', { hapus: true });
+    const nama = err && err.name;
+    const galatMik = nama === 'NotAllowedError' || nama === 'PermissionDeniedError' || nama === 'NotFoundError' || nama === 'DevicesNotFoundError' || nama === 'SecurityError';
+    if (galatMik) {
+      laporTanpaMik();
+      akhiriTelp(sesi, 'Panggilan diakhiri', { hapus: false });
+    } else {
+      akhiriTelp(sesi, 'Panggilan gagal', { hapus: true });
+    }
     showAlert('Telepon', pesanGalatTelp(err));
   });
 }
