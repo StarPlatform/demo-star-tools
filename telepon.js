@@ -19,6 +19,7 @@
   let tandaAkhir = 0;
   let diperiksa = '';
   let judulAsli = '';
+  let kecil = false;
   const cacheUser = {};
 
   const CSS = '' +
@@ -41,6 +42,19 @@
     '.stp-tombol .merah,.gelap .stp-tombol .merah{background:#DC2626;color:#fff}' +
     '.stp-tombol .hijau,.gelap .stp-tombol .hijau{background:#16A34A;color:#fff}' +
     '.stp-tombol.nyala button,.gelap .stp-tombol.nyala button{background:#2563EB;color:#fff}' +
+    '.stp-kecil{position:absolute;top:calc(18px + env(safe-area-inset-top,0px));left:16px;width:42px;height:42px;border-radius:50%;border:none;background:#F1F5F9;color:#0F172A;display:none;align-items:center;justify-content:center;cursor:pointer}' +
+    '.gelap .stp-kecil{background:#1E293B;color:#F1F5F9}' +
+    '.stp-kecil svg{width:22px;height:22px}' +
+    '.stp-volume{display:none;align-items:center;gap:10px;width:min(80vw,280px);color:#64748B;font-size:12px}' +
+    '.gelap .stp-volume{color:#94A3B8}' +
+    '.stp-volume svg{width:18px;height:18px;flex:none}' +
+    '.stp-volume input{flex:1;accent-color:#2563EB}' +
+    '.stp-mini{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:2147483050;display:none;align-items:center;gap:12px;max-width:92vw;padding:8px 8px 8px 16px;border-radius:999px;background:#16A34A;color:#fff;box-shadow:0 6px 20px rgba(0,0,0,.25);cursor:pointer;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}' +
+    '.stp-mini-teks{display:flex;flex-direction:column;min-width:0;text-align:left}' +
+    '.stp-mini-nama{font-size:13px;font-weight:700;max-width:50vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}' +
+    '.stp-mini-status{font-size:12px;opacity:.9;font-variant-numeric:tabular-nums}' +
+    '.stp-mini button{width:36px;height:36px;border-radius:50%;border:none;background:#DC2626;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}' +
+    '.stp-mini button svg{width:18px;height:18px}' +
     '.stp-pesan{position:fixed;inset:0;z-index:2147483100;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);padding:24px;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}' +
     '.stp-kartu{width:min(92vw,360px);background:#fff;color:#0F172A;border-radius:24px;padding:26px 22px 20px;text-align:center}' +
     '.stp-kartu.gelap{background:#111827;color:#F1F5F9}' +
@@ -52,13 +66,19 @@
   const IKON_TELEPON = '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>';
   const IKON_MIK = '<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>';
 
+  const IKON_KECIL = '<polyline points="6 9 12 15 18 9"/>';
+  const IKON_VOLUME = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>';
+
   const HTML = '' +
+    '<div class="stp-mini" id="stpMini"><div class="stp-mini-teks"><span class="stp-mini-nama" id="stpMiniNama"></span><span class="stp-mini-status" id="stpMiniStatus"></span></div><button id="stpMiniAkhiri" aria-label="Akhiri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(135deg)">' + IKON_TELEPON + '</svg></button></div>' +
     '<div class="stp-overlay" id="stpOverlay">' +
+    '<button class="stp-kecil" id="stpKecil" aria-label="Perkecil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + IKON_KECIL + '</svg></button>' +
     '<div class="stp-tengah"><div class="stp-avatar" id="stpAvatar"></div><div class="stp-nama" id="stpNama">Pengguna</div><div class="stp-status" id="stpStatus"></div></div>' +
     '<div class="stp-baris" id="stpMasuk">' +
     '<div class="stp-tombol"><button class="merah" id="stpTolak" aria-label="Tolak"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(135deg)">' + IKON_TELEPON + '</svg></button><span>Tolak</span></div>' +
     '<div class="stp-tombol"><button class="hijau" id="stpAngkat" aria-label="Angkat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + IKON_TELEPON + '</svg></button><span>Angkat</span></div>' +
     '</div>' +
+    '<div class="stp-volume" id="stpVolume"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + IKON_VOLUME + '</svg><input type="range" id="stpVolumeGeser" min="0" max="100" value="100" aria-label="Volume"></div>' +
     '<div class="stp-baris" id="stpAktif">' +
     '<div class="stp-tombol" id="stpBisu"><button id="stpBisuTombol" aria-label="Bisukan mikrofon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + IKON_MIK + '</svg></button><span id="stpBisuTeks">Bisukan</span></div>' +
     '<div class="stp-tombol"><button class="merah" id="stpAkhiri" aria-label="Akhiri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(135deg)">' + IKON_TELEPON + '</svg></button><span>Akhiri</span></div>' +
@@ -99,6 +119,36 @@
     $t('stpAkhiri').addEventListener('click', tutup);
     $t('stpBisuTombol').addEventListener('click', togelBisu);
     $t('stpPesanTutup').addEventListener('click', function() { $t('stpPesan').style.display = 'none'; });
+    $t('stpKecil').addEventListener('click', perkecil);
+    $t('stpMini').addEventListener('click', perbesar);
+    $t('stpMiniAkhiri').addEventListener('click', function(e) {
+      e.stopPropagation();
+      tutup();
+    });
+    $t('stpVolumeGeser').addEventListener('input', function() {
+      $t('stpAudio').volume = Number(this.value) / 100;
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && telp && !kecil && $t('stpOverlay').style.display === 'flex' && telp.status === 'tersambung') perkecil();
+    });
+  }
+
+  function perkecil() {
+    if (!telp || telp.status === 'dering') return;
+    kecil = true;
+    $t('stpMiniNama').innerText = $t('stpNama').innerText;
+    $t('stpMiniStatus').innerText = $t('stpStatus').innerText;
+    $t('stpOverlay').style.display = 'none';
+    $t('stpMini').style.display = 'flex';
+    document.documentElement.style.overflow = '';
+  }
+
+  function perbesar() {
+    kecil = false;
+    $t('stpMini').style.display = 'none';
+    if (!telp) return;
+    $t('stpOverlay').style.display = 'flex';
+    document.documentElement.style.overflow = 'hidden';
   }
 
   function pesan(judul, isi) {
@@ -160,7 +210,11 @@
     }, function() {});
     window.addEventListener('pagehide', function() {
       if (!telp) return;
-      try { tdb.ref('panggilan/' + telp.slot).remove(); } catch (e) {}
+      try {
+        const ref = tdb.ref('panggilan/' + telp.slot);
+        ref.child('status').set('selesai');
+        ref.remove();
+      } catch (e) {}
     });
     window.addEventListener('beforeunload', function(e) {
       if (telp && telp.status === 'tersambung') {
@@ -205,6 +259,10 @@
     tandaAkhir++;
     const overlay = $t('stpOverlay');
     overlay.classList.toggle('gelap', modeGelap());
+    kecil = false;
+    $t('stpMini').style.display = 'none';
+    $t('stpAudio').volume = 1;
+    $t('stpVolumeGeser').value = 100;
     overlay.style.display = 'flex';
     document.documentElement.style.overflow = 'hidden';
     $t('stpNama').innerText = 'Memuat...';
@@ -227,14 +285,21 @@
     $t('stpBisu').style.display = mode === 'aktif' ? 'flex' : 'none';
     $t('stpBisu').classList.remove('nyala');
     $t('stpBisuTeks').innerText = 'Bisukan';
-    if (teks != null) $t('stpStatus').innerText = teks;
+    $t('stpVolume').style.display = mode === 'aktif' ? 'flex' : 'none';
+    $t('stpKecil').style.display = mode === 'masuk' || mode === 'akhir' ? 'none' : 'flex';
+    if (teks != null) setStatus(teks);
   }
 
   function setStatus(teks) {
     $t('stpStatus').innerText = teks;
+    $t('stpMiniStatus').innerText = teks;
   }
 
   function tampilAkhir(teks) {
+    kecil = false;
+    $t('stpMini').style.display = 'none';
+    $t('stpOverlay').style.display = 'flex';
+    document.documentElement.style.overflow = 'hidden';
     atur('akhir', teks);
     const tanda = ++tandaAkhir;
     setTimeout(function() {
@@ -352,7 +417,9 @@
       ref.on('value', function(snap) {
         if (telp !== sesi) return;
         tanganiSlotPemanggil(sesi, snap.val());
-      }, function() {});
+      }, function() {
+        akhiri(sesi, 'Panggilan berakhir', { hapus: false });
+      });
       refIce.on('value', function(snap) {
         if (telp !== sesi) return;
         terimaIce(sesi, snap);
@@ -573,9 +640,23 @@
     if (sesi.stream) hentikanStream(sesi.stream);
     $t('stpAudio').srcObject = null;
     if (opsi && opsi.hapus && (sesi.slotDibuat || sesi.peran === 'penerima')) {
-      tdb.ref('panggilan/' + sesi.slot).remove().catch(function() {});
+      hapusSlot(sesi.slot);
     }
     tampilAkhir(teks);
+  }
+
+  function hapusSlot(slot) {
+    const ref = tdb.ref('panggilan/' + slot);
+    ref.child('status').set('selesai').then(function() {
+      setTimeout(function() {
+        ref.once('value').then(function(snap) {
+          const v = snap.val();
+          if (v && v.status === 'selesai') ref.remove();
+        }).catch(function() {});
+      }, 1500);
+    }).catch(function() {
+      ref.remove().catch(function() {});
+    });
   }
 
   function mulaiDering() {
